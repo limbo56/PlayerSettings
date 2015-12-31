@@ -1,0 +1,68 @@
+#_____________________
+# All Message Options | Colors with &
+#_____________________|
+target-stacker-disabled: '&9The target player has &6stacker &4disabled'
+player-stacker-disabled: '&9You have &6stacker &4disabled!'
+no-permissions: '&cYou do not have permissions to do that'
+#______________________
+#   Lobby Preferences  |
+#______________________| 
+#This is the name of the item to activate or disable stacker
+Stacker-Item-Name: '&6Stacker'
+#This is the name of the item to activate or disable chat
+Chat-Item-Name: '&dChat'
+#This is the name of the item to activate Player Visibility
+Visibility-Item-Name: '&aVisibility'
+#______________________
+#  Player Preferences  |
+#______________________| 
+#This is the name of the item to vanish the player
+hide-item-name: '&cVanish'
+#This is the name of the item that enables or disables fly
+fly-item-name: '&dFly'
+#This is the name of the item that gives speed and removes speed from a player
+speed-item-name: '&bSpeed II'
+#This is the name of the item that gives jump boost and removes jump boost from a player
+jump-item-name: '&aJump II' 
+#This is the name of the item to go back in a menu!
+back-item-name: '&e&lGo Back'
+#_______________
+#   Menu Items  |
+#_______________|
+#This is the name of the item to go to the player preferences
+player-options-name: '&bPlayer Preferences'
+#This is the name of the item to go to the lobby preferences
+lobby-options-name: '&9Lobby Preferences'
+#If this is set to false the glass on the lobby preferences menu will not be shown
+lobby-preferences-glass: true
+#If this is set to false the glass on the preferences menu will not be shown
+preferences-menu-glass: true
+#If this is set to false the glass on the player preferences menu will not be shown
+player-preferences-glass: true
+#_______________
+#   Menu Names  |
+#_______________|
+#This is the name of the lobby preferences menu
+lobby-preferences-menu-name: '&9Lobby Preferences'
+#This is the name of the preferences menu
+preferences-menu-name: '&5Preferences'
+#This is the name of the player preferences menu
+player-preferences-menu-name: '&bPlayer Preferences'
+#_______________
+#   Items Lore  |
+#_______________|
+#This is the lore "click to enable" of the item to enable or disable options 
+click-to-enable-item-lore: '&fClick to &aenable'
+#This is the lore "click to disable" of the item to enable or disable options
+click-to-disable-item-lore: '&fClick to &cdisable'
+#This is the name of the item when an option is "On"
+item-on: '&aOn'
+#This is the name of the item when an option is "Off"
+item-off: '&cOff'
+#_____________________
+#   Per World Options |
+#_____________________|
+#If this is set to false, the plugin will work on all worlds !
+per-world: true
+#Here is the world that you want the plugin to work...
+world-to-work: world
