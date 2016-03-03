@@ -1,0 +1,12 @@
+name: LobbyandPlayerPreferences
+version: 2.0
+main: PreferencesMain.MainPreferences
+author: lim_bo56
+commands:
+      preferences: 
+           description: Opens the preferences main menu!
+           aliases: pref 
+      preferencesLobby:
+           description: Opens the lobby preferences menu!
+      preferencesPlayer:
+           description: Opens the player preferences menu!
