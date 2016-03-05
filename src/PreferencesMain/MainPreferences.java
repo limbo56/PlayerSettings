@@ -113,7 +113,10 @@ public class MainPreferences extends JavaPlugin {
 	        return glow != null;
 	    }
 	 
-	 public static ItemStack siLore(Material material, int amount, int shrt, String displayName, List<String> lore)
+	 /**
+	  * Method to add items to the menu with a lore.
+	  */
+	 public static ItemStack silore(Material material, int amount, int shrt, String displayName, List<String> lore)
 	  {
 	    org.bukkit.inventory.ItemStack item = new org.bukkit.inventory.ItemStack(material, amount, (short)shrt);
 	    ItemMeta meta = item.getItemMeta();
@@ -124,6 +127,9 @@ public class MainPreferences extends JavaPlugin {
 	    return item;
 	  }
 	 
+	  /**
+	  * Method to add items to the menu without a lore.
+	  */
 	 public static ItemStack nolore(Material material, int amount, int shrt, String displayName)
 	  {
 	    org.bukkit.inventory.ItemStack item = new org.bukkit.inventory.ItemStack(material, amount, (short)shrt);
@@ -134,6 +140,9 @@ public class MainPreferences extends JavaPlugin {
 	    return item;
 	  }
 	 
+	 /**
+	  * This is a method that I created for placing the glass on the menu.
+	  */
 	 public static ItemStack Glass(ItemStack stack, String displayName)
 	  {
 	    org.bukkit.inventory.ItemStack item = stack;
