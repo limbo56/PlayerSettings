@@ -2,43 +2,28 @@ package Methods;
 
 import org.bukkit.inventory.ItemStack;
 
-import net.minecraft.server.v1_7_R3.NBTTagCompound;
-import net.minecraft.server.v1_7_R3.NBTTagList;
+import net.minecraft.server.v1_7_R4.NBTTagCompound;
+import net.minecraft.server.v1_7_R4.NBTTagList;
 
-import org.bukkit.craftbukkit.v1_7_R3.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_7_R4.inventory.CraftItemStack;
 
-/**
- * 
- * @author lim_bo56
- *
- */
-
-public class Methods1_7_R4 implements MethodsClass  {
-
-	public ItemStack add(ItemStack item) {
-	    net.minecraft.server.v1_7_R3.ItemStack handle = CraftItemStack.asNMSCopy(item);
-	 
-	    if (handle == null) {
-	        return item;
-	    }
-	 
-	    if (handle.tag == null) {
-	        handle.tag = new NBTTagCompound();
-	    }
-	 
-	    NBTTagList tag = handle.getEnchantments();
-	    if (tag == null) {
-	        tag = new NBTTagList();
-	        handle.tag.set("ench", tag);
-	    }
-	 
-	    return CraftItemStack.asCraftMirror(handle);
-	}
+public class Methods1_7_R4 implements MethodsClass {
 
 	@Override
 	public ItemStack addGlow(ItemStack paramItemStack) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		net.minecraft.server.v1_7_R4.ItemStack localItemStack = CraftItemStack.asNMSCopy(paramItemStack);
+	    NBTTagCompound localNBTTagCompound = null;
+	    if (!localItemStack.hasTag()) {
+	      localNBTTagCompound = new NBTTagCompound();
+	      localItemStack.setTag(localNBTTagCompound);
+	    }
+	    if (localNBTTagCompound == null) localNBTTagCompound = localItemStack.getTag();
+
+	    NBTTagList localNBTTagList = new NBTTagList();
+	    localNBTTagCompound.set("ench", localNBTTagList);
+	    localItemStack.setTag(localNBTTagCompound);
+	    return CraftItemStack.asCraftMirror(localItemStack);
 	}
 
 }
