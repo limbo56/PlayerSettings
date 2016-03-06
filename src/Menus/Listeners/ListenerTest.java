@@ -13,6 +13,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.util.Vector;
 
@@ -21,23 +22,17 @@ import Menus.LobbyPreferences;
 import Menus.MenuPreferences;
 import PreferencesMain.MainPreferences;
 
-/**
- * 
- * @author lim_bo56
- *
- */
-
-public class LobbyMenuListener extends AllStrings implements Listener {
+public class ListenerTest extends AllStrings implements Listener {
 
 	MainPreferences plugin;
 	
-	public LobbyMenuListener(MainPreferences instance) {
+	public ListenerTest(MainPreferences instance) {
 		this.plugin = instance;
 	}
 	
 	//Stacker Listener
     @EventHandler
-    public void onStack(PlayerInteractAtEntityEvent e) {
+    public void onStack(PlayerInteractEntityEvent e) {
     	Player p = e.getPlayer();
     	Entity n = e.getRightClicked();
     	
@@ -62,6 +57,7 @@ public class LobbyMenuListener extends AllStrings implements Listener {
 		 } 
 		 }
     }
+	
     
     @EventHandler
     public void Launch(PlayerInteractEvent e) {
@@ -126,27 +122,29 @@ public class LobbyMenuListener extends AllStrings implements Listener {
 		 }
 	 }
 	 }
-	
-	@EventHandler
-	public void onInventoryClick(InventoryClickEvent e) {
-		
-		if(e.getInventory().getName().equals(LobbyPreferencesName)) {
-			if(e.isRightClick() || e.isLeftClick()) {
-				e.setCancelled(true);
-		}
-	}		
+    
+
+	 
+		@EventHandler
+		public void onInventoryClick(InventoryClickEvent e) {
+			
+			if(e.getInventory().getName().equals(LobbyPreferencesName)) {
+				if(e.isRightClick() || e.isLeftClick()) {
+					e.setCancelled(true);
 			}
-		
+		}		
+				}
+	
 	
 	@EventHandler
-	public void MenuListener(InventoryClickEvent e) {
+	public void StackerListener(InventoryClickEvent e) {
 		Player p = (Player) e.getWhoClicked();
 		
 		String world = p.getWorld().getName();	
 		
 		 for(String m : AllStrings.World) {
 		//Stacker Listener
-		if(e.getInventory().getName().equals(LobbyPreferencesName)) {
+		if(e.getInventory().getName().equals(AllStrings.LobbyPreferencesName)) {
 			if(e.isRightClick() || e.isLeftClick()) {
 				if(e.getSlot()== 11 || e.getSlot()== 20) {
 					if(MainPreferences.Stacker.contains(p)) {
@@ -165,7 +163,7 @@ public class LobbyMenuListener extends AllStrings implements Listener {
 		
 			if(world.equalsIgnoreCase(m)) { 
 		//Visibility Listener
-		if(e.getInventory().getName().equals(LobbyPreferencesName)) {
+		if(e.getInventory().getName().equals(AllStrings.LobbyPreferencesName)) {
 			if(e.isRightClick() || e.isLeftClick()) {
 				if(e.getSlot()== 13 || e.getSlot()== 22) {
 					if(MainPreferences.Visibility.contains(p)) {
@@ -215,4 +213,5 @@ public class LobbyMenuListener extends AllStrings implements Listener {
 	}
 	}
 	}
+	
 }

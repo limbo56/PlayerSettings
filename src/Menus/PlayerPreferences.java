@@ -27,6 +27,7 @@ public class PlayerPreferences extends AllStrings {
 			
 			if(MainPreferences.getInstance().getConfig().getBoolean("PlayerPreferences." + "Glass")) {
 				for(int i = 0; i < 36; i++) {
+					@SuppressWarnings("deprecation")
 					ItemStack glass = new ItemStack(Material.STAINED_GLASS_PANE, 1, DyeColor.LIGHT_BLUE.getWoolData());
 					PlayerPreferences.setItem(i, MainPreferences.Glass(glass, "§7"));
 				}

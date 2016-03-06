@@ -26,7 +26,8 @@ public class MenuPreferences extends AllStrings {
 		
 		if(MainPreferences.getInstance().getConfig().getBoolean("MainMenu." + "Glass")) {
         for(int i = 0; i < 27; i++) {
-        	ItemStack glass = new ItemStack(Material.STAINED_GLASS_PANE, 1, DyeColor.RED.getWoolData());
+        	@SuppressWarnings("deprecation")
+			ItemStack glass = new ItemStack(Material.STAINED_GLASS_PANE, 1, DyeColor.RED.getWoolData());
         	PreferencesMenu.setItem(i, MainPreferences.Glass(glass, "§7"));
         }
 		}

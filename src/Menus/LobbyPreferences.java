@@ -26,7 +26,8 @@ public class LobbyPreferences extends AllStrings {
     	 
     	 if(MainPreferences.getInstance().getConfig().getBoolean("LobbyPreferences." + "Glass") == true) {
     	 for(int i = 0; i < 36; i++) {
-    		 ItemStack glass = new ItemStack(Material.STAINED_GLASS_PANE, 1, DyeColor.YELLOW.getWoolData());
+    		 @SuppressWarnings("deprecation")
+			ItemStack glass = new ItemStack(Material.STAINED_GLASS_PANE, 1, DyeColor.YELLOW.getWoolData());
     		 LobbyPreferences.setItem(i, MainPreferences.Glass(glass, "§7"));
     	 }
     	 }
