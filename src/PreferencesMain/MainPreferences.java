@@ -9,6 +9,7 @@ import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.PluginManager;
@@ -18,10 +19,12 @@ import Extra.AllStrings;
 import Menus.LobbyPreferences;
 import Menus.MenuPreferences;
 import Menus.PlayerPreferences;
+import Menus.Listeners.ListenerTest;
 import Menus.Listeners.LobbyMenuListener;
 import Menus.Listeners.MainMenuListener;
 import Menus.Listeners.PlayerMenuListener;
 import Menus.Listeners.WorldListener;
+import Methods.Methods1_7_R3;
 import Methods.Methods1_7_R4;
 import Methods.Methods1_8_R3;
 import Methods.MethodsClass;
@@ -32,7 +35,7 @@ import Methods.MethodsClass;
  *
  */
 
-public class MainPreferences extends JavaPlugin {
+public class MainPreferences extends JavaPlugin implements Listener {
 
 	public static MethodsClass glow;
 	public static MainPreferences instance;
@@ -54,6 +57,8 @@ public class MainPreferences extends JavaPlugin {
 	   pm.registerEvents(new MainMenuListener(this), this);
 	   pm.registerEvents(new LobbyMenuListener(this), this);
 	   pm.registerEvents(new WorldListener(this), this);
+	   pm.registerEvents(new ListenerTest(this), this);
+	   pm.registerEvents(this, this);
    }
 	  
 	public void onEnable() {
@@ -101,22 +106,22 @@ public class MainPreferences extends JavaPlugin {
 	        getLogger().info("Your server is running version " + version);
 
 	        if (version.equals("v1_8_R3")) {
-	            //server is running 1.8-1.8.1 so we need to use the 1.8 R1 NMS class
 	            glow = new Methods1_8_R3();
 
+	        } else if (version.equals("v1_7_R3")) {
+	        	glow = new Methods1_7_R3();
+	        	
 	        } else if (version.equals("v1_7_R4")) {
-	            //server is running 1.7.4 so we need to use the 1.8 R2 NMS class
-	        	glow = new Methods1_7_R4();
-	        }
+     	        glow = new Methods1_7_R4();
+     	        
+             }
+     
 	        // This will return true if the server version was compatible with one of our NMS classes
 	        // because if it is, our title would not be null
 	        return glow != null;
 	    }
 	 
-	 /**
-	  * Method to add items to the menu with a lore.
-	  */
-	 public static ItemStack silore(Material material, int amount, int shrt, String displayName, List<String> lore)
+	 public static ItemStack siLore(Material material, int amount, int shrt, String displayName, List<String> lore)
 	  {
 	    org.bukkit.inventory.ItemStack item = new org.bukkit.inventory.ItemStack(material, amount, (short)shrt);
 	    ItemMeta meta = item.getItemMeta();
@@ -127,9 +132,6 @@ public class MainPreferences extends JavaPlugin {
 	    return item;
 	  }
 	 
-	  /**
-	  * Method to add items to the menu without a lore.
-	  */
 	 public static ItemStack nolore(Material material, int amount, int shrt, String displayName)
 	  {
 	    org.bukkit.inventory.ItemStack item = new org.bukkit.inventory.ItemStack(material, amount, (short)shrt);
@@ -140,9 +142,6 @@ public class MainPreferences extends JavaPlugin {
 	    return item;
 	  }
 	 
-	 /**
-	  * This is a method that I created for placing the glass on the menu.
-	  */
 	 public static ItemStack Glass(ItemStack stack, String displayName)
 	  {
 	    org.bukkit.inventory.ItemStack item = stack;
@@ -167,7 +166,12 @@ public class MainPreferences extends JavaPlugin {
 			MenuPreferences.openPreferencesMenu(p);
 			 } else if(args.length == 1 ) {
 				 if(args[0].equals("reload")) {
+					 if(p.hasPermission("preferences.reload")) {
 					 this.reloadConfig();
+					 p.sendMessage("§aThe configuration file was successfully reloaded!");			
+					 } else if(!p.hasPermission("preferences.reload")) {
+						 p.sendMessage(AllStrings.NoPermissions);
+					 }
 				 }
 			 }
 		}

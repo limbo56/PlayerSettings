@@ -60,16 +60,12 @@ public class WorldListener extends AllStrings implements Listener {
         String world = p.getWorld().getName();		
 		
         for(String m : AllStrings.World) {
-		if(world.equalsIgnoreCase(m)) {  
-		for(Player players : Bukkit.getOnlinePlayers()) {
-			if(MainPreferences.Vanish.contains(players)) {
-				p.hidePlayer(players);
-			} else if(!MainPreferences.Vanish.contains(players)) {
-				p.showPlayer(players);
-			}
-		}
-		}
+        	if(world.equalsIgnoreCase(m)) {
+        		MainPreferences.Chat.add(p);
+        		MainPreferences.Visibility.add(p);
+        	}
         }
+        
 	}
 	
 	@EventHandler
