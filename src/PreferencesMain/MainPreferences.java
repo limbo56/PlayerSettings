@@ -19,7 +19,6 @@ import Extra.AllStrings;
 import Menus.LobbyPreferences;
 import Menus.MenuPreferences;
 import Menus.PlayerPreferences;
-import Menus.Listeners.ListenerTest;
 import Menus.Listeners.LobbyMenuListener;
 import Menus.Listeners.MainMenuListener;
 import Menus.Listeners.PlayerMenuListener;
@@ -57,7 +56,6 @@ public class MainPreferences extends JavaPlugin implements Listener {
 	   pm.registerEvents(new MainMenuListener(this), this);
 	   pm.registerEvents(new LobbyMenuListener(this), this);
 	   pm.registerEvents(new WorldListener(this), this);
-	   pm.registerEvents(new ListenerTest(this), this);
 	   pm.registerEvents(this, this);
    }
 	  
@@ -168,7 +166,7 @@ public class MainPreferences extends JavaPlugin implements Listener {
 				 if(args[0].equals("reload")) {
 					 if(p.hasPermission("preferences.reload")) {
 					 this.reloadConfig();
-					 p.sendMessage("§aThe configuration file was successfully reloaded!");			
+					 p.sendMessage("Â§aThe configuration file was successfully reloaded!");			
 					 } else if(!p.hasPermission("preferences.reload")) {
 						 p.sendMessage(AllStrings.NoPermissions);
 					 }
