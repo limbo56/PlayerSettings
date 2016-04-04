@@ -10,6 +10,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import Methods.Methods1_7_R3;
 import Methods.Methods1_7_R4;
 import Methods.Methods1_8_R3;
+import Methods.Methods1_9_R1;
 import Methods.MethodsClass;
 import me.lim_bo56.lnpp.MainPreferences;
 
@@ -74,16 +75,17 @@ public class ItemFactory {
 
 	        plugin.getLogger().info("Your server is running version " + version);
 
-	        if (version.equals("v1_8_R3")) {
+	        if (version.equals("v1_9_R1")) {
+	            glow = new Methods1_9_R1();
+	        } else if (version.equals("v1_8_R3")) {
 	            glow = new Methods1_8_R3();
 
 	        } else if (version.equals("v1_7_R3")) {
 	        	glow = new Methods1_7_R3();
 	        	
 	        } else if (version.equals("v1_7_R4")) {
-  	        glow = new Methods1_7_R4();
-  	        
-          }
+  	            glow = new Methods1_7_R4();
+            }
   
 	        // This will return true if the server version was compatible with one of our NMS classes
 	        // because if it is, our title would not be null
