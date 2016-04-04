@@ -67,8 +67,8 @@ public class MainPreferences extends JavaPlugin {
 				getServer().getConsoleSender().sendMessage(ChatColor.AQUA + 
 				"*********************************");
 				
-	    getServer().getConsoleSender().sendMessage("[" + ChatColor.RED + "" 
-	    + ChatColor.BOLD + "PREFERENCES" + ChatColor.WHITE + "]" + UpdateChecker.getInstance().checkForUpdate());
+	    getServer().getConsoleSender().sendMessage(UpdateChecker.getInstance().ConsoleUpdateChecker());
+	    getServer().getConsoleSender().sendMessage("§aDownload§f>§7> §fhttps://goo.gl/853ZVt");
 		
 		saveDefaultConfig();
 		
