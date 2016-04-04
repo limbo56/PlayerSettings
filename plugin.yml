@@ -1,6 +1,6 @@
 name: LobbyandPlayerPreferences
-version: 2.0
-main: PreferencesMain.MainPreferences
+version: 2.7
+main: me.lim_bo56.lnpp.MainPreferences
 author: lim_bo56
 commands:
       preferences: 
