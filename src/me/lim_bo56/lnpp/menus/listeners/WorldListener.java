@@ -72,7 +72,9 @@ public class WorldListener extends AllStrings implements Listener {
 			
 			@Override
 			public void run() {
-				 p.sendMessage("§f[§c§lPREFERENCES§f] " + UpdateChecker.getInstance().checkForUpdate());
+				if(p.isOp()) {
+				 p.sendMessage("Â§f[Â§cÂ§lPREFERENCESÂ§f] " + UpdateChecker.getInstance().checkForUpdate());
+				}
 			}
 		}.runTaskLater(plugin, 21);
        
