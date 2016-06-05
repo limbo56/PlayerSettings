@@ -86,8 +86,6 @@ public class LobbyMenuListener extends AllStrings implements Listener {
     	
     	if(MainPreferences.getInstance().Stacker.contains(d) && d.getPassenger() != null) {
     		e.setCancelled(true);
-    	} else {
-    		e.setCancelled(false);
     	}
     }
 	
@@ -121,7 +119,6 @@ public class LobbyMenuListener extends AllStrings implements Listener {
 			        p.sendMessage(AllStrings.getInstance().ChatDisabled);
 		   } else if (MainPreferences.getInstance().Chat.contains(p)) {
 			   e.getRecipients().add(p);
-			   e.setCancelled(false);
 		   }
 		 }
 	 }
