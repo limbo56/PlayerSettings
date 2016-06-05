@@ -9,8 +9,10 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import Methods.Methods1_7_R3;
 import Methods.Methods1_7_R4;
+import Methods.Methods1_8_R1;
 import Methods.Methods1_8_R3;
 import Methods.Methods1_9_R1;
+import Methods.Methods1_9_R2;
 import Methods.MethodsClass;
 import me.lim_bo56.lnpp.MainPreferences;
 
@@ -21,75 +23,107 @@ import me.lim_bo56.lnpp.MainPreferences;
  */
 
 public class ItemFactory {
- 
+
 	public MethodsClass glow;
 	private MainPreferences plugin = MainPreferences.getInstance();
 	private static ItemFactory instance = new ItemFactory();
-	
+
 	public static ItemFactory getInstance() {
 		return instance;
 	}
-	
-	public ItemStack setItemWithLore(Material material, int amount, int shrt, String displayName, List<String> lore)
-	  {
-	    org.bukkit.inventory.ItemStack item = new org.bukkit.inventory.ItemStack(material, amount, (short)shrt);
-	    ItemMeta meta = item.getItemMeta();
-	    meta.setDisplayName(displayName);
-	    meta.setLore(lore);
 
-	    item.setItemMeta(meta);
-	    return item;
-	  }
-	 
-	 public ItemStack setItemNoLore(Material material, int amount, int shrt, String displayName)
-	  {
-	    org.bukkit.inventory.ItemStack item = new org.bukkit.inventory.ItemStack(material, amount, (short)shrt);
-	    ItemMeta meta = item.getItemMeta();
-	    meta.setDisplayName(displayName);
+	/**
+	 * Create an item without a lore.
+	 * 
+	 * @param material
+	 * @param amount
+	 * @param shrt
+	 * @param displayName
+	 * @param lore
+	 * @return
+	 */
+	public ItemStack setItemWithLore(Material material, int amount, int shrt, String displayName, List<String> lore) {
+		org.bukkit.inventory.ItemStack item = new org.bukkit.inventory.ItemStack(material, amount, (short) shrt);
+		ItemMeta meta = item.getItemMeta();
+		meta.setDisplayName(displayName);
+		meta.setLore(lore);
 
-	    item.setItemMeta(meta);
-	    return item;
-	  }
-	 
-	 public ItemStack setGlass(ItemStack stack, String displayName)
-	  {
-	    org.bukkit.inventory.ItemStack item = stack;
-	    ItemMeta meta = item.getItemMeta();
-	    meta.setDisplayName(displayName);
+		item.setItemMeta(meta);
+		return item;
+	}
 
-	    item.setItemMeta(meta);
-	    return item;
-	  }
-	 
-	 public boolean setupGlow() {
+	/**
+	 * Same method as above but with a lore.
+	 * 
+	 * @param material
+	 * @param amount
+	 * @param shrt
+	 * @param displayName
+	 * @param lore
+	 * @return
+	 */
+	public ItemStack setItemNoLore(Material material, int amount, int shrt, String displayName) {
+		org.bukkit.inventory.ItemStack item = new org.bukkit.inventory.ItemStack(material, amount, (short) shrt);
+		ItemMeta meta = item.getItemMeta();
+		meta.setDisplayName(displayName);
 
-	        String version;
+		item.setItemMeta(meta);
+		return item;
+	}
 
-	        try {
+	/**
+	 * Create a glass item to set it on the menus.
+	 * 
+	 * @param stack
+	 * @param displayName
+	 * @return
+	 */
+	public ItemStack setGlass(ItemStack stack, String displayName) {
+		org.bukkit.inventory.ItemStack item = stack;
+		ItemMeta meta = item.getItemMeta();
+		meta.setDisplayName(displayName);
 
-	            version = Bukkit.getServer().getClass().getPackage().getName().replace(".",  ",").split(",")[3];
+		item.setItemMeta(meta);
+		return item;
+	}
 
-	        } catch (ArrayIndexOutOfBoundsException whatVersionAreYouUsingException) {
-	            return false;
-	        }
+	/**
+	 * Get the version of the server to use the right version method.
+	 * 
+	 * @return
+	 */
+	public boolean setupGlow() {
 
-	        plugin.getLogger().info("Your server is running version " + version);
+		String version;
 
-	        if (version.equals("v1_9_R1")) {
-	            glow = new Methods1_9_R1();
-	        } else if (version.equals("v1_8_R3")) {
-	            glow = new Methods1_8_R3();
+		try {
 
-	        } else if (version.equals("v1_7_R3")) {
-	        	glow = new Methods1_7_R3();
-	        	
-	        } else if (version.equals("v1_7_R4")) {
-  	            glow = new Methods1_7_R4();
-            }
-  
-	        // This will return true if the server version was compatible with one of our NMS classes
-	        // because if it is, our title would not be null
-	        return glow != null;
-	    }
-	 
+			version = Bukkit.getServer().getClass().getPackage().getName().replace(".", ",").split(",")[3];
+
+		} catch (ArrayIndexOutOfBoundsException whatVersionAreYouUsingException) {
+			return false;
+		}
+
+		plugin.getLogger().info("Your server is running version " + version);
+
+		if (version.equals("v1_9_R2")) {
+			glow = new Methods1_9_R2();
+		} else if (version.equals("v1_9_R1")) {
+			glow = new Methods1_9_R1();
+		} else if (version.equals("v1_8_R3")) {
+			glow = new Methods1_8_R3();
+
+		} else if (version.equals("v1_8_R1")) {
+			glow = new Methods1_8_R1();
+
+		} else if (version.equals("v1_7_R3")) {
+			glow = new Methods1_7_R3();
+
+		} else if (version.equals("v1_7_R4")) {
+			glow = new Methods1_7_R4();
+		}
+
+		return glow != null;
+	}
+
 }
