@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -55,6 +56,19 @@ public class PlayerMenuListener extends AllStrings implements Listener {
 				}
 			}
 		}
+	}
+	
+	//Cancel Inventory drop.
+	@EventHandler
+	public void onItemDrop(PlayerDropItemEvent event) {
+	    Player player = event.getPlayer();
+	   
+	    if (player.getOpenInventory() != null) {
+	        if (player.getOpenInventory().getTitle().equals(PlayerPreferencesName)) {
+	        	PlayerPreferences.openPlayerPreferences(player);
+	            event.getItemDrop().remove();
+	        } 
+	    }
 	}
 
 	@EventHandler
