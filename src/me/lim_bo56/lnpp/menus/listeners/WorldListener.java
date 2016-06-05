@@ -14,77 +14,88 @@ import me.lim_bo56.lnpp.MainPreferences;
 import me.lim_bo56.lnpp.utils.AllStrings;
 import me.lim_bo56.lnpp.utils.UpdateChecker;
 
+/**
+ * 
+ * @author lim_bo56
+ *
+ */
+
 public class WorldListener extends AllStrings implements Listener {
 
 	MainPreferences plugin;
-	
+
 	public WorldListener(MainPreferences instance) {
 		this.plugin = instance;
 	}
-	
+
 	@EventHandler
 	public void onWorldChange(PlayerChangedWorldEvent e) {
 		Player p = e.getPlayer();
-		
-		 String world = p.getWorld().getName();		
-		 
-		 for(String m : AllStrings.getInstance().World) {
-			if(world.equalsIgnoreCase(m)) { 
- 			for(Player players : Bukkit.getOnlinePlayers()) {
-          	p.showPlayer(players);	
-          	MainPreferences.getInstance().Speed.remove(p);
-    		p.removePotionEffect(PotionEffectType.SPEED);
-    		MainPreferences.getInstance().Jump.remove(p);
-    		p.removePotionEffect(PotionEffectType.JUMP);
-    		MainPreferences.getInstance().Fly.remove(p);
-    		p.setAllowFlight(false);
-    		p.setFlying(false);
-    		MainPreferences.getInstance().Vanish.remove(p);
-    		p.removePotionEffect(PotionEffectType.INVISIBILITY);
-    		players.showPlayer(p);
-    		
-    		MainPreferences.getInstance().Stacker.remove(p);
-    		MainPreferences.getInstance().Chat.remove(p);
-    		MainPreferences.getInstance().Fly.remove(p);
-    		MainPreferences.getInstance().Jump.remove(p);
-    		MainPreferences.getInstance().Speed.remove(p);
-    		MainPreferences.getInstance().Vanish.remove(p);
-    		MainPreferences.getInstance().Visibility.remove(p);
- 			}
+
+		String world = p.getWorld().getName();
+
+		// If the player changes world and that world isn't on the list.
+		// We will remove him from all the arraylists.
+		for (String m : AllStrings.getInstance().World) {
+			if (world.equalsIgnoreCase(m)) {
+				for (Player players : Bukkit.getOnlinePlayers()) {
+					p.showPlayer(players);
+					MainPreferences.getInstance().Speed.remove(p);
+					p.removePotionEffect(PotionEffectType.SPEED);
+					MainPreferences.getInstance().Jump.remove(p);
+					p.removePotionEffect(PotionEffectType.JUMP);
+					MainPreferences.getInstance().Fly.remove(p);
+					p.setAllowFlight(false);
+					p.setFlying(false);
+					MainPreferences.getInstance().Vanish.remove(p);
+					p.removePotionEffect(PotionEffectType.INVISIBILITY);
+					players.showPlayer(p);
+
+					MainPreferences.getInstance().Stacker.remove(p);
+					MainPreferences.getInstance().Chat.remove(p);
+					MainPreferences.getInstance().Fly.remove(p);
+					MainPreferences.getInstance().Jump.remove(p);
+					MainPreferences.getInstance().Speed.remove(p);
+					MainPreferences.getInstance().Vanish.remove(p);
+					MainPreferences.getInstance().Visibility.remove(p);
+				}
+			}
 		}
-		 }
 	}
-	
+
 	@EventHandler
 	public void onJoin(PlayerJoinEvent e) {
 		final Player p = e.getPlayer();
-		
-        String world = p.getWorld().getName();	        
-		
-        for(String m : AllStrings.getInstance().World) {
-        	if(world.equalsIgnoreCase(m)) {
-        		MainPreferences.getInstance().Chat.add(p);
-        		MainPreferences.getInstance().Visibility.add(p);
-        	}
-        }
-        
-        new BukkitRunnable() {
-			
-			@Override
-			public void run() {
-				if(p.isOp()) {
-				 p.sendMessage("Â§f[Â§cÂ§lPREFERENCESÂ§f] " + UpdateChecker.getInstance().checkForUpdate());
-				}
+
+		String world = p.getWorld().getName();
+
+		for (String m : AllStrings.getInstance().World) {
+			if (world.equalsIgnoreCase(m)) {
+				MainPreferences.getInstance().Chat.add(p);
+				MainPreferences.getInstance().Visibility.add(p);
 			}
-		}.runTaskLater(plugin, 21);
-       
-        
+		}
+
+		if (UpdateMSG == true) {
+			new BukkitRunnable() {
+
+				@Override
+				public void run() {
+					if (p.isOp()) {
+						p.sendMessage("§f[§c§lPREFERENCES§f] " + UpdateChecker.getInstance().checkForUpdate());
+					}
+				}
+			}.runTaskLater(plugin, 21);
+		} else {
+			// Do nothing.
+		}
+
 	}
-	
+
 	@EventHandler
 	public void onQuit(PlayerQuitEvent e) {
 		Player p = e.getPlayer();
-		
+
 		MainPreferences.getInstance().Speed.remove(p);
 		p.removePotionEffect(PotionEffectType.SPEED);
 		MainPreferences.getInstance().Jump.remove(p);

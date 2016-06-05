@@ -17,60 +17,59 @@ public class UpdateChecker {
 
 	private MainPreferences plugin = MainPreferences.getInstance();
 	private static UpdateChecker instance = new UpdateChecker();
-	
+
 	public static UpdateChecker getInstance() {
 		return instance;
 	}
-	
+
 	/**
-	 * Credits to @Maximvdw
-	 * For making this method.
+	 * Credits to @Maximvdw For making this method.
+	 * 
 	 * @Maximvdw: https://www.spigotmc.org/members/maximvdw.6687/
 	 */
 	public String checkForUpdate() {
 		try {
-            HttpURLConnection con = (HttpURLConnection) new URL(
-                    "http://www.spigotmc.org/api/general.php").openConnection();
-            con.setDoOutput(true);
-            con.setRequestMethod("POST");
-            con.getOutputStream()
-                    .write(("key=98BE0FE67F88AB82B4C197FAF1DC3B69206EFDCC4D3B80FC83A00037510B99B4&resource=" + "14622")
-                            .getBytes("UTF-8"));
-            String NewVersion = new BufferedReader(new InputStreamReader(
-                    con.getInputStream())).readLine().replaceAll("[a-zA-Z ]", "");
-            String OldVersion = plugin.getDescription().getVersion();
-            if (!NewVersion.equals(OldVersion)) {
-                return "§dNew version available §b" + NewVersion + "\n" + "§aDownload§f>§7> §fhttps://goo.gl/853ZVt";    
-            }
-        } catch (Exception ex) {
-            plugin.getLogger().info("Failed to check for a update on spigot.");
-        }
+			HttpURLConnection con = (HttpURLConnection) new URL("http://www.spigotmc.org/api/general.php")
+					.openConnection();
+			con.setDoOutput(true);
+			con.setRequestMethod("POST");
+			con.getOutputStream()
+					.write(("key=98BE0FE67F88AB82B4C197FAF1DC3B69206EFDCC4D3B80FC83A00037510B99B4&resource=" + "14622")
+							.getBytes("UTF-8"));
+			String NewVersion = new BufferedReader(new InputStreamReader(con.getInputStream())).readLine()
+					.replaceAll("[a-zA-Z ]", "");
+			String OldVersion = plugin.getDescription().getVersion();
+			if (!NewVersion.equals(OldVersion)) {
+				return "§dNew version available §b" + NewVersion + "\n" + "§aDownload§f>§7> §fhttps://goo.gl/853ZVt";
+			}
+		} catch (Exception ex) {
+			plugin.getLogger().info("Failed to check for a update on spigot.");
+		}
 		return "§dNo updates avialable at this time.";
 	}
-	
+
 	/**
-	 * Same method as above
-	 * But I changed the string on line 68
+	 * Same method as above But I changed the string on line 68
 	 */
 	public String ConsoleUpdateChecker() {
 		try {
-            HttpURLConnection con = (HttpURLConnection) new URL(
-                    "http://www.spigotmc.org/api/general.php").openConnection();
-            con.setDoOutput(true);
-            con.setRequestMethod("POST");
-            con.getOutputStream()
-                    .write(("key=98BE0FE67F88AB82B4C197FAF1DC3B69206EFDCC4D3B80FC83A00037510B99B4&resource=" + "14622")
-                            .getBytes("UTF-8"));
-            String NewVersion = new BufferedReader(new InputStreamReader(
-                    con.getInputStream())).readLine().replaceAll("[a-zA-Z ]", "");
-            String OldVersion = plugin.getDescription().getVersion();
-            if (!NewVersion.equals(OldVersion)) {
-                return "§dNew version of §aLobby&PlayerPreferences §davailable §b" + NewVersion;    
-            }
-        } catch (Exception ex) {
-            plugin.getLogger().info("Failed to check for a update on spigot.");
-        }
+			HttpURLConnection con = (HttpURLConnection) new URL("http://www.spigotmc.org/api/general.php")
+					.openConnection();
+			con.setDoOutput(true);
+			con.setRequestMethod("POST");
+			con.getOutputStream()
+					.write(("key=98BE0FE67F88AB82B4C197FAF1DC3B69206EFDCC4D3B80FC83A00037510B99B4&resource=" + "14622")
+							.getBytes("UTF-8"));
+			String NewVersion = new BufferedReader(new InputStreamReader(con.getInputStream())).readLine()
+					.replaceAll("[a-zA-Z ]", "");
+			String OldVersion = plugin.getDescription().getVersion();
+			if (!NewVersion.equals(OldVersion)) {
+				return "§dNew version of §aLobby&PlayerPreferences §davailable §b" + NewVersion;
+			}
+		} catch (Exception ex) {
+			plugin.getLogger().info("Failed to check for a update on spigot.");
+		}
 		return "§dNo updates avialable at this time.";
 	}
-	
+
 }
