@@ -1,5 +1,5 @@
 name: LobbyandPlayerPreferences
-version: 2.8
+version: 3.2
 main: me.lim_bo56.lnpp.MainPreferences
 author: lim_bo56
 commands:

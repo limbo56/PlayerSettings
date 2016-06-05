@@ -89,6 +89,15 @@ GoBack:
       #You can find all the item names at...
       #http://www.minecraftforum.net/forums/mapping-and-modding/minecraft-mods/mods-discussion/1341837-complete-item-list-as-a-c-java-enum
       BackItem: ARROW
+      #Put this on true if you want the arrow of the menus to preform a command when clicked if not put it to false.
+      prefrom-cmd: false
+      #If the boolean above is true this commando will preform when the player clicks the arrow on the lobby preferences menu.
+      #Do not put the / and then the command type only the command.
+      LobbyPreferences-cmd: ""
+      #If the boolean above is true this commando will preform when the player clicks the arrow on the player preferences menu.
+      #Do not put the / and then the command type only the command.
+      PlayerPreferences-cmd: ""
+      
 #________________________________                               
 #                                | 
 #       All Chat Messages        | 
@@ -100,9 +109,11 @@ Messages:
       #The message that will be sended to the player when he tries to stack another player but he has stacker disabled.
       player-stacker-disabled: '&c&lYOU &7have stacker disabled.'
       #The message that will be sended to the player when he tries to stack another player but the player has stacker disabled.
-      target-stacker-disabled: '&7That person has stacker disabled.'
+      target-stacker-disabled: '&c&lTHAT &7person has stacker disabled.'
       #This message is sended when the player has chat disabled and types something in the chat.
       chat-disabled: '&c&lYOU &7have the chat disabled, enable it at the preferences.'
+      #Put this on true if you want to recive an update message if not put it on false.
+      update-msg: true
 #________________________________                               
 #                                | 
 #         Enabled Worlds         | 
