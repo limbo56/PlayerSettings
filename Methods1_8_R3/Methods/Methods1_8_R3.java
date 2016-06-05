@@ -16,19 +16,19 @@ public class Methods1_8_R3 implements MethodsClass {
 
 	@Override
 	public ItemStack addGlow(ItemStack paramItemStack) {
-		
-		
-	    net.minecraft.server.v1_8_R3.ItemStack localItemStack = CraftItemStack.asNMSCopy(paramItemStack);
-	    NBTTagCompound localNBTTagCompound = null;
-	    if (!localItemStack.hasTag()) {
-	      localNBTTagCompound = new NBTTagCompound();
-	      localItemStack.setTag(localNBTTagCompound);
-	    }
-	    if (localNBTTagCompound == null) localNBTTagCompound = localItemStack.getTag();
 
-	    NBTTagList localNBTTagList = new NBTTagList();
-	    localNBTTagCompound.set("ench", localNBTTagList);
-	    localItemStack.setTag(localNBTTagCompound);
-	    return CraftItemStack.asCraftMirror(localItemStack);
-	  }
+		net.minecraft.server.v1_8_R3.ItemStack localItemStack = CraftItemStack.asNMSCopy(paramItemStack);
+		NBTTagCompound localNBTTagCompound = null;
+		if (!localItemStack.hasTag()) {
+			localNBTTagCompound = new NBTTagCompound();
+			localItemStack.setTag(localNBTTagCompound);
+		}
+		if (localNBTTagCompound == null)
+			localNBTTagCompound = localItemStack.getTag();
+
+		NBTTagList localNBTTagList = new NBTTagList();
+		localNBTTagCompound.set("ench", localNBTTagList);
+		localItemStack.setTag(localNBTTagCompound);
+		return CraftItemStack.asCraftMirror(localItemStack);
+	}
 }
