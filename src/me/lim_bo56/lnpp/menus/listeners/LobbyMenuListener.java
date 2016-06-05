@@ -105,6 +105,7 @@ public class LobbyMenuListener extends AllStrings implements Listener {
     }
     
 	//Chat Listener
+	//This does not affect because it only affects the worlds that the plugin is enabled. line 115.
 	 @EventHandler
 	   public void ChatListener(final AsyncPlayerChatEvent e) {
 		 Player p = e.getPlayer();
@@ -119,6 +120,7 @@ public class LobbyMenuListener extends AllStrings implements Listener {
 			        p.sendMessage(AllStrings.getInstance().ChatDisabled);
 		   } else if (MainPreferences.getInstance().Chat.contains(p)) {
 			   e.getRecipients().add(p);
+			   e.setCancelled(false);
 		   }
 		 }
 	 }
