@@ -5,9 +5,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
 
 import me.lim_bo56.lnpp.MainPreferences;
 import me.lim_bo56.lnpp.menus.LobbyPreferences;
+import me.lim_bo56.lnpp.menus.MenuPreferences;
 import me.lim_bo56.lnpp.menus.PlayerPreferences;
 import me.lim_bo56.lnpp.utils.AllStrings;
 import me.lim_bo56.lnpp.utils.UtilMethods;
@@ -33,6 +35,19 @@ public class MainMenuListener extends AllStrings implements Listener {
 				e.setCancelled(true);
 			}
 		}
+	}
+	
+	//Cancel Inventory drop.
+	@EventHandler
+	public void onItemDrop(PlayerDropItemEvent event) {
+	    Player player = event.getPlayer();
+	   
+	    if (player.getOpenInventory() != null) {
+	        if (player.getOpenInventory().getTitle().equals(MenuPreferencesName)) {
+	        	MenuPreferences.openPreferencesMenu(player);
+	            event.getItemDrop().remove();
+	        } 
+	    }
 	}
 
 	@EventHandler

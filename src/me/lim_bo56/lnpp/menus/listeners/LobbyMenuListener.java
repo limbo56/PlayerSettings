@@ -12,6 +12,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.util.Vector;
@@ -86,9 +87,7 @@ public class LobbyMenuListener extends AllStrings implements Listener {
 		// Disable damage if the stacker array contains the player.
 		if (MainPreferences.getInstance().Stacker.contains(d) && d.getPassenger() != null) {
 			e.setCancelled(true);
-		} else {
-
-		}
+		} 
 	}
 
 	// Back Listener
@@ -108,6 +107,19 @@ public class LobbyMenuListener extends AllStrings implements Listener {
 				}
 			}
 		}
+	}
+	
+	//Cancel Inventory drop.
+	@EventHandler
+	public void onItemDrop(PlayerDropItemEvent event) {
+	    Player player = event.getPlayer();
+	   
+	    if (player.getOpenInventory() != null) {
+	        if (player.getOpenInventory().getTitle().equals(LobbyPreferencesName)) {
+	        	LobbyPreferences.openLobbyPreferences(player);
+	            event.getItemDrop().remove();
+	        } 
+	    }
 	}
 
 	// Chat Listener
