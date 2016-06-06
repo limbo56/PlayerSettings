@@ -13,7 +13,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
-import org.bukkit.event.player.PlayerInteractAtEntityEvent;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.util.Vector;
 
@@ -38,7 +38,7 @@ public class LobbyMenuListener extends AllStrings implements Listener {
 
 	// Stacker Listener
 	@EventHandler
-	public void onStack(PlayerInteractAtEntityEvent e) {
+	public void onStack(PlayerInteractEntityEvent e) {
 		Player p = e.getPlayer();
 		Entity n = e.getRightClicked();
 
