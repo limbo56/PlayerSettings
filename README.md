@@ -14,7 +14,6 @@
 ####Where can I check out this cool plugin? Right here! Plugin Page: https://www.spigotmc.org/resources/lobby-player-preferences.14622/
 
 #License
-####You must read the license before copying, modifying, or distributing this resource.
-####https://github.com/limbo56/Lobby-PlayerPreferences/blob/master/LICENSE
+####You must read the license before copying, modifying, or distributing this resource. https://github.com/limbo56/Lobby-PlayerPreferences/blob/master/LICENSE
 
 #Hope you enjoy it!
