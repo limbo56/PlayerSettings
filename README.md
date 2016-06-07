@@ -13,8 +13,7 @@
 #Link
 ####Where can I check out this cool plugin? Right here! Plugin Page: https://www.spigotmc.org/resources/lobby-player-preferences.14622/
 
-#Terms of use
-####1.The Lobby&PlayerPreferences source code is provided for personal use only!!
-####2.Any comercial distribution of the plugin or use of the Lobby&PlayerPreferences source code is strictly prohibited.
+#License
+####https://github.com/limbo56/Lobby-PlayerPreferences/blob/master/LICENSE
 
 #Hope you enjoy it!
