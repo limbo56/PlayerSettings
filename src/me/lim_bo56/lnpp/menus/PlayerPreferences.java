@@ -73,7 +73,7 @@ public class PlayerPreferences extends AllStrings {
 		} else {
 			ArrayList<String> l = new ArrayList<String>();
 			l.add("");
-			l.add(getInstance().OffLore);
+			l.add(getInstance().OnLore);
 			PlayerPreferences.setItem(12, ItemFactory.getInstance()
 					.setItemNoLore(Material.getMaterial(getInstance().JumpItem), 1, 0, getInstance().JumpItemName));
 			PlayerPreferences.setItem(21,
