@@ -104,7 +104,7 @@ public class Core extends JavaPlugin {
         log("Checking for updates...");
         log("");
         log(updater);
-        log("Download: http://bit.ly/lobbypref");
+        log("Download: http://bit.ly/PlayerSettings");
         log("");
 
         Updater.consoleUpdater();
