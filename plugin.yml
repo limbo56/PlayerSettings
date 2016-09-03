@@ -1,12 +1,7 @@
-name: LobbyandPlayerPreferences
-version: 3.3
-main: me.lim_bo56.lnpp.MainPreferences
+name: PlayerSettings
+version: 3.6
+main: me.lim_bo56.settings.Core
 author: lim_bo56
 commands:
-      preferences: 
-           description: Opens the preferences main menu!
-           aliases: pref 
-      preferencesLobby:
-           description: Opens the lobby preferences menu!
-      preferencesPlayer:
-           description: Opens the player preferences menu!
+      settings:
+           description: Main command of the plugin!
