@@ -1,8 +1,8 @@
-#Lobby-PlayerPreferences
-####This is the official source code of the plugin Lobby&PlayerPreferences.
+#Player Settings
+####This is the official source code of the plugin Player Settings.
 
 #Info
-####1. Lobby&PlayerPreferences supports from 1.7 to 1.9.4. The plugin adds a very cool and configurable menu to your server's lobby/hub
+####1. Player Settings supports from 1.8 to 1.10. The plugin adds a very cool and configurable menu to your server's lobby/hub
 
 ####2. The plugin works with the spigot/craftbukkit/paperspigot etc.
 
@@ -11,9 +11,9 @@
 ####4. This menu is one of the most searched menus, that is the reason why I made this plugin. Also the plugin is free, you can check it out on the spigot page.
 
 #Link
-####Where can I check out this cool plugin? Right here! Plugin Page: https://www.spigotmc.org/resources/lobby-player-preferences.14622/
+####Where can I check out this cool plugin? Right here! Plugin Page: https://www.spigotmc.org/resources/player-settings.14622/
 
 #License
-####You must read the license before copying, modifying, or distributing this resource. https://github.com/limbo56/Lobby-PlayerPreferences/blob/master/LICENSE
+####You must read the license before copying, modifying, or distributing this resource. https://github.com/limbo56/Player-Settings/blob/master/LICENSE
 
 #Hope you enjoy it!
