@@ -29,7 +29,6 @@ public class OpenARG extends BaseCommand {
         if (menu.getStringList("worlds-allowed").contains(player.getWorld().getName())) {
             SettingsMenu.openSettings(player);
         }
-
     }
 
 

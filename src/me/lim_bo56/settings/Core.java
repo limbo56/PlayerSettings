@@ -104,7 +104,7 @@ public class Core extends JavaPlugin {
         log("Checking for updates...");
         log("");
         log(updater);
-        log("Download: http://bit.ly/PlayerSettings");
+        log("Download: http://bit.ly/lobbypref");
         log("");
 
         Updater.consoleUpdater();
@@ -161,7 +161,7 @@ public class Core extends JavaPlugin {
                     player.removePotionEffect(PotionEffectType.JUMP);
                     player.removePotionEffect(PotionEffectType.INVISIBILITY);
 
-                    if (!Variables.Sql) {
+                    if (!ConfigurationManager.getConfig().getBoolean("MySQL.enable")) {
 
                         if (Variables.defaultVisibility) cPlayer.setVisibility(true);
                         if (Variables.defaultStacker) cPlayer.setStacker(true);

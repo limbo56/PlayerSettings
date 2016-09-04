@@ -14,7 +14,6 @@ import org.bukkit.command.CommandSender;
  */
 public class ReloadARG extends BaseCommand {
 
-
     public ReloadARG(Core plugin) {
         super(plugin);
     }
@@ -23,16 +22,14 @@ public class ReloadARG extends BaseCommand {
     public void executeCommand(CommandSender sender, Command cmd, String[] args) {
 
         try {
-            ConfigurationManager.getMessages().reload();
-            ConfigurationManager.getDefault().reload();
-            ConfigurationManager.getMenu().reload();
+            ConfigurationManager.getMessages().reloadConfig();
+            ConfigurationManager.getDefault().reloadConfig();
+            ConfigurationManager.getMenu().reloadConfig();
             Core.getInstance().reloadConfig();
             sender.sendMessage(ColorUtils.Color("&aAll files have been reloaded correctly!"));
         } catch (Exception exception) {
             sender.sendMessage(ColorUtils.Color("&cAn error occurred while reloading files!"));
         }
-
-
     }
 
 }
