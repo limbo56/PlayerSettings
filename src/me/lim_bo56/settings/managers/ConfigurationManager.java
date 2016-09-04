@@ -1,43 +1,77 @@
 package me.lim_bo56.settings.managers;
 
 import me.lim_bo56.settings.Core;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 /**
- * Credits to @iSach.
+ * Created by lim_bo56
+ * On 9/3/2016
+ * At 7:26 PM
  */
 public class ConfigurationManager {
 
     private static ConfigurationManager messages = new ConfigurationManager("messages");
     private static ConfigurationManager aDefault = new ConfigurationManager("default");
     private static ConfigurationManager menu = new ConfigurationManager("menu");
+    private static ConfigurationManager config = new ConfigurationManager();
 
-    public FileConfiguration fileConfiguration;
+    private FileConfiguration fileConfiguration;
+
     private File file;
 
-    private ConfigurationManager(String fileName) {
+    private Core plugin = Core.getInstance();
 
-        file = new File(Core.getInstance().getDataFolder(), fileName + ".yml");
+    private ConfigurationManager(String name) {
+
+        if (Core.getInstance().getDataFolder().exists()) {
+            try {
+                plugin.getDataFolder().createNewFile();
+            } catch (IOException exception) {
+                System.out.println("Couldn't create the data folder for Player Settings!");
+            }
+        }
+
+        file = new File(plugin.getDataFolder(), name + ".yml");
 
         if (!file.exists()) {
             try {
                 file.createNewFile();
-            } catch (Exception e) {
-                e.printStackTrace();
+            } catch (IOException exception) {
+                System.out.println("Couldn't create " + name + ".yml!");
             }
         }
 
         fileConfiguration = YamlConfiguration.loadConfiguration(file);
+
     }
 
     private ConfigurationManager() {
-        file = new File(Core.getInstance().getDataFolder(), "config.yml");
-        fileConfiguration = Core.getInstance().getConfig();
+
+        if (Core.getInstance().getDataFolder().exists()) {
+            try {
+                plugin.getDataFolder().createNewFile();
+            } catch (IOException exception) {
+                System.out.println("Couldn't create the data folder for Player Settings!");
+            }
+        }
+
+        file = new File(plugin.getDataFolder(), "config.yml");
+
+        if (!file.exists()) {
+            try {
+                file.createNewFile();
+            } catch (IOException exception) {
+                System.out.println("Couldn't create config.yml!");
+            }
+        }
+
+        fileConfiguration = YamlConfiguration.loadConfiguration(file);
+
     }
 
     public static ConfigurationManager getMessages() {
@@ -52,12 +86,23 @@ public class ConfigurationManager {
         return menu;
     }
 
+    public static ConfigurationManager getConfig() {
+        return config;
+    }
 
-    public void reload() {
+    public void saveConfig() {
+        try {
+            fileConfiguration.save(file);
+        } catch (IOException exception) {
+            System.out.println("Couldn't save " + fileConfiguration.getName() + ".yml!");
+        }
+    }
+
+    public void reloadConfig() {
         try {
             fileConfiguration = YamlConfiguration.loadConfiguration(file);
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception exception) {
+            System.out.println("Couldn't reload " + fileConfiguration.getName() + ".yml!");
         }
     }
 
@@ -65,54 +110,38 @@ public class ConfigurationManager {
         fileConfiguration.set(path, value);
         try {
             fileConfiguration.save(file);
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (IOException exception) {
+            System.out.println("Couldn't save " + fileConfiguration.getName() + ".yml!");
         }
-    }
-
-    public boolean getBoolean(String path) {
-        return (boolean) get(path);
-    }
-
-    public int getInt(String path) {
-        return (int) get(path);
-    }
-
-    public double getDouble(String path) {
-        return (double) get(path);
     }
 
     public void addDefault(String path, Object value) {
-        if (!fileConfiguration.contains(path))
+        if (!contains(path))
             set(path, value);
     }
 
-    public ConfigurationSection createConfigurationSection(String path) {
-        ConfigurationSection cs = fileConfiguration.createSection(path);
-        try {
-            fileConfiguration.save(file);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return cs;
+    public boolean getBoolean(String path) {
+        return fileConfiguration.getBoolean(path);
     }
 
-    @SuppressWarnings("unchecked")
-    public <T> T get(String path) {
-        return (T) fileConfiguration.get(path);
+    public int getInt(String path) {
+        return fileConfiguration.getInt(path);
+    }
+
+    public double getDouble(String path) {
+        return fileConfiguration.getDouble(path);
     }
 
     public List<String> getStringList(String path) {
         return fileConfiguration.getStringList(path);
     }
 
-    public String getString(String path) {
-        return fileConfiguration.getString(path);
+    public <T> T get(String path) {
+        return (T) fileConfiguration.get(path);
     }
 
     public boolean contains(String path) {
         return fileConfiguration.contains(path);
     }
-
 
 }
