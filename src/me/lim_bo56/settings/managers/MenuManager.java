@@ -1,6 +1,7 @@
 package me.lim_bo56.settings.managers;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 /**
  * Created by lim_bo56
@@ -17,14 +18,14 @@ public class MenuManager {
     }
 
     public static String get(String path) {
-        return ((String) configurationManager.get(path)).replace("&", "").replace("'", "\'");
+        return ((String) configurationManager.get(path)).replace("&", "§").replace("'", "\'");
     }
 
     private void addDefault(String path, Object value) {
         configurationManager.addDefault(path, value);
     }
 
-    public void loadMenu() {
+    private void loadMenu() {
 
         addDefault("Menu.Name", "&6&lSettings");
 
@@ -56,7 +57,7 @@ public class MenuManager {
         addDefault("Menu.Items.Chat.Name", "&7Chat");
         addDefault("Menu.Items.Chat.Material", "PAPER");
 
-        addDefault("worlds-allowed", Arrays.asList("world"));
+        addDefault("worlds-allowed", Collections.singletonList("world"));
 
     }
 }

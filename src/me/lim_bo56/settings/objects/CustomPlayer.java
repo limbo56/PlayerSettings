@@ -1,6 +1,7 @@
 package me.lim_bo56.settings.objects;
 
 import me.lim_bo56.settings.Core;
+import me.lim_bo56.settings.managers.ConfigurationManager;
 import me.lim_bo56.settings.mysql.MySqlConnection;
 import me.lim_bo56.settings.utils.Variables;
 import org.bukkit.Bukkit;
@@ -18,13 +19,12 @@ import java.util.UUID;
  */
 public class CustomPlayer {
 
+    private final boolean Sql = ConfigurationManager.getConfig().getBoolean("MySQL.enable");
     private Player player;
-
     private UUID uuid;
-
     private String name;
-
     private MySqlConnection mysql = MySqlConnection.getInstance();
+
 
     public CustomPlayer(Player player) {
         this.player = player;
@@ -36,16 +36,12 @@ public class CustomPlayer {
         return player;
     }
 
-    public UUID getUuid() {
+    private UUID getUuid() {
         return uuid;
     }
 
-    public String getName() {
-        return name;
-    }
-
     public boolean containsPlayer() {
-        if (Variables.Sql) {
+        if (Sql) {
             try {
                 PreparedStatement sql = MySqlConnection.getInstance().getCurrentConnection().prepareStatement(
                         "SELECT UUID FROM `players` WHERE UUID = ?");
@@ -66,39 +62,31 @@ public class CustomPlayer {
     }
 
     public void addPlayer() {
-        if (Variables.Sql) {
+        if (Sql) {
             Bukkit.getScheduler().runTaskAsynchronously(Core.getInstance(), new Runnable() {
                 @Override
                 public void run() {
                     try {
 
-                        int visibility = 0, stacker = 0, chat = 0, vanish = 0, fly = 0, speed = 0, jump = 0;
-
-                        if (Variables.defaultVisibility) visibility = 1;
-
-                        if (Variables.defaultStacker) stacker = 1;
-
-                        if (Variables.defaultChat) chat = 1;
-
-                        if (Variables.defaultVanish) vanish = 1;
-
-                        if (Variables.defaultFly) fly = 1;
-
-                        if (Variables.defaultSpeed) speed = 1;
-
-                        if (Variables.defaultJump) jump = 1;
+                        int
+                                visibility = (Variables.defaultVisibility) ? 1 : 0,
+                                stacker = (Variables.defaultStacker) ? 1 : 0,
+                                chat = (Variables.defaultChat) ? 1 : 0,
+                                vanish = (Variables.defaultVanish) ? 1 : 0,
+                                fly = (Variables.defaultFly) ? 1 : 0,
+                                speed = (Variables.defaultSpeed) ? 1 : 0,
+                                jump = (Variables.defaultJump) ? 1 : 0;
 
                         PreparedStatement sql = MySqlConnection.getInstance().getCurrentConnection().prepareStatement(
                                 "INSERT INTO players (UUID, Visibility, Stacker, Chat, Vanish, Fly, Speed, Jump) VALUES (" +
-                                        "`" + getUuid().toString() + "`," +
-                                        "`" + visibility + "`," +
-                                        "`" + stacker + "`," +
-                                        "`" + chat + "`," +
-                                        "`" + vanish + "`," +
-                                        "`" + fly + "`," +
-                                        "`" + speed + "`," +
-                                        "`" + jump + "`" +
-                                        ");");
+                                        "'" + uuid.toString() + "', " +
+                                        "'" + visibility + "', " +
+                                        "'" + stacker + "', " +
+                                        "'" + chat + "', " +
+                                        "'" + vanish + "', " +
+                                        "'" + fly + "', " +
+                                        "'" + speed + "', " +
+                                        "'" + jump + "')");
 
                         sql.execute();
                         sql.close();
@@ -120,18 +108,14 @@ public class CustomPlayer {
     }
 
     public void setVisibility(final boolean visibility) {
-        if (Variables.Sql) {
+        if (Sql) {
             Bukkit.getScheduler().runTaskAsynchronously(Core.getInstance(), new Runnable() {
 
                 @Override
                 public void run() {
-
                     try {
 
-                        int outcome;
-
-                        if (visibility) outcome = 1;
-                        else outcome = 0;
+                        int outcome = (visibility) ? 1 : 0;
 
                         PreparedStatement sql = mysql.getCurrentConnection()
                                 .prepareStatement("UPDATE `players` SET `Visibility` = " + outcome + " WHERE UUID = '"
@@ -147,16 +131,15 @@ public class CustomPlayer {
 
             });
         } else {
-            if (visibility) {
+            if (visibility)
                 Variables.VISIBILITY_LIST.add(player);
-            } else {
+            else
                 Variables.VISIBILITY_LIST.remove(player);
-            }
         }
     }
 
-    public boolean hasVisibility() {
-        if (Variables.Sql) {
+    public synchronized boolean hasVisibility() {
+        if (Sql) {
             try {
                 ResultSet rs = mysql.getCurrentConnection().createStatement().executeQuery(
                         "SELECT `Visibility` FROM `players` WHERE `UUID` = '" + getUuid().toString() + "'");
@@ -178,7 +161,7 @@ public class CustomPlayer {
     }
 
     public void setStacker(final boolean stacker) {
-        if (Variables.Sql) {
+        if (Sql) {
             Bukkit.getScheduler().runTaskAsynchronously(Core.getInstance(), new Runnable() {
 
                 @Override
@@ -186,12 +169,7 @@ public class CustomPlayer {
 
                     try {
 
-                        int outcome;
-
-                        if (stacker)
-                            outcome = 1;
-                        else
-                            outcome = 0;
+                        int outcome = (stacker) ? 1 : 0;
 
                         PreparedStatement sql = mysql.getCurrentConnection()
                                 .prepareStatement("UPDATE `players` SET `Stacker` = " + outcome + " WHERE UUID = '"
@@ -207,16 +185,15 @@ public class CustomPlayer {
 
             });
         } else {
-            if (stacker) {
+            if (stacker)
                 Variables.STACKER_LIST.add(player);
-            } else {
+            else
                 Variables.STACKER_LIST.remove(player);
-            }
         }
     }
 
-    public boolean hasStacker() {
-        if (Variables.Sql) {
+    public synchronized boolean hasStacker() {
+        if (Sql) {
             try {
                 ResultSet rs = mysql.getCurrentConnection().createStatement().executeQuery(
                         "SELECT `Stacker` FROM `players` WHERE `UUID` = '" + getUuid().toString() + "'");
@@ -238,7 +215,7 @@ public class CustomPlayer {
     }
 
     public void setChat(final boolean chat) {
-        if (Variables.Sql) {
+        if (Sql) {
             Bukkit.getScheduler().runTaskAsynchronously(Core.getInstance(), new Runnable() {
 
                 @Override
@@ -246,12 +223,7 @@ public class CustomPlayer {
 
                     try {
 
-                        int outcome;
-
-                        if (chat)
-                            outcome = 1;
-                        else
-                            outcome = 0;
+                        int outcome = (chat) ? 1 : 0;
 
                         PreparedStatement sql = mysql.getCurrentConnection()
                                 .prepareStatement("UPDATE `players` SET `Chat` = " + outcome + " WHERE UUID = '"
@@ -267,16 +239,15 @@ public class CustomPlayer {
 
             });
         } else {
-            if (chat) {
+            if (chat)
                 Variables.CHAT_LIST.add(player);
-            } else {
+            else
                 Variables.CHAT_LIST.remove(player);
-            }
         }
     }
 
-    public boolean hasChat() {
-        if (Variables.Sql) {
+    public synchronized boolean hasChat() {
+        if (Sql) {
             try {
                 ResultSet rs = mysql.getCurrentConnection().createStatement().executeQuery(
                         "SELECT `Chat` FROM `players` WHERE `UUID` = '" + getUuid().toString() + "'");
@@ -298,7 +269,7 @@ public class CustomPlayer {
     }
 
     public void setVanish(final boolean vanish) {
-        if (Variables.Sql) {
+        if (Sql) {
             Bukkit.getScheduler().runTaskAsynchronously(Core.getInstance(), new Runnable() {
 
                 @Override
@@ -306,12 +277,7 @@ public class CustomPlayer {
 
                     try {
 
-                        int outcome;
-
-                        if (vanish)
-                            outcome = 1;
-                        else
-                            outcome = 0;
+                        int outcome = (vanish) ? 1 : 0;
 
                         PreparedStatement sql = mysql.getCurrentConnection()
                                 .prepareStatement("UPDATE `players` SET `Vanish` = " + outcome + " WHERE UUID = '"
@@ -327,16 +293,15 @@ public class CustomPlayer {
 
             });
         } else {
-            if (vanish) {
+            if (vanish)
                 Variables.VANISH_LIST.add(player);
-            } else {
+            else
                 Variables.VANISH_LIST.remove(player);
-            }
         }
     }
 
-    public boolean hasVanish() {
-        if (Variables.Sql) {
+    public synchronized boolean hasVanish() {
+        if (Sql) {
             try {
                 ResultSet rs = mysql.getCurrentConnection().createStatement().executeQuery(
                         "SELECT `Vanish` FROM `players` WHERE `UUID` = '" + getUuid().toString() + "'");
@@ -356,19 +321,14 @@ public class CustomPlayer {
     }
 
     public void setFly(final boolean fly) {
-        if (Variables.Sql) {
+        if (Sql) {
             Bukkit.getScheduler().runTaskAsynchronously(Core.getInstance(), new Runnable() {
 
                 @Override
                 public void run() {
                     try {
 
-                        int outcome;
-
-                        if (fly)
-                            outcome = 1;
-                        else
-                            outcome = 0;
+                        int outcome = (fly) ? 1 : 0;
 
                         PreparedStatement sql = mysql.getCurrentConnection()
                                 .prepareStatement("UPDATE `players` SET `Fly` = " + outcome + " WHERE UUID = '"
@@ -384,16 +344,15 @@ public class CustomPlayer {
 
             });
         } else {
-            if (fly) {
+            if (fly)
                 Variables.FLY_LIST.add(player);
-            } else {
+            else
                 Variables.FLY_LIST.remove(player);
-            }
         }
     }
 
-    public boolean hasFly() {
-        if (Variables.Sql) {
+    public synchronized boolean hasFly() {
+        if (Sql) {
             try {
                 ResultSet rs = mysql.getCurrentConnection().createStatement().executeQuery(
                         "SELECT `Fly` FROM `players` WHERE `UUID` = '" + getUuid().toString() + "'");
@@ -413,7 +372,7 @@ public class CustomPlayer {
     }
 
     public void setSpeed(final boolean speed) {
-        if (Variables.Sql) {
+        if (Sql) {
             Bukkit.getScheduler().runTaskAsynchronously(Core.getInstance(), new Runnable() {
 
                 @Override
@@ -421,12 +380,7 @@ public class CustomPlayer {
 
                     try {
 
-                        int outcome;
-
-                        if (speed)
-                            outcome = 1;
-                        else
-                            outcome = 0;
+                        int outcome = (speed) ? 1 : 0;
 
                         PreparedStatement sql = mysql.getCurrentConnection()
                                 .prepareStatement("UPDATE `players` SET `Speed` = " + outcome + " WHERE UUID = '"
@@ -442,16 +396,15 @@ public class CustomPlayer {
 
             });
         } else {
-            if (speed) {
+            if (speed)
                 Variables.SPEED_LIST.add(player);
-            } else {
+            else
                 Variables.SPEED_LIST.remove(player);
-            }
         }
     }
 
-    public boolean hasSpeed() {
-        if (Variables.Sql) {
+    public synchronized boolean hasSpeed() {
+        if (Sql) {
             try {
                 ResultSet rs = mysql.getCurrentConnection().createStatement().executeQuery(
                         "SELECT `Speed` FROM `players` WHERE `UUID` = '" + getUuid().toString() + "'");
@@ -471,7 +424,7 @@ public class CustomPlayer {
     }
 
     public void setJump(final boolean jump) {
-        if (Variables.Sql) {
+        if (Sql) {
             Bukkit.getScheduler().runTaskAsynchronously(Core.getInstance(), new Runnable() {
 
                 @Override
@@ -479,12 +432,7 @@ public class CustomPlayer {
 
                     try {
 
-                        int outcome;
-
-                        if (jump)
-                            outcome = 1;
-                        else
-                            outcome = 0;
+                        int outcome = (jump) ? 1 : 0;
 
                         PreparedStatement sql = mysql.getCurrentConnection()
                                 .prepareStatement("UPDATE `players` SET `Jump` = " + outcome + " WHERE UUID = '"
@@ -500,16 +448,15 @@ public class CustomPlayer {
 
             });
         } else {
-            if (jump) {
+            if (jump)
                 Variables.JUMP_LIST.add(player);
-            } else {
+            else
                 Variables.JUMP_LIST.remove(player);
-            }
         }
     }
 
-    public boolean hasJump() {
-        if (Variables.Sql) {
+    public synchronized boolean hasJump() {
+        if (Sql) {
             try {
                 ResultSet rs = mysql.getCurrentConnection().createStatement().executeQuery(
                         "SELECT `Jump` FROM `players` WHERE `UUID` = '" + getUuid().toString() + "'");

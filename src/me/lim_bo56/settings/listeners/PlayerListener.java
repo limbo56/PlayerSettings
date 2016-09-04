@@ -175,10 +175,12 @@ public class PlayerListener implements Listener {
                                 }
 
                             } else if (!ePlayer.hasStacker())
-                                player.sendMessage(ColorUtils.Color(String.valueOf(messages.get("Target-Stacker-Disabled"))));
+                                if (messages.getBoolean("Send.Target-Stacker-Disabled"))
+                                    player.sendMessage(ColorUtils.Color(String.valueOf(messages.get("Target-Stacker-Disabled"))));
 
                         } else if (!cPlayer.hasStacker())
-                            player.sendMessage(ColorUtils.Color(String.valueOf(messages.get("Player-Stacker-Disabled"))));
+                            if (messages.getBoolean("Send.Player-Stacker-Disabled"))
+                                player.sendMessage(ColorUtils.Color(String.valueOf(messages.get("Player-Stacker-Disabled"))));
         }
 
     }
