@@ -15,18 +15,21 @@ public class MessageManager {
     }
 
     public static String getMessage(String path) {
-        return ((String) configurationManager.get(path)).replace("&", "").replace("'", "\'");
+        return ((String) configurationManager.get(path)).replace("&", "§").replace("'", "\'");
     }
 
-    private void addMessage(String path, String message) {
-        configurationManager.addDefault(path, message);
+    private void addDefault(String path, Object value) {
+        configurationManager.addDefault(path, value);
     }
 
     private void loadMessages() {
-        addMessage("No-Permissions", "&c&lYOU &7don`t have permissions to do this.");
-        addMessage("Player-Stacker-Disabled", "&c&lYOU &7have stacker disabled.");
-        addMessage("Target-Stacker-Disabled", "&c&lTHAT &7player has stacker disabled.");
-        addMessage("Chat-Disabled", "&c&lYOU &7have the chat disabled.");
+        addDefault("No-Permissions", "&c&lYOU &7don`t have permissions to do this.");
+        addDefault("Player-Stacker-Disabled", "&c&lYOU &7have stacker disabled.");
+        addDefault("Target-Stacker-Disabled", "&c&lTHAT &7player has stacker disabled.");
+        addDefault("Chat-Disabled", "&c&lYOU &7have the chat disabled.");
+
+        addDefault("Send.Player-Stacker-Disabled", true);
+        addDefault("Send.Target-Stacker-Disabled", true);
 
     }
 

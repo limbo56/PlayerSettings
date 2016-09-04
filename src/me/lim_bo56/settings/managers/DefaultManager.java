@@ -14,22 +14,22 @@ public class DefaultManager {
         loadData();
     }
 
-    public static boolean getData(String path) {
+    public static boolean get(String path) {
         return configurationManager.getBoolean(path);
     }
 
-    private void addData(String path, boolean enable) {
-        configurationManager.addDefault(path, enable);
+    private void addDefault(String path, Object value) {
+        configurationManager.addDefault(path, value);
     }
 
     private void loadData() {
-        addData("Default.Visibility", true);
-        addData("Default.Stacker", false);
-        addData("Default.Chat", true);
-        addData("Default.Vanish", false);
-        addData("Default.Fly", false);
-        addData("Default.Speed", false);
-        addData("Default.Jump", false);
+        addDefault("Default.Visibility", true);
+        addDefault("Default.Stacker", false);
+        addDefault("Default.Chat", true);
+        addDefault("Default.Vanish", false);
+        addDefault("Default.Fly", false);
+        addDefault("Default.Speed", false);
+        addDefault("Default.Jump", false);
     }
 
 }
