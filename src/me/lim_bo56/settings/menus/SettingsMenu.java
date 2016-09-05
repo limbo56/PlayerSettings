@@ -3,6 +3,7 @@ package me.lim_bo56.settings.menus;
 import me.lim_bo56.settings.Core;
 import me.lim_bo56.settings.managers.ConfigurationManager;
 import me.lim_bo56.settings.managers.MenuManager;
+import me.lim_bo56.settings.managers.MessageManager;
 import me.lim_bo56.settings.objects.CustomPlayer;
 import me.lim_bo56.settings.runnable.OpenMenu;
 import me.lim_bo56.settings.utils.ColorUtils;
@@ -33,7 +34,6 @@ import java.util.List;
 public class SettingsMenu implements Listener {
 
     private static ConfigurationManager menu = ConfigurationManager.getMenu();
-    private static ConfigurationManager messages = ConfigurationManager.getMessages();
     private static String invName = MenuManager.get("Menu.Name");
     private Core plugin = Core.getInstance();
 
@@ -175,7 +175,7 @@ public class SettingsMenu implements Listener {
 
                                 } else if (!player.hasPermission("settings.speed")) {
 
-                                    player.sendMessage(String.valueOf(messages.get("No-Permissions")));
+                                    player.sendMessage(MessageManager.getMessage("No-Permissions"));
 
                                 }
                             }
@@ -202,7 +202,7 @@ public class SettingsMenu implements Listener {
 
                                 } else if (!player.hasPermission("settings.jump")) {
 
-                                    player.sendMessage(String.valueOf(messages.get("No-Permissions")));
+                                    player.sendMessage(MessageManager.getMessage("No-Permissions"));
 
                                 }
                             }
@@ -229,7 +229,7 @@ public class SettingsMenu implements Listener {
 
                                 } else if (!player.hasPermission("settings.fly")) {
 
-                                    player.sendMessage(String.valueOf(messages.get("No-Permissions")));
+                                    player.sendMessage(MessageManager.getMessage("No-Permissions"));
 
                                 }
                             }
@@ -262,7 +262,7 @@ public class SettingsMenu implements Listener {
 
                                 } else if (!player.hasPermission("settings.vanish")) {
 
-                                    player.sendMessage(String.valueOf(messages.get("No-Permissions")));
+                                    player.sendMessage(MessageManager.getMessage("No-Permissions"));
 
                                 }
                             }

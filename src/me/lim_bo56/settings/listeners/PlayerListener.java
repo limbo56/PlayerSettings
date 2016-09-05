@@ -43,7 +43,7 @@ public class PlayerListener implements Listener {
                     player.hidePlayer(online);
                 }
 
-                if (!oPlayer.hasVanish()) {
+                if (oPlayer.hasVanish()) {
                     online.hidePlayer(player);
                 }
 
