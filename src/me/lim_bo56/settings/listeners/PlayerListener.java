@@ -35,22 +35,22 @@ public class PlayerListener implements Listener {
         final Player player = event.getPlayer();
         CustomPlayer cPlayer = new CustomPlayer(player);
 
+        if (!cPlayer.containsPlayer()) {
+            cPlayer.addPlayer();
+        }
+
         if (menu.getStringList("worlds-allowed").contains(player.getWorld().getName())) {
             for (Player online : Bukkit.getOnlinePlayers()) {
                 CustomPlayer oPlayer = new CustomPlayer(online);
 
                 if (!oPlayer.hasVisibility()) {
-                    player.hidePlayer(online);
+                    online.hidePlayer(player);
                 }
 
                 if (oPlayer.hasVanish()) {
                     online.hidePlayer(player);
                 }
 
-            }
-
-            if (!cPlayer.containsPlayer()) {
-                cPlayer.addPlayer();
             }
 
             if (cPlayer.hasVisibility())
@@ -153,14 +153,14 @@ public class PlayerListener implements Listener {
         Entity entity = event.getRightClicked();
 
         CustomPlayer cPlayer = new CustomPlayer(player);
-        CustomPlayer ePlayer = new CustomPlayer((Player) entity);
 
         if (menu.getStringList("worlds-allowed").contains(player.getWorld().getName())) {
             if (entity != null)
                 if (entity instanceof Player)
                     if (((Player) entity).getDisplayName() != null)
-
                         if (cPlayer.hasStacker()) {
+
+                            CustomPlayer ePlayer = new CustomPlayer((Player) entity);
 
                             if (ePlayer.hasStacker()) {
 
