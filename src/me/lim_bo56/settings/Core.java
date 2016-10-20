@@ -13,6 +13,7 @@ import me.lim_bo56.settings.mysql.MySqlConnection;
 import me.lim_bo56.settings.objects.CustomPlayer;
 import me.lim_bo56.settings.utils.ColorUtils;
 import me.lim_bo56.settings.utils.Updater;
+import me.lim_bo56.settings.utils.Utilities;
 import me.lim_bo56.settings.utils.Variables;
 import me.lim_bo56.settings.versionmanager.IItemGlower;
 import me.lim_bo56.settings.versionmanager.IMount;
@@ -23,6 +24,7 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffectType;
 
+import java.io.File;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
@@ -109,14 +111,37 @@ public class Core extends JavaPlugin {
 
         Updater.consoleUpdater();
 
-        checkForOnlinePlayers();
+        Utilities.loadOnlinePlayers();
 
+    }
+
+    private void setupConfig() {
+
+        File file = new File(getDataFolder(), "config.yml");
+
+        if (!file.exists()) {
+            file.getParentFile().mkdirs();
+            log("Config file doesn't exist yet.");
+            log("Creating Config File and loading it.");
+        }
+
+        ConfigurationManager config = ConfigurationManager.getConfig();
+
+        config.addDefault("MySQL.enable", false);
+        config.addDefault("MySQL.host", "localhost");
+        config.addDefault("MySQL.port", 3306);
+        config.addDefault("MySQL.database", "playersettings");
+        config.addDefault("MySQL.name", "root");
+        config.addDefault("MySQL.password", "");
+
+        config.addDefault("Update-Message", true);
+        config.saveConfig();
     }
 
     private void loadDefaults(String version) {
 
-        // Save default config
-        saveDefaultConfig();
+        // Setup config.yml
+        setupConfig();
 
         // Get server version.
         versionManager = new VersionManager(version);
@@ -144,81 +169,6 @@ public class Core extends JavaPlugin {
 
         // Register commands.
         getCommand("settings").setExecutor(new CommandManager(this));
-    }
-
-    private void checkForOnlinePlayers() {
-
-        ConfigurationManager menu = ConfigurationManager.getMenu();
-
-        if (Bukkit.getOnlinePlayers() != null)
-            for (Player player : Bukkit.getOnlinePlayers()) {
-
-                if (menu.getStringList("worlds-allowed").contains(player.getWorld().getName())) {
-
-                    CustomPlayer cPlayer = new CustomPlayer(player);
-
-                    player.removePotionEffect(PotionEffectType.SPEED);
-                    player.removePotionEffect(PotionEffectType.JUMP);
-                    player.removePotionEffect(PotionEffectType.INVISIBILITY);
-
-                    if (!ConfigurationManager.getConfig().getBoolean("MySQL.enable")) {
-
-                        if (Variables.defaultVisibility) cPlayer.setVisibility(true);
-                        if (Variables.defaultStacker) cPlayer.setStacker(true);
-                        if (Variables.defaultChat) cPlayer.setChat(true);
-                        if (Variables.defaultVanish) cPlayer.setVanish(true);
-                        if (Variables.defaultFly) cPlayer.setFly(true);
-                        if (Variables.defaultSpeed) cPlayer.setSpeed(true);
-                        if (Variables.defaultJump) cPlayer.setJump(true);
-
-                    }
-
-                    if (cPlayer.hasVisibility()) {
-                        for (Player online : Bukkit.getOnlinePlayers()) {
-                            player.showPlayer(online);
-                        }
-                    }
-
-                    if (cPlayer.hasVanish()) {
-
-                        player.addPotionEffect(Variables.INVISIBILITY);
-
-                        for (Player online : Bukkit.getOnlinePlayers()) {
-                            online.hidePlayer(player);
-                        }
-
-                    }
-
-                    if (cPlayer.hasFly()) {
-                        player.setAllowFlight(true);
-                    }
-
-                    if (cPlayer.hasSpeed()) {
-                        player.addPotionEffect(Variables.SPEED);
-                    }
-
-                    if (cPlayer.hasJump()) {
-                        player.addPotionEffect(Variables.JUMP);
-                    }
-
-                    if (player.isOp()) {
-                        player.sendMessage(ColorUtils.Color(Variables.CHAT_TITLE + Updater.playerUpdater()));
-                    }
-                } else if (!menu.getStringList("worlds-allowed").contains(player.getWorld().getName())) {
-                    for (Player online : Bukkit.getOnlinePlayers()) {
-                        CustomPlayer oPlayer = new CustomPlayer(online);
-
-                        if (oPlayer.hasVanish()) {
-                            online.hidePlayer(player);
-                        } else {
-                            player.showPlayer(online);
-                        }
-
-                    }
-                }
-
-            }
-
     }
 
     public IItemGlower getItemGlower() {

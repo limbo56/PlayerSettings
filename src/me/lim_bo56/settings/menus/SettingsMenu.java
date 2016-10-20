@@ -5,7 +5,6 @@ import me.lim_bo56.settings.managers.ConfigurationManager;
 import me.lim_bo56.settings.managers.MenuManager;
 import me.lim_bo56.settings.managers.MessageManager;
 import me.lim_bo56.settings.objects.CustomPlayer;
-import me.lim_bo56.settings.runnable.OpenMenu;
 import me.lim_bo56.settings.utils.ColorUtils;
 import me.lim_bo56.settings.utils.ItemFactory;
 import me.lim_bo56.settings.utils.Variables;
@@ -20,7 +19,6 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.potion.PotionEffectType;
-import org.bukkit.scheduler.BukkitScheduler;
 
 import java.util.List;
 
@@ -35,7 +33,6 @@ public class SettingsMenu implements Listener {
 
     private static ConfigurationManager menu = ConfigurationManager.getMenu();
     private static String invName = MenuManager.get("Menu.Name");
-    private Core plugin = Core.getInstance();
 
     public static void openSettings(final Player p) {
         CustomPlayer cPlayer = new CustomPlayer(p);
@@ -143,7 +140,6 @@ public class SettingsMenu implements Listener {
     public void onInventoryClick(InventoryClickEvent event) {
         final Player player = (Player) event.getWhoClicked();
         CustomPlayer cPlayer = new CustomPlayer(player);
-        BukkitScheduler scheduler = Bukkit.getScheduler();
 
         if (menu.getStringList("worlds-allowed").contains(player.getWorld().getName())) {
 
@@ -162,14 +158,14 @@ public class SettingsMenu implements Listener {
                                         cPlayer.setSpeed(false);
                                         player.removePotionEffect(PotionEffectType.SPEED);
                                         player.playNote(player.getLocation(), Instrument.PIANO, new Note(0));
-                                        scheduler.runTaskLater(plugin, new OpenMenu(player), 1);
+                                        openSettings(player);
 
                                     } else if (!cPlayer.hasSpeed()) {
 
                                         cPlayer.setSpeed(true);
                                         player.addPotionEffect(Variables.SPEED);
                                         player.playNote(player.getLocation(), Instrument.PIANO, new Note(15));
-                                        scheduler.runTaskLater(plugin, new OpenMenu(player), 1);
+                                        openSettings(player);
 
                                     }
 
@@ -189,14 +185,14 @@ public class SettingsMenu implements Listener {
                                         cPlayer.setJump(false);
                                         player.removePotionEffect(PotionEffectType.JUMP);
                                         player.playNote(player.getLocation(), Instrument.PIANO, new Note(0));
-                                        scheduler.runTaskLater(plugin, new OpenMenu(player), 2);
+                                        openSettings(player);
 
                                     } else if (!cPlayer.hasJump()) {
 
                                         cPlayer.setJump(true);
                                         player.addPotionEffect(Variables.JUMP);
                                         player.playNote(player.getLocation(), Instrument.PIANO, new Note(15));
-                                        scheduler.runTaskLater(plugin, new OpenMenu(player), 2);
+                                        openSettings(player);
 
                                     }
 
@@ -216,14 +212,14 @@ public class SettingsMenu implements Listener {
                                         cPlayer.setFly(false);
                                         player.setAllowFlight(false);
                                         player.playNote(player.getLocation(), Instrument.PIANO, new Note(0));
-                                        scheduler.runTaskLater(plugin, new OpenMenu(player), 1);
+                                        openSettings(player);
 
                                     } else if (!cPlayer.hasFly()) {
 
                                         cPlayer.setFly(true);
                                         player.setAllowFlight(true);
                                         player.playNote(player.getLocation(), Instrument.PIANO, new Note(15));
-                                        scheduler.runTaskLater(plugin, new OpenMenu(player), 1);
+                                        openSettings(player);
 
                                     }
 
@@ -246,7 +242,7 @@ public class SettingsMenu implements Listener {
                                         }
                                         player.removePotionEffect(PotionEffectType.INVISIBILITY);
                                         player.playNote(player.getLocation(), Instrument.PIANO, new Note(0));
-                                        scheduler.runTaskLater(plugin, new OpenMenu(player), 1);
+                                        openSettings(player);
 
                                     } else if (!cPlayer.hasVanish()) {
 
@@ -256,7 +252,7 @@ public class SettingsMenu implements Listener {
                                         }
                                         player.addPotionEffect(Variables.INVISIBILITY);
                                         player.playNote(player.getLocation(), Instrument.PIANO, new Note(15));
-                                        scheduler.runTaskLater(plugin, new OpenMenu(player), 1);
+                                        openSettings(player);
 
                                     }
 
@@ -273,13 +269,13 @@ public class SettingsMenu implements Listener {
 
                                     cPlayer.setStacker(false);
                                     player.playNote(player.getLocation(), Instrument.PIANO, new Note(0));
-                                    scheduler.runTaskLater(plugin, new OpenMenu(player), 1);
+                                    openSettings(player);
 
                                 } else if (!cPlayer.hasStacker()) {
 
                                     cPlayer.setStacker(true);
                                     player.playNote(player.getLocation(), Instrument.PIANO, new Note(15));
-                                    scheduler.runTaskLater(plugin, new OpenMenu(player), 1);
+                                    openSettings(player);
 
                                 }
                             }
@@ -293,7 +289,7 @@ public class SettingsMenu implements Listener {
                                         player.hidePlayer(players);
                                     }
                                     player.playNote(player.getLocation(), Instrument.PIANO, new Note(0));
-                                    scheduler.runTaskLater(plugin, new OpenMenu(player), 1);
+                                    openSettings(player);
 
                                 } else if (!cPlayer.hasVisibility()) {
 
@@ -307,7 +303,7 @@ public class SettingsMenu implements Listener {
 
                                     }
                                     player.playNote(player.getLocation(), Instrument.PIANO, new Note(15));
-                                    scheduler.runTaskLater(plugin, new OpenMenu(player), 1);
+                                    openSettings(player);
 
                                 }
                             }
@@ -318,13 +314,13 @@ public class SettingsMenu implements Listener {
 
                                     cPlayer.setChat(false);
                                     player.playNote(player.getLocation(), Instrument.PIANO, new Note(0));
-                                    scheduler.runTaskLater(plugin, new OpenMenu(player), 1);
+                                    openSettings(player);
 
                                 } else if (!cPlayer.hasChat()) {
 
                                     cPlayer.setChat(true);
                                     player.playNote(player.getLocation(), Instrument.PIANO, new Note(15));
-                                    scheduler.runTaskLater(plugin, new OpenMenu(player), 1);
+                                    openSettings(player);
 
                                 }
                             }
