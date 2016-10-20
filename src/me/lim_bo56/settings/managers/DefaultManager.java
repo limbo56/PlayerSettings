@@ -30,6 +30,10 @@ public class DefaultManager {
         addDefault("Default.Fly", false);
         addDefault("Default.Speed", false);
         addDefault("Default.Jump", false);
+
+        addDefault("Stacker.launch-force", 1);
+        addDefault("Speed.level", 1);
+        addDefault("Jump.level", 1);
     }
 
 }

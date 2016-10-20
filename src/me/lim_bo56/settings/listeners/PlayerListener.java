@@ -20,6 +20,8 @@ import org.bukkit.event.player.*;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
+import java.util.Iterator;
+
 /**
  * Created by lim_bo56
  * On 8/27/2016
@@ -39,60 +41,67 @@ public class PlayerListener implements Listener {
             cPlayer.addPlayer();
         }
 
+        cPlayer.loadSettings();
+
         if (menu.getStringList("worlds-allowed").contains(player.getWorld().getName())) {
+
             for (Player online : Bukkit.getOnlinePlayers()) {
+
                 CustomPlayer oPlayer = new CustomPlayer(online);
 
-                if (!oPlayer.hasVisibility()) {
+                if (!oPlayer.hasVisibility())
                     online.hidePlayer(player);
-                }
 
-                if (oPlayer.hasVanish()) {
+                if (oPlayer.hasVanish())
                     online.hidePlayer(player);
-                }
 
             }
 
-            if (cPlayer.hasVisibility())
-                for (Player online : Bukkit.getOnlinePlayers())
+            for (Player online : Bukkit.getOnlinePlayers()) {
+                if (cPlayer.hasVisibility()) {
                     player.showPlayer(online);
-            else if (!cPlayer.hasVisibility())
-                for (Player online : Bukkit.getOnlinePlayers())
+                } else if (!cPlayer.hasVisibility()) {
                     player.hidePlayer(online);
+                }
+            }
 
             if (cPlayer.hasVanish()) {
 
                 player.addPotionEffect(Variables.INVISIBILITY);
 
-                for (Player online : Bukkit.getOnlinePlayers()) {
+                for (Player online : Bukkit.getOnlinePlayers())
                     online.hidePlayer(player);
-                }
 
+            } else {
+                player.removePotionEffect(PotionEffectType.INVISIBILITY);
             }
 
-            if (cPlayer.hasFly()) {
+            if (cPlayer.hasFly())
                 player.setAllowFlight(true);
-            }
 
-            if (cPlayer.hasSpeed()) {
+            if (cPlayer.hasSpeed())
                 player.addPotionEffect(Variables.SPEED);
-            }
+            else
+                player.removePotionEffect(PotionEffectType.SPEED);
 
-            if (cPlayer.hasJump()) {
+            if (cPlayer.hasJump())
                 player.addPotionEffect(Variables.JUMP);
-            }
+            else
+                player.removePotionEffect(PotionEffectType.JUMP);
 
 
-            if (player.isOp()) {
-                player.sendMessage(ColorUtils.Color(Variables.CHAT_TITLE + Updater.playerUpdater()));
-            }
+            if (Core.getInstance().getConfig().getBoolean("Update-message"))
+                if (player.isOp())
+                    player.sendMessage(ColorUtils.Color(Variables.CHAT_TITLE + Updater.playerUpdater()));
         }
-
     }
 
     @EventHandler
     public void onQuitEvent(PlayerQuitEvent event) {
         Player player = event.getPlayer();
+        CustomPlayer cPlayer = new CustomPlayer(player);
+
+        cPlayer.saveSettings();
 
         if (menu.getStringList("worlds-allowed").contains(player.getWorld().getName())) {
             player.removePotionEffect(PotionEffectType.SPEED);
@@ -132,14 +141,15 @@ public class PlayerListener implements Listener {
                 event.setCancelled(false);
             }
 
-            for (Player recipients : event.getRecipients()) {
-
-                CustomPlayer rPlayer = new CustomPlayer(recipients);
+            for (Iterator<Player> it = event.getRecipients().iterator(); it.hasNext(); ) {
+                Player player1 = it.next();
+                CustomPlayer rPlayer = new CustomPlayer(player1);
 
                 if (!rPlayer.hasChat()) {
-                    event.getRecipients().remove(recipients);
+                    event.getRecipients().remove(player1);
                 }
             }
+
 
         }
 
@@ -205,7 +215,7 @@ public class PlayerListener implements Listener {
                     }
 
                     Vector direction = player.getLocation().getDirection();
-                    entity.setVelocity(direction.multiply(1));
+                    entity.setVelocity(direction.multiply(Variables.launch_force));
                     entity.setFallDistance(-10000.0F);
                 }
             }
