@@ -1,5 +1,5 @@
 name: PlayerSettings
-version: 4.0
+version: 4.1
 main: me.lim_bo56.settings.Core
 author: lim_bo56
 commands:
