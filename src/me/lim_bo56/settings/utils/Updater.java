@@ -35,7 +35,7 @@ public class Updater {
                     .replaceAll("[a-zA-Z ]", "");
             String OldVersion = plugin.getDescription().getVersion();
             if (!NewVersion.equals(OldVersion)) {
-                return "§dNew version available §b" + NewVersion + "\n" + "§aDownload§f>§7> §fhttp://bit.ly/PlayerSettings";
+                return ColorUtils.Color(Variables.CHAT_TITLE + "&dNew version available &b" + NewVersion + "\n" + "&aDownload&f>&7> &fhttp://bit.ly/PlayerSettings");
             }
         } catch (Exception ex) {
             plugin.getLogger().info("Failed to check for a update on spigot.");
