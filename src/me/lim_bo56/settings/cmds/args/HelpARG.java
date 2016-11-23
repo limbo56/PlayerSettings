@@ -39,7 +39,7 @@ public class HelpARG extends BaseCommand {
                     if (page >= 1 && page < pageLength) {
                         Utilities.paginate(sender, plugin.commandHelp, page, pageLength);
                     } else {
-                        PlayerUtils.sendMessage(sender, ChatColor.RED + "Failed to find page: " + page + "! Page must be inbetween 0 and " + 1 + "!");
+                        PlayerUtils.sendMessage(sender, ChatColor.RED + "Failed to find page: " + page + "! Page must be in between 0 and " + 1 + "!");
                     }
                 } else {
                     PlayerUtils.sendMessage(sender, ChatColor.RED + "Could not recognize the number: " + args[1] + "!");

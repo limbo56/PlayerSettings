@@ -61,13 +61,15 @@ public class Utilities {
     }
 
     public static void addToDefault(Player player) {
-        if (ConfigurationManager.getDefault().get("Default.Visibility")) Variables.VISIBILITY_LIST.put(player.getUniqueId(), true);
-        if (ConfigurationManager.getDefault().get("Default.Stacker")) Variables.STACKER_LIST.put(player.getUniqueId(), true);
-        if (ConfigurationManager.getDefault().get("Default.Chat")) Variables.CHAT_LIST.put(player.getUniqueId(), true);
-        if (ConfigurationManager.getDefault().get("Default.Vanish")) Variables.VANISH_LIST.put(player.getUniqueId(), true);
-        if (ConfigurationManager.getDefault().get("Default.Fly")) Variables.FLY_LIST.put(player.getUniqueId(), true);
-        if (ConfigurationManager.getDefault().get("Default.Speed")) Variables.SPEED_LIST.put(player.getUniqueId(), true);
-        if (ConfigurationManager.getDefault().get("Default.Jump")) Variables.JUMP_LIST.put(player.getUniqueId(), true);
+        if (ConfigurationManager.getDefault().get("Default.Visibility"))
+            Cache.VISIBILITY_LIST.put(player.getUniqueId(), true);
+        if (ConfigurationManager.getDefault().get("Default.Stacker"))
+            Cache.STACKER_LIST.put(player.getUniqueId(), true);
+        if (ConfigurationManager.getDefault().get("Default.Chat")) Cache.CHAT_LIST.put(player.getUniqueId(), true);
+        if (ConfigurationManager.getDefault().get("Default.Vanish")) Cache.VANISH_LIST.put(player.getUniqueId(), true);
+        if (ConfigurationManager.getDefault().get("Default.Fly")) Cache.FLY_LIST.put(player.getUniqueId(), true);
+        if (ConfigurationManager.getDefault().get("Default.Speed")) Cache.SPEED_LIST.put(player.getUniqueId(), true);
+        if (ConfigurationManager.getDefault().get("Default.Jump")) Cache.JUMP_LIST.put(player.getUniqueId(), true);
     }
 
     public static void loadOnlinePlayers() {
@@ -76,7 +78,7 @@ public class Utilities {
 
             for (Player player : Bukkit.getOnlinePlayers()) {
 
-                if (Variables.WORLDS_ALLOWED.contains(player.getWorld().getName())) {
+                if (Cache.WORLDS_ALLOWED.contains(player.getWorld().getName())) {
 
                     CustomPlayer cPlayer = new CustomPlayer(player);
 
@@ -94,7 +96,7 @@ public class Utilities {
 
                     if (cPlayer.hasVanish()) {
 
-                        player.addPotionEffect(Variables.INVISIBILITY);
+                        player.addPotionEffect(Cache.INVISIBILITY);
 
                         for (Player online : Bukkit.getOnlinePlayers()) {
                             online.hidePlayer(player);
@@ -107,18 +109,18 @@ public class Utilities {
                     }
 
                     if (cPlayer.hasSpeed()) {
-                        player.addPotionEffect(Variables.SPEED);
+                        player.addPotionEffect(Cache.SPEED);
                     }
 
                     if (cPlayer.hasJump()) {
-                        player.addPotionEffect(Variables.JUMP);
+                        player.addPotionEffect(Cache.JUMP);
                     }
 
                     if (player.isOp()) {
-                        player.sendMessage(Variables.CHAT_TITLE + Updater.playerUpdater());
+                        player.sendMessage(Updater.playerUpdater());
                     }
 
-                } else if (!Variables.WORLDS_ALLOWED.contains(player.getWorld().getName())) {
+                } else if (!Cache.WORLDS_ALLOWED.contains(player.getWorld().getName())) {
                     for (Player online : Bukkit.getOnlinePlayers()) {
                         CustomPlayer oPlayer = new CustomPlayer(online);
 

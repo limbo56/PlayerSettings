@@ -4,7 +4,7 @@ import me.lim_bo56.settings.Core;
 import me.lim_bo56.settings.managers.ConfigurationManager;
 import me.lim_bo56.settings.mysql.MySqlConnection;
 import me.lim_bo56.settings.utils.Utilities;
-import me.lim_bo56.settings.utils.Variables;
+import me.lim_bo56.settings.utils.Cache;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -41,7 +41,7 @@ public class CustomPlayer {
         if (Core.getInstance().getConfig().getBoolean("MySQL.enable")) {
             try {
                 PreparedStatement sql = MySqlConnection.getInstance().getCurrentConnection().prepareStatement(
-                        "SELECT UUID FROM `players` WHERE UUID = '" + getUuid().toString() + "'");
+                        "SELECT UUID FROM `PlayerSettings` WHERE UUID = '" + getUuid().toString() + "'");
                 ResultSet resultset = sql.executeQuery();
                 boolean containsPlayerUUID = resultset.next();
 
@@ -60,6 +60,7 @@ public class CustomPlayer {
 
     public void addPlayer() {
         if (Core.getInstance().getConfig().getBoolean("MySQL.enable")) {
+
             final int
                     visibility = (ConfigurationManager.getDefault().get("Default.Visibility")) ? 1 : 0,
                     stacker = (ConfigurationManager.getDefault().get("Default.Stacker")) ? 1 : 0,
@@ -74,7 +75,7 @@ public class CustomPlayer {
                 public void run() {
                     try {
                         PreparedStatement sql = MySqlConnection.getInstance().getCurrentConnection().prepareStatement(
-                                "INSERT INTO players (UUID, Visibility, Stacker, Chat, Vanish, Fly, Speed, Jump) VALUES (" +
+                                "INSERT INTO `playersettings` (UUID, Visibility, Stacker, Chat, Vanish, Fly, Speed, Jump) VALUES (" +
                                         "'" + uuid.toString() + "', " +
                                         "'" + visibility + "', " +
                                         "'" + stacker + "', " +
@@ -97,27 +98,27 @@ public class CustomPlayer {
 
     public void loadSettings() {
         if (Core.getInstance().getConfig().getBoolean("MySQL.enable")) {
+            if (MySqlConnection.getInstance().checkTable()) {
 
-            boolean visibility = getBoolean("Visibility"),
-                    stacker = getBoolean("Stacker"),
-                    chat = getBoolean("Chat"),
-                    vanish = getBoolean("Vanish"),
-                    fly = getBoolean("Fly"),
-                    speed = getBoolean("Speed"),
-                    jump = getBoolean("Jump");
+                boolean visibility = getBoolean("Visibility"),
+                        stacker = getBoolean("Stacker"),
+                        chat = getBoolean("Chat"),
+                        vanish = getBoolean("Vanish"),
+                        fly = getBoolean("Fly"),
+                        speed = getBoolean("Speed"),
+                        jump = getBoolean("Jump");
 
-            if (visibility) Variables.VISIBILITY_LIST.put(player.getUniqueId(), true);
-            if (stacker) Variables.STACKER_LIST.put(player.getUniqueId(), true);
-            if (chat) Variables.CHAT_LIST.put(player.getUniqueId(), true);
-            if (vanish) Variables.VANISH_LIST.put(player.getUniqueId(), true);
-            if (fly) Variables.FLY_LIST.put(player.getUniqueId(), true);
-            if (speed) Variables.SPEED_LIST.put(player.getUniqueId(), true);
-            if (jump) Variables.JUMP_LIST.put(player.getUniqueId(), true);
-
+                if (visibility) Cache.VISIBILITY_LIST.put(player.getUniqueId(), true);
+                if (stacker) Cache.STACKER_LIST.put(player.getUniqueId(), true);
+                if (chat) Cache.CHAT_LIST.put(player.getUniqueId(), true);
+                if (vanish) Cache.VANISH_LIST.put(player.getUniqueId(), true);
+                if (fly) Cache.FLY_LIST.put(player.getUniqueId(), true);
+                if (speed) Cache.SPEED_LIST.put(player.getUniqueId(), true);
+                if (jump) Cache.JUMP_LIST.put(player.getUniqueId(), true);
+            }
+        } else {
+            Utilities.addToDefault(player);
         }
-
-        Utilities.addToDefault(player);
-
     }
 
     public void saveSettings() {
@@ -138,13 +139,13 @@ public class CustomPlayer {
 
                         Statement statement = MySqlConnection.getInstance().getCurrentConnection().createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 
-                        statement.addBatch("UPDATE `players` SET `Visibility` = " + visibility + " WHERE UUID = '" + uuid.toString() + "'");
-                        statement.addBatch("UPDATE `players` SET `Stacker` = " + stacker + " WHERE UUID = '" + uuid.toString() + "'");
-                        statement.addBatch("UPDATE `players` SET `Chat` = " + chat + " WHERE UUID = '" + uuid.toString() + "'");
-                        statement.addBatch("UPDATE `players` SET `Vanish` = " + vanish + " WHERE UUID = '" + uuid.toString() + "'");
-                        statement.addBatch("UPDATE `players` SET `Fly` = " + fly + " WHERE UUID = '" + uuid.toString() + "'");
-                        statement.addBatch("UPDATE `players` SET `Speed` = " + speed + " WHERE UUID = '" + uuid.toString() + "'");
-                        statement.addBatch("UPDATE `players` SET `Jump` = " + jump + " WHERE UUID = '" + uuid.toString() + "'");
+                        statement.addBatch("UPDATE `playersettings` SET `Visibility` = " + visibility + " WHERE UUID = '" + uuid.toString() + "'");
+                        statement.addBatch("UPDATE `playersettings` SET `Stacker` = " + stacker + " WHERE UUID = '" + uuid.toString() + "'");
+                        statement.addBatch("UPDATE `playersettings` SET `Chat` = " + chat + " WHERE UUID = '" + uuid.toString() + "'");
+                        statement.addBatch("UPDATE `playersettings` SET `Vanish` = " + vanish + " WHERE UUID = '" + uuid.toString() + "'");
+                        statement.addBatch("UPDATE `playersettings` SET `Fly` = " + fly + " WHERE UUID = '" + uuid.toString() + "'");
+                        statement.addBatch("UPDATE `playersettings` SET `Speed` = " + speed + " WHERE UUID = '" + uuid.toString() + "'");
+                        statement.addBatch("UPDATE `playersettings` SET `Jump` = " + jump + " WHERE UUID = '" + uuid.toString() + "'");
 
                         statement.executeBatch();
                         statement.close();
@@ -161,7 +162,7 @@ public class CustomPlayer {
     private boolean getBoolean(String str) {
         try {
             ResultSet rs = MySqlConnection.getInstance().getCurrentConnection().createStatement().executeQuery(
-                    "SELECT `" + str + "` FROM `players` WHERE `UUID` = '" + getUuid().toString() + "'");
+                    "SELECT `" + str + "` FROM `playersettings` WHERE `UUID` = '" + getUuid().toString() + "'");
 
             if (rs.next()) {
                 return rs.getBoolean(1);
@@ -177,109 +178,109 @@ public class CustomPlayer {
     }
 
     public void setVisibility(final boolean visibility) {
-        if (Variables.VISIBILITY_LIST.containsKey(player.getUniqueId())) {
-            Variables.VISIBILITY_LIST.remove(player.getUniqueId());
+        if (Cache.VISIBILITY_LIST.containsKey(player.getUniqueId())) {
+            Cache.VISIBILITY_LIST.remove(player.getUniqueId());
         }
 
-        Variables.VISIBILITY_LIST.put(player.getUniqueId(), visibility);
+        Cache.VISIBILITY_LIST.put(player.getUniqueId(), visibility);
 
     }
 
     public boolean hasVisibility() {
-        if (!Variables.VISIBILITY_LIST.containsKey(player.getUniqueId()))
+        if (!Cache.VISIBILITY_LIST.containsKey(player.getUniqueId()))
             return false;
         else
-            return Variables.VISIBILITY_LIST.get(player.getUniqueId());
+            return Cache.VISIBILITY_LIST.get(player.getUniqueId());
     }
 
     public void setStacker(final boolean stacker) {
-        if (Variables.STACKER_LIST.containsKey(player.getUniqueId())) {
-            Variables.STACKER_LIST.remove(player.getUniqueId());
+        if (Cache.STACKER_LIST.containsKey(player.getUniqueId())) {
+            Cache.STACKER_LIST.remove(player.getUniqueId());
         }
 
-        Variables.STACKER_LIST.put(player.getUniqueId(), stacker);
+        Cache.STACKER_LIST.put(player.getUniqueId(), stacker);
     }
 
     public boolean hasStacker() {
-        if (!Variables.STACKER_LIST.containsKey(player.getUniqueId()))
+        if (!Cache.STACKER_LIST.containsKey(player.getUniqueId()))
             return false;
         else
-            return Variables.STACKER_LIST.get(player.getUniqueId());
+            return Cache.STACKER_LIST.get(player.getUniqueId());
     }
 
     public void setChat(final boolean chat) {
-        if (Variables.CHAT_LIST.containsKey(player.getUniqueId())) {
-            Variables.CHAT_LIST.remove(player.getUniqueId());
+        if (Cache.CHAT_LIST.containsKey(player.getUniqueId())) {
+            Cache.CHAT_LIST.remove(player.getUniqueId());
         }
 
-        Variables.CHAT_LIST.put(player.getUniqueId(), chat);
+        Cache.CHAT_LIST.put(player.getUniqueId(), chat);
     }
 
     public boolean hasChat() {
-        if (!Variables.CHAT_LIST.containsKey(player.getUniqueId()))
+        if (!Cache.CHAT_LIST.containsKey(player.getUniqueId()))
             return false;
         else
-            return Variables.CHAT_LIST.get(player.getUniqueId());
+            return Cache.CHAT_LIST.get(player.getUniqueId());
     }
 
     public void setVanish(final boolean vanish) {
-        if (Variables.VANISH_LIST.containsKey(player.getUniqueId())) {
-            Variables.VANISH_LIST.remove(player.getUniqueId());
+        if (Cache.VANISH_LIST.containsKey(player.getUniqueId())) {
+            Cache.VANISH_LIST.remove(player.getUniqueId());
         }
 
-        Variables.VANISH_LIST.put(player.getUniqueId(), vanish);
+        Cache.VANISH_LIST.put(player.getUniqueId(), vanish);
     }
 
     public boolean hasVanish() {
-        if (!Variables.VANISH_LIST.containsKey(player.getUniqueId()))
+        if (!Cache.VANISH_LIST.containsKey(player.getUniqueId()))
             return false;
         else
-            return Variables.VANISH_LIST.get(player.getUniqueId());
+            return Cache.VANISH_LIST.get(player.getUniqueId());
     }
 
     public void setFly(final boolean fly) {
-        if (Variables.FLY_LIST.containsKey(player.getUniqueId())) {
-            Variables.FLY_LIST.remove(player.getUniqueId());
+        if (Cache.FLY_LIST.containsKey(player.getUniqueId())) {
+            Cache.FLY_LIST.remove(player.getUniqueId());
         }
 
-        Variables.FLY_LIST.put(player.getUniqueId(), fly);
+        Cache.FLY_LIST.put(player.getUniqueId(), fly);
     }
 
     public boolean hasFly() {
-        if (!Variables.FLY_LIST.containsKey(player.getUniqueId()))
+        if (!Cache.FLY_LIST.containsKey(player.getUniqueId()))
             return false;
         else
-            return Variables.FLY_LIST.get(player.getUniqueId());
+            return Cache.FLY_LIST.get(player.getUniqueId());
     }
 
     public void setSpeed(final boolean speed) {
-        if (Variables.SPEED_LIST.containsKey(player.getUniqueId())) {
-            Variables.SPEED_LIST.remove(player.getUniqueId());
+        if (Cache.SPEED_LIST.containsKey(player.getUniqueId())) {
+            Cache.SPEED_LIST.remove(player.getUniqueId());
         }
 
-        Variables.SPEED_LIST.put(player.getUniqueId(), speed);
+        Cache.SPEED_LIST.put(player.getUniqueId(), speed);
     }
 
     public boolean hasSpeed() {
-        if (!Variables.SPEED_LIST.containsKey(player.getUniqueId()))
+        if (!Cache.SPEED_LIST.containsKey(player.getUniqueId()))
             return false;
         else
-            return Variables.SPEED_LIST.get(player.getUniqueId());
+            return Cache.SPEED_LIST.get(player.getUniqueId());
     }
 
     public void setJump(final boolean jump) {
-        if (Variables.JUMP_LIST.containsKey(player.getUniqueId())) {
-            Variables.JUMP_LIST.remove(player.getUniqueId());
+        if (Cache.JUMP_LIST.containsKey(player.getUniqueId())) {
+            Cache.JUMP_LIST.remove(player.getUniqueId());
         }
 
-        Variables.JUMP_LIST.put(player.getUniqueId(), jump);
+        Cache.JUMP_LIST.put(player.getUniqueId(), jump);
     }
 
     public boolean hasJump() {
-        if (!Variables.JUMP_LIST.containsKey(player.getUniqueId()))
+        if (!Cache.JUMP_LIST.containsKey(player.getUniqueId()))
             return false;
         else
-            return Variables.JUMP_LIST.get(player.getUniqueId());
+            return Cache.JUMP_LIST.get(player.getUniqueId());
     }
 
 }

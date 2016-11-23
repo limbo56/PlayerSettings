@@ -1,20 +1,20 @@
 package me.lim_bo56.settings;
 
-import me.lim_bo56.settings.cmds.CommandManager;
-import me.lim_bo56.settings.listeners.FlyToggleListener;
-import me.lim_bo56.settings.listeners.PlayerListener;
-import me.lim_bo56.settings.listeners.WorldListener;
-import me.lim_bo56.settings.managers.ConfigurationManager;
 import me.lim_bo56.settings.config.DefaultConfiguration;
 import me.lim_bo56.settings.config.MenuConfiguration;
 import me.lim_bo56.settings.config.MessageConfiguration;
+import me.lim_bo56.settings.listeners.FlyToggleListener;
+import me.lim_bo56.settings.listeners.PlayerListener;
+import me.lim_bo56.settings.listeners.WorldListener;
+import me.lim_bo56.settings.managers.CommandManager;
+import me.lim_bo56.settings.managers.ConfigurationManager;
+import me.lim_bo56.settings.managers.VersionManager;
 import me.lim_bo56.settings.menus.SettingsMenu;
 import me.lim_bo56.settings.mysql.MySqlConnection;
 import me.lim_bo56.settings.utils.Updater;
 import me.lim_bo56.settings.utils.Utilities;
 import me.lim_bo56.settings.version.IItemGlower;
 import me.lim_bo56.settings.version.IMount;
-import me.lim_bo56.settings.managers.VersionManager;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -43,7 +43,7 @@ public class Core extends JavaPlugin {
      *
      * @param object Message.
      */
-    private static void log(String object) {
+    public void log(String object) {
         System.out.println("Preferences >> " + object);
     }
 
@@ -72,9 +72,18 @@ public class Core extends JavaPlugin {
 
         log("======================================================");
         log("PlayerSettings v" + getDescription().getVersion() + " is being loaded...");
-        log("");
 
         log("");
+
+        if (getConfig().getBoolean("MySQL.enable")) {
+            log("Connecting to database...");
+
+            MySqlConnection.getInstance().openConnection();
+            MySqlConnection.getInstance().createTable();
+
+            log("");
+        }
+
         log("Loading all data...");
 
         loadDefaults(version);
@@ -82,17 +91,6 @@ public class Core extends JavaPlugin {
         log("All data has been loaded");
         log("");
 
-        if (getConfig().getBoolean("MySQL.enable")) {
-            log("Connecting to database...");
-
-            MySqlConnection.getInstance().openConnection();
-            MySqlConnection.getInstance().checkTable();
-
-            log("Connected to database");
-            log("");
-        }
-
-        log("");
         log("PlayerSettings successfully finished loading!");
         log("Your server is running version " + version);
         log("======================================================");
@@ -113,11 +111,16 @@ public class Core extends JavaPlugin {
     private void setupConfig() {
 
         File file = new File(getDataFolder(), "config.yml");
+        boolean created;
 
         if (!file.exists()) {
-            file.getParentFile().mkdir();
+            created = file.getParentFile().mkdir();
             log("Config file doesn't exist yet.");
             log("Creating Config File and loading it.");
+            if (created) {
+                log("File config.yml created with success!");
+                log("");
+            }
         }
 
         ConfigurationManager config = ConfigurationManager.getConfig();
