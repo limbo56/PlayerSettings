@@ -1,11 +1,10 @@
 package src.me.lim_bo56.settings.v1_9_R2;
 
-import me.lim_bo56.settings.versionmanager.IMount;
+import me.lim_bo56.settings.version.IMount;
 import net.minecraft.server.v1_9_R2.EntityPlayer;
 import net.minecraft.server.v1_9_R2.PacketPlayOutMount;
 import org.bukkit.craftbukkit.v1_9_R2.entity.CraftPlayer;
 import org.bukkit.entity.Player;
-
 
 /**
  * Created by lim_bo56

@@ -1,11 +1,8 @@
 package me.lim_bo56.settings.menus;
 
 import me.lim_bo56.settings.Core;
-import me.lim_bo56.settings.managers.ConfigurationManager;
-import me.lim_bo56.settings.managers.MenuManager;
-import me.lim_bo56.settings.managers.MessageManager;
-import me.lim_bo56.settings.objects.CustomPlayer;
-import me.lim_bo56.settings.utils.ColorUtils;
+import me.lim_bo56.settings.config.MenuConfiguration;
+import me.lim_bo56.settings.player.CustomPlayer;
 import me.lim_bo56.settings.utils.ItemFactory;
 import me.lim_bo56.settings.utils.Variables;
 import org.bukkit.Bukkit;
@@ -28,108 +25,102 @@ import java.util.List;
  * At 2:24:22 AM
  */
 
-// FIXME: 9/3/2016
 public class SettingsMenu implements Listener {
-
-    private static ConfigurationManager menu = ConfigurationManager.getMenu();
-    private static String invName = MenuManager.get("Menu.Name");
 
     public static void openSettings(final Player p) {
         CustomPlayer cPlayer = new CustomPlayer(p);
 
-        List<String> enabledLore = ConfigurationManager.getMenu().getStringList("Menu.Items.Enabled.Lore");
+        List<String> enabledLore = Variables.ENABLED_LORE;
         String[] array = new String[enabledLore.size()];
         enabledLore.toArray(array);
 
-        List<String> disabledLore = ConfigurationManager.getMenu().getStringList("Menu.Items.Disabled.Lore");
+        List<String> disabledLore = Variables.DISABLED_LORE;
         String[] array2 = new String[disabledLore.size()];
         disabledLore.toArray(array2);
 
-        Inventory Settings = Bukkit.createInventory(null, 54, invName);
-
-        // TODO: Finish fill with glass option.
+        Inventory Settings = Bukkit.createInventory(null, 54, MenuConfiguration.get("Menu.Name"));
 
         if (cPlayer.hasJump()) {
 
-            Settings.setItem(12, Core.getInstance().getItemGlower().glow(ItemFactory.createItem(MenuManager.get("Menu.Items.Jump.Name"), false, Material.getMaterial((String) menu.get("Menu.Items.Jump.Material")), 1, 0)));
-            Settings.setItem(21, ItemFactory.createItem(MenuManager.get("Menu.Items.Enabled.Name"), true, Material.INK_SACK, 1, 10, array2));
+            Settings.setItem(12, Core.getInstance().getItemGlower().glow(ItemFactory.createItem(MenuConfiguration.get("Menu.Items.Jump.Name"), false, Material.getMaterial(MenuConfiguration.get("Menu.Items.Jump.Material")), 1, 0)));
+            Settings.setItem(21, ItemFactory.createItem(Variables.ENABLED_NAME, true, Material.INK_SACK, 1, 10, array2));
 
         } else {
 
-            Settings.setItem(12, ItemFactory.createItem(MenuManager.get("Menu.Items.Jump.Name"), false, Material.getMaterial((String) menu.get("Menu.Items.Jump.Material")), 1, 0));
-            Settings.setItem(21, ItemFactory.createItem(MenuManager.get("Menu.Items.Disabled.Name"), true, Material.INK_SACK, 1, 8, array));
+            Settings.setItem(12, ItemFactory.createItem(MenuConfiguration.get("Menu.Items.Jump.Name"), false, Material.getMaterial(MenuConfiguration.get("Menu.Items.Jump.Material")), 1, 0));
+            Settings.setItem(21, ItemFactory.createItem(Variables.DISABLED_NAME, true, Material.INK_SACK, 1, 8, array));
 
         }
 
         if (cPlayer.hasSpeed()) {
 
-            Settings.setItem(10, Core.getInstance().getItemGlower().glow(ItemFactory.createItem(MenuManager.get("Menu.Items.Speed.Name"), false, Material.getMaterial(MenuManager.get("Menu.Items.Speed.Material")), 1, 0)));
-            Settings.setItem(19, ItemFactory.createItem(ColorUtils.Color(MenuManager.get("Menu.Items.Enabled.Name")), true, Material.INK_SACK, 1, 10, array2));
+            Settings.setItem(10, Core.getInstance().getItemGlower().glow(ItemFactory.createItem(MenuConfiguration.get("Menu.Items.Speed.Name"), false, Material.getMaterial(MenuConfiguration.get("Menu.Items.Speed.Material")), 1, 0)));
+            Settings.setItem(19, ItemFactory.createItem(Variables.ENABLED_NAME, true, Material.INK_SACK, 1, 10, array2));
 
         } else {
 
-            Settings.setItem(10, ItemFactory.createItem(MenuManager.get("Menu.Items.Speed.Name"), false, Material.getMaterial((String) menu.get("Menu.Items.Speed.Material")), 1, 0));
-            Settings.setItem(19, ItemFactory.createItem(MenuManager.get("Menu.Items.Disabled.Name"), true, Material.INK_SACK, 1, 8, array));
+            Settings.setItem(10, ItemFactory.createItem(MenuConfiguration.get("Menu.Items.Speed.Name"), false, Material.getMaterial(MenuConfiguration.get("Menu.Items.Speed.Material")), 1, 0));
+            Settings.setItem(19, ItemFactory.createItem(Variables.DISABLED_NAME, true, Material.INK_SACK, 1, 8, array));
 
         }
 
         if (cPlayer.hasFly()) {
 
-            Settings.setItem(14, Core.getInstance().getItemGlower().glow(ItemFactory.createItem(MenuManager.get("Menu.Items.Fly.Name"), false, Material.getMaterial((String) menu.get("Menu.Items.Fly.Material")), 1, 0)));
-            Settings.setItem(23, ItemFactory.createItem(MenuManager.get("Menu.Items.Enabled.Name"), true, Material.INK_SACK, 1, 10, array2));
+            Settings.setItem(14, Core.getInstance().getItemGlower().glow(ItemFactory.createItem(MenuConfiguration.get("Menu.Items.Fly.Name"), false, Material.getMaterial(MenuConfiguration.get("Menu.Items.Fly.Material")), 1, 0)));
+            Settings.setItem(23, ItemFactory.createItem(Variables.ENABLED_NAME, true, Material.INK_SACK, 1, 10, array2));
 
         } else {
 
-            Settings.setItem(14, ItemFactory.createItem(MenuManager.get("Menu.Items.Fly.Name"), false, Material.getMaterial((String) menu.get("Menu.Items.Fly.Material")), 1, 0));
-            Settings.setItem(23, ItemFactory.createItem(MenuManager.get("Menu.Items.Disabled.Name"), true, Material.INK_SACK, 1, 8, array));
+            Settings.setItem(14, ItemFactory.createItem(MenuConfiguration.get("Menu.Items.Fly.Name"), false, Material.getMaterial(MenuConfiguration.get("Menu.Items.Fly.Material")), 1, 0));
+            Settings.setItem(23, ItemFactory.createItem(Variables.DISABLED_NAME, true, Material.INK_SACK, 1, 8, array));
 
         }
 
         if (cPlayer.hasVanish()) {
 
-            Settings.setItem(16, Core.getInstance().getItemGlower().glow(ItemFactory.createItem(MenuManager.get("Menu.Items.Vanish.Name"), false, Material.getMaterial((String) menu.get("Menu.Items.Vanish.Material")), 1, 0)));
-            Settings.setItem(25, ItemFactory.createItem(MenuManager.get("Menu.Items.Enabled.Name"), true, Material.INK_SACK, 1, 10, array2));
+            Settings.setItem(16, Core.getInstance().getItemGlower().glow(ItemFactory.createItem(MenuConfiguration.get("Menu.Items.Vanish.Name"), false, Material.getMaterial(MenuConfiguration.get("Menu.Items.Vanish.Material")), 1, 0)));
+            Settings.setItem(25, ItemFactory.createItem(Variables.ENABLED_NAME, true, Material.INK_SACK, 1, 10, array2));
 
         } else {
 
-            Settings.setItem(16, ItemFactory.createItem(MenuManager.get("Menu.Items.Vanish.Name"), false, Material.getMaterial((String) menu.get("Menu.Items.Vanish.Material")), 1, 0));
-            Settings.setItem(25, ItemFactory.createItem(MenuManager.get("Menu.Items.Disabled.Name"), true, Material.INK_SACK, 1, 8, array));
+            Settings.setItem(16, ItemFactory.createItem(MenuConfiguration.get("Menu.Items.Vanish.Name"), false, Material.getMaterial(MenuConfiguration.get("Menu.Items.Vanish.Material")), 1, 0));
+            Settings.setItem(25, ItemFactory.createItem(Variables.DISABLED_NAME, true, Material.INK_SACK, 1, 8, array));
 
         }
 
         if (cPlayer.hasStacker()) {
 
-            Settings.setItem(29, Core.getInstance().getItemGlower().glow(ItemFactory.createItem(MenuManager.get("Menu.Items.Stacker.Name"), false, Material.getMaterial((String) menu.get("Menu.Items.Stacker.Material")), 1, 0)));
-            Settings.setItem(38, ItemFactory.createItem(MenuManager.get("Menu.Items.Enabled.Name"), true, Material.INK_SACK, 1, 10, array2));
+            Settings.setItem(29, Core.getInstance().getItemGlower().glow(ItemFactory.createItem(MenuConfiguration.get("Menu.Items.Stacker.Name"), false, Material.getMaterial(MenuConfiguration.get("Menu.Items.Stacker.Material")), 1, 0)));
+            Settings.setItem(38, ItemFactory.createItem(Variables.ENABLED_NAME, true, Material.INK_SACK, 1, 10, array2));
 
         } else {
 
-            Settings.setItem(29, ItemFactory.createItem(MenuManager.get("Menu.Items.Stacker.Name"), false, Material.getMaterial((String) menu.get("Menu.Items.Stacker.Material")), 1, 0));
-            Settings.setItem(38, ItemFactory.createItem(MenuManager.get("Menu.Items.Disabled.Name"), true, Material.INK_SACK, 1, 8, array));
+            Settings.setItem(29, ItemFactory.createItem(MenuConfiguration.get("Menu.Items.Stacker.Name"), false, Material.getMaterial(MenuConfiguration.get("Menu.Items.Stacker.Material")), 1, 0));
+            Settings.setItem(38, ItemFactory.createItem(Variables.DISABLED_NAME, true, Material.INK_SACK, 1, 8, array));
 
         }
 
         if (cPlayer.hasVisibility()) {
 
-            Settings.setItem(31, Core.getInstance().getItemGlower().glow(ItemFactory.createItem(MenuManager.get("Menu.Items.Visibility.Name"), false, Material.getMaterial((String) menu.get("Menu.Items.Visibility.Material")), 1, 0)));
-            Settings.setItem(40, ItemFactory.createItem(MenuManager.get("Menu.Items.Enabled.Name"), true, Material.INK_SACK, 1, 10, array2));
+            Settings.setItem(31, Core.getInstance().getItemGlower().glow(ItemFactory.createItem(MenuConfiguration.get("Menu.Items.Visibility.Name"), false, Material.getMaterial(MenuConfiguration.get("Menu.Items.Visibility.Material")), 1, 0)));
+            Settings.setItem(40, ItemFactory.createItem(Variables.ENABLED_NAME, true, Material.INK_SACK, 1, 10, array2));
 
         } else {
 
-            Settings.setItem(31, ItemFactory.createItem(MenuManager.get("Menu.Items.Visibility.Name"), false, Material.getMaterial((String) menu.get("Menu.Items.Visibility.Material")), 1, 0));
-            Settings.setItem(40, ItemFactory.createItem(MenuManager.get("Menu.Items.Disabled.Name"), true, Material.INK_SACK, 1, 8, array));
+            Settings.setItem(31, ItemFactory.createItem(MenuConfiguration.get("Menu.Items.Visibility.Name"), false, Material.getMaterial(MenuConfiguration.get("Menu.Items.Visibility.Material")), 1, 0));
+            Settings.setItem(40, ItemFactory.createItem(Variables.DISABLED_NAME, true, Material.INK_SACK, 1, 8, array));
 
         }
 
         if (cPlayer.hasChat()) {
 
-            Settings.setItem(33, Core.getInstance().getItemGlower().glow(ItemFactory.createItem(MenuManager.get("Menu.Items.Chat.Name"), false, Material.getMaterial((String) menu.get("Menu.Items.Chat.Material")), 1, 0)));
-            Settings.setItem(42, ItemFactory.createItem(MenuManager.get("Menu.Items.Enabled.Name"), true, Material.INK_SACK, 1, 10, array2));
+            Settings.setItem(33, Core.getInstance().getItemGlower().glow(ItemFactory.createItem(MenuConfiguration.get("Menu.Items.Chat.Name"), false, Material.getMaterial(MenuConfiguration.get("Menu.Items.Chat.Material")), 1, 0)));
+            Settings.setItem(42, ItemFactory.createItem(Variables.ENABLED_NAME, true, Material.INK_SACK, 1, 10, array2));
 
         } else {
 
-            Settings.setItem(33, ItemFactory.createItem(MenuManager.get("Menu.Items.Chat.Name"), false, Material.getMaterial((String) menu.get("Menu.Items.Chat.Material")), 1, 0));
-            Settings.setItem(42, ItemFactory.createItem(MenuManager.get("Menu.Items.Disabled.Name"), true, Material.INK_SACK, 1, 8, array));
+            Settings.setItem(33, ItemFactory.createItem(MenuConfiguration.get("Menu.Items.Chat.Name"), false, Material.getMaterial(MenuConfiguration.get("Menu.Items.Chat.Material")), 1, 0));
+            Settings.setItem(42, ItemFactory.createItem(Variables.DISABLED_NAME, true, Material.INK_SACK, 1, 8, array));
 
         }
 
@@ -141,17 +132,17 @@ public class SettingsMenu implements Listener {
         final Player player = (Player) event.getWhoClicked();
         CustomPlayer cPlayer = new CustomPlayer(player);
 
-        if (menu.getStringList("worlds-allowed").contains(player.getWorld().getName())) {
+        if (Variables.WORLDS_ALLOWED.contains(player.getWorld().getName())) {
 
             if (event.getInventory().getType() == InventoryType.CHEST) {
-                if (event.getInventory().getTitle().equalsIgnoreCase(invName)) {
+                if (event.getInventory().getTitle().equalsIgnoreCase(MenuConfiguration.get("Menu.Name"))) {
                     if (event.getCurrentItem() != null && event.getCurrentItem().hasItemMeta() && event.getCurrentItem().getItemMeta().hasDisplayName()) {
                         if (event.isRightClick() || event.isLeftClick()) {
                             event.setCancelled(true);
 
                             if (event.getSlot() == 10 || event.getSlot() == 19) {
 
-                                if (player.hasPermission("settings.speed")) {
+                                if (player.hasPermission(Variables.SPEED_PERMISSION)) {
 
                                     if (cPlayer.hasSpeed()) {
 
@@ -169,16 +160,16 @@ public class SettingsMenu implements Listener {
 
                                     }
 
-                                } else if (!player.hasPermission("settings.speed")) {
+                                } else if (!player.hasPermission(Variables.SPEED_PERMISSION)) {
 
-                                    player.sendMessage(MessageManager.getMessage("No-Permissions"));
+                                    player.sendMessage(Variables.NO_PERMISSIONS);
 
                                 }
                             }
 
                             if (event.getSlot() == 12 || event.getSlot() == 21) {
 
-                                if (player.hasPermission("settings.jump")) {
+                                if (player.hasPermission(Variables.JUMP_PERMISSION)) {
 
                                     if (cPlayer.hasJump()) {
 
@@ -196,16 +187,16 @@ public class SettingsMenu implements Listener {
 
                                     }
 
-                                } else if (!player.hasPermission("settings.jump")) {
+                                } else if (!player.hasPermission(Variables.JUMP_PERMISSION)) {
 
-                                    player.sendMessage(MessageManager.getMessage("No-Permissions"));
+                                    player.sendMessage(Variables.NO_PERMISSIONS);
 
                                 }
                             }
 
                             if (event.getSlot() == 14 || event.getSlot() == 23) {
 
-                                if (player.hasPermission("settings.fly")) {
+                                if (player.hasPermission(Variables.FLY_PERMISSION)) {
 
                                     if (cPlayer.hasFly()) {
 
@@ -223,16 +214,16 @@ public class SettingsMenu implements Listener {
 
                                     }
 
-                                } else if (!player.hasPermission("settings.fly")) {
+                                } else if (!player.hasPermission(Variables.FLY_PERMISSION)) {
 
-                                    player.sendMessage(MessageManager.getMessage("No-Permissions"));
+                                    player.sendMessage(Variables.NO_PERMISSIONS);
 
                                 }
                             }
 
                             if (event.getSlot() == 16 || event.getSlot() == 25) {
 
-                                if (player.hasPermission("settings.vanish")) {
+                                if (player.hasPermission(Variables.VANISH_PERMISSION)) {
 
                                     if (cPlayer.hasVanish()) {
 
@@ -256,9 +247,9 @@ public class SettingsMenu implements Listener {
 
                                     }
 
-                                } else if (!player.hasPermission("settings.vanish")) {
+                                } else if (!player.hasPermission(Variables.VANISH_PERMISSION)) {
 
-                                    player.sendMessage(MessageManager.getMessage("No-Permissions"));
+                                    player.sendMessage(Variables.NO_PERMISSIONS);
 
                                 }
                             }

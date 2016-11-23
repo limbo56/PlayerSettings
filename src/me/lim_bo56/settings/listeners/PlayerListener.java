@@ -2,8 +2,8 @@ package me.lim_bo56.settings.listeners;
 
 import me.lim_bo56.settings.Core;
 import me.lim_bo56.settings.managers.ConfigurationManager;
-import me.lim_bo56.settings.objects.CustomPlayer;
-import me.lim_bo56.settings.utils.ColorUtils;
+import me.lim_bo56.settings.config.MessageConfiguration;
+import me.lim_bo56.settings.player.CustomPlayer;
 import me.lim_bo56.settings.utils.Updater;
 import me.lim_bo56.settings.utils.Utilities;
 import me.lim_bo56.settings.utils.Variables;
@@ -20,17 +20,12 @@ import org.bukkit.event.player.*;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
-import java.util.Iterator;
-
 /**
  * Created by lim_bo56
  * On 8/27/2016
  * At 12:00 AM
  */
 public class PlayerListener implements Listener {
-
-    private ConfigurationManager messages = ConfigurationManager.getMessages();
-    private ConfigurationManager menu = ConfigurationManager.getMenu();
 
     @EventHandler
     public void onJoinEvent(PlayerJoinEvent event) {
@@ -43,7 +38,7 @@ public class PlayerListener implements Listener {
 
         cPlayer.loadSettings();
 
-        if (menu.getStringList("worlds-allowed").contains(player.getWorld().getName())) {
+        if (Variables.WORLDS_ALLOWED.contains(player.getWorld().getName())) {
 
             for (Player online : Bukkit.getOnlinePlayers()) {
 
@@ -90,9 +85,9 @@ public class PlayerListener implements Listener {
                 player.removePotionEffect(PotionEffectType.JUMP);
 
 
-            if (Core.getInstance().getConfig().getBoolean("Update-message"))
+            if (Core.getInstance().getConfig().getBoolean("Update-Message"))
                 if (player.isOp())
-                    player.sendMessage(ColorUtils.Color(Variables.CHAT_TITLE + Updater.playerUpdater()));
+                    player.sendMessage(Updater.playerUpdater());
         }
     }
 
@@ -103,7 +98,7 @@ public class PlayerListener implements Listener {
 
         cPlayer.saveSettings();
 
-        if (menu.getStringList("worlds-allowed").contains(player.getWorld().getName())) {
+        if (Variables.WORLDS_ALLOWED.contains(player.getWorld().getName())) {
             player.removePotionEffect(PotionEffectType.SPEED);
             player.removePotionEffect(PotionEffectType.JUMP);
             player.removePotionEffect(PotionEffectType.INVISIBILITY);
@@ -116,7 +111,7 @@ public class PlayerListener implements Listener {
         Player player = event.getPlayer();
         CustomPlayer cPlayer = new CustomPlayer(player);
 
-        if (menu.getStringList("worlds-allowed").contains(player.getWorld().getName()))
+        if (Variables.WORLDS_ALLOWED.contains(player.getWorld().getName()))
             if (event.getNewGameMode() == GameMode.ADVENTURE || event.getNewGameMode() == GameMode.SURVIVAL) {
                 cPlayer.setFly(false);
             } else if (event.getNewGameMode() == GameMode.CREATIVE || event.getNewGameMode() == GameMode.SPECTATOR) {
@@ -130,19 +125,18 @@ public class PlayerListener implements Listener {
         Player player = event.getPlayer();
         CustomPlayer cPlayer = new CustomPlayer(player);
 
-        if (menu.getStringList("worlds-allowed").contains(player.getWorld().getName())) {
+        if (Variables.WORLDS_ALLOWED.contains(player.getWorld().getName())) {
 
             if (!cPlayer.hasChat()) {
                 event.getRecipients().remove(player);
                 event.setCancelled(true);
-                player.sendMessage(ColorUtils.Color(String.valueOf(messages.get("Chat-Disabled"))));
+                player.sendMessage(MessageConfiguration.get("Chat-Disabled"));
             } else if (cPlayer.hasChat()) {
                 event.getRecipients().add(player);
                 event.setCancelled(false);
             }
 
-            for (Iterator<Player> it = event.getRecipients().iterator(); it.hasNext(); ) {
-                Player player1 = it.next();
+            for (Player player1 : event.getRecipients()) {
                 CustomPlayer rPlayer = new CustomPlayer(player1);
 
                 if (!rPlayer.hasChat()) {
@@ -164,7 +158,7 @@ public class PlayerListener implements Listener {
 
         CustomPlayer cPlayer = new CustomPlayer(player);
 
-        if (menu.getStringList("worlds-allowed").contains(player.getWorld().getName())) {
+        if (Variables.WORLDS_ALLOWED.contains(player.getWorld().getName())) {
             if (entity != null)
                 if (entity instanceof Player)
                     if (((Player) entity).getDisplayName() != null)
@@ -185,12 +179,20 @@ public class PlayerListener implements Listener {
                                 }
 
                             } else if (!ePlayer.hasStacker())
-                                if (messages.getBoolean("Send.Target-Stacker-Disabled"))
-                                    player.sendMessage(ColorUtils.Color(String.valueOf(messages.get("Target-Stacker-Disabled"))));
+                                if (ConfigurationManager.getMessages().getBoolean("Send.Target-Stacker-Disabled"))
+                                    if (!ConfigurationManager.getConfig().getBoolean("Using-Citizens")) {
+                                        player.sendMessage(MessageConfiguration.get("Target-Stacker-Disabled"));
+                                    } else if (Core.getInstance().getConfig().getBoolean("Using-Citizens") && net.citizensnpcs.api.CitizensAPI.getNPCRegistry().isNPC(entity)) {
+                                        // Do nothing since the clicked entity is an npc
+                                    }
 
                         } else if (!cPlayer.hasStacker())
-                            if (messages.getBoolean("Send.Player-Stacker-Disabled"))
-                                player.sendMessage(ColorUtils.Color(String.valueOf(messages.get("Player-Stacker-Disabled"))));
+                            if (ConfigurationManager.getMessages().getBoolean("Send.Player-Stacker-Disabled"))
+                                if (!ConfigurationManager.getConfig().getBoolean("Using-Citizens")) {
+                                    player.sendMessage(MessageConfiguration.get("Player-Stacker-Disabled"));
+                                } else if (Core.getInstance().getConfig().getBoolean("Using-Citizens") && net.citizensnpcs.api.CitizensAPI.getNPCRegistry().isNPC(entity)) {
+                                    // Do nothing since the clicked entity is an npc
+                                }
         }
 
     }
@@ -200,7 +202,7 @@ public class PlayerListener implements Listener {
         Player player = event.getPlayer();
         Entity entity = player.getPassenger();
 
-        if (menu.getStringList("worlds-allowed").contains(player.getWorld().getName())) {
+        if (Variables.WORLDS_ALLOWED.contains(player.getWorld().getName())) {
             if (event.getAction() == Action.LEFT_CLICK_AIR) {
                 if (player.getPassenger() != null) {
 
@@ -215,7 +217,7 @@ public class PlayerListener implements Listener {
                     }
 
                     Vector direction = player.getLocation().getDirection();
-                    entity.setVelocity(direction.multiply(Variables.launch_force));
+                    entity.setVelocity(direction.multiply(ConfigurationManager.getDefault().getInt("Stacker.launch-force")));
                     entity.setFallDistance(-10000.0F);
                 }
             }
@@ -225,7 +227,7 @@ public class PlayerListener implements Listener {
 
     @EventHandler
     public void HitEntity(EntityDamageByEntityEvent event) {
-        if (menu.getStringList("worlds-allowed").contains(event.getDamager().getWorld().getName())) {
+        if (Variables.WORLDS_ALLOWED.contains(event.getDamager().getWorld().getName())) {
             if (event.getDamager().getType() == EntityType.PLAYER) {
                 Player player = (Player) event.getDamager();
                 CustomPlayer cPlayer = new CustomPlayer(player);
