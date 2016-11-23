@@ -1,12 +1,12 @@
 package me.lim_bo56.settings.listeners;
 
 import me.lim_bo56.settings.Core;
-import me.lim_bo56.settings.managers.ConfigurationManager;
 import me.lim_bo56.settings.config.MessageConfiguration;
+import me.lim_bo56.settings.managers.ConfigurationManager;
 import me.lim_bo56.settings.player.CustomPlayer;
 import me.lim_bo56.settings.utils.Updater;
 import me.lim_bo56.settings.utils.Utilities;
-import me.lim_bo56.settings.utils.Variables;
+import me.lim_bo56.settings.utils.Cache;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Entity;
@@ -25,6 +25,7 @@ import org.bukkit.util.Vector;
  * On 8/27/2016
  * At 12:00 AM
  */
+@SuppressWarnings("unused")
 public class PlayerListener implements Listener {
 
     @EventHandler
@@ -38,7 +39,7 @@ public class PlayerListener implements Listener {
 
         cPlayer.loadSettings();
 
-        if (Variables.WORLDS_ALLOWED.contains(player.getWorld().getName())) {
+        if (Cache.WORLDS_ALLOWED.contains(player.getWorld().getName())) {
 
             for (Player online : Bukkit.getOnlinePlayers()) {
 
@@ -62,7 +63,7 @@ public class PlayerListener implements Listener {
 
             if (cPlayer.hasVanish()) {
 
-                player.addPotionEffect(Variables.INVISIBILITY);
+                player.addPotionEffect(Cache.INVISIBILITY);
 
                 for (Player online : Bukkit.getOnlinePlayers())
                     online.hidePlayer(player);
@@ -75,12 +76,12 @@ public class PlayerListener implements Listener {
                 player.setAllowFlight(true);
 
             if (cPlayer.hasSpeed())
-                player.addPotionEffect(Variables.SPEED);
+                player.addPotionEffect(Cache.SPEED);
             else
                 player.removePotionEffect(PotionEffectType.SPEED);
 
             if (cPlayer.hasJump())
-                player.addPotionEffect(Variables.JUMP);
+                player.addPotionEffect(Cache.JUMP);
             else
                 player.removePotionEffect(PotionEffectType.JUMP);
 
@@ -98,7 +99,7 @@ public class PlayerListener implements Listener {
 
         cPlayer.saveSettings();
 
-        if (Variables.WORLDS_ALLOWED.contains(player.getWorld().getName())) {
+        if (Cache.WORLDS_ALLOWED.contains(player.getWorld().getName())) {
             player.removePotionEffect(PotionEffectType.SPEED);
             player.removePotionEffect(PotionEffectType.JUMP);
             player.removePotionEffect(PotionEffectType.INVISIBILITY);
@@ -111,7 +112,7 @@ public class PlayerListener implements Listener {
         Player player = event.getPlayer();
         CustomPlayer cPlayer = new CustomPlayer(player);
 
-        if (Variables.WORLDS_ALLOWED.contains(player.getWorld().getName()))
+        if (Cache.WORLDS_ALLOWED.contains(player.getWorld().getName()))
             if (event.getNewGameMode() == GameMode.ADVENTURE || event.getNewGameMode() == GameMode.SURVIVAL) {
                 cPlayer.setFly(false);
             } else if (event.getNewGameMode() == GameMode.CREATIVE || event.getNewGameMode() == GameMode.SPECTATOR) {
@@ -125,7 +126,7 @@ public class PlayerListener implements Listener {
         Player player = event.getPlayer();
         CustomPlayer cPlayer = new CustomPlayer(player);
 
-        if (Variables.WORLDS_ALLOWED.contains(player.getWorld().getName())) {
+        if (Cache.WORLDS_ALLOWED.contains(player.getWorld().getName())) {
 
             if (!cPlayer.hasChat()) {
                 event.getRecipients().remove(player);
@@ -158,7 +159,7 @@ public class PlayerListener implements Listener {
 
         CustomPlayer cPlayer = new CustomPlayer(player);
 
-        if (Variables.WORLDS_ALLOWED.contains(player.getWorld().getName())) {
+        if (Cache.WORLDS_ALLOWED.contains(player.getWorld().getName())) {
             if (entity != null)
                 if (entity instanceof Player)
                     if (((Player) entity).getDisplayName() != null)
@@ -182,16 +183,12 @@ public class PlayerListener implements Listener {
                                 if (ConfigurationManager.getMessages().getBoolean("Send.Target-Stacker-Disabled"))
                                     if (!ConfigurationManager.getConfig().getBoolean("Using-Citizens")) {
                                         player.sendMessage(MessageConfiguration.get("Target-Stacker-Disabled"));
-                                    } else if (Core.getInstance().getConfig().getBoolean("Using-Citizens") && net.citizensnpcs.api.CitizensAPI.getNPCRegistry().isNPC(entity)) {
-                                        // Do nothing since the clicked entity is an npc
                                     }
 
                         } else if (!cPlayer.hasStacker())
                             if (ConfigurationManager.getMessages().getBoolean("Send.Player-Stacker-Disabled"))
                                 if (!ConfigurationManager.getConfig().getBoolean("Using-Citizens")) {
                                     player.sendMessage(MessageConfiguration.get("Player-Stacker-Disabled"));
-                                } else if (Core.getInstance().getConfig().getBoolean("Using-Citizens") && net.citizensnpcs.api.CitizensAPI.getNPCRegistry().isNPC(entity)) {
-                                    // Do nothing since the clicked entity is an npc
                                 }
         }
 
@@ -202,7 +199,7 @@ public class PlayerListener implements Listener {
         Player player = event.getPlayer();
         Entity entity = player.getPassenger();
 
-        if (Variables.WORLDS_ALLOWED.contains(player.getWorld().getName())) {
+        if (Cache.WORLDS_ALLOWED.contains(player.getWorld().getName())) {
             if (event.getAction() == Action.LEFT_CLICK_AIR) {
                 if (player.getPassenger() != null) {
 
@@ -227,7 +224,7 @@ public class PlayerListener implements Listener {
 
     @EventHandler
     public void HitEntity(EntityDamageByEntityEvent event) {
-        if (Variables.WORLDS_ALLOWED.contains(event.getDamager().getWorld().getName())) {
+        if (Cache.WORLDS_ALLOWED.contains(event.getDamager().getWorld().getName())) {
             if (event.getDamager().getType() == EntityType.PLAYER) {
                 Player player = (Player) event.getDamager();
                 CustomPlayer cPlayer = new CustomPlayer(player);
