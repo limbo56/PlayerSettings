@@ -2,8 +2,8 @@ package me.lim_bo56.settings.cmds.args;
 
 import me.lim_bo56.settings.Core;
 import me.lim_bo56.settings.cmds.BaseCommand;
-import me.lim_bo56.settings.managers.ConfigurationManager;
 import me.lim_bo56.settings.menus.SettingsMenu;
+import me.lim_bo56.settings.utils.Variables;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -15,8 +15,6 @@ import org.bukkit.entity.Player;
  */
 public class OpenARG extends BaseCommand {
 
-    private ConfigurationManager menu = ConfigurationManager.getMenu();
-
     public OpenARG(Core plugin) {
         super(plugin);
     }
@@ -26,7 +24,7 @@ public class OpenARG extends BaseCommand {
 
         Player player = (Player) sender;
 
-        if (menu.getStringList("worlds-allowed").contains(player.getWorld().getName())) {
+        if (Variables.WORLDS_ALLOWED.contains(player.getWorld().getName())) {
             SettingsMenu.openSettings(player);
         }
     }

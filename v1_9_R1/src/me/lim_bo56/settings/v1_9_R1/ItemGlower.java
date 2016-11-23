@@ -1,6 +1,6 @@
 package src.me.lim_bo56.settings.v1_9_R1;
 
-import me.lim_bo56.settings.versionmanager.IItemGlower;
+import me.lim_bo56.settings.version.IItemGlower;
 import net.minecraft.server.v1_9_R1.NBTTagCompound;
 import net.minecraft.server.v1_9_R1.NBTTagList;
 import org.bukkit.craftbukkit.v1_9_R1.inventory.CraftItemStack;
