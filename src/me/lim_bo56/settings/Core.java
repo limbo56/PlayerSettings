@@ -5,24 +5,19 @@ import me.lim_bo56.settings.listeners.FlyToggleListener;
 import me.lim_bo56.settings.listeners.PlayerListener;
 import me.lim_bo56.settings.listeners.WorldListener;
 import me.lim_bo56.settings.managers.ConfigurationManager;
-import me.lim_bo56.settings.managers.DefaultManager;
-import me.lim_bo56.settings.managers.MenuManager;
-import me.lim_bo56.settings.managers.MessageManager;
+import me.lim_bo56.settings.config.DefaultConfiguration;
+import me.lim_bo56.settings.config.MenuConfiguration;
+import me.lim_bo56.settings.config.MessageConfiguration;
 import me.lim_bo56.settings.menus.SettingsMenu;
 import me.lim_bo56.settings.mysql.MySqlConnection;
-import me.lim_bo56.settings.objects.CustomPlayer;
-import me.lim_bo56.settings.utils.ColorUtils;
 import me.lim_bo56.settings.utils.Updater;
 import me.lim_bo56.settings.utils.Utilities;
-import me.lim_bo56.settings.utils.Variables;
-import me.lim_bo56.settings.versionmanager.IItemGlower;
-import me.lim_bo56.settings.versionmanager.IMount;
-import me.lim_bo56.settings.versionmanager.VersionManager;
+import me.lim_bo56.settings.version.IItemGlower;
+import me.lim_bo56.settings.version.IMount;
+import me.lim_bo56.settings.managers.VersionManager;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.potion.PotionEffectType;
 
 import java.io.File;
 import java.util.SortedMap;
@@ -120,7 +115,7 @@ public class Core extends JavaPlugin {
         File file = new File(getDataFolder(), "config.yml");
 
         if (!file.exists()) {
-            file.getParentFile().mkdirs();
+            file.getParentFile().mkdir();
             log("Config file doesn't exist yet.");
             log("Creating Config File and loading it.");
         }
@@ -135,6 +130,7 @@ public class Core extends JavaPlugin {
         config.addDefault("MySQL.password", "");
 
         config.addDefault("Update-Message", true);
+        config.addDefault("Using-Citizens", false);
         config.saveConfig();
     }
 
@@ -149,13 +145,13 @@ public class Core extends JavaPlugin {
 
         // Load Menu Defaults
 
-        new MenuManager();
+        new MenuConfiguration();
 
         // Load messages.
-        new MessageManager();
+        new MessageConfiguration();
 
         // Load data
-        new DefaultManager();
+        new DefaultConfiguration();
 
         // Register listeners.
         pm.registerEvents(new PlayerListener(), this);

@@ -1,6 +1,6 @@
 package src.me.lim_bo56.settings.v1_9_R1;
 
-import me.lim_bo56.settings.versionmanager.IMount;
+import me.lim_bo56.settings.version.IMount;
 import net.minecraft.server.v1_9_R1.EntityPlayer;
 import net.minecraft.server.v1_9_R1.PacketPlayOutMount;
 import org.bukkit.craftbukkit.v1_9_R1.entity.CraftPlayer;

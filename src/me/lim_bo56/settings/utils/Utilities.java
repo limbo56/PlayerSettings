@@ -1,7 +1,7 @@
 package me.lim_bo56.settings.utils;
 
 import me.lim_bo56.settings.managers.ConfigurationManager;
-import me.lim_bo56.settings.objects.CustomPlayer;
+import me.lim_bo56.settings.player.CustomPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -56,32 +56,27 @@ public class Utilities {
             return false;
         }
 
-        if (serverVersion.equals(version))
-            return true;
-        else
-            return false;
+        return serverVersion.equals(version);
 
     }
 
     public static void addToDefault(Player player) {
-        if (Variables.defaultVisibility) Variables.VISIBILITY_LIST.add(player.getUniqueId());
-        if (Variables.defaultStacker) Variables.STACKER_LIST.add(player.getUniqueId());
-        if (Variables.defaultChat) Variables.CHAT_LIST.add(player.getUniqueId());
-        if (Variables.defaultVanish) Variables.VANISH_LIST.add(player.getUniqueId());
-        if (Variables.defaultFly) Variables.FLY_LIST.add(player.getUniqueId());
-        if (Variables.defaultSpeed) Variables.SPEED_LIST.add(player.getUniqueId());
-        if (Variables.defaultJump) Variables.JUMP_LIST.add(player.getUniqueId());
+        if (ConfigurationManager.getDefault().get("Default.Visibility")) Variables.VISIBILITY_LIST.put(player.getUniqueId(), true);
+        if (ConfigurationManager.getDefault().get("Default.Stacker")) Variables.STACKER_LIST.put(player.getUniqueId(), true);
+        if (ConfigurationManager.getDefault().get("Default.Chat")) Variables.CHAT_LIST.put(player.getUniqueId(), true);
+        if (ConfigurationManager.getDefault().get("Default.Vanish")) Variables.VANISH_LIST.put(player.getUniqueId(), true);
+        if (ConfigurationManager.getDefault().get("Default.Fly")) Variables.FLY_LIST.put(player.getUniqueId(), true);
+        if (ConfigurationManager.getDefault().get("Default.Speed")) Variables.SPEED_LIST.put(player.getUniqueId(), true);
+        if (ConfigurationManager.getDefault().get("Default.Jump")) Variables.JUMP_LIST.put(player.getUniqueId(), true);
     }
 
     public static void loadOnlinePlayers() {
-
-        ConfigurationManager menu = ConfigurationManager.getMenu();
 
         if (Bukkit.getOnlinePlayers() != null)
 
             for (Player player : Bukkit.getOnlinePlayers()) {
 
-                if (menu.getStringList("worlds-allowed").contains(player.getWorld().getName())) {
+                if (Variables.WORLDS_ALLOWED.contains(player.getWorld().getName())) {
 
                     CustomPlayer cPlayer = new CustomPlayer(player);
 
@@ -120,10 +115,10 @@ public class Utilities {
                     }
 
                     if (player.isOp()) {
-                        player.sendMessage(ColorUtils.Color(Variables.CHAT_TITLE + Updater.playerUpdater()));
+                        player.sendMessage(Variables.CHAT_TITLE + Updater.playerUpdater());
                     }
 
-                } else if (!menu.getStringList("worlds-allowed").contains(player.getWorld().getName())) {
+                } else if (!Variables.WORLDS_ALLOWED.contains(player.getWorld().getName())) {
                     for (Player online : Bukkit.getOnlinePlayers()) {
                         CustomPlayer oPlayer = new CustomPlayer(online);
 

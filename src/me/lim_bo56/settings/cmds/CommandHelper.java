@@ -1,6 +1,5 @@
 package me.lim_bo56.settings.cmds;
 
-import me.lim_bo56.settings.managers.MessageManager;
 import me.lim_bo56.settings.utils.PlayerUtils;
 import me.lim_bo56.settings.utils.Variables;
 import org.bukkit.ChatColor;
@@ -23,7 +22,7 @@ public class CommandHelper {
     }
 
     public void noPermission() {
-        PlayerUtils.sendMessage(sender, MessageManager.getMessage("No-Permissions"));
+        PlayerUtils.sendMessage(sender, Variables.NO_PERMISSIONS);
     }
 
     public void noConsole() {

@@ -1,21 +1,21 @@
-package src.me.lim_bo56.settings.v1_10_R1;
+package src.me.lim_bo56.settings.v1_11_R1;
 
 import me.lim_bo56.settings.version.IItemGlower;
-import net.minecraft.server.v1_10_R1.NBTTagCompound;
-import net.minecraft.server.v1_10_R1.NBTTagList;
-import org.bukkit.craftbukkit.v1_10_R1.inventory.CraftItemStack;
+import net.minecraft.server.v1_11_R1.NBTTagCompound;
+import net.minecraft.server.v1_11_R1.NBTTagList;
+import org.bukkit.craftbukkit.v1_11_R1.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
 
 /**
  * Created by lim_bo56
- * On 9/2/2016
- * At 5:46 PM
+ * On 11/22/2016
+ * At 8:40 PM
  */
 public class ItemGlower implements IItemGlower {
 
     @Override
     public ItemStack glow(ItemStack itemStack) {
-        net.minecraft.server.v1_10_R1.ItemStack localItemStack = CraftItemStack.asNMSCopy(itemStack);
+        net.minecraft.server.v1_11_R1.ItemStack localItemStack = CraftItemStack.asNMSCopy(itemStack);
         NBTTagCompound localNBTTagCompound = null;
         if (!localItemStack.hasTag()) {
             localNBTTagCompound = new NBTTagCompound();
