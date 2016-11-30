@@ -14,6 +14,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.potion.PotionEffectType;
 
@@ -126,6 +127,17 @@ public class SettingsMenu implements Listener {
         }
 
         p.openInventory(Settings);
+    }
+
+    @EventHandler
+    public void onItemDrop(PlayerDropItemEvent event) {
+        Player player = event.getPlayer();
+
+        if (player.getOpenInventory().getType() == InventoryType.CHEST)
+            if (player.getOpenInventory().getTitle().equalsIgnoreCase(MenuConfiguration.get("Menu.Name"))) {
+                event.getItemDrop().remove();
+                openSettings(player);
+            }
     }
 
     @EventHandler
