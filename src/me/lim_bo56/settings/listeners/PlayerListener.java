@@ -4,9 +4,9 @@ import me.lim_bo56.settings.Core;
 import me.lim_bo56.settings.config.MessageConfiguration;
 import me.lim_bo56.settings.managers.ConfigurationManager;
 import me.lim_bo56.settings.player.CustomPlayer;
+import me.lim_bo56.settings.utils.Cache;
 import me.lim_bo56.settings.utils.Updater;
 import me.lim_bo56.settings.utils.Utilities;
-import me.lim_bo56.settings.utils.Cache;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Entity;
@@ -19,6 +19,8 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
+
+import java.util.Iterator;
 
 /**
  * Created by lim_bo56
@@ -124,7 +126,10 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onPlayersChat(final AsyncPlayerChatEvent event) {
         Player player = event.getPlayer();
+
         CustomPlayer cPlayer = new CustomPlayer(player);
+
+        Iterator<Player> recipients = event.getRecipients().iterator();
 
         if (Cache.WORLDS_ALLOWED.contains(player.getWorld().getName())) {
 
@@ -135,14 +140,14 @@ public class PlayerListener implements Listener {
             } else if (cPlayer.hasChat()) {
                 event.getRecipients().add(player);
                 event.setCancelled(false);
-            }
 
-            for (Player player1 : event.getRecipients()) {
-                CustomPlayer rPlayer = new CustomPlayer(player1);
+                for (Player online : Bukkit.getOnlinePlayers()) {
+                    CustomPlayer customPlayer = new CustomPlayer(online);
 
-                if (!rPlayer.hasChat()) {
-                    event.getRecipients().remove(player1);
+                    if (!customPlayer.hasChat())
+                        event.getRecipients().remove(online);
                 }
+
             }
 
 
