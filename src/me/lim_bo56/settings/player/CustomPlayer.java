@@ -75,7 +75,7 @@ public class CustomPlayer {
                 public void run() {
                     try {
                         PreparedStatement sql = MySqlConnection.getInstance().getCurrentConnection().prepareStatement(
-                                "INSERT INTO `playersettings` (UUID, Visibility, Stacker, Chat, Vanish, Fly, Speed, Jump) VALUES (" +
+                                "INSERT INTO `PlayerSettings` (UUID, Visibility, Stacker, Chat, Vanish, Fly, Speed, Jump) VALUES (" +
                                         "'" + uuid.toString() + "', " +
                                         "'" + visibility + "', " +
                                         "'" + stacker + "', " +
@@ -139,13 +139,13 @@ public class CustomPlayer {
 
                         Statement statement = MySqlConnection.getInstance().getCurrentConnection().createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 
-                        statement.addBatch("UPDATE `playersettings` SET `Visibility` = " + visibility + " WHERE UUID = '" + uuid.toString() + "'");
-                        statement.addBatch("UPDATE `playersettings` SET `Stacker` = " + stacker + " WHERE UUID = '" + uuid.toString() + "'");
-                        statement.addBatch("UPDATE `playersettings` SET `Chat` = " + chat + " WHERE UUID = '" + uuid.toString() + "'");
-                        statement.addBatch("UPDATE `playersettings` SET `Vanish` = " + vanish + " WHERE UUID = '" + uuid.toString() + "'");
-                        statement.addBatch("UPDATE `playersettings` SET `Fly` = " + fly + " WHERE UUID = '" + uuid.toString() + "'");
-                        statement.addBatch("UPDATE `playersettings` SET `Speed` = " + speed + " WHERE UUID = '" + uuid.toString() + "'");
-                        statement.addBatch("UPDATE `playersettings` SET `Jump` = " + jump + " WHERE UUID = '" + uuid.toString() + "'");
+                        statement.addBatch("UPDATE `PlayerSettings` SET `Visibility` = " + visibility + " WHERE UUID = '" + uuid.toString() + "'");
+                        statement.addBatch("UPDATE `PlayerSettings` SET `Stacker` = " + stacker + " WHERE UUID = '" + uuid.toString() + "'");
+                        statement.addBatch("UPDATE `PlayerSettings` SET `Chat` = " + chat + " WHERE UUID = '" + uuid.toString() + "'");
+                        statement.addBatch("UPDATE `PlayerSettings` SET `Vanish` = " + vanish + " WHERE UUID = '" + uuid.toString() + "'");
+                        statement.addBatch("UPDATE `PlayerSettings` SET `Fly` = " + fly + " WHERE UUID = '" + uuid.toString() + "'");
+                        statement.addBatch("UPDATE `PlayerSettings` SET `Speed` = " + speed + " WHERE UUID = '" + uuid.toString() + "'");
+                        statement.addBatch("UPDATE `PlayerSettings` SET `Jump` = " + jump + " WHERE UUID = '" + uuid.toString() + "'");
 
                         statement.executeBatch();
                         statement.close();
@@ -162,7 +162,7 @@ public class CustomPlayer {
     private boolean getBoolean(String str) {
         try {
             ResultSet rs = MySqlConnection.getInstance().getCurrentConnection().createStatement().executeQuery(
-                    "SELECT `" + str + "` FROM `playersettings` WHERE `UUID` = '" + getUuid().toString() + "'");
+                    "SELECT `" + str + "` FROM `PlayerSettings` WHERE `UUID` = '" + getUuid().toString() + "'");
 
             if (rs.next()) {
                 return rs.getBoolean(1);
