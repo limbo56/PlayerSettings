@@ -129,8 +129,6 @@ public class PlayerListener implements Listener {
 
         CustomPlayer cPlayer = new CustomPlayer(player);
 
-        Iterator<Player> recipients = event.getRecipients().iterator();
-
         if (Cache.WORLDS_ALLOWED.contains(player.getWorld().getName())) {
 
             if (!cPlayer.hasChat()) {
