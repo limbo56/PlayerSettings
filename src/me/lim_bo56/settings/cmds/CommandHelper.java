@@ -1,7 +1,7 @@
 package me.lim_bo56.settings.cmds;
 
 import me.lim_bo56.settings.utils.PlayerUtils;
-import me.lim_bo56.settings.utils.Variables;
+import me.lim_bo56.settings.utils.Cache;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -22,11 +22,11 @@ public class CommandHelper {
     }
 
     public void noPermission() {
-        PlayerUtils.sendMessage(sender, Variables.NO_PERMISSIONS);
+        PlayerUtils.sendMessage(sender, Cache.NO_PERMISSIONS);
     }
 
     public void noConsole() {
-        PlayerUtils.sendMessage(sender, Variables.CHAT_TITLE + ChatColor.RED + "This command can only be run in-game!");
+        PlayerUtils.sendMessage(sender, Cache.CHAT_TITLE + ChatColor.RED + "This command can only be run in-game!");
     }
 
 }
