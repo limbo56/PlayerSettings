@@ -3,8 +3,8 @@ package me.lim_bo56.settings.menus;
 import me.lim_bo56.settings.Core;
 import me.lim_bo56.settings.config.MenuConfiguration;
 import me.lim_bo56.settings.player.CustomPlayer;
+import me.lim_bo56.settings.utils.Cache;
 import me.lim_bo56.settings.utils.ItemFactory;
-import me.lim_bo56.settings.utils.Variables;
 import org.bukkit.Bukkit;
 import org.bukkit.Instrument;
 import org.bukkit.Material;
@@ -14,6 +14,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.potion.PotionEffectType;
 
@@ -25,16 +26,17 @@ import java.util.List;
  * At 2:24:22 AM
  */
 
+@SuppressWarnings("unused")
 public class SettingsMenu implements Listener {
 
     public static void openSettings(final Player p) {
         CustomPlayer cPlayer = new CustomPlayer(p);
 
-        List<String> enabledLore = Variables.ENABLED_LORE;
+        List<String> enabledLore = Cache.ENABLED_LORE;
         String[] array = new String[enabledLore.size()];
         enabledLore.toArray(array);
 
-        List<String> disabledLore = Variables.DISABLED_LORE;
+        List<String> disabledLore = Cache.DISABLED_LORE;
         String[] array2 = new String[disabledLore.size()];
         disabledLore.toArray(array2);
 
@@ -43,84 +45,84 @@ public class SettingsMenu implements Listener {
         if (cPlayer.hasJump()) {
 
             Settings.setItem(12, Core.getInstance().getItemGlower().glow(ItemFactory.createItem(MenuConfiguration.get("Menu.Items.Jump.Name"), false, Material.getMaterial(MenuConfiguration.get("Menu.Items.Jump.Material")), 1, 0)));
-            Settings.setItem(21, ItemFactory.createItem(Variables.ENABLED_NAME, true, Material.INK_SACK, 1, 10, array2));
+            Settings.setItem(21, ItemFactory.createItem(Cache.ENABLED_NAME, true, Material.INK_SACK, 1, 10, array2));
 
         } else {
 
             Settings.setItem(12, ItemFactory.createItem(MenuConfiguration.get("Menu.Items.Jump.Name"), false, Material.getMaterial(MenuConfiguration.get("Menu.Items.Jump.Material")), 1, 0));
-            Settings.setItem(21, ItemFactory.createItem(Variables.DISABLED_NAME, true, Material.INK_SACK, 1, 8, array));
+            Settings.setItem(21, ItemFactory.createItem(Cache.DISABLED_NAME, true, Material.INK_SACK, 1, 8, array));
 
         }
 
         if (cPlayer.hasSpeed()) {
 
             Settings.setItem(10, Core.getInstance().getItemGlower().glow(ItemFactory.createItem(MenuConfiguration.get("Menu.Items.Speed.Name"), false, Material.getMaterial(MenuConfiguration.get("Menu.Items.Speed.Material")), 1, 0)));
-            Settings.setItem(19, ItemFactory.createItem(Variables.ENABLED_NAME, true, Material.INK_SACK, 1, 10, array2));
+            Settings.setItem(19, ItemFactory.createItem(Cache.ENABLED_NAME, true, Material.INK_SACK, 1, 10, array2));
 
         } else {
 
             Settings.setItem(10, ItemFactory.createItem(MenuConfiguration.get("Menu.Items.Speed.Name"), false, Material.getMaterial(MenuConfiguration.get("Menu.Items.Speed.Material")), 1, 0));
-            Settings.setItem(19, ItemFactory.createItem(Variables.DISABLED_NAME, true, Material.INK_SACK, 1, 8, array));
+            Settings.setItem(19, ItemFactory.createItem(Cache.DISABLED_NAME, true, Material.INK_SACK, 1, 8, array));
 
         }
 
         if (cPlayer.hasFly()) {
 
             Settings.setItem(14, Core.getInstance().getItemGlower().glow(ItemFactory.createItem(MenuConfiguration.get("Menu.Items.Fly.Name"), false, Material.getMaterial(MenuConfiguration.get("Menu.Items.Fly.Material")), 1, 0)));
-            Settings.setItem(23, ItemFactory.createItem(Variables.ENABLED_NAME, true, Material.INK_SACK, 1, 10, array2));
+            Settings.setItem(23, ItemFactory.createItem(Cache.ENABLED_NAME, true, Material.INK_SACK, 1, 10, array2));
 
         } else {
 
             Settings.setItem(14, ItemFactory.createItem(MenuConfiguration.get("Menu.Items.Fly.Name"), false, Material.getMaterial(MenuConfiguration.get("Menu.Items.Fly.Material")), 1, 0));
-            Settings.setItem(23, ItemFactory.createItem(Variables.DISABLED_NAME, true, Material.INK_SACK, 1, 8, array));
+            Settings.setItem(23, ItemFactory.createItem(Cache.DISABLED_NAME, true, Material.INK_SACK, 1, 8, array));
 
         }
 
         if (cPlayer.hasVanish()) {
 
             Settings.setItem(16, Core.getInstance().getItemGlower().glow(ItemFactory.createItem(MenuConfiguration.get("Menu.Items.Vanish.Name"), false, Material.getMaterial(MenuConfiguration.get("Menu.Items.Vanish.Material")), 1, 0)));
-            Settings.setItem(25, ItemFactory.createItem(Variables.ENABLED_NAME, true, Material.INK_SACK, 1, 10, array2));
+            Settings.setItem(25, ItemFactory.createItem(Cache.ENABLED_NAME, true, Material.INK_SACK, 1, 10, array2));
 
         } else {
 
             Settings.setItem(16, ItemFactory.createItem(MenuConfiguration.get("Menu.Items.Vanish.Name"), false, Material.getMaterial(MenuConfiguration.get("Menu.Items.Vanish.Material")), 1, 0));
-            Settings.setItem(25, ItemFactory.createItem(Variables.DISABLED_NAME, true, Material.INK_SACK, 1, 8, array));
+            Settings.setItem(25, ItemFactory.createItem(Cache.DISABLED_NAME, true, Material.INK_SACK, 1, 8, array));
 
         }
 
         if (cPlayer.hasStacker()) {
 
             Settings.setItem(29, Core.getInstance().getItemGlower().glow(ItemFactory.createItem(MenuConfiguration.get("Menu.Items.Stacker.Name"), false, Material.getMaterial(MenuConfiguration.get("Menu.Items.Stacker.Material")), 1, 0)));
-            Settings.setItem(38, ItemFactory.createItem(Variables.ENABLED_NAME, true, Material.INK_SACK, 1, 10, array2));
+            Settings.setItem(38, ItemFactory.createItem(Cache.ENABLED_NAME, true, Material.INK_SACK, 1, 10, array2));
 
         } else {
 
             Settings.setItem(29, ItemFactory.createItem(MenuConfiguration.get("Menu.Items.Stacker.Name"), false, Material.getMaterial(MenuConfiguration.get("Menu.Items.Stacker.Material")), 1, 0));
-            Settings.setItem(38, ItemFactory.createItem(Variables.DISABLED_NAME, true, Material.INK_SACK, 1, 8, array));
+            Settings.setItem(38, ItemFactory.createItem(Cache.DISABLED_NAME, true, Material.INK_SACK, 1, 8, array));
 
         }
 
         if (cPlayer.hasVisibility()) {
 
             Settings.setItem(31, Core.getInstance().getItemGlower().glow(ItemFactory.createItem(MenuConfiguration.get("Menu.Items.Visibility.Name"), false, Material.getMaterial(MenuConfiguration.get("Menu.Items.Visibility.Material")), 1, 0)));
-            Settings.setItem(40, ItemFactory.createItem(Variables.ENABLED_NAME, true, Material.INK_SACK, 1, 10, array2));
+            Settings.setItem(40, ItemFactory.createItem(Cache.ENABLED_NAME, true, Material.INK_SACK, 1, 10, array2));
 
         } else {
 
             Settings.setItem(31, ItemFactory.createItem(MenuConfiguration.get("Menu.Items.Visibility.Name"), false, Material.getMaterial(MenuConfiguration.get("Menu.Items.Visibility.Material")), 1, 0));
-            Settings.setItem(40, ItemFactory.createItem(Variables.DISABLED_NAME, true, Material.INK_SACK, 1, 8, array));
+            Settings.setItem(40, ItemFactory.createItem(Cache.DISABLED_NAME, true, Material.INK_SACK, 1, 8, array));
 
         }
 
         if (cPlayer.hasChat()) {
 
             Settings.setItem(33, Core.getInstance().getItemGlower().glow(ItemFactory.createItem(MenuConfiguration.get("Menu.Items.Chat.Name"), false, Material.getMaterial(MenuConfiguration.get("Menu.Items.Chat.Material")), 1, 0)));
-            Settings.setItem(42, ItemFactory.createItem(Variables.ENABLED_NAME, true, Material.INK_SACK, 1, 10, array2));
+            Settings.setItem(42, ItemFactory.createItem(Cache.ENABLED_NAME, true, Material.INK_SACK, 1, 10, array2));
 
         } else {
 
             Settings.setItem(33, ItemFactory.createItem(MenuConfiguration.get("Menu.Items.Chat.Name"), false, Material.getMaterial(MenuConfiguration.get("Menu.Items.Chat.Material")), 1, 0));
-            Settings.setItem(42, ItemFactory.createItem(Variables.DISABLED_NAME, true, Material.INK_SACK, 1, 8, array));
+            Settings.setItem(42, ItemFactory.createItem(Cache.DISABLED_NAME, true, Material.INK_SACK, 1, 8, array));
 
         }
 
@@ -128,11 +130,22 @@ public class SettingsMenu implements Listener {
     }
 
     @EventHandler
+    public void onItemDrop(PlayerDropItemEvent event) {
+        Player player = event.getPlayer();
+
+        if (player.getOpenInventory().getType() == InventoryType.CHEST)
+            if (player.getOpenInventory().getTitle().equalsIgnoreCase(MenuConfiguration.get("Menu.Name"))) {
+                event.getItemDrop().remove();
+                openSettings(player);
+            }
+    }
+
+    @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
         final Player player = (Player) event.getWhoClicked();
         CustomPlayer cPlayer = new CustomPlayer(player);
 
-        if (Variables.WORLDS_ALLOWED.contains(player.getWorld().getName())) {
+        if (Cache.WORLDS_ALLOWED.contains(player.getWorld().getName())) {
 
             if (event.getInventory().getType() == InventoryType.CHEST) {
                 if (event.getInventory().getTitle().equalsIgnoreCase(MenuConfiguration.get("Menu.Name"))) {
@@ -142,7 +155,7 @@ public class SettingsMenu implements Listener {
 
                             if (event.getSlot() == 10 || event.getSlot() == 19) {
 
-                                if (player.hasPermission(Variables.SPEED_PERMISSION)) {
+                                if (player.hasPermission(Cache.SPEED_PERMISSION)) {
 
                                     if (cPlayer.hasSpeed()) {
 
@@ -154,22 +167,22 @@ public class SettingsMenu implements Listener {
                                     } else if (!cPlayer.hasSpeed()) {
 
                                         cPlayer.setSpeed(true);
-                                        player.addPotionEffect(Variables.SPEED);
+                                        player.addPotionEffect(Cache.SPEED);
                                         player.playNote(player.getLocation(), Instrument.PIANO, new Note(15));
                                         openSettings(player);
 
                                     }
 
-                                } else if (!player.hasPermission(Variables.SPEED_PERMISSION)) {
+                                } else if (!player.hasPermission(Cache.SPEED_PERMISSION)) {
 
-                                    player.sendMessage(Variables.NO_PERMISSIONS);
+                                    player.sendMessage(Cache.NO_PERMISSIONS);
 
                                 }
                             }
 
                             if (event.getSlot() == 12 || event.getSlot() == 21) {
 
-                                if (player.hasPermission(Variables.JUMP_PERMISSION)) {
+                                if (player.hasPermission(Cache.JUMP_PERMISSION)) {
 
                                     if (cPlayer.hasJump()) {
 
@@ -181,22 +194,22 @@ public class SettingsMenu implements Listener {
                                     } else if (!cPlayer.hasJump()) {
 
                                         cPlayer.setJump(true);
-                                        player.addPotionEffect(Variables.JUMP);
+                                        player.addPotionEffect(Cache.JUMP);
                                         player.playNote(player.getLocation(), Instrument.PIANO, new Note(15));
                                         openSettings(player);
 
                                     }
 
-                                } else if (!player.hasPermission(Variables.JUMP_PERMISSION)) {
+                                } else if (!player.hasPermission(Cache.JUMP_PERMISSION)) {
 
-                                    player.sendMessage(Variables.NO_PERMISSIONS);
+                                    player.sendMessage(Cache.NO_PERMISSIONS);
 
                                 }
                             }
 
                             if (event.getSlot() == 14 || event.getSlot() == 23) {
 
-                                if (player.hasPermission(Variables.FLY_PERMISSION)) {
+                                if (player.hasPermission(Cache.FLY_PERMISSION)) {
 
                                     if (cPlayer.hasFly()) {
 
@@ -214,16 +227,16 @@ public class SettingsMenu implements Listener {
 
                                     }
 
-                                } else if (!player.hasPermission(Variables.FLY_PERMISSION)) {
+                                } else if (!player.hasPermission(Cache.FLY_PERMISSION)) {
 
-                                    player.sendMessage(Variables.NO_PERMISSIONS);
+                                    player.sendMessage(Cache.NO_PERMISSIONS);
 
                                 }
                             }
 
                             if (event.getSlot() == 16 || event.getSlot() == 25) {
 
-                                if (player.hasPermission(Variables.VANISH_PERMISSION)) {
+                                if (player.hasPermission(Cache.VANISH_PERMISSION)) {
 
                                     if (cPlayer.hasVanish()) {
 
@@ -241,15 +254,15 @@ public class SettingsMenu implements Listener {
                                         for (Player players : Bukkit.getOnlinePlayers()) {
                                             players.hidePlayer(player);
                                         }
-                                        player.addPotionEffect(Variables.INVISIBILITY);
+                                        player.addPotionEffect(Cache.INVISIBILITY);
                                         player.playNote(player.getLocation(), Instrument.PIANO, new Note(15));
                                         openSettings(player);
 
                                     }
 
-                                } else if (!player.hasPermission(Variables.VANISH_PERMISSION)) {
+                                } else if (!player.hasPermission(Cache.VANISH_PERMISSION)) {
 
-                                    player.sendMessage(Variables.NO_PERMISSIONS);
+                                    player.sendMessage(Cache.NO_PERMISSIONS);
 
                                 }
                             }

@@ -27,7 +27,7 @@ public class MessageConfiguration {
     private void loadMessages() {
         addDefault("No-Permissions", "&c&lYOU &7don`t have permissions to do this.");
         addDefault("Player-Stacker-Disabled", "&c&lYOU &7have stacker disabled.");
-        addDefault("Target-Stacker-Disabled", "&c&lTHAT &7player has stacker disabled.");
+        addDefault("Target-Stacker-Disabled", "&c&lTARGET &7has stacker disabled.");
         addDefault("Chat-Disabled", "&c&lYOU &7have the chat disabled.");
 
         addDefault("Send.Player-Stacker-Disabled", true);
