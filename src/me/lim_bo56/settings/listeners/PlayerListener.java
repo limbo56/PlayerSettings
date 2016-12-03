@@ -20,6 +20,8 @@ import org.bukkit.event.player.*;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
+import java.util.Iterator;
+
 /**
  * Created by lim_bo56
  * On 8/27/2016
