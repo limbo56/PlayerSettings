@@ -136,7 +136,8 @@ public class ConfigurationManager {
         return fileConfiguration.getStringList(path);
     }
 
-    public <T> T get(String path) {
+    @SuppressWarnings("unchecked")
+	public <T> T get(String path) {
         return (T) fileConfiguration.get(path);
     }
 

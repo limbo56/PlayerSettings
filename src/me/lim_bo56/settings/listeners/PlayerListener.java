@@ -7,6 +7,9 @@ import me.lim_bo56.settings.player.CustomPlayer;
 import me.lim_bo56.settings.utils.Cache;
 import me.lim_bo56.settings.utils.Updater;
 import me.lim_bo56.settings.utils.Utilities;
+
+import java.util.Random;
+
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Entity;
@@ -20,14 +23,16 @@ import org.bukkit.event.player.*;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
-import java.util.Iterator;
+import com.statiocraft.jukebox.Shuffle;
+import com.statiocraft.jukebox.SingleSong;
+import com.statiocraft.jukebox.scJukeBox;
 
 /**
  * Created by lim_bo56
  * On 8/27/2016
  * At 12:00 AM
  */
-@SuppressWarnings("unused")
+
 public class PlayerListener implements Listener {
 
     @EventHandler
@@ -86,7 +91,24 @@ public class PlayerListener implements Listener {
                 player.addPotionEffect(Cache.JUMP);
             else
                 player.removePotionEffect(PotionEffectType.JUMP);
-
+            
+            if (cPlayer.hasRadio() && player.hasPermission(Cache.RADIO_PERMISSION)) {
+            	int type = ConfigurationManager.getDefault().getInt("Radio.type");
+            	switch(type) {
+            	case 1:
+            		new Shuffle().addPlayer(player);
+            		break;
+            	case 2:
+            		new SingleSong(scJukeBox.listSongs().get(new Random().nextInt(scJukeBox.listSongs().size()))).addPlayer(player);
+            		break;
+            	case 3:
+            		scJukeBox.getRadio().addPlayer(player);
+            		break;
+            	default:
+            		Core.getInstance().log("Invalid Radio type. Please put a value between 1 and 3");
+            		break;
+            	}
+            }
 
             if (Core.getInstance().getConfig().getBoolean("Update-Message"))
                 if (player.isOp())
@@ -105,6 +127,10 @@ public class PlayerListener implements Listener {
             player.removePotionEffect(PotionEffectType.SPEED);
             player.removePotionEffect(PotionEffectType.JUMP);
             player.removePotionEffect(PotionEffectType.INVISIBILITY);
+            if (Utilities.hasRadioPlugin()) {
+            	if (scJukeBox.getCurrentJukebox(player) != null)
+            		scJukeBox.getCurrentJukebox(player).removePlayer(player);
+            }
         }
 
     }
@@ -180,6 +206,8 @@ public class PlayerListener implements Listener {
                                     Core.getInstance().getMount().sendMountPacket(player);
                                 } else if (Utilities.isVersion("v1_10_R1")) {
                                     Core.getInstance().getMount().sendMountPacket(player);
+                                } else if (Utilities.isVersion("v1_11_R1")) {
+                                	Core.getInstance().getMount().sendMountPacket(player);
                                 }
 
                             } else if (!ePlayer.hasStacker())
@@ -214,6 +242,8 @@ public class PlayerListener implements Listener {
                         Core.getInstance().getMount().sendMountPacket(player);
                     } else if (Utilities.isVersion("v1_10_R1")) {
                         Core.getInstance().getMount().sendMountPacket(player);
+                    } else if (Utilities.isVersion("v1_11_R1")) {
+                    	Core.getInstance().getMount().sendMountPacket(player);
                     }
 
                     Vector direction = player.getLocation().getDirection();

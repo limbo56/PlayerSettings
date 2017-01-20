@@ -1,6 +1,7 @@
 package me.lim_bo56.settings.config;
 
 import me.lim_bo56.settings.managers.ConfigurationManager;
+import me.lim_bo56.settings.utils.Utilities;
 
 /**
  * Created by lim_bo56
@@ -28,7 +29,11 @@ public class DefaultConfiguration {
         addDefault("Default.Fly", false);
         addDefault("Default.Speed", false);
         addDefault("Default.Jump", false);
+        if (Utilities.hasRadioPlugin()) {
+        	addDefault("Default.Radio", true);
 
+        	addDefault("Radio.type", 1);
+        }
         addDefault("Stacker.launch-force", 1);
         addDefault("Speed.level", 1);
         addDefault("Jump.level", 1);

@@ -13,8 +13,6 @@ import org.bukkit.event.player.PlayerToggleFlightEvent;
  * At 12:02 AM
  */
 
-// FIXME: 11/3/2016
-@SuppressWarnings("unused")
 public class FlyToggleListener implements Listener {
 
     @EventHandler
