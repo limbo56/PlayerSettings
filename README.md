@@ -2,13 +2,15 @@
 ####This is the official source code of the plugin Player Settings.
 
 #Info
-####1. Player Settings supports from 1.8 to 1.10. The plugin adds a very cool and configurable menu to your server's lobby/hub
+####1. Player Settings supports from 1.8 to 1.11. The plugin adds a very cool and configurable menu to your server's lobby/hub
 
 ####2. The plugin works with the spigot/craftbukkit/paperspigot etc.
 
 ####3. With these menus, you can change the preferences that you want, like fly, hub stacker, and many others.
 
-####4. This menu is one of the most searched menus, that is the reason why I made this plugin. Also the plugin is free, you can check it out on the spigot page.
+####4. Compatible with [icJukeBox](https://www.spigotmc.org/resources/icjukebox.6129/) in order to change the preference for the music.
+
+####5. This menu is one of the most searched menus, that is the reason why I made this plugin. Also the plugin is free, you can check it out on the spigot page.
 
 #Link
 ####Where can I check out this cool plugin? Right here! Plugin Page: https://www.spigotmc.org/resources/player-settings.14622/
