@@ -1,6 +1,7 @@
 package me.lim_bo56.settings.config;
 
 import me.lim_bo56.settings.managers.ConfigurationManager;
+import me.lim_bo56.settings.utils.Utilities;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -58,6 +59,11 @@ public class MenuConfiguration {
 
         addDefault("Menu.Items.Chat.Name", "&7Chat");
         addDefault("Menu.Items.Chat.Material", "PAPER");
+        
+        if (Utilities.hasRadioPlugin()) {
+        	addDefault("Menu.Items.Radio.Name", "&dRadio");
+        	addDefault("Menu.Items.Radio.Material", "JUKEBOX");
+        }
 
         addDefault("worlds-allowed", Collections.singletonList("world"));
 

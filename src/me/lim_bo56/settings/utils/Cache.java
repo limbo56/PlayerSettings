@@ -34,6 +34,7 @@ public class Cache {
     public static final Permission JUMP_PERMISSION = new Permission("settings.jump");
     public static final Permission FLY_PERMISSION = new Permission("settings.fly");
     public static final Permission VANISH_PERMISSION = new Permission("settings.vanish");
+    public static final Permission RADIO_PERMISSION = new Permission("settings.radio");
 
     public static final HashMap<UUID, Boolean> VISIBILITY_LIST = new HashMap<>();
     public static final HashMap<UUID, Boolean> SPEED_LIST = new HashMap<>();
@@ -42,6 +43,7 @@ public class Cache {
     public static final HashMap<UUID, Boolean> CHAT_LIST = new HashMap<>();
     public static final HashMap<UUID, Boolean> STACKER_LIST = new HashMap<>();
     public static final HashMap<UUID, Boolean> VANISH_LIST = new HashMap<>();
+    public static final HashMap<UUID, Boolean> RADIO_LIST = new HashMap<>();
 
     public static final PotionEffect INVISIBILITY = new PotionEffect(PotionEffectType.INVISIBILITY, 1000000000, 0);
     public static final PotionEffect SPEED = new PotionEffect(PotionEffectType.SPEED,1000000000, ConfigurationManager.getDefault().getInt("Speed.level"));

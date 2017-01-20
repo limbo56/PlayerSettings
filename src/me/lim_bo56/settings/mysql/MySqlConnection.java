@@ -63,7 +63,8 @@ public class MySqlConnection {
                                         + "`Vanish` TINYINT(0) DEFAULT NULL,"
                                         + "`Fly` TINYINT(0) DEFAULT NULL,"
                                         + "`Speed` TINYINT(0) DEFAULT NULL,"
-                                        + "`Jump` TINYINT(0) DEFAULT NULL, PRIMARY KEY (UUID))");
+                                        + "`Jump` TINYINT(0) DEFAULT NULL,"
+                                        + "`Radio` TINYINT(0) DEFAULT NULL, PRIMARY KEY (UUID))");
                     }
 
                 } catch (SQLException e) {
@@ -71,6 +72,26 @@ public class MySqlConnection {
                 }
             }
         });
+    }
+
+    public void updateTable() {
+    	try {
+    		if (connection != null && !connection.isClosed()) {
+    			ResultSetMetaData table = getCurrentConnection().createStatement().executeQuery("SELECT * FROM `PlayerSettings`").getMetaData();
+
+    			boolean found = false;
+    			for (int i = 1; i <= table.getColumnCount(); i++) {
+    				if ("Radio".equals(table.getColumnName(i)))
+    					found = true;
+    			}
+
+    			if (!found) {
+    				getCurrentConnection().createStatement().executeUpdate("ALTER TABLE `PlayerSettings` ADD `Radio` TINYINT(0) DEFAULT NULL");
+    			}
+    		}
+    	} catch (SQLException e) {
+    		Bukkit.getLogger().severe("Couldn't update tables on the database ;(.");
+    	}
     }
 
     public Connection getCurrentConnection() {

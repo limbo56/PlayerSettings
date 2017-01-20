@@ -1,5 +1,6 @@
 package me.lim_bo56.settings.utils;
 
+import me.lim_bo56.settings.Core;
 import me.lim_bo56.settings.managers.ConfigurationManager;
 import me.lim_bo56.settings.player.CustomPlayer;
 import org.bukkit.Bukkit;
@@ -8,7 +9,12 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffectType;
 
+import com.statiocraft.jukebox.Shuffle;
+import com.statiocraft.jukebox.SingleSong;
+import com.statiocraft.jukebox.scJukeBox;
+
 import java.util.Map.Entry;
+import java.util.Random;
 import java.util.SortedMap;
 
 /**
@@ -61,15 +67,20 @@ public class Utilities {
     }
 
     public static void addToDefault(Player player) {
-        if (ConfigurationManager.getDefault().get("Default.Visibility"))
+        if (ConfigurationManager.getDefault().getBoolean("Default.Visibility"))
             Cache.VISIBILITY_LIST.put(player.getUniqueId(), true);
-        if (ConfigurationManager.getDefault().get("Default.Stacker"))
+        if (ConfigurationManager.getDefault().getBoolean("Default.Stacker"))
             Cache.STACKER_LIST.put(player.getUniqueId(), true);
-        if (ConfigurationManager.getDefault().get("Default.Chat")) Cache.CHAT_LIST.put(player.getUniqueId(), true);
-        if (ConfigurationManager.getDefault().get("Default.Vanish")) Cache.VANISH_LIST.put(player.getUniqueId(), true);
-        if (ConfigurationManager.getDefault().get("Default.Fly")) Cache.FLY_LIST.put(player.getUniqueId(), true);
-        if (ConfigurationManager.getDefault().get("Default.Speed")) Cache.SPEED_LIST.put(player.getUniqueId(), true);
-        if (ConfigurationManager.getDefault().get("Default.Jump")) Cache.JUMP_LIST.put(player.getUniqueId(), true);
+        if (ConfigurationManager.getDefault().getBoolean("Default.Chat")) Cache.CHAT_LIST.put(player.getUniqueId(), true);
+        if (ConfigurationManager.getDefault().getBoolean("Default.Vanish")) Cache.VANISH_LIST.put(player.getUniqueId(), true);
+        if (ConfigurationManager.getDefault().getBoolean("Default.Fly")) Cache.FLY_LIST.put(player.getUniqueId(), true);
+        if (ConfigurationManager.getDefault().getBoolean("Default.Speed")) Cache.SPEED_LIST.put(player.getUniqueId(), true);
+        if (ConfigurationManager.getDefault().getBoolean("Default.Jump")) Cache.JUMP_LIST.put(player.getUniqueId(), true);
+        if (hasRadioPlugin() && ConfigurationManager.getDefault().getBoolean("Default.Radio")) Cache.RADIO_LIST.put(player.getUniqueId(), true);
+    }
+    
+    public static boolean hasRadioPlugin() {
+    	return Core.getInstance().getServer().getPluginManager().getPlugin("icJukeBox") != null;
     }
 
     public static void loadOnlinePlayers() {
@@ -114,6 +125,24 @@ public class Utilities {
 
                     if (cPlayer.hasJump()) {
                         player.addPotionEffect(Cache.JUMP);
+                    }
+
+                    if (cPlayer.hasRadio() && player.hasPermission(Cache.RADIO_PERMISSION)) {
+                    	int type = ConfigurationManager.getDefault().getInt("Radio.type");
+                    	switch(type) {
+                    	case 1:
+                    		new Shuffle().addPlayer(player);
+                    		break;
+                    	case 2:
+                    		new SingleSong(scJukeBox.listSongs().get(new Random().nextInt(scJukeBox.listSongs().size()))).addPlayer(player);
+                    		break;
+                    	case 3:
+                    		scJukeBox.getRadio().addPlayer(player);
+                    		break;
+                    	default:
+                    		Core.getInstance().log("Invalid Radio type. Please put a value between 1 and 3");
+                    		break;
+                    	}
                     }
 
                     if (player.isOp()) {
