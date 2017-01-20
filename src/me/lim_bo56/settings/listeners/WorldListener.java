@@ -2,6 +2,8 @@ package me.lim_bo56.settings.listeners;
 
 import me.lim_bo56.settings.player.CustomPlayer;
 import me.lim_bo56.settings.utils.Cache;
+import me.lim_bo56.settings.utils.Utilities;
+
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -9,12 +11,13 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.potion.PotionEffectType;
 
+import com.statiocraft.jukebox.scJukeBox;
+
 /**
  * Created by lim_bo56
  * On Aug 7, 2016
  * At 2:26:48 AM
  */
-@SuppressWarnings("unused")
 public class WorldListener implements Listener {
 
     @EventHandler
@@ -36,9 +39,11 @@ public class WorldListener implements Listener {
             player.removePotionEffect(PotionEffectType.SPEED);
             player.removePotionEffect(PotionEffectType.JUMP);
             player.removePotionEffect(PotionEffectType.INVISIBILITY);
-
+            if (Utilities.hasRadioPlugin()) {
+            	if (scJukeBox.getCurrentJukebox(player) != null)
+            		scJukeBox.getCurrentJukebox(player).removePlayer(player);
+            }
         }
-
 
     }
 

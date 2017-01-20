@@ -80,6 +80,7 @@ public class Core extends JavaPlugin {
 
             MySqlConnection.getInstance().openConnection();
             MySqlConnection.getInstance().createTable();
+            MySqlConnection.getInstance().updateTable();
 
             log("");
         }

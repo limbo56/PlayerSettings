@@ -62,20 +62,21 @@ public class CustomPlayer {
         if (Core.getInstance().getConfig().getBoolean("MySQL.enable")) {
 
             final int
-                    visibility = (ConfigurationManager.getDefault().get("Default.Visibility")) ? 1 : 0,
-                    stacker = (ConfigurationManager.getDefault().get("Default.Stacker")) ? 1 : 0,
-                    chat = (ConfigurationManager.getDefault().get("Default.Chat")) ? 1 : 0,
-                    vanish = (ConfigurationManager.getDefault().get("Default.Vanish")) ? 1 : 0,
-                    fly = (ConfigurationManager.getDefault().get("Default.Fly")) ? 1 : 0,
-                    speed = (ConfigurationManager.getDefault().get("Default.Speed")) ? 1 : 0,
-                    jump = (ConfigurationManager.getDefault().get("Default.Jump")) ? 1 : 0;
+                    visibility = (ConfigurationManager.getDefault().getBoolean("Default.Visibility")) ? 1 : 0,
+                    stacker = (ConfigurationManager.getDefault().getBoolean("Default.Stacker")) ? 1 : 0,
+                    chat = (ConfigurationManager.getDefault().getBoolean("Default.Chat")) ? 1 : 0,
+                    vanish = (ConfigurationManager.getDefault().getBoolean("Default.Vanish")) ? 1 : 0,
+                    fly = (ConfigurationManager.getDefault().getBoolean("Default.Fly")) ? 1 : 0,
+                    speed = (ConfigurationManager.getDefault().getBoolean("Default.Speed")) ? 1 : 0,
+                    jump = (ConfigurationManager.getDefault().getBoolean("Default.Jump")) ? 1 : 0,
+                    radio = (Utilities.hasRadioPlugin() && ConfigurationManager.getDefault().getBoolean("Default.Radio")) ? 1 : 0;
 
             Bukkit.getScheduler().runTaskAsynchronously(Core.getInstance(), new Runnable() {
                 @Override
                 public void run() {
                     try {
                         PreparedStatement sql = MySqlConnection.getInstance().getCurrentConnection().prepareStatement(
-                                "INSERT INTO `PlayerSettings` (UUID, Visibility, Stacker, Chat, Vanish, Fly, Speed, Jump) VALUES (" +
+                                "INSERT INTO `PlayerSettings` (UUID, Visibility, Stacker, Chat, Vanish, Fly, Speed, Jump, Radio) VALUES (" +
                                         "'" + uuid.toString() + "', " +
                                         "'" + visibility + "', " +
                                         "'" + stacker + "', " +
@@ -83,7 +84,8 @@ public class CustomPlayer {
                                         "'" + vanish + "', " +
                                         "'" + fly + "', " +
                                         "'" + speed + "', " +
-                                        "'" + jump + "')");
+                                        "'" + jump + "', " +
+                                        "'" + radio + "')");
 
                         sql.execute();
                         sql.close();
@@ -106,7 +108,8 @@ public class CustomPlayer {
                         vanish = getBoolean("Vanish"),
                         fly = getBoolean("Fly"),
                         speed = getBoolean("Speed"),
-                        jump = getBoolean("Jump");
+                        jump = getBoolean("Jump"),
+                        radio = Utilities.hasRadioPlugin() ? getBoolean("Radio") : false;
 
                 if (visibility) Cache.VISIBILITY_LIST.put(player.getUniqueId(), true);
                 if (stacker) Cache.STACKER_LIST.put(player.getUniqueId(), true);
@@ -115,6 +118,7 @@ public class CustomPlayer {
                 if (fly) Cache.FLY_LIST.put(player.getUniqueId(), true);
                 if (speed) Cache.SPEED_LIST.put(player.getUniqueId(), true);
                 if (jump) Cache.JUMP_LIST.put(player.getUniqueId(), true);
+                if (radio) Cache.RADIO_LIST.put(player.getUniqueId(), true);
             }
         } else {
             Utilities.addToDefault(player);
@@ -130,7 +134,8 @@ public class CustomPlayer {
                     vanish = (hasVanish()) ? 1 : 0,
                     fly = (hasFly()) ? 1 : 0,
                     speed = (hasSpeed()) ? 1 : 0,
-                    jump = (hasJump()) ? 1 : 0;
+                    jump = (hasJump()) ? 1 : 0,
+                    radio = (Utilities.hasRadioPlugin() && hasRadio() ? 1 : 0);
 
             Bukkit.getScheduler().runTaskAsynchronously(Core.getInstance(), new Runnable() {
                 @Override
@@ -146,6 +151,7 @@ public class CustomPlayer {
                         statement.addBatch("UPDATE `PlayerSettings` SET `Fly` = " + fly + " WHERE UUID = '" + uuid.toString() + "'");
                         statement.addBatch("UPDATE `PlayerSettings` SET `Speed` = " + speed + " WHERE UUID = '" + uuid.toString() + "'");
                         statement.addBatch("UPDATE `PlayerSettings` SET `Jump` = " + jump + " WHERE UUID = '" + uuid.toString() + "'");
+                        statement.addBatch("UPDATE `PlayerSettings` SET `Radio` = " + radio + " WHERE UUID = '" + uuid.toString() + "'");
 
                         statement.executeBatch();
                         statement.close();
@@ -281,6 +287,21 @@ public class CustomPlayer {
             return false;
         else
             return Cache.JUMP_LIST.get(player.getUniqueId());
+    }
+
+    public void setRadio(final boolean radio) {
+        if (Cache.RADIO_LIST.containsKey(player.getUniqueId())) {
+            Cache.RADIO_LIST.remove(player.getUniqueId());
+        }
+
+        Cache.RADIO_LIST.put(player.getUniqueId(), radio);
+    }
+
+    public boolean hasRadio() {
+        if (!Cache.RADIO_LIST.containsKey(player.getUniqueId()))
+            return false;
+        else
+            return Cache.RADIO_LIST.get(player.getUniqueId());
     }
 
 }

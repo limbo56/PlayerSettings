@@ -19,27 +19,32 @@ public class VersionManager {
         switch (serverVersion) {
             case "v1_8_R1":
                 itemGlower = new src.me.lim_bo56.settings.v1_8_R1.ItemGlower();
+                mount = new src.me.lim_bo56.settings.v1_8_R1.Mount();
                 return true;
             case "v1_8_R2":
                 itemGlower = new src.me.lim_bo56.settings.v1_8_R2.ItemGlower();
+                mount = new src.me.lim_bo56.settings.v1_8_R2.Mount();
                 return true;
             case "v1_8_R3":
                 itemGlower = new src.me.lim_bo56.settings.v1_8_R3.ItemGlower();
+                mount = new src.me.lim_bo56.settings.v1_8_R3.Mount();
                 return true;
             case "v1_9_R1":
                 itemGlower = new src.me.lim_bo56.settings.v1_9_R1.ItemGlower();
                 mount = new src.me.lim_bo56.settings.v1_9_R1.Mount();
                 return true;
-
             case "v1_9_R2":
                 itemGlower = new src.me.lim_bo56.settings.v1_9_R2.ItemGlower();
                 mount = new src.me.lim_bo56.settings.v1_9_R2.Mount();
                 return true;
-
             case "v1_10_R1":
                 itemGlower = new src.me.lim_bo56.settings.v1_10_R1.ItemGlower();
                 mount = new src.me.lim_bo56.settings.v1_10_R1.Mount();
                 return true;
+            case "v1_11_R1":
+            	itemGlower = new src.me.lim_bo56.settings.v1_11_R1.ItemGlower();
+            	mount = new src.me.lim_bo56.settings.v1_11_R1.Mount();
+            	return true;
         }
 
         return false;

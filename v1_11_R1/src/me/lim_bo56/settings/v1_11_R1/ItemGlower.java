@@ -1,10 +1,10 @@
 package src.me.lim_bo56.settings.v1_11_R1;
 
 import me.lim_bo56.settings.version.IItemGlower;
-import net.minecraft.server.v1_11_R1.NBTTagCompound;
-import net.minecraft.server.v1_11_R1.NBTTagList;
-import org.bukkit.craftbukkit.v1_11_R1.inventory.CraftItemStack;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 /**
  * Created by lim_bo56
@@ -15,19 +15,11 @@ public class ItemGlower implements IItemGlower {
 
     @Override
     public ItemStack glow(ItemStack itemStack) {
-        net.minecraft.server.v1_11_R1.ItemStack localItemStack = CraftItemStack.asNMSCopy(itemStack);
-        NBTTagCompound localNBTTagCompound = null;
-        if (!localItemStack.hasTag()) {
-            localNBTTagCompound = new NBTTagCompound();
-            localItemStack.setTag(localNBTTagCompound);
-        }
-        if (localNBTTagCompound == null)
-            localNBTTagCompound = localItemStack.getTag();
-
-        NBTTagList localNBTTagList = new NBTTagList();
-        localNBTTagCompound.set("ench", localNBTTagList);
-        localItemStack.setTag(localNBTTagCompound);
-        return CraftItemStack.asCraftMirror(localItemStack);
+    	ItemMeta meta = itemStack.getItemMeta();
+        meta.addEnchant(Enchantment.LURE, 1, false);
+        meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+        itemStack.setItemMeta(meta);
+        return itemStack;
     }
 
 }

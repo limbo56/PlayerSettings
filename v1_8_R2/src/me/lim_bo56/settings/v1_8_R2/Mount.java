@@ -1,6 +1,6 @@
 package src.me.lim_bo56.settings.v1_8_R2;
 
-import me.lim_bo56.settings.versionmanager.IMount;
+import me.lim_bo56.settings.version.IMount;
 import org.bukkit.entity.Player;
 
 /**
