@@ -1,8 +1,0 @@
-name: PlayerSettings
-version: 4.6
-main: me.lim_bo56.settings.Core
-author: lim_bo56
-softDepend: ['icJukeBox']
-commands:
-      settings:
-           description: Main command of the plugin!
