@@ -149,7 +149,7 @@ public class CustomPlayer {
         	PlayerSettings.getInstance().log("loadSettings: MySQL is Disabled, doing nothing");
     }
 
-    public void saveSettings() {
+    public void saveSettings(boolean sync) {
         if (PlayerSettings.getInstance().getConfig().getBoolean("MySQL.enable")) {
 
             final int visibility = (hasVisibility()) ? 1 : 0,
@@ -161,37 +161,66 @@ public class CustomPlayer {
                     jump = (hasJump()) ? 1 : 0,
                     radio = ((Utilities.hasRadioPlugin() && hasRadio()) ? 1 : 0);
 
-            Bukkit.getScheduler().runTaskAsynchronously(PlayerSettings.getInstance(), new Runnable() {
-                @Override
-                public void run() {
-                    try {
+            if (sync) {
+            	try {
 
-                        Statement statement = MySqlConnection.getInstance().getCurrentConnection().createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+                    Statement statement = MySqlConnection.getInstance().getCurrentConnection().createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 
-                        statement.addBatch("UPDATE `PlayerSettings` SET `Visibility` = " + visibility + " WHERE UUID = '" + getUuid().toString() + "'");
-                        statement.addBatch("UPDATE `PlayerSettings` SET `Stacker` = " + stacker + " WHERE UUID = '" + getUuid().toString() + "'");
-                        statement.addBatch("UPDATE `PlayerSettings` SET `Chat` = " + chat + " WHERE UUID = '" + getUuid().toString() + "'");
-                        statement.addBatch("UPDATE `PlayerSettings` SET `Vanish` = " + vanish + " WHERE UUID = '" + getUuid().toString() + "'");
-                        statement.addBatch("UPDATE `PlayerSettings` SET `Fly` = " + fly + " WHERE UUID = '" + getUuid().toString() + "'");
-                        statement.addBatch("UPDATE `PlayerSettings` SET `Speed` = " + speed + " WHERE UUID = '" + getUuid().toString() + "'");
-                        statement.addBatch("UPDATE `PlayerSettings` SET `Jump` = " + jump + " WHERE UUID = '" + getUuid().toString() + "'");
-                        statement.addBatch("UPDATE `PlayerSettings` SET `Radio` = " + radio + " WHERE UUID = '" + getUuid().toString() + "'");
+                    statement.addBatch("UPDATE `PlayerSettings` SET `Visibility` = " + visibility + " WHERE UUID = '" + getUuid().toString() + "'");
+                    statement.addBatch("UPDATE `PlayerSettings` SET `Stacker` = " + stacker + " WHERE UUID = '" + getUuid().toString() + "'");
+                    statement.addBatch("UPDATE `PlayerSettings` SET `Chat` = " + chat + " WHERE UUID = '" + getUuid().toString() + "'");
+                    statement.addBatch("UPDATE `PlayerSettings` SET `Vanish` = " + vanish + " WHERE UUID = '" + getUuid().toString() + "'");
+                    statement.addBatch("UPDATE `PlayerSettings` SET `Fly` = " + fly + " WHERE UUID = '" + getUuid().toString() + "'");
+                    statement.addBatch("UPDATE `PlayerSettings` SET `Speed` = " + speed + " WHERE UUID = '" + getUuid().toString() + "'");
+                    statement.addBatch("UPDATE `PlayerSettings` SET `Jump` = " + jump + " WHERE UUID = '" + getUuid().toString() + "'");
+                    statement.addBatch("UPDATE `PlayerSettings` SET `Radio` = " + radio + " WHERE UUID = '" + getUuid().toString() + "'");
 
-                        statement.executeBatch();
-                    	if (ConfigurationManager.getConfig().getBoolean("Debug")) {
-                    		PlayerSettings.getInstance().log("saveSettings: UUID '" + getUuid().toString() + "' settigns updated in the database:");
-                    		PlayerSettings.getInstance().log("saveSettings: Visibility: " + visibility + ", Stacker: " + stacker + ", Chat: " + chat + ", Vanish: " + vanish + ", Fly: " + fly + ", Speed: " + speed + ", Jump: " + jump + ", Radio: " + radio);
-                    	}
-                        statement.close();
+                    statement.executeBatch();
+                	if (ConfigurationManager.getConfig().getBoolean("Debug")) {
+                		PlayerSettings.getInstance().log("saveSettings: UUID '" + getUuid().toString() + "' settigns updated in the database:");
+                		PlayerSettings.getInstance().log("saveSettings: Visibility: " + visibility + ", Stacker: " + stacker + ", Chat: " + chat + ", Vanish: " + vanish + ", Fly: " + fly + ", Speed: " + speed + ", Jump: " + jump + ", Radio: " + radio);
+                	}
+                    statement.close();
 
-                    } catch (SQLException exception) {
-                    	if (ConfigurationManager.getConfig().getBoolean("Debug"))
-                        	PlayerSettings.getInstance().log("saveSettings: SQLException, doing nothing");
-                        exception.printStackTrace();
-                    }
-
+                } catch (SQLException exception) {
+                	if (ConfigurationManager.getConfig().getBoolean("Debug"))
+                    	PlayerSettings.getInstance().log("saveSettings: SQLException, doing nothing");
+                    exception.printStackTrace();
                 }
-            });
+
+            } else {
+            	Bukkit.getScheduler().runTaskAsynchronously(PlayerSettings.getInstance(), new Runnable() {
+            		@Override
+            		public void run() {
+            			try {
+
+            				Statement statement = MySqlConnection.getInstance().getCurrentConnection().createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+
+            				statement.addBatch("UPDATE `PlayerSettings` SET `Visibility` = " + visibility + " WHERE UUID = '" + getUuid().toString() + "'");
+            				statement.addBatch("UPDATE `PlayerSettings` SET `Stacker` = " + stacker + " WHERE UUID = '" + getUuid().toString() + "'");
+            				statement.addBatch("UPDATE `PlayerSettings` SET `Chat` = " + chat + " WHERE UUID = '" + getUuid().toString() + "'");
+            				statement.addBatch("UPDATE `PlayerSettings` SET `Vanish` = " + vanish + " WHERE UUID = '" + getUuid().toString() + "'");
+            				statement.addBatch("UPDATE `PlayerSettings` SET `Fly` = " + fly + " WHERE UUID = '" + getUuid().toString() + "'");
+            				statement.addBatch("UPDATE `PlayerSettings` SET `Speed` = " + speed + " WHERE UUID = '" + getUuid().toString() + "'");
+            				statement.addBatch("UPDATE `PlayerSettings` SET `Jump` = " + jump + " WHERE UUID = '" + getUuid().toString() + "'");
+            				statement.addBatch("UPDATE `PlayerSettings` SET `Radio` = " + radio + " WHERE UUID = '" + getUuid().toString() + "'");
+
+            				statement.executeBatch();
+            				if (ConfigurationManager.getConfig().getBoolean("Debug")) {
+            					PlayerSettings.getInstance().log("saveSettings: UUID '" + getUuid().toString() + "' settigns updated in the database:");
+            					PlayerSettings.getInstance().log("saveSettings: Visibility: " + visibility + ", Stacker: " + stacker + ", Chat: " + chat + ", Vanish: " + vanish + ", Fly: " + fly + ", Speed: " + speed + ", Jump: " + jump + ", Radio: " + radio);
+            				}
+            				statement.close();
+
+            			} catch (SQLException exception) {
+            				if (ConfigurationManager.getConfig().getBoolean("Debug"))
+            					PlayerSettings.getInstance().log("saveSettings: SQLException, doing nothing");
+            				exception.printStackTrace();
+            			}
+
+            		}
+            	});
+            }
         } else if (ConfigurationManager.getConfig().getBoolean("Debug"))
         	PlayerSettings.getInstance().log("saveSettings: MySQL is Disabled, doing nothing");
     }
