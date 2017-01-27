@@ -18,13 +18,13 @@ import org.bukkit.potion.PotionEffectType;
  */
 public class WorldListener implements Listener {
 
-    @EventHandler @SuppressWarnings("unused")
+    @EventHandler
     public void onWorldChange(PlayerChangedWorldEvent event) {
         Player player = event.getPlayer();
 
         if (!Cache.WORLDS_ALLOWED.contains(player.getWorld().getName())) {
             for (Player online : Bukkit.getOnlinePlayers()) {
-                CustomPlayer oPlayer = new CustomPlayer(online);
+                CustomPlayer oPlayer = Utilities.getOrCreateCustomPlayer(online);
 
                 if (oPlayer.hasVanish()) {
                     online.hidePlayer(player);

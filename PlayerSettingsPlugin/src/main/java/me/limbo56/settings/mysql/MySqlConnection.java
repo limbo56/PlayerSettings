@@ -1,6 +1,8 @@
 package me.limbo56.settings.mysql;
 
 import me.limbo56.settings.PlayerSettings;
+import me.limbo56.settings.managers.ConfigurationManager;
+
 import org.bukkit.Bukkit;
 
 import java.sql.*;
@@ -40,7 +42,7 @@ public class MySqlConnection {
     public boolean checkTable() {
         try {
             DatabaseMetaData metaData = connection.getMetaData();
-            ResultSet tables = metaData.getTables(null, null, "playersettings", null);
+            ResultSet tables = metaData.getTables(null, null, "PlayerSettings", null);
             return tables.next();
         } catch (SQLException exception) {
             return false;
@@ -64,33 +66,33 @@ public class MySqlConnection {
                                         + "`Speed` TINYINT(0) DEFAULT NULL,"
                                         + "`Jump` TINYINT(0) DEFAULT NULL,"
                                         + "`Radio` TINYINT(0) DEFAULT NULL, PRIMARY KEY (UUID))");
+                        if (ConfigurationManager.getConfig().getBoolean("Debug"))
+                        	PlayerSettings.getInstance().log("createTable: Table created or already existent");
                     }
+
+	                ResultSetMetaData table = getCurrentConnection().createStatement().executeQuery("SELECT * FROM `PlayerSettings`").getMetaData();
+
+	                boolean found = false;
+	                for (int i = 1; i <= table.getColumnCount(); i++) {
+	                    if ("Radio".equals(table.getColumnName(i))) {
+	                    	if (ConfigurationManager.getConfig().getBoolean("Debug"))
+	                        	PlayerSettings.getInstance().log("createTable: Radio column found, doing nothing");
+	                        found = true;
+	                        break;
+	                    }
+	                }
+
+	                if (!found) {
+	                    getCurrentConnection().createStatement().executeUpdate("ALTER TABLE `PlayerSettings` ADD `Radio` TINYINT(0) DEFAULT NULL");
+	                    if (ConfigurationManager.getConfig().getBoolean("Debug"))
+	                    	PlayerSettings.getInstance().log("createTable: Radio column not found, created successfully");
+	                }
 
                 } catch (SQLException e) {
                     Bukkit.getLogger().severe("Couldn't create tables on the database ;(.");
                 }
             }
         });
-    }
-
-    public void updateTable() {
-        try {
-            if (connection != null && !connection.isClosed()) {
-                ResultSetMetaData table = getCurrentConnection().createStatement().executeQuery("SELECT * FROM `PlayerSettings`").getMetaData();
-
-                boolean found = false;
-                for (int i = 1; i <= table.getColumnCount(); i++) {
-                    if ("Radio".equals(table.getColumnName(i)))
-                        found = true;
-                }
-
-                if (!found) {
-                    getCurrentConnection().createStatement().executeUpdate("ALTER TABLE `PlayerSettings` ADD `Radio` TINYINT(0) DEFAULT NULL");
-                }
-            }
-        } catch (SQLException e) {
-            Bukkit.getLogger().severe("Couldn't update tables on the database ;(.");
-        }
     }
 
     public Connection getCurrentConnection() {
