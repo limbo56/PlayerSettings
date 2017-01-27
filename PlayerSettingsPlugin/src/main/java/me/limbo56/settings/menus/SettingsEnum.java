@@ -36,7 +36,7 @@ public enum SettingsEnum {
 
         @Override
         boolean getCondition(Player player) {
-            CustomPlayer cPlayer = new CustomPlayer(player);
+            CustomPlayer cPlayer = Utilities.getOrCreateCustomPlayer(player);
             return cPlayer.hasSpeed();
         }
     },
@@ -57,7 +57,7 @@ public enum SettingsEnum {
 
         @Override
         boolean getCondition(Player player) {
-            CustomPlayer cPlayer = new CustomPlayer(player);
+            CustomPlayer cPlayer = Utilities.getOrCreateCustomPlayer(player);
             return cPlayer.hasJump();
         }
     },
@@ -78,7 +78,7 @@ public enum SettingsEnum {
 
         @Override
         boolean getCondition(Player player) {
-            CustomPlayer cPlayer = new CustomPlayer(player);
+            CustomPlayer cPlayer = Utilities.getOrCreateCustomPlayer(player);
             return cPlayer.hasFly();
         }
     },
@@ -99,7 +99,7 @@ public enum SettingsEnum {
 
         @Override
         boolean getCondition(Player player) {
-            CustomPlayer cPlayer = new CustomPlayer(player);
+            CustomPlayer cPlayer = Utilities.getOrCreateCustomPlayer(player);
             return cPlayer.hasVanish();
         }
     },
@@ -120,7 +120,7 @@ public enum SettingsEnum {
 
         @Override
         boolean getCondition(Player player) {
-            CustomPlayer cPlayer = new CustomPlayer(player);
+            CustomPlayer cPlayer = Utilities.getOrCreateCustomPlayer(player);
             return cPlayer.hasChat();
         }
     },
@@ -141,7 +141,7 @@ public enum SettingsEnum {
 
         @Override
         boolean getCondition(Player player) {
-            CustomPlayer cPlayer = new CustomPlayer(player);
+            CustomPlayer cPlayer = Utilities.getOrCreateCustomPlayer(player);
             return cPlayer.hasVisibility();
         }
     },
@@ -162,7 +162,7 @@ public enum SettingsEnum {
 
         @Override
         boolean getCondition(Player player) {
-            CustomPlayer cPlayer = new CustomPlayer(player);
+            CustomPlayer cPlayer = Utilities.getOrCreateCustomPlayer(player);
             return cPlayer.hasStacker();
         }
     },
@@ -186,7 +186,7 @@ public enum SettingsEnum {
 
         @Override
         boolean getCondition(Player player) {
-            CustomPlayer cPlayer = new CustomPlayer(player);
+            CustomPlayer cPlayer = Utilities.getOrCreateCustomPlayer(player);
             return cPlayer.hasRadio();
         }
     };
