@@ -1,7 +1,6 @@
 package me.limbo56.settings.managers;
 
 import me.limbo56.settings.PlayerSettings;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 

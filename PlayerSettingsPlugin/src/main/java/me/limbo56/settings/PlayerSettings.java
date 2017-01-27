@@ -11,13 +11,18 @@ import me.limbo56.settings.managers.ConfigurationManager;
 import me.limbo56.settings.managers.VersionManager;
 import me.limbo56.settings.menus.SettingsMenu;
 import me.limbo56.settings.mysql.MySqlConnection;
+import me.limbo56.settings.utils.Cache;
 import me.limbo56.settings.utils.Updater;
 import me.limbo56.settings.utils.Utilities;
 import me.limbo56.settings.version.IItemGlower;
 import me.limbo56.settings.version.IMount;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.potion.PotionEffectType;
+
+import com.statiocraft.jukebox.scJukeBox;
 
 import java.io.File;
 import java.util.SortedMap;
@@ -81,7 +86,6 @@ public class PlayerSettings extends JavaPlugin {
 
             MySqlConnection.getInstance().openConnection();
             MySqlConnection.getInstance().createTable();
-            MySqlConnection.getInstance().updateTable();
 
             log("");
         }
@@ -108,6 +112,25 @@ public class PlayerSettings extends JavaPlugin {
 
         Utilities.loadOnlinePlayers();
 
+    }
+    
+    public void onDisable() {
+    	if (!Cache.PLAYER_LIST.isEmpty()) {
+    		for (Player player : Cache.PLAYER_LIST.keySet()) {
+    			Cache.PLAYER_LIST.get(player).saveSettings();
+    			if (Cache.WORLDS_ALLOWED.contains(player.getWorld().getName())) {
+    	            player.removePotionEffect(PotionEffectType.SPEED);
+    	            player.removePotionEffect(PotionEffectType.JUMP);
+    	            player.removePotionEffect(PotionEffectType.INVISIBILITY);
+    	            if (Utilities.hasRadioPlugin()) {
+    	                if (scJukeBox.getCurrentJukebox(player) != null)
+    	                    scJukeBox.getCurrentJukebox(player).removePlayer(player);
+    	            }
+    	        }
+
+    	        Cache.PLAYER_LIST.remove(player);
+    		}
+    	}
     }
 
     private void setupConfig() {
@@ -137,6 +160,7 @@ public class PlayerSettings extends JavaPlugin {
         if (config.contains("Using-Citizens")) {
             config.set("Using-Citizens", null);
         }
+        config.addDefault("Debug", false);
         config.saveConfig();
     }
 

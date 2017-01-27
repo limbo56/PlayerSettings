@@ -65,31 +65,19 @@ public class Utilities {
 
     }
 
-    public static void addToDefault(Player player) {
-        if (ConfigurationManager.getDefault().getBoolean("Default.Visibility"))
-            Cache.VISIBILITY_LIST.put(player.getUniqueId(), true);
-        if (ConfigurationManager.getDefault().getBoolean("Default.Stacker"))
-            Cache.STACKER_LIST.put(player.getUniqueId(), true);
-        if (ConfigurationManager.getDefault().getBoolean("Default.Chat"))
-            Cache.CHAT_LIST.put(player.getUniqueId(), true);
-        if (ConfigurationManager.getDefault().getBoolean("Default.Vanish"))
-            Cache.VANISH_LIST.put(player.getUniqueId(), true);
-        if (ConfigurationManager.getDefault().getBoolean("Default.Fly"))
-            Cache.FLY_LIST.put(player.getUniqueId(), true);
-        if (ConfigurationManager.getDefault().getBoolean("Default.Speed"))
-            Cache.SPEED_LIST.put(player.getUniqueId(), true);
-        if (ConfigurationManager.getDefault().getBoolean("Default.Jump"))
-            Cache.JUMP_LIST.put(player.getUniqueId(), true);
-        if (hasRadioPlugin() && ConfigurationManager.getDefault().getBoolean("Default.Radio"))
-            Cache.RADIO_LIST.put(player.getUniqueId(), true);
-    }
-
     public static boolean hasRadioPlugin() {
         return PlayerSettings.getInstance().getServer().getPluginManager().getPlugin("icJukeBox") != null;
     }
 
     public static boolean hasCitizens() {
         return PlayerSettings.getInstance().getServer().getPluginManager().getPlugin("Citizens") != null;
+    }
+    
+    public static CustomPlayer getOrCreateCustomPlayer(Player player) {
+    	if (!Cache.PLAYER_LIST.containsKey(player))
+    		Cache.PLAYER_LIST.put(player, new CustomPlayer(player));
+
+    	return Cache.PLAYER_LIST.get(player);
     }
 
     public static void loadOnlinePlayers() {
@@ -100,7 +88,7 @@ public class Utilities {
 
                 if (Cache.WORLDS_ALLOWED.contains(player.getWorld().getName())) {
 
-                    CustomPlayer cPlayer = new CustomPlayer(player);
+                    CustomPlayer cPlayer = getOrCreateCustomPlayer(player);
 
                     player.removePotionEffect(PotionEffectType.SPEED);
                     player.removePotionEffect(PotionEffectType.JUMP);
@@ -160,7 +148,7 @@ public class Utilities {
 
                 } else if (!Cache.WORLDS_ALLOWED.contains(player.getWorld().getName())) {
                     for (Player online : Bukkit.getOnlinePlayers()) {
-                        CustomPlayer oPlayer = new CustomPlayer(online);
+                        CustomPlayer oPlayer = getOrCreateCustomPlayer(online);
 
                         if (oPlayer.hasVanish()) {
                             online.hidePlayer(player);
