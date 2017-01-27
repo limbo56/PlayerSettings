@@ -275,6 +275,9 @@ public class SettingsMenu implements Listener {
                                     }
                                 }
                             }
+                        } else if (event.getHotbarButton() != -1) {
+                        	event.setCancelled(true);
+                        	return;
                         }
                     }
                 }
