@@ -117,7 +117,7 @@ public class PlayerSettings extends JavaPlugin {
     public void onDisable() {
     	if (!Cache.PLAYER_LIST.isEmpty()) {
     		for (Player player : Cache.PLAYER_LIST.keySet()) {
-    			Cache.PLAYER_LIST.get(player).saveSettings();
+    			Cache.PLAYER_LIST.get(player).saveSettings(true);
     			if (Cache.WORLDS_ALLOWED.contains(player.getWorld().getName())) {
     	            player.removePotionEffect(PotionEffectType.SPEED);
     	            player.removePotionEffect(PotionEffectType.JUMP);
@@ -131,6 +131,7 @@ public class PlayerSettings extends JavaPlugin {
     	        Cache.PLAYER_LIST.remove(player);
     		}
     	}
+    	Bukkit.getPluginManager().disablePlugin(this);
     }
 
     private void setupConfig() {

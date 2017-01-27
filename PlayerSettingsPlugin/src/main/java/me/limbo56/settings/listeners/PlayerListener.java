@@ -120,7 +120,7 @@ public class PlayerListener implements Listener {
         Player player = event.getPlayer();
         CustomPlayer cPlayer = Utilities.getOrCreateCustomPlayer(player);
 
-        cPlayer.saveSettings();
+        cPlayer.saveSettings(false);
 
         if (Cache.WORLDS_ALLOWED.contains(player.getWorld().getName())) {
             player.removePotionEffect(PotionEffectType.SPEED);
