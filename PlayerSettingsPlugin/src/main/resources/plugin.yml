@@ -1,5 +1,5 @@
 name: PlayerSettings
-version: 4.6
+version: 4.7
 main: me.limbo56.settings.PlayerSettings
 author: lim_bo56
 softDepend: ['icJukeBox', 'Citizens']

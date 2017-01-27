@@ -2,6 +2,8 @@ package me.limbo56.settings.listeners;
 
 import me.limbo56.settings.player.CustomPlayer;
 import me.limbo56.settings.utils.Cache;
+import me.limbo56.settings.utils.Utilities;
+
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -15,10 +17,10 @@ import org.bukkit.event.player.PlayerToggleFlightEvent;
 
 public class FlyToggleListener implements Listener {
 
-    @EventHandler @SuppressWarnings("unused")
+    @EventHandler
     public void flightToggleEvent(PlayerToggleFlightEvent event) {
         Player player = event.getPlayer();
-        CustomPlayer customPlayer = new CustomPlayer(player);
+        CustomPlayer customPlayer = Utilities.getOrCreateCustomPlayer(player);
 
         if (Cache.WORLDS_ALLOWED.contains(player.getWorld().getName()))
             if (player.getAllowFlight() && player.hasPermission("settings.fly")) {

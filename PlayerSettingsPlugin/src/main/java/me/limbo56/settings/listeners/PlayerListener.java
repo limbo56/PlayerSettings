@@ -35,22 +35,21 @@ import java.util.Random;
 public class PlayerListener implements Listener {
 
     @EventHandler
-    @SuppressWarnings("unused")
     public void onJoinEvent(PlayerJoinEvent event) {
         final Player player = event.getPlayer();
-        CustomPlayer cPlayer = new CustomPlayer(player);
+        CustomPlayer cPlayer = Utilities.getOrCreateCustomPlayer(player);
 
         if (!cPlayer.containsPlayer()) {
             cPlayer.addPlayer();
+        } else {
+        	cPlayer.loadSettings();
         }
-
-        cPlayer.loadSettings();
 
         if (Cache.WORLDS_ALLOWED.contains(player.getWorld().getName())) {
 
             for (Player online : Bukkit.getOnlinePlayers()) {
 
-                CustomPlayer oPlayer = new CustomPlayer(online);
+                CustomPlayer oPlayer = Utilities.getOrCreateCustomPlayer(online);
 
                 if (!oPlayer.hasVisibility())
                     online.hidePlayer(player);
@@ -117,12 +116,11 @@ public class PlayerListener implements Listener {
     }
 
     @EventHandler
-    @SuppressWarnings("unused")
     public void onQuitEvent(PlayerQuitEvent event) {
         Player player = event.getPlayer();
-        CustomPlayer cPlayer = new CustomPlayer(player);
+        CustomPlayer cPlayer = Utilities.getOrCreateCustomPlayer(player);
 
-        cPlayer.saveSettings();
+        cPlayer.saveSettings(false);
 
         if (Cache.WORLDS_ALLOWED.contains(player.getWorld().getName())) {
             player.removePotionEffect(PotionEffectType.SPEED);
@@ -134,13 +132,13 @@ public class PlayerListener implements Listener {
             }
         }
 
+        Cache.PLAYER_LIST.remove(player);
     }
 
     @EventHandler
-    @SuppressWarnings("unused")
     public void onGamemodeChangeEvent(PlayerGameModeChangeEvent event) {
         Player player = event.getPlayer();
-        CustomPlayer cPlayer = new CustomPlayer(player);
+        CustomPlayer cPlayer = Utilities.getOrCreateCustomPlayer(player);
 
         if (Cache.WORLDS_ALLOWED.contains(player.getWorld().getName()))
             if (event.getNewGameMode() == GameMode.ADVENTURE || event.getNewGameMode() == GameMode.SURVIVAL) {
@@ -152,11 +150,10 @@ public class PlayerListener implements Listener {
     }
 
     @EventHandler
-    @SuppressWarnings("unused")
     public void onPlayersChat(final AsyncPlayerChatEvent event) {
         Player player = event.getPlayer();
 
-        CustomPlayer cPlayer = new CustomPlayer(player);
+        CustomPlayer cPlayer = Utilities.getOrCreateCustomPlayer(player);
 
         if (Cache.WORLDS_ALLOWED.contains(player.getWorld().getName())) {
 
@@ -169,7 +166,7 @@ public class PlayerListener implements Listener {
                 event.setCancelled(false);
 
                 for (Player online : Bukkit.getOnlinePlayers()) {
-                    CustomPlayer customPlayer = new CustomPlayer(online);
+                    CustomPlayer customPlayer = Utilities.getOrCreateCustomPlayer(online);
 
                     if (!customPlayer.hasChat())
                         event.getRecipients().remove(online);
@@ -184,7 +181,6 @@ public class PlayerListener implements Listener {
     }
 
     @EventHandler
-    @SuppressWarnings("unused")
     public void onPlayerInteract(PlayerInteractAtEntityEvent event) {
         Player player = event.getPlayer();
 
@@ -194,9 +190,9 @@ public class PlayerListener implements Listener {
 
         Entity entity = event.getRightClicked();
 
-        CustomPlayer cPlayer = new CustomPlayer(player);
+        CustomPlayer cPlayer = Utilities.getOrCreateCustomPlayer(player);
 
-        if (Utilities.isVersion("v1_9_R1"))
+        if (Utilities.isVersion("v1_9_R1") || Utilities.isVersion("v1_9_R2") || Utilities.isVersion("v1_10_R1") || Utilities.isVersion("v1_11_R1"))
             if (event.getHand() == EquipmentSlot.OFF_HAND)
                 return;
 
@@ -206,7 +202,7 @@ public class PlayerListener implements Listener {
                     if (((Player) entity).getDisplayName() != null)
                         if (cPlayer.hasStacker()) {
 
-                            CustomPlayer ePlayer = new CustomPlayer((Player) entity);
+                            CustomPlayer ePlayer = Utilities.getOrCreateCustomPlayer((Player) entity);
 
                             if (ePlayer.hasStacker()) {
 
@@ -233,7 +229,6 @@ public class PlayerListener implements Listener {
     }
 
     @EventHandler
-    @SuppressWarnings("unused")
     public void Launch(PlayerInteractEvent event) {
         Player player = event.getPlayer();
         Entity entity = player.getPassenger();
@@ -256,12 +251,11 @@ public class PlayerListener implements Listener {
     }
 
     @EventHandler
-    @SuppressWarnings("unused")
     public void HitEntity(EntityDamageByEntityEvent event) {
         if (Cache.WORLDS_ALLOWED.contains(event.getDamager().getWorld().getName())) {
             if (event.getDamager().getType() == EntityType.PLAYER) {
                 Player player = (Player) event.getDamager();
-                CustomPlayer cPlayer = new CustomPlayer(player);
+                CustomPlayer cPlayer = Utilities.getOrCreateCustomPlayer(player);
 
                 if (cPlayer.hasStacker()) {
                     event.setCancelled(true);

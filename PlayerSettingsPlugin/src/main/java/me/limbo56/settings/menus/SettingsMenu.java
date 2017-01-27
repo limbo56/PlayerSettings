@@ -55,7 +55,7 @@ public class SettingsMenu implements Listener {
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
         final Player player = (Player) event.getWhoClicked();
-        CustomPlayer cPlayer = new CustomPlayer(player);
+        CustomPlayer cPlayer = Utilities.getOrCreateCustomPlayer(player);
 
         boolean radio = Utilities.hasRadioPlugin();
 
@@ -212,11 +212,11 @@ public class SettingsMenu implements Listener {
                                 } else if (!cPlayer.hasVisibility()) {
 
                                     cPlayer.setVisibility(true);
-                                    for (Player players : Bukkit.getOnlinePlayers()) {
-                                        CustomPlayer oPlayer = new CustomPlayer(players);
+                                    for (Player online : Bukkit.getOnlinePlayers()) {
+                                        CustomPlayer oPlayer = Utilities.getOrCreateCustomPlayer(online);
 
                                         if (!oPlayer.hasVanish()) {
-                                            player.showPlayer(players);
+                                            player.showPlayer(online);
                                         }
 
                                     }
@@ -275,6 +275,9 @@ public class SettingsMenu implements Listener {
                                     }
                                 }
                             }
+                        } else if (event.getHotbarButton() != -1) {
+                        	event.setCancelled(true);
+                        	return;
                         }
                     }
                 }
