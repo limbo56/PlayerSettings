@@ -13,7 +13,7 @@ public class PlayerUtils {
     /**
      * Method to send a message to a command sender.
      *
-     * @param sender  Command sender.
+     * @param sender  Command sender
      * @param message The message
      */
     public static void sendMessage(CommandSender sender, String message) {

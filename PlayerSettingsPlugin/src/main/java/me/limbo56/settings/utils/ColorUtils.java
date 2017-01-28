@@ -12,7 +12,7 @@ public class ColorUtils {
     /**
      * Translate color codes
      *
-     * @param input Text
+     * @param input Text to be translated
      * @return String
      */
     public static String Color(String input) {
