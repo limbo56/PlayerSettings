@@ -1,6 +1,7 @@
 package me.limbo56.settings.utils;
 
 import me.limbo56.settings.PlayerSettings;
+import org.bukkit.entity.Player;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -17,12 +18,12 @@ public class Updater {
     private static PlayerSettings plugin = PlayerSettings.getInstance();
 
     /**
-     * Method to check current updates.
-     * Credits to Maximvdw.
+     * Method to check current updates
+     * Credits to @Maximvdw
      *
-     * @return String
+     * @param player The player which the message will be sent to
      */
-    public static String playerUpdater() {
+    public static void sendUpdater(Player player) {
         try {
             HttpURLConnection con = (HttpURLConnection) new URL("http://www.spigotmc.org/api/general.php")
                     .openConnection();
@@ -35,21 +36,20 @@ public class Updater {
                     .replaceAll("[a-zA-Z ]", "");
             String OldVersion = plugin.getDescription().getVersion();
             if (!NewVersion.equals(OldVersion)) {
-                return ColorUtils.Color(Cache.CHAT_TITLE + "&dNew version available &b" + NewVersion + "\n" + "&aDownload&f>&7> &fhttp://bit.ly/PlayerSettings");
+                player.sendMessage(ColorUtils.Color(Cache.CHAT_TITLE + "&dNew version available &b" + NewVersion + "\n" + "&aDownload&f>&7> &fhttp://bit.ly/PlayerSettings"));
+            } else {
+                player.sendMessage(ColorUtils.Color(Cache.CHAT_TITLE + "&dNo updates avialable at this time."));
             }
         } catch (Exception ex) {
-            plugin.getLogger().info("Failed to check for a update on spigot.");
+            player.sendMessage(ColorUtils.Color(Cache.CHAT_TITLE + "&cFailed to check for a update on spigot."));
         }
-        return ColorUtils.Color(Cache.CHAT_TITLE + "&dNo updates avialable at this time.");
     }
 
     /**
-     * Method to check current updates.
-     * Credits to Maximvdw.
-     *
-     * @return String
+     * Method to check current updates
+     * Credits to @Maximvdw
      */
-    public static String consoleUpdater() {
+    public static void sendUpdater() {
         try {
             HttpURLConnection con = (HttpURLConnection) new URL("http://www.spigotmc.org/api/general.php")
                     .openConnection();
@@ -62,12 +62,13 @@ public class Updater {
                     .replaceAll("[a-zA-Z ]", "");
             String OldVersion = plugin.getDescription().getVersion();
             if (!NewVersion.equals(OldVersion)) {
-                return "New version available " + NewVersion;
+                PlayerSettings.getInstance().log("New version available " + NewVersion);
+            } else {
+                PlayerSettings.getInstance().log("No updates avialable at this time.");
             }
         } catch (Exception ex) {
             plugin.getLogger().info("Failed to check for a update on spigot.");
         }
-        return "No updates avialable at this time.";
     }
 
 }

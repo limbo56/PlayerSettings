@@ -42,13 +42,11 @@ public class PlayerListener implements Listener {
         if (!cPlayer.containsPlayer()) {
             cPlayer.addPlayer();
         } else {
-        	cPlayer.loadSettings();
+            cPlayer.loadSettings();
         }
 
         if (Cache.WORLDS_ALLOWED.contains(player.getWorld().getName())) {
-
             for (Player online : Bukkit.getOnlinePlayers()) {
-
                 CustomPlayer oPlayer = Utilities.getOrCreateCustomPlayer(online);
 
                 if (!oPlayer.hasVisibility())
@@ -56,7 +54,6 @@ public class PlayerListener implements Listener {
 
                 if (oPlayer.hasVanish())
                     online.hidePlayer(player);
-
             }
 
             for (Player online : Bukkit.getOnlinePlayers()) {
@@ -68,7 +65,6 @@ public class PlayerListener implements Listener {
             }
 
             if (cPlayer.hasVanish()) {
-
                 player.addPotionEffect(Cache.INVISIBILITY);
 
                 for (Player online : Bukkit.getOnlinePlayers())
@@ -111,7 +107,7 @@ public class PlayerListener implements Listener {
 
             if (PlayerSettings.getInstance().getConfig().getBoolean("Update-Message"))
                 if (player.isOp())
-                    player.sendMessage(Updater.playerUpdater());
+                    Updater.sendUpdater(player);
         }
     }
 
@@ -120,7 +116,7 @@ public class PlayerListener implements Listener {
         Player player = event.getPlayer();
         CustomPlayer cPlayer = Utilities.getOrCreateCustomPlayer(player);
 
-        cPlayer.saveSettings(false);
+        cPlayer.saveSettingsAsync();
 
         if (Cache.WORLDS_ALLOWED.contains(player.getWorld().getName())) {
             player.removePotionEffect(PotionEffectType.SPEED);
@@ -156,7 +152,6 @@ public class PlayerListener implements Listener {
         CustomPlayer cPlayer = Utilities.getOrCreateCustomPlayer(player);
 
         if (Cache.WORLDS_ALLOWED.contains(player.getWorld().getName())) {
-
             if (!cPlayer.hasChat()) {
                 event.getRecipients().remove(player);
                 event.setCancelled(true);
@@ -171,20 +166,13 @@ public class PlayerListener implements Listener {
                     if (!customPlayer.hasChat())
                         event.getRecipients().remove(online);
                 }
-
             }
-
-
         }
-
-
     }
 
     @EventHandler
     public void onPlayerInteract(PlayerInteractAtEntityEvent event) {
         Player player = event.getPlayer();
-
-        boolean hasCitizens = Utilities.hasCitizens();
 
         boolean isNPC = event.getRightClicked().hasMetadata("NPC");
 
@@ -205,42 +193,28 @@ public class PlayerListener implements Listener {
                             CustomPlayer ePlayer = Utilities.getOrCreateCustomPlayer((Player) entity);
 
                             if (ePlayer.hasStacker()) {
-
                                 player.setPassenger(entity);
-
                                 PlayerSettings.getInstance().getMount().sendMountPacket(player);
-
                             } else if (!ePlayer.hasStacker())
                                 if (ConfigurationManager.getMessages().getBoolean("Send.Target-Stacker-Disabled"))
-                                    if (hasCitizens) {
-                                        if (!isNPC)
-                                            player.sendMessage(MessageConfiguration.get("Target-Stacker-Disabled"));
-                                    } else {
+                                    if (!isNPC)
                                         player.sendMessage(MessageConfiguration.get("Target-Stacker-Disabled"));
-                                    }
                         } else if (!cPlayer.hasStacker())
                             if (ConfigurationManager.getMessages().getBoolean("Send.Player-Stacker-Disabled"))
-                                if (hasCitizens) {
-                                    if (!isNPC)
-                                        player.sendMessage(MessageConfiguration.get("Player-Stacker-Disabled"));
-                                } else {
+                                if (!isNPC)
                                     player.sendMessage(MessageConfiguration.get("Player-Stacker-Disabled"));
-                                }
     }
 
     @EventHandler
-    public void Launch(PlayerInteractEvent event) {
+    public void onPlayerLaunch(PlayerInteractEvent event) {
         Player player = event.getPlayer();
         Entity entity = player.getPassenger();
 
         if (Cache.WORLDS_ALLOWED.contains(player.getWorld().getName())) {
             if (event.getAction() == Action.LEFT_CLICK_AIR) {
                 if (player.getPassenger() != null) {
-
                     entity.getVehicle().eject();
-
                     PlayerSettings.getInstance().getMount().sendMountPacket(player);
-
                     Vector direction = player.getLocation().getDirection();
                     entity.setVelocity(direction.multiply(ConfigurationManager.getDefault().getInt("Stacker.launch-force")));
                     entity.setFallDistance(-10000.0F);
@@ -251,7 +225,7 @@ public class PlayerListener implements Listener {
     }
 
     @EventHandler
-    public void HitEntity(EntityDamageByEntityEvent event) {
+    public void onEntityDamage(EntityDamageByEntityEvent event) {
         if (Cache.WORLDS_ALLOWED.contains(event.getDamager().getWorld().getName())) {
             if (event.getDamager().getType() == EntityType.PLAYER) {
                 Player player = (Player) event.getDamager();
