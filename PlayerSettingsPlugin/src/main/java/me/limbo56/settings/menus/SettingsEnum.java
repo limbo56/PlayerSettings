@@ -5,7 +5,6 @@ import me.limbo56.settings.config.MenuConfiguration;
 import me.limbo56.settings.managers.ConfigurationManager;
 import me.limbo56.settings.player.CustomPlayer;
 import me.limbo56.settings.utils.Cache;
-import me.limbo56.settings.utils.ColorUtils;
 import me.limbo56.settings.utils.ItemFactory;
 import me.limbo56.settings.utils.Utilities;
 import org.bukkit.Material;
