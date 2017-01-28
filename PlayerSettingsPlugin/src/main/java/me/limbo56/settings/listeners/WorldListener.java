@@ -31,18 +31,17 @@ public class WorldListener implements Listener {
                 } else {
                     player.showPlayer(online);
                 }
-
             }
 
             player.removePotionEffect(PotionEffectType.SPEED);
             player.removePotionEffect(PotionEffectType.JUMP);
             player.removePotionEffect(PotionEffectType.INVISIBILITY);
+
             if (Utilities.hasRadioPlugin()) {
                 if (scJukeBox.getCurrentJukebox(player) != null)
                     scJukeBox.getCurrentJukebox(player).removePlayer(player);
             }
         }
-
     }
 
 }
