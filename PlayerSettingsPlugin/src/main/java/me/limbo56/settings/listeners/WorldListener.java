@@ -1,6 +1,7 @@
 package me.limbo56.settings.listeners;
 
 import com.statiocraft.jukebox.scJukeBox;
+import me.limbo56.settings.managers.ConfigurationManager;
 import me.limbo56.settings.player.CustomPlayer;
 import me.limbo56.settings.utils.Cache;
 import me.limbo56.settings.utils.Utilities;
@@ -26,23 +27,24 @@ public class WorldListener implements Listener {
             for (Player online : Bukkit.getOnlinePlayers()) {
                 CustomPlayer oPlayer = Utilities.getOrCreateCustomPlayer(online);
 
-                if (oPlayer.hasVanish()) {
-                    online.hidePlayer(player);
-                } else {
-                    player.showPlayer(online);
-                }
-
+                if (ConfigurationManager.getMenu().getBoolean("Menu.Items.Vanish.Enabled"))
+                    if (oPlayer.hasVanish()) {
+                        online.hidePlayer(player);
+                    } else {
+                        player.showPlayer(online);
+                    }
             }
 
             player.removePotionEffect(PotionEffectType.SPEED);
             player.removePotionEffect(PotionEffectType.JUMP);
             player.removePotionEffect(PotionEffectType.INVISIBILITY);
+
             if (Utilities.hasRadioPlugin()) {
                 if (scJukeBox.getCurrentJukebox(player) != null)
                     scJukeBox.getCurrentJukebox(player).removePlayer(player);
             }
-        }
 
+        }
     }
 
 }

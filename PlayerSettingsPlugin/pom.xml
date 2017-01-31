@@ -59,12 +59,6 @@
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
-            <version>1.8-R0.1-SNAPSHOT</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.spigotmc</groupId>
-            <artifactId>spigot-api</artifactId>
             <version>1.9-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
@@ -143,13 +137,6 @@
             <artifactId>jukebox</artifactId>
             <version>v1.6.4</version>
             <systemPath>${project.basedir}/lib/icJukebox-v1.6.4.jar</systemPath>
-            <scope>system</scope>
-        </dependency>
-        <dependency>
-            <groupId>net.citizensnpc</groupId>
-            <artifactId>citizens-main</artifactId>
-            <version>2</version>
-            <systemPath>${project.basedir}/lib/Citizens.jar</systemPath>
             <scope>system</scope>
         </dependency>
     </dependencies>
