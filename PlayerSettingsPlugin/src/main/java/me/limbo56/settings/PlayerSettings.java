@@ -50,28 +50,26 @@ public class PlayerSettings extends JavaPlugin {
     /**
      * Method to log a string on console.
      *
-     * @param object Message.
+     * @param message Message.
      */
-    public void log(String object) {
-        System.out.println("Preferences >> " + object);
+    public void log(String message) {
+        System.out.println("PlayerSettings >> " + message);
     }
 
     /**
      * Method called when plugin is enabled.
      */
     public void onEnable() {
-
+        // Initialize instnace
         instance = this;
 
-        String updater = Updater.consoleUpdater();
-
+        // Default server version
         String version = "1.8.8";
 
         try {
-
+            // Get server version
             version = Bukkit.getServer().getClass().getPackage().getName().replace(".", ",").split(",")[3];
-
-        } catch (ArrayIndexOutOfBoundsException whatVersionAreYouUsingException) {
+        } catch (ArrayIndexOutOfBoundsException e) {
             log("This server version is not supported!");
             this.setEnabled(false);
         }
@@ -81,6 +79,7 @@ public class PlayerSettings extends JavaPlugin {
 
         log("");
 
+        // Connect to database if it's enabled
         if (getConfig().getBoolean("MySQL.enable")) {
             log("Connecting to database...");
 
@@ -92,6 +91,7 @@ public class PlayerSettings extends JavaPlugin {
 
         log("Loading all data...");
 
+        // Load plugin defaults
         loadDefaults(version);
 
         log("All data has been loaded");
@@ -104,52 +104,75 @@ public class PlayerSettings extends JavaPlugin {
 
         log("Checking for updates...");
         log("");
-        log(updater);
+
+        // Send updater
+        Updater.sendUpdater();
+
         log("Download: http://bit.ly/PlayerSettings");
         log("");
 
-        Updater.consoleUpdater();
-
+        // Load online players
         Utilities.loadOnlinePlayers();
-
     }
-    
+
+    /**
+     * Method called when plugin is disabled.
+     */
     public void onDisable() {
+
+        // Save all cached player's settings
     	if (!Cache.PLAYER_LIST.isEmpty()) {
     		for (Player player : Cache.PLAYER_LIST.keySet()) {
-    			Cache.PLAYER_LIST.get(player).saveSettings(true);
+    			Cache.PLAYER_LIST.get(player).saveSettingsSync();
+
     			if (Cache.WORLDS_ALLOWED.contains(player.getWorld().getName())) {
     	            player.removePotionEffect(PotionEffectType.SPEED);
     	            player.removePotionEffect(PotionEffectType.JUMP);
     	            player.removePotionEffect(PotionEffectType.INVISIBILITY);
+
     	            if (Utilities.hasRadioPlugin()) {
     	                if (scJukeBox.getCurrentJukebox(player) != null)
     	                    scJukeBox.getCurrentJukebox(player).removePlayer(player);
     	            }
+
     	        }
 
     	        Cache.PLAYER_LIST.remove(player);
     		}
     	}
+
+    	// Uninitialize variables
+    	instance = null;
+        pm = null;
+
+        // Disable plugin
     	Bukkit.getPluginManager().disablePlugin(this);
     }
 
     private void setupConfig() {
+        // Get config.yml
         File file = new File(getDataFolder(), "config.yml");
+
+        // Boolean if config was created
         boolean created;
 
+        // If config doesn't exists, then create one
         if (!file.exists()) {
             created = file.getParentFile().mkdir();
             log("Config file doesn't exist yet.");
             log("Creating Config File and loading it.");
+
             if (created) {
                 log("File config.yml created with success!");
                 log("");
             }
+
         }
 
+        // Get plugin configuration
         ConfigurationManager config = ConfigurationManager.getConfig();
 
+        // Add default lines
         config.addDefault("MySQL.enable", false);
         config.addDefault("MySQL.host", "localhost");
         config.addDefault("MySQL.port", 3306);
@@ -158,15 +181,19 @@ public class PlayerSettings extends JavaPlugin {
         config.addDefault("MySQL.password", "");
 
         config.addDefault("Update-Message", true);
+
+        // Remove Using-Citizens line if it exists
+        // Citizens is not needed anymore, you can just check for npc by his metadata.
         if (config.contains("Using-Citizens")) {
             config.set("Using-Citizens", null);
         }
+
+        // Add default lines
         config.addDefault("Debug", false);
         config.saveConfig();
     }
 
     private void loadDefaults(String version) {
-
         // Setup config.yml
         setupConfig();
 

@@ -54,38 +54,29 @@ public class Utilities {
         String serverVersion;
 
         try {
-
             serverVersion = Bukkit.getServer().getClass().getPackage().getName().replace(".", ",").split(",")[3];
-
         } catch (ArrayIndexOutOfBoundsException whatVersionAreYouUsingException) {
             return false;
         }
 
         return serverVersion.equals(version);
-
     }
 
     public static boolean hasRadioPlugin() {
         return PlayerSettings.getInstance().getServer().getPluginManager().getPlugin("icJukeBox") != null;
     }
 
-    public static boolean hasCitizens() {
-        return PlayerSettings.getInstance().getServer().getPluginManager().getPlugin("Citizens") != null;
-    }
-    
     public static CustomPlayer getOrCreateCustomPlayer(Player player) {
-    	if (!Cache.PLAYER_LIST.containsKey(player))
-    		Cache.PLAYER_LIST.put(player, new CustomPlayer(player));
+        if (!Cache.PLAYER_LIST.containsKey(player))
+            Cache.PLAYER_LIST.put(player, new CustomPlayer(player));
 
-    	return Cache.PLAYER_LIST.get(player);
+        return Cache.PLAYER_LIST.get(player);
     }
 
     public static void loadOnlinePlayers() {
 
         if (Bukkit.getOnlinePlayers() != null)
-
             for (Player player : Bukkit.getOnlinePlayers()) {
-
                 if (Cache.WORLDS_ALLOWED.contains(player.getWorld().getName())) {
 
                     CustomPlayer cPlayer = getOrCreateCustomPlayer(player);
@@ -142,9 +133,8 @@ public class Utilities {
                         }
                     }
 
-                    if (player.isOp()) {
-                        player.sendMessage(Updater.playerUpdater());
-                    }
+                    if (player.isOp())
+                        Updater.sendUpdater(player);
 
                 } else if (!Cache.WORLDS_ALLOWED.contains(player.getWorld().getName())) {
                     for (Player online : Bukkit.getOnlinePlayers()) {
@@ -158,9 +148,7 @@ public class Utilities {
 
                     }
                 }
-
             }
-
     }
 
 }
