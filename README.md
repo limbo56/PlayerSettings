@@ -8,7 +8,7 @@
 
 ####3. With these menus, you can change the preferences that you want, like fly, hub stacker, and many others.
 
-####4. Compatible with [icJukeBox](https://www.spigotmc.org/resources/icjukebox.6129/) in order to change the preference for the music.
+####4. Compatible with [icJukeBox](https://www.spigotmc.org/resources/icjukebox.6129/) and [AuthMe Reloaded](https://www.spigotmc.org/resources/authme-reloaded.6269/).
 
 ####5. This menu is one of the most searched menus, that is the reason why I made this plugin. Also the plugin is free, you can check it out on the spigot page.
 
