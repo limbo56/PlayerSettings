@@ -3,6 +3,8 @@ package me.limbo56.settings.utils;
 import com.statiocraft.jukebox.Shuffle;
 import com.statiocraft.jukebox.SingleSong;
 import com.statiocraft.jukebox.scJukeBox;
+
+import fr.xephi.authme.api.NewAPI;
 import me.limbo56.settings.PlayerSettings;
 import me.limbo56.settings.managers.ConfigurationManager;
 import me.limbo56.settings.player.CustomPlayer;
@@ -65,6 +67,10 @@ public class Utilities {
     public static boolean hasRadioPlugin() {
         return PlayerSettings.getInstance().getServer().getPluginManager().getPlugin("icJukeBox") != null;
     }
+    
+    public static boolean hasAuthMePlugin() {
+    	return PlayerSettings.getInstance().getServer().getPluginManager().getPlugin("AuthMe") != null;
+    }
 
     public static CustomPlayer getOrCreateCustomPlayer(Player player) {
         if (!Cache.PLAYER_LIST.containsKey(player))
@@ -72,12 +78,117 @@ public class Utilities {
 
         return Cache.PLAYER_LIST.get(player);
     }
+    
+    public static void loadSettings(Player player) {
+    	CustomPlayer cPlayer = Utilities.getOrCreateCustomPlayer(player);
+
+        if (!cPlayer.containsPlayer()) {
+            cPlayer.addPlayer();
+        } else {
+            cPlayer.loadSettings();
+        }
+
+        if (Cache.WORLDS_ALLOWED.contains(player.getWorld().getName())) {
+            for (Player online : Bukkit.getOnlinePlayers()) {
+                CustomPlayer oPlayer = Utilities.getOrCreateCustomPlayer(online);
+
+                if (ConfigurationManager.getMenu().getBoolean("Menu.Items.Visibility.Enabled"))
+                    if (!oPlayer.hasVisibility())
+                        online.hidePlayer(player);
+
+                if (ConfigurationManager.getMenu().getBoolean("Menu.Items.Vanish.Enabled"))
+                    if (oPlayer.hasVanish())
+                        online.hidePlayer(player);
+            }
+
+            for (Player online : Bukkit.getOnlinePlayers()) {
+                if (ConfigurationManager.getMenu().getBoolean("Menu.Items.Vanish.Enabled"))
+                    if (cPlayer.hasVisibility()) {
+                        player.showPlayer(online);
+                    } else if (!cPlayer.hasVisibility()) {
+                        player.hidePlayer(online);
+                    }
+            }
+
+            if (ConfigurationManager.getMenu().getBoolean("Menu.Items.Vanish.Enabled"))
+                if (cPlayer.hasVanish()) {
+                    player.addPotionEffect(Cache.INVISIBILITY);
+
+                    for (Player online : Bukkit.getOnlinePlayers())
+                        online.hidePlayer(player);
+
+                } else {
+                    player.removePotionEffect(PotionEffectType.INVISIBILITY);
+                }
+
+            if (ConfigurationManager.getMenu().getBoolean("Menu.Items.Fly.Enabled"))
+                if (cPlayer.hasFly())
+                    player.setAllowFlight(true);
+
+            if (ConfigurationManager.getMenu().getBoolean("Menu.Items.Speed.Enabled"))
+                if (cPlayer.hasSpeed())
+                    player.addPotionEffect(Cache.SPEED);
+                else
+                    player.removePotionEffect(PotionEffectType.SPEED);
+
+            if (ConfigurationManager.getMenu().getBoolean("Menu.Items.Jump.Enabled"))
+                if (cPlayer.hasJump())
+                    player.addPotionEffect(Cache.JUMP);
+                else
+                    player.removePotionEffect(PotionEffectType.JUMP);
+
+            if (ConfigurationManager.getMenu().getBoolean("Menu.Items.Radio.Enabled"))
+                if (cPlayer.hasRadio() && player.hasPermission(Cache.RADIO_PERMISSION)) {
+                    int type = ConfigurationManager.getDefault().getInt("Radio.type");
+                    switch (type) {
+                        case 1:
+                            new Shuffle().addPlayer(player);
+                            break;
+                        case 2:
+                            new SingleSong(scJukeBox.listSongs().get(new Random().nextInt(scJukeBox.listSongs().size()))).addPlayer(player);
+                            break;
+                        case 3:
+                            scJukeBox.getRadio().addPlayer(player);
+                            break;
+                        default:
+                            PlayerSettings.getInstance().log("Invalid Radio type. Please put a value between 1 and 3");
+                            break;
+                    }
+                }
+
+            if (PlayerSettings.getInstance().getConfig().getBoolean("Update-Message"))
+                if (player.isOp())
+                    Updater.sendUpdater(player);
+        }
+    }
+    
+    public static void saveSettings(Player player) {
+    	CustomPlayer cPlayer = Utilities.getOrCreateCustomPlayer(player);
+
+        cPlayer.saveSettingsAsync();
+
+        if (Cache.WORLDS_ALLOWED.contains(player.getWorld().getName())) {
+
+            player.removePotionEffect(PotionEffectType.SPEED);
+            player.removePotionEffect(PotionEffectType.JUMP);
+            player.removePotionEffect(PotionEffectType.INVISIBILITY);
+
+            if (Utilities.hasRadioPlugin()) {
+                if (scJukeBox.getCurrentJukebox(player) != null)
+                    scJukeBox.getCurrentJukebox(player).removePlayer(player);
+            }
+        }
+
+        Cache.PLAYER_LIST.remove(player);
+    }
 
     public static void loadOnlinePlayers() {
 
         if (Bukkit.getOnlinePlayers() != null)
             for (Player player : Bukkit.getOnlinePlayers()) {
                 if (Cache.WORLDS_ALLOWED.contains(player.getWorld().getName())) {
+                	if (hasAuthMePlugin() && !NewAPI.getInstance().isAuthenticated(player))
+                		return;
 
                     CustomPlayer cPlayer = getOrCreateCustomPlayer(player);
 
@@ -85,7 +196,11 @@ public class Utilities {
                     player.removePotionEffect(PotionEffectType.JUMP);
                     player.removePotionEffect(PotionEffectType.INVISIBILITY);
 
-                    cPlayer.loadSettings();
+                    if (!cPlayer.containsPlayer()) {
+                        cPlayer.addPlayer();
+                    } else {
+                        cPlayer.loadSettings();
+                    }
 
                     if (cPlayer.hasVisibility()) {
                         for (Player online : Bukkit.getOnlinePlayers()) {

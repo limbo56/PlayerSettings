@@ -41,6 +41,6 @@ public class Cache {
     public static final HashMap<Player, CustomPlayer> PLAYER_LIST = new HashMap<>();
 
     public static final PotionEffect INVISIBILITY = new PotionEffect(PotionEffectType.INVISIBILITY, 1000000000, 0);
-    public static final PotionEffect SPEED = new PotionEffect(PotionEffectType.SPEED, 1000000000, ConfigurationManager.getDefault().getInt("Speed.level"));
-    public static final PotionEffect JUMP = new PotionEffect(PotionEffectType.JUMP, 1000000000, ConfigurationManager.getDefault().getInt("Jump.level"));
+    public static final PotionEffect SPEED = new PotionEffect(PotionEffectType.SPEED, 1000000000, ConfigurationManager.getDefault().getInt("Speed.level") - 1);
+    public static final PotionEffect JUMP = new PotionEffect(PotionEffectType.JUMP, 1000000000, ConfigurationManager.getDefault().getInt("Jump.level") - 1);
 }

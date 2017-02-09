@@ -13,7 +13,7 @@
 
     <artifactId>PlayerSettingsPlugin</artifactId>
 
-    <version>4.7</version>
+    <version>4.8</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -137,6 +137,13 @@
             <artifactId>jukebox</artifactId>
             <version>v1.6.4</version>
             <systemPath>${project.basedir}/lib/icJukebox-v1.6.4.jar</systemPath>
+            <scope>system</scope>
+        </dependency>
+        <dependency>
+            <groupId>fr.xephi</groupId>
+            <artifactId>authme</artifactId>
+            <version>5.2-b1542</version>
+            <systemPath>${project.basedir}/lib/AuthMe-5.2-noshade.jar</systemPath>
             <scope>system</scope>
         </dependency>
     </dependencies>

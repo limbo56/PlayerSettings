@@ -41,5 +41,14 @@
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="module-library">
+      <library name="Maven: fr.xephi:authme:5.2-b1542">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/AuthMe-5.2-noshade.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
   </component>
 </module>
