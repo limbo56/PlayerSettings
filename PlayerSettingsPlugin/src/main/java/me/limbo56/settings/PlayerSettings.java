@@ -3,6 +3,7 @@ package me.limbo56.settings;
 import me.limbo56.settings.config.DefaultConfiguration;
 import me.limbo56.settings.config.MenuConfiguration;
 import me.limbo56.settings.config.MessageConfiguration;
+import me.limbo56.settings.listeners.AuthMeListener;
 import me.limbo56.settings.listeners.FlyToggleListener;
 import me.limbo56.settings.listeners.PlayerListener;
 import me.limbo56.settings.listeners.WorldListener;
@@ -23,6 +24,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffectType;
 
 import com.statiocraft.jukebox.scJukeBox;
+
+import fr.xephi.authme.api.NewAPI;
 
 import java.io.File;
 import java.util.SortedMap;
@@ -108,7 +111,6 @@ public class PlayerSettings extends JavaPlugin {
         // Send updater
         Updater.sendUpdater();
 
-        log("Download: http://bit.ly/PlayerSettings");
         log("");
 
         // Load online players
@@ -123,6 +125,8 @@ public class PlayerSettings extends JavaPlugin {
         // Save all cached player's settings
     	if (!Cache.PLAYER_LIST.isEmpty()) {
     		for (Player player : Cache.PLAYER_LIST.keySet()) {
+    			if (Utilities.hasAuthMePlugin() && !NewAPI.getInstance().isAuthenticated(player))
+    				return;
     			Cache.PLAYER_LIST.get(player).saveSettingsSync();
 
     			if (Cache.WORLDS_ALLOWED.contains(player.getWorld().getName())) {
@@ -137,8 +141,8 @@ public class PlayerSettings extends JavaPlugin {
 
     	        }
 
-    	        Cache.PLAYER_LIST.remove(player);
     		}
+    		Cache.PLAYER_LIST.clear();
     	}
 
     	// Uninitialize variables
@@ -215,6 +219,8 @@ public class PlayerSettings extends JavaPlugin {
         pm.registerEvents(new FlyToggleListener(), this);
         pm.registerEvents(new WorldListener(), this);
         pm.registerEvents(new SettingsMenu(), this);
+        if (Utilities.hasAuthMePlugin())
+        	pm.registerEvents(new AuthMeListener(), this);
 
         // Creating help messages
         commandHelp.put(1, "§a/settings open §7- §cOpen the settings menu.");

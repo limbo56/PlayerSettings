@@ -38,8 +38,8 @@ public class DefaultConfiguration {
             configurationManager.set("Radio", null);
         }
         addDefault("Stacker.launch-force", 1);
-        addDefault("Speed.level", 1);
-        addDefault("Jump.level", 1);
+        addDefault("Speed.level", 2);
+        addDefault("Jump.level", 2);
     }
 
 }

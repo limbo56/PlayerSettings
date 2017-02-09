@@ -1,14 +1,12 @@
 package me.limbo56.settings.listeners;
 
-import com.statiocraft.jukebox.Shuffle;
-import com.statiocraft.jukebox.SingleSong;
-import com.statiocraft.jukebox.scJukeBox;
+
+import fr.xephi.authme.api.NewAPI;
 import me.limbo56.settings.PlayerSettings;
 import me.limbo56.settings.config.MessageConfiguration;
 import me.limbo56.settings.managers.ConfigurationManager;
 import me.limbo56.settings.player.CustomPlayer;
 import me.limbo56.settings.utils.Cache;
-import me.limbo56.settings.utils.Updater;
 import me.limbo56.settings.utils.Utilities;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -21,10 +19,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.EquipmentSlot;
-import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
-
-import java.util.Random;
 
 /**
  * Created by lim_bo56
@@ -36,109 +31,18 @@ public class PlayerListener implements Listener {
 
     @EventHandler
     public void onJoinEvent(PlayerJoinEvent event) {
-        final Player player = event.getPlayer();
-        CustomPlayer cPlayer = Utilities.getOrCreateCustomPlayer(player);
-
-        if (!cPlayer.containsPlayer()) {
-            cPlayer.addPlayer();
-        } else {
-            cPlayer.loadSettings();
-        }
-
-        if (Cache.WORLDS_ALLOWED.contains(player.getWorld().getName())) {
-            for (Player online : Bukkit.getOnlinePlayers()) {
-                CustomPlayer oPlayer = Utilities.getOrCreateCustomPlayer(online);
-
-                if (ConfigurationManager.getMenu().getBoolean("Menu.Items.Visibility.Enabled"))
-                    if (!oPlayer.hasVisibility())
-                        online.hidePlayer(player);
-
-                if (ConfigurationManager.getMenu().getBoolean("Menu.Items.Vanish.Enabled"))
-                    if (oPlayer.hasVanish())
-                        online.hidePlayer(player);
-            }
-
-            for (Player online : Bukkit.getOnlinePlayers()) {
-                if (ConfigurationManager.getMenu().getBoolean("Menu.Items.Vanish.Enabled"))
-                    if (cPlayer.hasVisibility()) {
-                        player.showPlayer(online);
-                    } else if (!cPlayer.hasVisibility()) {
-                        player.hidePlayer(online);
-                    }
-            }
-
-            if (ConfigurationManager.getMenu().getBoolean("Menu.Items.Vanish.Enabled"))
-                if (cPlayer.hasVanish()) {
-                    player.addPotionEffect(Cache.INVISIBILITY);
-
-                    for (Player online : Bukkit.getOnlinePlayers())
-                        online.hidePlayer(player);
-
-                } else {
-                    player.removePotionEffect(PotionEffectType.INVISIBILITY);
-                }
-
-            if (ConfigurationManager.getMenu().getBoolean("Menu.Items.Fly.Enabled"))
-                if (cPlayer.hasFly())
-                    player.setAllowFlight(true);
-
-            if (ConfigurationManager.getMenu().getBoolean("Menu.Items.Speed.Enabled"))
-                if (cPlayer.hasSpeed())
-                    player.addPotionEffect(Cache.SPEED);
-                else
-                    player.removePotionEffect(PotionEffectType.SPEED);
-
-            if (ConfigurationManager.getMenu().getBoolean("Menu.Items.Jump.Enabled"))
-                if (cPlayer.hasJump())
-                    player.addPotionEffect(Cache.JUMP);
-                else
-                    player.removePotionEffect(PotionEffectType.JUMP);
-
-            if (ConfigurationManager.getMenu().getBoolean("Menu.Items.Radio.Enabled"))
-                if (cPlayer.hasRadio() && player.hasPermission(Cache.RADIO_PERMISSION)) {
-                    int type = ConfigurationManager.getDefault().getInt("Radio.type");
-                    switch (type) {
-                        case 1:
-                            new Shuffle().addPlayer(player);
-                            break;
-                        case 2:
-                            new SingleSong(scJukeBox.listSongs().get(new Random().nextInt(scJukeBox.listSongs().size()))).addPlayer(player);
-                            break;
-                        case 3:
-                            scJukeBox.getRadio().addPlayer(player);
-                            break;
-                        default:
-                            PlayerSettings.getInstance().log("Invalid Radio type. Please put a value between 1 and 3");
-                            break;
-                    }
-                }
-
-            if (PlayerSettings.getInstance().getConfig().getBoolean("Update-Message"))
-                if (player.isOp())
-                    Updater.sendUpdater(player);
-        }
+        Player player = event.getPlayer();
+    	if (Utilities.hasAuthMePlugin() && !NewAPI.getInstance().isAuthenticated(player))
+    		return;
+    	Utilities.loadSettings(player);
     }
 
     @EventHandler
     public void onQuitEvent(PlayerQuitEvent event) {
-        Player player = event.getPlayer();
-        CustomPlayer cPlayer = Utilities.getOrCreateCustomPlayer(player);
-
-        cPlayer.saveSettingsAsync();
-
-        if (Cache.WORLDS_ALLOWED.contains(player.getWorld().getName())) {
-
-            player.removePotionEffect(PotionEffectType.SPEED);
-            player.removePotionEffect(PotionEffectType.JUMP);
-            player.removePotionEffect(PotionEffectType.INVISIBILITY);
-
-            if (Utilities.hasRadioPlugin()) {
-                if (scJukeBox.getCurrentJukebox(player) != null)
-                    scJukeBox.getCurrentJukebox(player).removePlayer(player);
-            }
-        }
-
-        Cache.PLAYER_LIST.remove(player);
+    	Player player = event.getPlayer();
+    	if (Utilities.hasAuthMePlugin() && !NewAPI.getInstance().isAuthenticated(player))
+    		return;
+    	Utilities.saveSettings(player);
     }
 
     @EventHandler
