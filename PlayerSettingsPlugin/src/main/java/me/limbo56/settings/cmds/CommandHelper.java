@@ -14,7 +14,8 @@ import org.bukkit.command.CommandSender;
 public class CommandHelper {
 
     private CommandSender sender;
-    private Command cmd;
+    @SuppressWarnings("unused")
+	private Command cmd;
 
     public CommandHelper(CommandSender sender, Command cmd) {
         this.sender = sender;

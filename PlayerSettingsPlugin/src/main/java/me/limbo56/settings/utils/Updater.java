@@ -38,7 +38,7 @@ public class Updater {
             if (!NewVersion.equals(OldVersion)) {
                 player.sendMessage(ColorUtils.Color(Cache.CHAT_TITLE + "&dNew version available &b" + NewVersion + "\n" + "&aDownload&f>&7> &fhttp://bit.ly/PlayerSettings"));
             } else {
-                player.sendMessage(ColorUtils.Color(Cache.CHAT_TITLE + "&dNo updates avialable at this time."));
+                player.sendMessage(ColorUtils.Color(Cache.CHAT_TITLE + "&dNo updates available at this time."));
             }
         } catch (Exception ex) {
             player.sendMessage(ColorUtils.Color(Cache.CHAT_TITLE + "&cFailed to check for a update on spigot."));
@@ -62,9 +62,9 @@ public class Updater {
                     .replaceAll("[a-zA-Z ]", "");
             String OldVersion = plugin.getDescription().getVersion();
             if (!NewVersion.equals(OldVersion)) {
-                PlayerSettings.getInstance().log("New version available " + NewVersion);
+                PlayerSettings.getInstance().log("New version available " + NewVersion + "\n" + "Download: http://bit.ly/PlayerSettings");
             } else {
-                PlayerSettings.getInstance().log("No updates avialable at this time.");
+                PlayerSettings.getInstance().log("No updates available at this time.");
             }
         } catch (Exception ex) {
             plugin.getLogger().info("Failed to check for a update on spigot.");
