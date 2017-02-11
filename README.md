@@ -13,7 +13,7 @@
 ####5. This menu is one of the most searched menus, that is the reason why I made this plugin. Also the plugin is free, you can check it out on the spigot page.
 
 #Link
-####Where can I check out this cool plugin? Right here! Plugin Page: https://www.spigotmc.org/resources/player-settings.14622/
+####Where can I check out this cool plugin? Right here! Plugin Page: http://bit.ly/PlayerSettings
 
 #License
 ####You must read the license before copying, modifying, or distributing this resource. https://github.com/limbo56/Player-Settings/blob/master/LICENSE
