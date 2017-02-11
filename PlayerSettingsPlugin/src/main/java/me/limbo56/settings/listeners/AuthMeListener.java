@@ -1,5 +1,6 @@
 package me.limbo56.settings.listeners;
 
+import me.limbo56.settings.player.CustomPlayer;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
@@ -14,7 +15,7 @@ public class AuthMeListener implements Listener {
     public void onUserLogin(LoginEvent event) {
     	// AuthMe has a Bug where session logins are authenticated twice. 
     	// This is a workaround for that. TODO: Remove when AuthMe fixes it.
-    	if (!Cache.PLAYER_LIST.containsKey(event.getPlayer())) 
+    	if (!CustomPlayer.getPlayerList().containsKey(event.getPlayer()))
     		Utilities.loadSettings(event.getPlayer());
     }
     

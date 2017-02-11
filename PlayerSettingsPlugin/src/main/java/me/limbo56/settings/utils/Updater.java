@@ -32,13 +32,17 @@ public class Updater {
             con.getOutputStream()
                     .write(("key=98BE0FE67F88AB82B4C197FAF1DC3B69206EFDCC4D3B80FC83A00037510B99B4&resource=" + "14622")
                             .getBytes("UTF-8"));
-            String NewVersion = new BufferedReader(new InputStreamReader(con.getInputStream())).readLine()
+            String spigotVersionString = new BufferedReader(new InputStreamReader(con.getInputStream())).readLine()
                     .replaceAll("[a-zA-Z ]", "");
-            String OldVersion = plugin.getDescription().getVersion();
-            if (!NewVersion.equals(OldVersion)) {
-                player.sendMessage(ColorUtils.Color(Cache.CHAT_TITLE + "&dNew version available &b" + NewVersion + "\n" + "&aDownload&f>&7> &fhttp://bit.ly/PlayerSettings"));
+
+            double spigotVersion = Double.valueOf(spigotVersionString);
+
+            double actualVersion = Double.valueOf(plugin.getDescription().getVersion());
+
+            if (spigotVersion > actualVersion) {
+                player.sendMessage(ColorUtils.Color(Cache.CHAT_TITLE + "&dNew version available &b" + spigotVersion + "\n" + "&aDownload&f>&7> &fhttp://bit.ly/PlayerSettings"));
             } else {
-                player.sendMessage(ColorUtils.Color(Cache.CHAT_TITLE + "&dNo updates available at this time."));
+                player.sendMessage(ColorUtils.Color(Cache.CHAT_TITLE + "&dPlugin is up to date, No updates available at this time."));
             }
         } catch (Exception ex) {
             player.sendMessage(ColorUtils.Color(Cache.CHAT_TITLE + "&cFailed to check for a update on spigot."));
@@ -58,13 +62,18 @@ public class Updater {
             con.getOutputStream()
                     .write(("key=98BE0FE67F88AB82B4C197FAF1DC3B69206EFDCC4D3B80FC83A00037510B99B4&resource=" + "14622")
                             .getBytes("UTF-8"));
-            String NewVersion = new BufferedReader(new InputStreamReader(con.getInputStream())).readLine()
+            String spigotVersionString = new BufferedReader(new InputStreamReader(con.getInputStream())).readLine()
                     .replaceAll("[a-zA-Z ]", "");
-            String OldVersion = plugin.getDescription().getVersion();
-            if (!NewVersion.equals(OldVersion)) {
-                PlayerSettings.getInstance().log("New version available " + NewVersion + "\n" + "Download: http://bit.ly/PlayerSettings");
+
+            double spigotVersion = Double.valueOf(spigotVersionString);
+
+            double actualVersion = Double.valueOf(plugin.getDescription().getVersion());
+
+            if (spigotVersion > actualVersion) {
+                plugin.log("New version available " + spigotVersionString);
+                plugin.log("Download: http://bit.ly/PlayerSettings");
             } else {
-                PlayerSettings.getInstance().log("No updates available at this time.");
+                plugin.log("Plugin is up to date, No updates available at this time.");
             }
         } catch (Exception ex) {
             plugin.getLogger().info("Failed to check for a update on spigot.");
