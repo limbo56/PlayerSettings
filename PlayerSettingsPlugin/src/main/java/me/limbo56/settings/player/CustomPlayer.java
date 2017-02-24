@@ -11,6 +11,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.HashMap;
 import java.util.UUID;
 
 /**
@@ -19,6 +20,8 @@ import java.util.UUID;
  * At 11:50 AM
  */
 public class CustomPlayer {
+
+    private static HashMap<Player, CustomPlayer> playerList = new HashMap<>();
 
     private Player player;
     private UUID uuid;
@@ -314,4 +317,7 @@ public class CustomPlayer {
         return radio;
     }
 
+    public static HashMap<Player, CustomPlayer> getPlayerList() {
+        return playerList;
+    }
 }

@@ -12,6 +12,7 @@ import me.limbo56.settings.managers.ConfigurationManager;
 import me.limbo56.settings.managers.VersionManager;
 import me.limbo56.settings.menus.SettingsMenu;
 import me.limbo56.settings.mysql.MySqlConnection;
+import me.limbo56.settings.player.CustomPlayer;
 import me.limbo56.settings.utils.Cache;
 import me.limbo56.settings.utils.Updater;
 import me.limbo56.settings.utils.Utilities;
@@ -35,6 +36,8 @@ import java.util.TreeMap;
  * Created by lim_bo56
  * On Aug 7, 2016
  * At 2:24:36 AM
+ *
+ * Contributors: Maxetto
  */
 public class PlayerSettings extends JavaPlugin {
 
@@ -123,11 +126,11 @@ public class PlayerSettings extends JavaPlugin {
     public void onDisable() {
 
         // Save all cached player's settings
-    	if (!Cache.PLAYER_LIST.isEmpty()) {
-    		for (Player player : Cache.PLAYER_LIST.keySet()) {
+    	if (!CustomPlayer.getPlayerList().isEmpty()) {
+    		for (Player player : CustomPlayer.getPlayerList().keySet()) {
     			if (Utilities.hasAuthMePlugin() && !NewAPI.getInstance().isAuthenticated(player))
     				return;
-    			Cache.PLAYER_LIST.get(player).saveSettingsSync();
+    			CustomPlayer.getPlayerList().get(player).saveSettingsSync();
 
     			if (Cache.WORLDS_ALLOWED.contains(player.getWorld().getName())) {
     	            player.removePotionEffect(PotionEffectType.SPEED);
@@ -142,7 +145,7 @@ public class PlayerSettings extends JavaPlugin {
     	        }
 
     		}
-    		Cache.PLAYER_LIST.clear();
+    		CustomPlayer.getPlayerList().clear();
     	}
 
     	// Uninitialize variables

@@ -38,7 +38,6 @@ public class MenuConfiguration {
         addDefault("Menu.Items.Disabled.Name", "&c&lOff");
         addDefault("Menu.Items.Disabled.Lore", Arrays.asList("", "&7Click to &cdisable"));
 
-
         addDefault("Menu.Items.Speed.Name", "&9Speed II");
         addDefault("Menu.Items.Speed.Material", "SUGAR");
         addDefault("Menu.Items.Speed.Slot", 10);
