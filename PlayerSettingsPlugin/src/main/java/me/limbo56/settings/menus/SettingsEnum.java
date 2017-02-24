@@ -209,23 +209,23 @@ public enum SettingsEnum {
         }
     };
 
+    public List<String> enabledLore = Cache.ENABLED_LORE;
+    public List<String> disabledLore = Cache.DISABLED_LORE;
+
+    public String[] enabledLoreArray = new String[enabledLore.size()];
+    public String[] disabledLoreArray = new String[disabledLore.size()];
+
+    public boolean radio = Utilities.hasRadioPlugin();
+
     public void setTrue(Inventory inventory, int slot) {
-        enabledLore.toArray(array);
-        inventory.setItem(slot, ItemFactory.createItem(Cache.ENABLED_NAME, true, Material.INK_SACK, 1, 10, array2));
+        enabledLore.toArray(enabledLoreArray);
+        inventory.setItem(slot, ItemFactory.createItem(Cache.ENABLED_NAME, true, Material.INK_SACK, 1, 10, enabledLoreArray));
     }
 
     public void setFalse(Inventory inventory, int slot) {
-        disabledLore.toArray(array2);
-        inventory.setItem(slot, ItemFactory.createItem(Cache.DISABLED_NAME, true, Material.INK_SACK, 1, 8, array));
+        disabledLore.toArray(disabledLoreArray);
+        inventory.setItem(slot, ItemFactory.createItem(Cache.DISABLED_NAME, true, Material.INK_SACK, 1, 8, disabledLoreArray));
     }
-
-    public List<String> enabledLore = Cache.ENABLED_LORE;
-    public String[] array = new String[enabledLore.size()];
-
-    public List<String> disabledLore = Cache.DISABLED_LORE;
-    public String[] array2 = new String[disabledLore.size()];
-
-    public boolean radio = Utilities.hasRadioPlugin();
 
     abstract void setEnabled(Inventory inventory);
 

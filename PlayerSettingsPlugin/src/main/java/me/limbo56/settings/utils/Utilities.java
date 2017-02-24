@@ -73,10 +73,10 @@ public class Utilities {
     }
 
     public static CustomPlayer getOrCreateCustomPlayer(Player player) {
-        if (!Cache.PLAYER_LIST.containsKey(player))
-            Cache.PLAYER_LIST.put(player, new CustomPlayer(player));
+        if (!CustomPlayer.getPlayerList().containsKey(player))
+            CustomPlayer.getPlayerList().put(player, new CustomPlayer(player));
 
-        return Cache.PLAYER_LIST.get(player);
+        return CustomPlayer.getPlayerList().get(player);
     }
     
     public static void loadSettings(Player player) {
@@ -179,7 +179,7 @@ public class Utilities {
             }
         }
 
-        Cache.PLAYER_LIST.remove(player);
+        CustomPlayer.getPlayerList().remove(player);
     }
 
     public static void loadOnlinePlayers() {

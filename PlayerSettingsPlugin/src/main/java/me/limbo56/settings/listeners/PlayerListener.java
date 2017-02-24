@@ -32,17 +32,17 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onJoinEvent(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-    	if (Utilities.hasAuthMePlugin() && !NewAPI.getInstance().isAuthenticated(player))
-    		return;
-    	Utilities.loadSettings(player);
+        if (Utilities.hasAuthMePlugin() && !NewAPI.getInstance().isAuthenticated(player))
+            return;
+        Utilities.loadSettings(player);
     }
 
     @EventHandler
     public void onQuitEvent(PlayerQuitEvent event) {
-    	Player player = event.getPlayer();
-    	if (Utilities.hasAuthMePlugin() && !NewAPI.getInstance().isAuthenticated(player))
-    		return;
-    	Utilities.saveSettings(player);
+        Player player = event.getPlayer();
+        if (Utilities.hasAuthMePlugin() && !NewAPI.getInstance().isAuthenticated(player))
+            return;
+        Utilities.saveSettings(player);
     }
 
     @EventHandler
