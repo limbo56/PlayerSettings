@@ -1,6 +1,5 @@
 package me.limbo56.settings.listeners;
 
-
 import fr.xephi.authme.api.NewAPI;
 import me.limbo56.settings.PlayerSettings;
 import me.limbo56.settings.config.MessageConfiguration;
@@ -111,7 +110,7 @@ public class PlayerListener implements Listener {
 
                                 if (ePlayer.hasStacker()) {
                                     player.setPassenger(entity);
-                                    PlayerSettings.getInstance().getMount().sendMountPacket(player);
+                                    PlayerSettings.getMount().sendMountPacket(player);
                                 } else if (!ePlayer.hasStacker())
                                     if (ConfigurationManager.getMessages().getBoolean("Send.Target-Stacker-Disabled"))
                                         if (!isNPC)
@@ -132,7 +131,7 @@ public class PlayerListener implements Listener {
                 if (event.getAction() == Action.LEFT_CLICK_AIR) {
                     if (player.getPassenger() != null) {
                         entity.getVehicle().eject();
-                        PlayerSettings.getInstance().getMount().sendMountPacket(player);
+                        PlayerSettings.getMount().sendMountPacket(player);
                         Vector direction = player.getLocation().getDirection();
                         entity.setVelocity(direction.multiply(ConfigurationManager.getDefault().getInt("Stacker.launch-force")));
                         entity.setFallDistance(-10000.0F);
