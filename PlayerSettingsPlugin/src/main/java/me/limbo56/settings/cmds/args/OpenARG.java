@@ -3,7 +3,7 @@ package me.limbo56.settings.cmds.args;
 import me.limbo56.settings.PlayerSettings;
 import me.limbo56.settings.cmds.BaseCommand;
 import me.limbo56.settings.managers.ConfigurationManager;
-import me.limbo56.settings.menus.SettingsMenu;
+import me.limbo56.settings.menu.SettingsMenu;
 import me.limbo56.settings.utils.Cache;
 import me.limbo56.settings.utils.ColorUtils;
 import org.bukkit.command.Command;
@@ -26,16 +26,26 @@ public class OpenARG extends BaseCommand {
 
         Player player = (Player) sender;
 
+        int maxBounds = ConfigurationManager.getMenu().getInt("Menu.Options.Size");
+
         if (Cache.WORLDS_ALLOWED.contains(player.getWorld().getName())) {
             try {
                 SettingsMenu.openSettings(player);
             } catch (ArrayIndexOutOfBoundsException e) {
                 player.sendMessage(ColorUtils.Color(
-                        Cache.CHAT_TITLE + "&4An item's slot is out of bounds, the max bounds is 54, the item slot should not be over 44!" +
-                                " &cPlease check the menu.yml configuration, and set item slots between the boundaries (0 - 44)."));
+                        Cache.CHAT_TITLE +
+                                "&4An item's slot is out of bounds, the max bounds is " + maxBounds +
+                                ", the item slot should not be over " + (maxBounds - 10) + "!" +
+                                " &cPlease check the menu.yml configuration, and set item slots between the boundaries (0 - " + (maxBounds - 10) + ")."));
 
                 if (ConfigurationManager.getConfig().getBoolean("Debug"))
                     PlayerSettings.getInstance().log("executeCommand: Item slot out of bounds");
+            } catch (IllegalArgumentException exception) {
+                player.sendMessage(ColorUtils.Color(
+                        Cache.CHAT_TITLE + "&cThe menu size must be a multiple of 9."));
+
+                if (ConfigurationManager.getConfig().getBoolean("Debug"))
+                    PlayerSettings.getInstance().log("executeCommand: Chest size is not multiple of 9");
             }
 
         }

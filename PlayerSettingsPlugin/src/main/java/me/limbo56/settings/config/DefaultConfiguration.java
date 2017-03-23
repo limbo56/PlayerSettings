@@ -29,14 +29,15 @@ public class DefaultConfiguration {
         addDefault("Default.Fly", false);
         addDefault("Default.Speed", false);
         addDefault("Default.Jump", false);
+
         if (Utilities.hasRadioPlugin()) {
             addDefault("Default.Radio", true);
-
             addDefault("Radio.type", 1);
         } else if (!Utilities.hasRadioPlugin() && configurationManager.contains("Default.Radio")) {
             configurationManager.set("Default.Radio", null);
             configurationManager.set("Radio", null);
         }
+
         addDefault("Stacker.launch-force", 1);
         addDefault("Speed.level", 2);
         addDefault("Jump.level", 2);

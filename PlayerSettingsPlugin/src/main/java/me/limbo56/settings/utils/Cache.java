@@ -5,6 +5,7 @@ import me.limbo56.settings.config.MessageConfiguration;
 import me.limbo56.settings.managers.ConfigurationManager;
 import me.limbo56.settings.player.CustomPlayer;
 
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
 import org.bukkit.potion.PotionEffect;
@@ -24,6 +25,9 @@ public class Cache {
 
     public static final String ENABLED_NAME = MenuConfiguration.get("Menu.Items.Enabled.Name");
     public static final String DISABLED_NAME = MenuConfiguration.get("Menu.Items.Disabled.Name");
+
+    public static final Material ENABLED_MATERIAL = Material.valueOf(MenuConfiguration.get("Menu.Items.Enabled.Material"));
+    public static final Material DISABLED_MATERIAL = Material.valueOf(MenuConfiguration.get("Menu.Items.Disabled.Material"));
 
     public static final String NO_PERMISSIONS = MessageConfiguration.get("No-Permissions");
 
