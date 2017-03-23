@@ -1,4 +1,4 @@
-package me.limbo56.settings.mysql;
+package me.limbo56.settings.managers;
 
 import me.limbo56.settings.PlayerSettings;
 import me.limbo56.settings.managers.ConfigurationManager;
@@ -12,9 +12,7 @@ import java.sql.*;
  * On 8/11/2016
  * At 8:05 PM
  */
-public class MySqlConnection {
-
-    private static MySqlConnection instance = new MySqlConnection();
+public class MySqlManager {
 
     private Connection connection;
 
@@ -23,10 +21,6 @@ public class MySqlConnection {
     private String database = PlayerSettings.getInstance().getConfig().getString("MySQL.database");
     private String name = PlayerSettings.getInstance().getConfig().getString("MySQL.name");
     private String password = PlayerSettings.getInstance().getConfig().getString("MySQL.password");
-
-    public static MySqlConnection getInstance() {
-        return instance;
-    }
 
     public void openConnection() {
         try {

@@ -6,7 +6,6 @@ import org.bukkit.event.Listener;
 
 import fr.xephi.authme.events.LoginEvent;
 import fr.xephi.authme.events.LogoutEvent;
-import me.limbo56.settings.utils.Cache;
 import me.limbo56.settings.utils.Utilities;
 
 public class AuthMeListener implements Listener {
