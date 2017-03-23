@@ -2,7 +2,6 @@ package me.limbo56.settings.player;
 
 import me.limbo56.settings.PlayerSettings;
 import me.limbo56.settings.managers.ConfigurationManager;
-import me.limbo56.settings.mysql.MySqlConnection;
 import me.limbo56.settings.utils.Utilities;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -62,7 +61,7 @@ public class CustomPlayer {
     public boolean containsPlayer() {
         if (PlayerSettings.getInstance().getConfig().getBoolean("MySQL.enable")) {
             try {
-                PreparedStatement sql = MySqlConnection.getInstance().getCurrentConnection().prepareStatement(
+                PreparedStatement sql = PlayerSettings.getMySqlConnection().getCurrentConnection().prepareStatement(
                         "SELECT UUID FROM `PlayerSettings` WHERE UUID = '" + getUuid().toString() + "'");
                 ResultSet resultset = sql.executeQuery();
                 boolean containsPlayerUUID = resultset.next();
@@ -103,7 +102,7 @@ public class CustomPlayer {
                 @Override
                 public void run() {
                     try {
-                        PreparedStatement sql = MySqlConnection.getInstance().getCurrentConnection().prepareStatement(
+                        PreparedStatement sql = PlayerSettings.getMySqlConnection().getCurrentConnection().prepareStatement(
                                 "INSERT INTO `PlayerSettings` (UUID, Visibility, Stacker, Chat, Vanish, Fly, Speed, Jump, Radio) VALUES (" +
                                         "'" + getUuid().toString() + "', " +
                                         "'" + visibility + "', " +
@@ -135,7 +134,7 @@ public class CustomPlayer {
 
     public void loadSettings() {
         if (PlayerSettings.getInstance().getConfig().getBoolean("MySQL.enable")) {
-            if (MySqlConnection.getInstance().checkTable()) {
+            if (PlayerSettings.getMySqlConnection().checkTable()) {
 
                 this.visibility = getBoolean("Visibility");
                 this.stacker = getBoolean("Stacker");
@@ -166,7 +165,7 @@ public class CustomPlayer {
 
             try {
 
-                Statement statement = MySqlConnection.getInstance().getCurrentConnection().createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+                Statement statement = PlayerSettings.getMySqlConnection().getCurrentConnection().createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 
                 statement.addBatch("UPDATE `PlayerSettings` SET `Visibility` = " + visibility + " WHERE UUID = '" + getUuid().toString() + "'");
                 statement.addBatch("UPDATE `PlayerSettings` SET `Stacker` = " + stacker + " WHERE UUID = '" + getUuid().toString() + "'");
@@ -200,7 +199,7 @@ public class CustomPlayer {
                 public void run() {
                     try {
 
-                        Statement statement = MySqlConnection.getInstance().getCurrentConnection().createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+                        Statement statement = PlayerSettings.getMySqlConnection().getCurrentConnection().createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 
                         statement.addBatch("UPDATE `PlayerSettings` SET `Visibility` = " + visibility + " WHERE UUID = '" + getUuid().toString() + "'");
                         statement.addBatch("UPDATE `PlayerSettings` SET `Stacker` = " + stacker + " WHERE UUID = '" + getUuid().toString() + "'");
@@ -231,7 +230,7 @@ public class CustomPlayer {
 
     private boolean getBoolean(String str) {
         try {
-            ResultSet rs = MySqlConnection.getInstance().getCurrentConnection().createStatement().executeQuery(
+            ResultSet rs = PlayerSettings.getMySqlConnection().getCurrentConnection().createStatement().executeQuery(
                     "SELECT `" + str + "` FROM `PlayerSettings` WHERE `UUID` = '" + getUuid().toString() + "'");
 
             if (rs.next()) {

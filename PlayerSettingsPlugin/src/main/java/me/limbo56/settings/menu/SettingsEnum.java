@@ -1,4 +1,4 @@
-package me.limbo56.settings.menus;
+package me.limbo56.settings.menu;
 
 import me.limbo56.settings.PlayerSettings;
 import me.limbo56.settings.config.MenuConfiguration;
@@ -24,7 +24,7 @@ public enum SettingsEnum {
         @Override
         void setEnabled(Inventory inventory) {
             if (ConfigurationManager.getMenu().getBoolean("Menu.Items.Speed.Enabled")) {
-                inventory.setItem(ConfigurationManager.getMenu().getInt("Menu.Items.Speed.Slot"), PlayerSettings.getInstance().getItemGlower().glow(ItemFactory.createItem(MenuConfiguration.get("Menu.Items.Speed.Name"), false, Material.getMaterial(MenuConfiguration.get("Menu.Items.Speed.Material")), 1, 0)));
+                inventory.setItem(ConfigurationManager.getMenu().getInt("Menu.Items.Speed.Slot"), PlayerSettings.getItemGlower().glow(ItemFactory.createItem(MenuConfiguration.get("Menu.Items.Speed.Name"), false, Material.getMaterial(MenuConfiguration.get("Menu.Items.Speed.Material")), 1, 0)));
                 setTrue(inventory, ConfigurationManager.getMenu().getInt("Menu.Items.Speed.Slot") + 9);
             }
         }
@@ -47,7 +47,7 @@ public enum SettingsEnum {
         @Override
         void setEnabled(Inventory inventory) {
             if (ConfigurationManager.getMenu().getBoolean("Menu.Items.Jump.Enabled")) {
-                inventory.setItem(ConfigurationManager.getMenu().getInt("Menu.Items.Jump.Slot"), PlayerSettings.getInstance().getItemGlower().glow(ItemFactory.createItem(MenuConfiguration.get("Menu.Items.Jump.Name"), false, Material.getMaterial(MenuConfiguration.get("Menu.Items.Jump.Material")), 1, 0)));
+                inventory.setItem(ConfigurationManager.getMenu().getInt("Menu.Items.Jump.Slot"), PlayerSettings.getItemGlower().glow(ItemFactory.createItem(MenuConfiguration.get("Menu.Items.Jump.Name"), false, Material.getMaterial(MenuConfiguration.get("Menu.Items.Jump.Material")), 1, 0)));
                 setTrue(inventory, ConfigurationManager.getMenu().getInt("Menu.Items.Jump.Slot") + 9);
             }
         }
@@ -70,7 +70,7 @@ public enum SettingsEnum {
         @Override
         void setEnabled(Inventory inventory) {
             if (ConfigurationManager.getMenu().getBoolean("Menu.Items.Fly.Enabled")) {
-                inventory.setItem(ConfigurationManager.getMenu().getInt("Menu.Items.Fly.Slot"), PlayerSettings.getInstance().getItemGlower().glow(ItemFactory.createItem(MenuConfiguration.get("Menu.Items.Fly.Name"), false, Material.getMaterial(MenuConfiguration.get("Menu.Items.Fly.Material")), 1, 0)));
+                inventory.setItem(ConfigurationManager.getMenu().getInt("Menu.Items.Fly.Slot"), PlayerSettings.getItemGlower().glow(ItemFactory.createItem(MenuConfiguration.get("Menu.Items.Fly.Name"), false, Material.getMaterial(MenuConfiguration.get("Menu.Items.Fly.Material")), 1, 0)));
                 setTrue(inventory, ConfigurationManager.getMenu().getInt("Menu.Items.Fly.Slot") + 9);
             }
         }
@@ -93,7 +93,7 @@ public enum SettingsEnum {
         @Override
         void setEnabled(Inventory inventory) {
             if (ConfigurationManager.getMenu().getBoolean("Menu.Items.Vanish.Enabled")) {
-                inventory.setItem(ConfigurationManager.getMenu().getInt("Menu.Items.Vanish.Slot"), PlayerSettings.getInstance().getItemGlower().glow(ItemFactory.createItem(MenuConfiguration.get("Menu.Items.Vanish.Name"), false, Material.getMaterial(MenuConfiguration.get("Menu.Items.Vanish.Material")), 1, 0)));
+                inventory.setItem(ConfigurationManager.getMenu().getInt("Menu.Items.Vanish.Slot"), PlayerSettings.getItemGlower().glow(ItemFactory.createItem(MenuConfiguration.get("Menu.Items.Vanish.Name"), false, Material.getMaterial(MenuConfiguration.get("Menu.Items.Vanish.Material")), 1, 0)));
                 setTrue(inventory, ConfigurationManager.getMenu().getInt("Menu.Items.Vanish.Slot") + 9);
             }
         }
@@ -116,7 +116,7 @@ public enum SettingsEnum {
         @Override
         void setEnabled(Inventory inventory) {
             if (ConfigurationManager.getMenu().getBoolean("Menu.Items.Stacker.Enabled")) {
-                inventory.setItem(ConfigurationManager.getMenu().getInt("Menu.Items.Stacker.Slot"), PlayerSettings.getInstance().getItemGlower().glow(ItemFactory.createItem(MenuConfiguration.get("Menu.Items.Stacker.Name"), false, Material.getMaterial(MenuConfiguration.get("Menu.Items.Stacker.Material")), 1, 0)));
+                inventory.setItem(ConfigurationManager.getMenu().getInt("Menu.Items.Stacker.Slot"), PlayerSettings.getItemGlower().glow(ItemFactory.createItem(MenuConfiguration.get("Menu.Items.Stacker.Name"), false, Material.getMaterial(MenuConfiguration.get("Menu.Items.Stacker.Material")), 1, 0)));
                 setTrue(inventory, ConfigurationManager.getMenu().getInt("Menu.Items.Stacker.Slot") + 9);
             }
         }
@@ -139,7 +139,7 @@ public enum SettingsEnum {
         @Override
         void setEnabled(Inventory inventory) {
             if (ConfigurationManager.getMenu().getBoolean("Menu.Items.Visibility.Enabled")) {
-                inventory.setItem(ConfigurationManager.getMenu().getInt("Menu.Items.Visibility.Slot"), PlayerSettings.getInstance().getItemGlower().glow(ItemFactory.createItem(MenuConfiguration.get("Menu.Items.Visibility.Name"), false, Material.getMaterial(MenuConfiguration.get("Menu.Items.Visibility.Material")), 1, 0)));
+                inventory.setItem(ConfigurationManager.getMenu().getInt("Menu.Items.Visibility.Slot"), PlayerSettings.getItemGlower().glow(ItemFactory.createItem(MenuConfiguration.get("Menu.Items.Visibility.Name"), false, Material.getMaterial(MenuConfiguration.get("Menu.Items.Visibility.Material")), 1, 0)));
                 setTrue(inventory, ConfigurationManager.getMenu().getInt("Menu.Items.Visibility.Slot") + 9);
             }
         }
@@ -162,7 +162,7 @@ public enum SettingsEnum {
         @Override
         void setEnabled(Inventory inventory) {
             if (ConfigurationManager.getMenu().getBoolean("Menu.Items.Chat.Enabled")) {
-                inventory.setItem(ConfigurationManager.getMenu().getInt("Menu.Items.Chat.Slot"), PlayerSettings.getInstance().getItemGlower().glow(ItemFactory.createItem(MenuConfiguration.get("Menu.Items.Chat.Name"), false, Material.getMaterial(MenuConfiguration.get("Menu.Items.Chat.Material")), 1, 0)));
+                inventory.setItem(ConfigurationManager.getMenu().getInt("Menu.Items.Chat.Slot"), PlayerSettings.getItemGlower().glow(ItemFactory.createItem(MenuConfiguration.get("Menu.Items.Chat.Name"), false, Material.getMaterial(MenuConfiguration.get("Menu.Items.Chat.Material")), 1, 0)));
                 setTrue(inventory, ConfigurationManager.getMenu().getInt("Menu.Items.Chat.Slot") + 9);
             }
         }
@@ -186,7 +186,7 @@ public enum SettingsEnum {
         void setEnabled(Inventory inventory) {
             if (radio) {
                 if (ConfigurationManager.getMenu().getBoolean("Menu.Items.Radio.Enabled")) {
-                    inventory.setItem(ConfigurationManager.getMenu().getInt("Menu.Items.Radio.Slot"), PlayerSettings.getInstance().getItemGlower().glow(ItemFactory.createItem(MenuConfiguration.get("Menu.Items.Radio.Name"), false, Material.getMaterial(MenuConfiguration.get("Menu.Items.Radio.Material")), 1, 0)));
+                    inventory.setItem(ConfigurationManager.getMenu().getInt("Menu.Items.Radio.Slot"), PlayerSettings.getItemGlower().glow(ItemFactory.createItem(MenuConfiguration.get("Menu.Items.Radio.Name"), false, Material.getMaterial(MenuConfiguration.get("Menu.Items.Radio.Material")), 1, 0)));
                     setTrue(inventory, ConfigurationManager.getMenu().getInt("Menu.Items.Radio.Slot") + 9);
                 }
             }
@@ -219,12 +219,12 @@ public enum SettingsEnum {
 
     public void setTrue(Inventory inventory, int slot) {
         enabledLore.toArray(enabledLoreArray);
-        inventory.setItem(slot, ItemFactory.createItem(Cache.ENABLED_NAME, true, Material.INK_SACK, 1, 10, enabledLoreArray));
+        inventory.setItem(slot, ItemFactory.createItem(Cache.ENABLED_NAME, true, Cache.ENABLED_MATERIAL, 1, 10, enabledLoreArray));
     }
 
     public void setFalse(Inventory inventory, int slot) {
         disabledLore.toArray(disabledLoreArray);
-        inventory.setItem(slot, ItemFactory.createItem(Cache.DISABLED_NAME, true, Material.INK_SACK, 1, 8, disabledLoreArray));
+        inventory.setItem(slot, ItemFactory.createItem(Cache.DISABLED_NAME, true, Cache.DISABLED_MATERIAL, 1, 8, disabledLoreArray));
     }
 
     abstract void setEnabled(Inventory inventory);
