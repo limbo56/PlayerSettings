@@ -10,8 +10,8 @@ import me.limbo56.settings.listeners.WorldListener;
 import me.limbo56.settings.managers.CommandManager;
 import me.limbo56.settings.managers.ConfigurationManager;
 import me.limbo56.settings.managers.VersionManager;
-import me.limbo56.settings.menus.SettingsMenu;
-import me.limbo56.settings.mysql.MySqlConnection;
+import me.limbo56.settings.menu.SettingsMenu;
+import me.limbo56.settings.managers.MySqlManager;
 import me.limbo56.settings.player.CustomPlayer;
 import me.limbo56.settings.utils.Cache;
 import me.limbo56.settings.utils.Updater;
@@ -43,15 +43,13 @@ public class PlayerSettings extends JavaPlugin {
 
     private static PlayerSettings instance;
 
+    private static VersionManager versionManager;
+
+    private static MySqlManager mySqlConnection;
+
     public SortedMap<Integer, String> commandHelp = new TreeMap<>();
 
-    private VersionManager versionManager;
-
     private PluginManager pm = Bukkit.getServer().getPluginManager();
-
-    public static PlayerSettings getInstance() {
-        return instance;
-    }
 
     /**
      * Method to log a string on console.
@@ -85,20 +83,20 @@ public class PlayerSettings extends JavaPlugin {
 
         log("");
 
-        // Connect to database if it's enabled
-        if (getConfig().getBoolean("MySQL.enable")) {
-            log("Connecting to database...");
-
-            MySqlConnection.getInstance().openConnection();
-            MySqlConnection.getInstance().createTable();
-
-            log("");
-        }
-
         log("Loading all data...");
 
         // Load plugin defaults
         loadDefaults(version);
+
+        // Connect to database if it's enabled
+        if (getConfig().getBoolean("MySQL.enable")) {
+            log("Connecting to database...");
+
+            mySqlConnection.openConnection();
+            mySqlConnection.createTable();
+
+            log("");
+        }
 
         log("All data has been loaded");
         log("");
@@ -208,6 +206,9 @@ public class PlayerSettings extends JavaPlugin {
         versionManager = new VersionManager(version);
         versionManager.load();
 
+        // Create MySqlConnection instance
+        mySqlConnection = new MySqlManager();
+
         // Load Menu Defaults
         new MenuConfiguration();
 
@@ -233,12 +234,19 @@ public class PlayerSettings extends JavaPlugin {
         getCommand("settings").setExecutor(new CommandManager(this));
     }
 
-    public IItemGlower getItemGlower() {
+    public static PlayerSettings getInstance() {
+        return instance;
+    }
+
+    public static IItemGlower getItemGlower() {
         return versionManager.getItemGlower();
     }
 
-    public IMount getMount() {
+    public static IMount getMount() {
         return versionManager.getMount();
     }
 
+    public static MySqlManager getMySqlConnection() {
+        return mySqlConnection;
+    }
 }

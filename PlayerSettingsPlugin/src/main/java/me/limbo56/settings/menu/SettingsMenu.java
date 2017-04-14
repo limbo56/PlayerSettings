@@ -1,4 +1,4 @@
-package me.limbo56.settings.menus;
+package me.limbo56.settings.menu;
 
 import com.statiocraft.jukebox.Shuffle;
 import com.statiocraft.jukebox.scJukeBox;
@@ -28,7 +28,7 @@ import org.bukkit.potion.PotionEffectType;
 public class SettingsMenu implements Listener {
 
     public static void openSettings(final Player p) {
-        Inventory inventory = Bukkit.createInventory(null, 54, MenuConfiguration.get("Menu.Name"));
+        Inventory inventory = Bukkit.createInventory(null, ConfigurationManager.getMenu().getInt("Menu.Options.Size"), MenuConfiguration.get("Menu.Options.Name"));
 
         for (SettingsEnum settings : SettingsEnum.values()) {
             if (settings.getCondition(p)) {
@@ -46,7 +46,7 @@ public class SettingsMenu implements Listener {
         Player player = event.getPlayer();
 
         if (player.getOpenInventory().getType() == InventoryType.CHEST)
-            if (player.getOpenInventory().getTitle().equalsIgnoreCase(MenuConfiguration.get("Menu.Name"))) {
+            if (player.getOpenInventory().getTitle().equalsIgnoreCase(MenuConfiguration.get("Menu.Options.Name"))) {
                 event.getItemDrop().remove();
                 openSettings(player);
             }
@@ -62,7 +62,7 @@ public class SettingsMenu implements Listener {
         if (Cache.WORLDS_ALLOWED.contains(player.getWorld().getName())) {
 
             if (event.getInventory().getType() == InventoryType.CHEST) {
-                if (event.getInventory().getTitle().equalsIgnoreCase(MenuConfiguration.get("Menu.Name"))) {
+                if (event.getInventory().getTitle().equalsIgnoreCase(MenuConfiguration.get("Menu.Options.Name"))) {
                 	event.setCancelled(true);
                     if (event.getCurrentItem() != null && event.getCurrentItem().hasItemMeta() && event.getCurrentItem().getItemMeta().hasDisplayName()) {
 
