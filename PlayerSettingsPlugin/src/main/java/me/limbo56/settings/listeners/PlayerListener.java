@@ -1,6 +1,5 @@
 package me.limbo56.settings.listeners;
 
-import fr.xephi.authme.api.NewAPI;
 import me.limbo56.settings.PlayerSettings;
 import me.limbo56.settings.config.MessageConfiguration;
 import me.limbo56.settings.managers.ConfigurationManager;
@@ -31,30 +30,39 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onJoinEvent(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-        if (Utilities.hasAuthMePlugin() && !NewAPI.getInstance().isAuthenticated(player))
+        if (Utilities.hasAuthMePlugin() && !Utilities.isAuthenticated(player))
             return;
+
         Utilities.loadSettings(player);
     }
 
     @EventHandler
     public void onQuitEvent(PlayerQuitEvent event) {
         Player player = event.getPlayer();
-        if (Utilities.hasAuthMePlugin() && !NewAPI.getInstance().isAuthenticated(player))
+        if (Utilities.hasAuthMePlugin() && !Utilities.isAuthenticated(player))
             return;
+
         Utilities.saveSettings(player);
     }
 
     @EventHandler
     public void onGamemodeChangeEvent(PlayerGameModeChangeEvent event) {
         Player player = event.getPlayer();
+        if (Utilities.hasAuthMePlugin() && !Utilities.isAuthenticated(player))
+            return;
+
         CustomPlayer cPlayer = Utilities.getOrCreateCustomPlayer(player);
 
         if (ConfigurationManager.getMenu().getBoolean("Menu.Items.Fly.Enabled"))
             if (Cache.WORLDS_ALLOWED.contains(player.getWorld().getName()))
                 if (event.getNewGameMode() == GameMode.ADVENTURE || event.getNewGameMode() == GameMode.SURVIVAL) {
-                    cPlayer.setFly(false);
+                    cPlayer.setFly(ConfigurationManager.getDefault().getBoolean("Default.Fly"));
+                    if (ConfigurationManager.getMenu().getBoolean("Menu.Items.DoubleJump.Enabled"))
+                        cPlayer.setDoubleJump(ConfigurationManager.getDefault().getBoolean("Default.DoubleJump"));
                 } else if (event.getNewGameMode() == GameMode.CREATIVE || event.getNewGameMode() == GameMode.SPECTATOR) {
                     cPlayer.setFly(true);
+                    if (ConfigurationManager.getMenu().getBoolean("Menu.Items.DoubleJump.Enabled"))
+                        cPlayer.setDoubleJump(false);
                 }
 
     }
@@ -62,6 +70,8 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onPlayersChat(final AsyncPlayerChatEvent event) {
         Player player = event.getPlayer();
+        if (Utilities.hasAuthMePlugin() && !Utilities.isAuthenticated(player))
+            return;
 
         CustomPlayer cPlayer = Utilities.getOrCreateCustomPlayer(player);
 
@@ -86,12 +96,39 @@ public class PlayerListener implements Listener {
     }
 
     @EventHandler
+    public void onPlayerMove(PlayerMoveEvent event) {
+        Player player = event.getPlayer();
+        if (Utilities.hasAuthMePlugin() && !Utilities.isAuthenticated(player))
+            return;
+
+        CustomPlayer cPlayer = Utilities.getOrCreateCustomPlayer(player);
+
+        if (ConfigurationManager.getMenu().getBoolean("Menu.Items.DoubleJump.Enabled")) {
+            if (Cache.WORLDS_ALLOWED.contains(player.getWorld().getName())) {
+                if (cPlayer.hasFly())
+                    return;
+                if (cPlayer.hasDoubleJump()) {
+                    if (player.getGameMode() != GameMode.CREATIVE && !player.getLocation().subtract(0D, 1D, 0D).getBlock().isEmpty()) {
+                        player.setAllowFlight(true);
+                        cPlayer.doubleJumpStatus = true;
+                    }
+                } else
+                    player.setAllowFlight(false);
+            }
+        }
+    }
+
+    @EventHandler
     public void onPlayerInteract(PlayerInteractAtEntityEvent event) {
         Player player = event.getPlayer();
+        if (Utilities.hasAuthMePlugin() && !Utilities.isAuthenticated(player))
+            return;
 
         boolean isNPC = event.getRightClicked().hasMetadata("NPC");
 
         Entity entity = event.getRightClicked();
+        if (Utilities.hasAuthMePlugin() && entity instanceof Player && !Utilities.isAuthenticated((Player)entity))
+            return;
 
         CustomPlayer cPlayer = Utilities.getOrCreateCustomPlayer(player);
 
@@ -124,7 +161,12 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onPlayerLaunch(PlayerInteractEvent event) {
         Player player = event.getPlayer();
+        if (Utilities.hasAuthMePlugin() && !Utilities.isAuthenticated(player))
+            return;
+
         Entity entity = player.getPassenger();
+        if (Utilities.hasAuthMePlugin() && entity instanceof Player && !Utilities.isAuthenticated((Player)entity))
+            return;
 
         if (ConfigurationManager.getMenu().getBoolean("Menu.Items.Stacker.Enabled"))
             if (Cache.WORLDS_ALLOWED.contains(player.getWorld().getName())) {
@@ -147,6 +189,9 @@ public class PlayerListener implements Listener {
             if (Cache.WORLDS_ALLOWED.contains(event.getDamager().getWorld().getName())) {
                 if (event.getDamager().getType() == EntityType.PLAYER) {
                     Player player = (Player) event.getDamager();
+                    if (Utilities.hasAuthMePlugin() && !Utilities.isAuthenticated(player))
+                        return;
+
                     CustomPlayer cPlayer = Utilities.getOrCreateCustomPlayer(player);
 
                     if (cPlayer.hasStacker()) {

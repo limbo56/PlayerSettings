@@ -112,6 +112,29 @@ public enum SettingsEnum {
             return cPlayer.hasVanish();
         }
     },
+    DOUBLEJUMP {
+        @Override
+        void setEnabled(Inventory inventory) {
+            if (ConfigurationManager.getMenu().getBoolean("Menu.Items.DoubleJump.Enabled")) {
+                inventory.setItem(ConfigurationManager.getMenu().getInt("Menu.Items.DoubleJump.Slot"), PlayerSettings.getItemGlower().glow(ItemFactory.createItem(MenuConfiguration.get("Menu.Items.DoubleJump.Name"), false, Material.getMaterial(MenuConfiguration.get("Menu.Items.DoubleJump.Material")), 1, 0)));
+                setTrue(inventory, ConfigurationManager.getMenu().getInt("Menu.Items.DoubleJump.Slot") + 9);
+            }
+        }
+
+        @Override
+        void setDisabled(Inventory inventory) {
+            if (ConfigurationManager.getMenu().getBoolean("Menu.Items.DoubleJump.Enabled")) {
+                inventory.setItem(ConfigurationManager.getMenu().getInt("Menu.Items.DoubleJump.Slot"), ItemFactory.createItem(MenuConfiguration.get("Menu.Items.DoubleJump.Name"), false, Material.getMaterial(MenuConfiguration.get("Menu.Items.DoubleJump.Material")), 1, 0));
+                setFalse(inventory, ConfigurationManager.getMenu().getInt("Menu.Items.DoubleJump.Slot") + 9);
+            }
+        }
+
+        @Override
+        boolean getCondition(Player player) {
+            CustomPlayer cPlayer = Utilities.getOrCreateCustomPlayer(player);
+            return cPlayer.hasDoubleJump();
+        }
+    },
     STACKER {
         @Override
         void setEnabled(Inventory inventory) {
@@ -219,12 +242,18 @@ public enum SettingsEnum {
 
     public void setTrue(Inventory inventory, int slot) {
         enabledLore.toArray(enabledLoreArray);
-        inventory.setItem(slot, ItemFactory.createItem(Cache.ENABLED_NAME, true, Cache.ENABLED_MATERIAL, 1, 10, enabledLoreArray));
+        if (Cache.ENABLED_MATERIAL.contains(":"))
+            inventory.setItem(slot, ItemFactory.createItem(Cache.ENABLED_NAME, true, Material.getMaterial(Cache.ENABLED_MATERIAL.split(":")[0]), 1, Integer.valueOf(Cache.ENABLED_MATERIAL.split(":")[1]), enabledLoreArray));
+        else
+            inventory.setItem(slot, ItemFactory.createItem(Cache.ENABLED_NAME, true, Material.getMaterial(Cache.ENABLED_MATERIAL), 1, 0, enabledLoreArray));
     }
 
     public void setFalse(Inventory inventory, int slot) {
         disabledLore.toArray(disabledLoreArray);
-        inventory.setItem(slot, ItemFactory.createItem(Cache.DISABLED_NAME, true, Cache.DISABLED_MATERIAL, 1, 8, disabledLoreArray));
+        if (Cache.DISABLED_MATERIAL.contains(":"))
+            inventory.setItem(slot, ItemFactory.createItem(Cache.DISABLED_NAME, true, Material.getMaterial(Cache.DISABLED_MATERIAL.split(":")[0]), 1, Integer.valueOf(Cache.DISABLED_MATERIAL.split(":")[1]), disabledLoreArray));
+        else
+            inventory.setItem(slot, ItemFactory.createItem(Cache.DISABLED_NAME, true, Material.getMaterial(Cache.DISABLED_MATERIAL), 1, 0, disabledLoreArray));
     }
 
     abstract void setEnabled(Inventory inventory);
