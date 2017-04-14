@@ -4,6 +4,7 @@ import com.statiocraft.jukebox.Shuffle;
 import com.statiocraft.jukebox.SingleSong;
 import com.statiocraft.jukebox.scJukeBox;
 
+import fr.xephi.authme.api.API;
 import fr.xephi.authme.api.NewAPI;
 import me.limbo56.settings.PlayerSettings;
 import me.limbo56.settings.managers.ConfigurationManager;
@@ -23,6 +24,7 @@ import java.util.SortedMap;
  * On Aug 7, 2016
  * At 2:27:57 AM
  */
+@SuppressWarnings("deprecation")
 public class Utilities {
 
     /**
@@ -67,9 +69,19 @@ public class Utilities {
     public static boolean hasRadioPlugin() {
         return PlayerSettings.getInstance().getServer().getPluginManager().getPlugin("icJukeBox") != null;
     }
-    
+
     public static boolean hasAuthMePlugin() {
-    	return PlayerSettings.getInstance().getServer().getPluginManager().getPlugin("AuthMe") != null;
+        return PlayerSettings.getInstance().getServer().getPluginManager().getPlugin("AuthMe") != null;
+    }
+
+    public static boolean isAuthenticated(Player p) {
+        boolean auth = false;
+        try {
+            auth = NewAPI.getInstance().isAuthenticated(p);
+        } catch (NoClassDefFoundError e) {
+            auth = API.isAuthenticated(p);
+        }
+        return auth;
     }
 
     public static CustomPlayer getOrCreateCustomPlayer(Player player) {
@@ -78,9 +90,9 @@ public class Utilities {
 
         return CustomPlayer.getPlayerList().get(player);
     }
-    
+
     public static void loadSettings(Player player) {
-    	CustomPlayer cPlayer = Utilities.getOrCreateCustomPlayer(player);
+        CustomPlayer cPlayer = getOrCreateCustomPlayer(player);
 
         if (!cPlayer.containsPlayer()) {
             cPlayer.addPlayer();
@@ -90,7 +102,7 @@ public class Utilities {
 
         if (Cache.WORLDS_ALLOWED.contains(player.getWorld().getName())) {
             for (Player online : Bukkit.getOnlinePlayers()) {
-                CustomPlayer oPlayer = Utilities.getOrCreateCustomPlayer(online);
+                CustomPlayer oPlayer = getOrCreateCustomPlayer(online);
 
                 if (ConfigurationManager.getMenu().getBoolean("Menu.Items.Visibility.Enabled"))
                     if (!oPlayer.hasVisibility())
@@ -138,7 +150,7 @@ public class Utilities {
                     player.removePotionEffect(PotionEffectType.JUMP);
 
             if (ConfigurationManager.getMenu().getBoolean("Menu.Items.Radio.Enabled"))
-                if (cPlayer.hasRadio() && player.hasPermission(Cache.RADIO_PERMISSION)) {
+                if (cPlayer.hasRadio()) {
                     int type = ConfigurationManager.getDefault().getInt("Radio.type");
                     switch (type) {
                         case 1:
@@ -161,9 +173,9 @@ public class Utilities {
                     Updater.sendUpdater(player);
         }
     }
-    
+
     public static void saveSettings(Player player) {
-    	CustomPlayer cPlayer = Utilities.getOrCreateCustomPlayer(player);
+        CustomPlayer cPlayer = getOrCreateCustomPlayer(player);
 
         cPlayer.saveSettingsAsync();
 
@@ -173,10 +185,13 @@ public class Utilities {
             player.removePotionEffect(PotionEffectType.JUMP);
             player.removePotionEffect(PotionEffectType.INVISIBILITY);
 
-            if (Utilities.hasRadioPlugin()) {
+            if (hasRadioPlugin()) {
                 if (scJukeBox.getCurrentJukebox(player) != null)
                     scJukeBox.getCurrentJukebox(player).removePlayer(player);
             }
+
+            if (cPlayer.hasDoubleJump())
+                player.setAllowFlight(false);
         }
 
         CustomPlayer.getPlayerList().remove(player);
@@ -186,11 +201,12 @@ public class Utilities {
 
         if (Bukkit.getOnlinePlayers() != null)
             for (Player player : Bukkit.getOnlinePlayers()) {
+                if (CustomPlayer.getPlayerList().containsKey(player))
+                    saveSettings(player);
+                CustomPlayer cPlayer = getOrCreateCustomPlayer(player);
                 if (Cache.WORLDS_ALLOWED.contains(player.getWorld().getName())) {
-                	if (hasAuthMePlugin() && !NewAPI.getInstance().isAuthenticated(player))
-                		return;
-
-                    CustomPlayer cPlayer = getOrCreateCustomPlayer(player);
+                    if (hasAuthMePlugin() && !isAuthenticated(player))
+                        return;
 
                     player.removePotionEffect(PotionEffectType.SPEED);
                     player.removePotionEffect(PotionEffectType.JUMP);
@@ -260,6 +276,9 @@ public class Utilities {
                         } else {
                             player.showPlayer(online);
                         }
+
+                        if (cPlayer.hasDoubleJump())
+                            player.setAllowFlight(false);
 
                     }
                 }

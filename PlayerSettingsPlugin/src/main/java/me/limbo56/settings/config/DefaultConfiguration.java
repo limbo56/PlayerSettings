@@ -29,6 +29,7 @@ public class DefaultConfiguration {
         addDefault("Default.Fly", false);
         addDefault("Default.Speed", false);
         addDefault("Default.Jump", false);
+        addDefault("Default.DoubleJump", true);
 
         if (Utilities.hasRadioPlugin()) {
             addDefault("Default.Radio", true);
@@ -41,6 +42,7 @@ public class DefaultConfiguration {
         addDefault("Stacker.launch-force", 1);
         addDefault("Speed.level", 2);
         addDefault("Jump.level", 2);
+        addDefault("DoubleJump.sound", "ENTITY_BAT_TAKEOFF");
     }
 
 }

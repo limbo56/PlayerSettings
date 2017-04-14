@@ -3,6 +3,7 @@ package me.limbo56.settings.menu;
 import com.statiocraft.jukebox.Shuffle;
 import com.statiocraft.jukebox.scJukeBox;
 import me.limbo56.settings.config.MenuConfiguration;
+import me.limbo56.settings.config.MessageConfiguration;
 import me.limbo56.settings.managers.ConfigurationManager;
 import me.limbo56.settings.player.CustomPlayer;
 import me.limbo56.settings.utils.Cache;
@@ -63,10 +64,10 @@ public class SettingsMenu implements Listener {
 
             if (event.getInventory().getType() == InventoryType.CHEST) {
                 if (event.getInventory().getTitle().equalsIgnoreCase(MenuConfiguration.get("Menu.Options.Name"))) {
-                	event.setCancelled(true);
+                    event.setCancelled(true);
                     if (event.getCurrentItem() != null && event.getCurrentItem().hasItemMeta() && event.getCurrentItem().getItemMeta().hasDisplayName()) {
 
-                    	// Speed listener
+                        // Speed listener
                         if (ConfigurationManager.getMenu().getBoolean("Menu.Items.Speed.Enabled"))
                             if (event.getSlot() == ConfigurationManager.getMenu().getInt("Menu.Items.Speed.Slot") ||
                                     event.getSlot() == (ConfigurationManager.getMenu().getInt("Menu.Items.Speed.Slot") + 9)) {
@@ -113,6 +114,11 @@ public class SettingsMenu implements Listener {
                             if (event.getSlot() == ConfigurationManager.getMenu().getInt("Menu.Items.Fly.Slot") ||
                                     event.getSlot() == (ConfigurationManager.getMenu().getInt("Menu.Items.Fly.Slot") + 9)) {
                                 if (player.hasPermission(Cache.FLY_PERMISSION)) {
+                                    if (cPlayer.hasDoubleJump()) {
+                                        player.sendMessage(MessageConfiguration.get("Settings-Incompatibility"));
+                                        player.playNote(player.getLocation(), Instrument.PIANO, new Note(0));
+                                        return;
+                                    }
                                     if (cPlayer.hasFly()) {
                                         cPlayer.setFly(false);
                                         player.setAllowFlight(false);
@@ -156,6 +162,31 @@ public class SettingsMenu implements Listener {
                                         openSettings(player);
                                     }
                                 } else if (!player.hasPermission(Cache.VANISH_PERMISSION)) {
+                                    player.sendMessage(Cache.NO_PERMISSIONS);
+                                }
+                            }
+
+                        // DoubleJump listener
+                        if (ConfigurationManager.getMenu().getBoolean("Menu.Items.DoubleJump.Enabled"))
+                            if (event.getSlot() == ConfigurationManager.getMenu().getInt("Menu.Items.DoubleJump.Slot") ||
+                                    event.getSlot() == (ConfigurationManager.getMenu().getInt("Menu.Items.DoubleJump.Slot") + 9)) {
+                                if (player.hasPermission(Cache.DOUBLEJUMP_PERMISSION)) {
+                                    if (cPlayer.hasFly()) {
+                                        player.sendMessage(MessageConfiguration.get("Settings-Incompatibility"));
+                                        player.playNote(player.getLocation(), Instrument.PIANO, new Note(0));
+                                        return;
+                                    }
+                                    if (cPlayer.hasDoubleJump()) {
+                                        cPlayer.setDoubleJump(false);
+                                        player.setAllowFlight(false);
+                                        player.playNote(player.getLocation(), Instrument.PIANO, new Note(0));
+                                        openSettings(player);
+                                    } else if (!cPlayer.hasDoubleJump()) {
+                                        cPlayer.setDoubleJump(true);
+                                        player.playNote(player.getLocation(), Instrument.PIANO, new Note(15));
+                                        openSettings(player);
+                                    }
+                                } else if (!player.hasPermission(Cache.DOUBLEJUMP_PERMISSION)) {
                                     player.sendMessage(Cache.NO_PERMISSIONS);
                                 }
                             }

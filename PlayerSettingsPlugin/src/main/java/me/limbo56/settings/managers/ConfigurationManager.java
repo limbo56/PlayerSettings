@@ -136,6 +136,10 @@ public class ConfigurationManager {
         return fileConfiguration.getStringList(path);
     }
 
+    public String getString(String path) {
+        return fileConfiguration.getString(path);
+    }
+
     @SuppressWarnings("unchecked")
     public <T> T get(String path) {
         return (T) fileConfiguration.get(path);

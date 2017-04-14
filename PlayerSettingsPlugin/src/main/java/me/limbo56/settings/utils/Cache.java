@@ -3,15 +3,11 @@ package me.limbo56.settings.utils;
 import me.limbo56.settings.config.MenuConfiguration;
 import me.limbo56.settings.config.MessageConfiguration;
 import me.limbo56.settings.managers.ConfigurationManager;
-import me.limbo56.settings.player.CustomPlayer;
 
-import org.bukkit.Material;
-import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -26,8 +22,8 @@ public class Cache {
     public static final String ENABLED_NAME = MenuConfiguration.get("Menu.Items.Enabled.Name");
     public static final String DISABLED_NAME = MenuConfiguration.get("Menu.Items.Disabled.Name");
 
-    public static final Material ENABLED_MATERIAL = Material.valueOf(MenuConfiguration.get("Menu.Items.Enabled.Material"));
-    public static final Material DISABLED_MATERIAL = Material.valueOf(MenuConfiguration.get("Menu.Items.Disabled.Material"));
+    public static final String ENABLED_MATERIAL = MenuConfiguration.get("Menu.Items.Enabled.Material");
+    public static final String DISABLED_MATERIAL = MenuConfiguration.get("Menu.Items.Disabled.Material");
 
     public static final String NO_PERMISSIONS = MessageConfiguration.get("No-Permissions");
 
@@ -41,6 +37,7 @@ public class Cache {
     public static final Permission FLY_PERMISSION = new Permission("settings.fly");
     public static final Permission VANISH_PERMISSION = new Permission("settings.vanish");
     public static final Permission RADIO_PERMISSION = new Permission("settings.radio");
+    public static final Permission DOUBLEJUMP_PERMISSION = new Permission("settings.doublejump");
 
     public static final PotionEffect INVISIBILITY = new PotionEffect(PotionEffectType.INVISIBILITY, 1000000000, 0);
     public static final PotionEffect SPEED = new PotionEffect(PotionEffectType.SPEED, 1000000000, ConfigurationManager.getDefault().getInt("Speed.level") - 1);

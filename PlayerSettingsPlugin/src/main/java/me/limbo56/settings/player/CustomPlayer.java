@@ -32,6 +32,8 @@ public class CustomPlayer {
     private Boolean speed;
     private Boolean jump;
     private Boolean radio;
+    private Boolean doubleJump;
+    public Boolean doubleJumpStatus;
 
     public CustomPlayer(Player player) {
         this.player = player;
@@ -44,9 +46,10 @@ public class CustomPlayer {
         this.speed = ConfigurationManager.getDefault().getBoolean("Default.Speed");
         this.jump = ConfigurationManager.getDefault().getBoolean("Default.Jump");
         this.radio = (Utilities.hasRadioPlugin() && ConfigurationManager.getDefault().getBoolean("Default.Radio"));
+        this.doubleJump = ConfigurationManager.getDefault().getBoolean("Default.DoubleJump");
         if (ConfigurationManager.getConfig().getBoolean("Debug")) {
             PlayerSettings.getInstance().log("CustomPlayer: UUID '" + uuid + "' created:");
-            PlayerSettings.getInstance().log("CustomPlayer: Visibility: " + visibility + ", Stacker: " + stacker + ", Chat: " + chat + ", Vanish: " + vanish + ", Fly: " + fly + ", Speed: " + speed + ", Jump: " + jump + ", Radio: " + radio);
+            PlayerSettings.getInstance().log("CustomPlayer: Visibility: " + visibility + ", Stacker: " + stacker + ", Chat: " + chat + ", Vanish: " + vanish + ", Fly: " + fly + ", Speed: " + speed + ", Jump: " + jump + ", Radio: " + radio + ", DoubleJump: " + doubleJump);
         }
     }
 
@@ -96,14 +99,15 @@ public class CustomPlayer {
                     fly = (this.fly) ? 1 : 0,
                     speed = (this.speed) ? 1 : 0,
                     jump = (this.jump) ? 1 : 0,
-                    radio = (this.radio) ? 1 : 0;
+                    radio = (this.radio) ? 1 : 0,
+                    doubleJump = (this.doubleJump) ? 1 : 0;
 
             Bukkit.getScheduler().runTaskAsynchronously(PlayerSettings.getInstance(), new Runnable() {
                 @Override
                 public void run() {
                     try {
                         PreparedStatement sql = PlayerSettings.getMySqlConnection().getCurrentConnection().prepareStatement(
-                                "INSERT INTO `PlayerSettings` (UUID, Visibility, Stacker, Chat, Vanish, Fly, Speed, Jump, Radio) VALUES (" +
+                                "INSERT INTO `PlayerSettings` (UUID, Visibility, Stacker, Chat, Vanish, Fly, Speed, Jump, Radio, DoubleJump) VALUES (" +
                                         "'" + getUuid().toString() + "', " +
                                         "'" + visibility + "', " +
                                         "'" + stacker + "', " +
@@ -112,12 +116,13 @@ public class CustomPlayer {
                                         "'" + fly + "', " +
                                         "'" + speed + "', " +
                                         "'" + jump + "', " +
-                                        "'" + radio + "')");
+                                        "'" + radio + "', " +
+                                        "'" + doubleJump + "')");
 
                         sql.execute();
                         if (ConfigurationManager.getConfig().getBoolean("Debug")) {
                             PlayerSettings.getInstance().log("addPlayer: UUID '" + getUuid().toString() + "' added to the database:");
-                            PlayerSettings.getInstance().log("addPlayer: Visibility: " + visibility + ", Stacker: " + stacker + ", Chat: " + chat + ", Vanish: " + vanish + ", Fly: " + fly + ", Speed: " + speed + ", Jump: " + jump + ", Radio: " + radio);
+                            PlayerSettings.getInstance().log("addPlayer: Visibility: " + visibility + ", Stacker: " + stacker + ", Chat: " + chat + ", Vanish: " + vanish + ", Fly: " + fly + ", Speed: " + speed + ", Jump: " + jump + ", Radio: " + radio + ", DoubleJump: " + doubleJump);
                         }
                         sql.close();
 
@@ -140,10 +145,11 @@ public class CustomPlayer {
                 this.stacker = getBoolean("Stacker");
                 this.chat = getBoolean("Chat");
                 this.vanish = getBoolean("Vanish");
-                this.fly = getBoolean("Fly");
+                this.fly = getBoolean("DoubleJump") ? false : getBoolean("Fly");
                 this.speed = getBoolean("Speed");
                 this.jump = getBoolean("Jump");
                 this.radio = (Utilities.hasRadioPlugin() && getBoolean("Radio"));
+                this.doubleJump = getBoolean("Fly") ? false : getBoolean("DoubleJump");
 
             } else if (ConfigurationManager.getConfig().getBoolean("Debug"))
                 PlayerSettings.getInstance().log("loadSettings: checkTable returned false, table is not existent");
@@ -161,7 +167,8 @@ public class CustomPlayer {
                     fly = (hasFly()) ? 1 : 0,
                     speed = (hasSpeed()) ? 1 : 0,
                     jump = (hasJump()) ? 1 : 0,
-                    radio = ((Utilities.hasRadioPlugin() && hasRadio()) ? 1 : 0);
+                    radio = ((Utilities.hasRadioPlugin() && hasRadio()) ? 1 : 0),
+                    doubleJump = (hasDoubleJump()) ? 1 : 0;
 
             try {
 
@@ -175,11 +182,12 @@ public class CustomPlayer {
                 statement.addBatch("UPDATE `PlayerSettings` SET `Speed` = " + speed + " WHERE UUID = '" + getUuid().toString() + "'");
                 statement.addBatch("UPDATE `PlayerSettings` SET `Jump` = " + jump + " WHERE UUID = '" + getUuid().toString() + "'");
                 statement.addBatch("UPDATE `PlayerSettings` SET `Radio` = " + radio + " WHERE UUID = '" + getUuid().toString() + "'");
+                statement.addBatch("UPDATE `PlayerSettings` SET `DoubleJump` = " + doubleJump + " WHERE UUID = '" + getUuid().toString() + "'");
 
                 statement.executeBatch();
                 if (ConfigurationManager.getConfig().getBoolean("Debug")) {
                     PlayerSettings.getInstance().log("saveSettings: UUID '" + getUuid().toString() + "' settigns updated in the database:");
-                    PlayerSettings.getInstance().log("saveSettings: Visibility: " + visibility + ", Stacker: " + stacker + ", Chat: " + chat + ", Vanish: " + vanish + ", Fly: " + fly + ", Speed: " + speed + ", Jump: " + jump + ", Radio: " + radio);
+                    PlayerSettings.getInstance().log("saveSettings: Visibility: " + visibility + ", Stacker: " + stacker + ", Chat: " + chat + ", Vanish: " + vanish + ", Fly: " + fly + ", Speed: " + speed + ", Jump: " + jump + ", Radio: " + radio + ", DoubleJump: " + doubleJump);
                 }
                 statement.close();
 
@@ -209,11 +217,12 @@ public class CustomPlayer {
                         statement.addBatch("UPDATE `PlayerSettings` SET `Speed` = " + speed + " WHERE UUID = '" + getUuid().toString() + "'");
                         statement.addBatch("UPDATE `PlayerSettings` SET `Jump` = " + jump + " WHERE UUID = '" + getUuid().toString() + "'");
                         statement.addBatch("UPDATE `PlayerSettings` SET `Radio` = " + radio + " WHERE UUID = '" + getUuid().toString() + "'");
+                        statement.addBatch("UPDATE `PlayerSettings` SET `DoubleJump` = " + doubleJump + " WHERE UUID = '" + getUuid().toString() + "'");
 
                         statement.executeBatch();
                         if (ConfigurationManager.getConfig().getBoolean("Debug")) {
                             PlayerSettings.getInstance().log("saveSettings: UUID '" + getUuid().toString() + "' settigns updated in the database:");
-                            PlayerSettings.getInstance().log("saveSettings: Visibility: " + visibility + ", Stacker: " + stacker + ", Chat: " + chat + ", Vanish: " + vanish + ", Fly: " + fly + ", Speed: " + speed + ", Jump: " + jump + ", Radio: " + radio);
+                            PlayerSettings.getInstance().log("saveSettings: Visibility: " + visibility + ", Stacker: " + stacker + ", Chat: " + chat + ", Vanish: " + vanish + ", Fly: " + fly + ", Speed: " + speed + ", Jump: " + jump + ", Radio: " + radio + ", DoubleJump: " + doubleJump);
                         }
                         statement.close();
 
@@ -234,9 +243,15 @@ public class CustomPlayer {
                     "SELECT `" + str + "` FROM `PlayerSettings` WHERE `UUID` = '" + getUuid().toString() + "'");
 
             if (rs.next()) {
-                if (ConfigurationManager.getConfig().getBoolean("Debug"))
-                    PlayerSettings.getInstance().log("getBoolean: Value '" + str + "', returning " + rs.getBoolean(1));
-                return rs.getBoolean(1);
+                if (rs.wasNull()) {
+                    if (ConfigurationManager.getConfig().getBoolean("Debug"))
+                        PlayerSettings.getInstance().log("getBoolean: Value '" + str + "' was null, getting default");
+                    return ConfigurationManager.getDefault().getBoolean("Default." + str);
+                } else {
+                    if (ConfigurationManager.getConfig().getBoolean("Debug"))
+                        PlayerSettings.getInstance().log("getBoolean: Value '" + str + "', returning " + rs.getBoolean(1));
+                    return rs.getBoolean(1);
+                }
             }
 
             rs.close();
@@ -314,6 +329,14 @@ public class CustomPlayer {
 
     public boolean hasRadio() {
         return radio;
+    }
+
+    public void setDoubleJump(final boolean doubleJump) {
+        this.doubleJump = doubleJump;
+    }
+
+    public boolean hasDoubleJump() {
+        return doubleJump;
     }
 
     public static HashMap<Player, CustomPlayer> getPlayerList() {
