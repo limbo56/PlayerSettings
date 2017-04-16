@@ -67,7 +67,7 @@ public class PlayerListener implements Listener {
 
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onPlayersChat(final AsyncPlayerChatEvent event) {
         Player player = event.getPlayer();
         if (Utilities.hasAuthMePlugin() && !Utilities.isAuthenticated(player))
@@ -83,7 +83,6 @@ public class PlayerListener implements Listener {
                     player.sendMessage(MessageConfiguration.get("Chat-Disabled"));
                 } else if (cPlayer.hasChat()) {
                     event.getRecipients().add(player);
-                    event.setCancelled(false);
 
                     for (Player online : Bukkit.getOnlinePlayers()) {
                         CustomPlayer customPlayer = Utilities.getOrCreateCustomPlayer(online);
@@ -95,7 +94,7 @@ public class PlayerListener implements Listener {
             }
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onPlayerMove(PlayerMoveEvent event) {
         Player player = event.getPlayer();
         if (Utilities.hasAuthMePlugin() && !Utilities.isAuthenticated(player))
