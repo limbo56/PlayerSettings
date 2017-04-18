@@ -42,7 +42,7 @@ public class DefaultConfiguration {
         addDefault("Stacker.launch-force", 1);
         addDefault("Speed.level", 2);
         addDefault("Jump.level", 2);
-        addDefault("DoubleJump.sound", "ENTITY_BAT_TAKEOFF");
+        addDefault("DoubleJump.sound", "ENTITY_BAT_TAKEOFF:0");
     }
 
 }

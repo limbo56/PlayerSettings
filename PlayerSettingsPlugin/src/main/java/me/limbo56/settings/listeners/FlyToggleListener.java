@@ -38,9 +38,13 @@ public class FlyToggleListener implements Listener {
                         customPlayer.doubleJumpStatus = false;
                         player.setVelocity(player.getLocation().getDirection().multiply(1.6D).setY(1.0D));
                         player.setFallDistance(-10000.0F);
-                        if (ConfigurationManager.getDefault().getString("DoubleJump.sound") == null || ConfigurationManager.getDefault().getString("DoubleJump.sound").isEmpty())
+                        String sound = ConfigurationManager.getDefault().getString("DoubleJump.sound");
+                        if (sound == null || sound.isEmpty())
                             return;
-                        player.playSound(player.getLocation(), Sound.valueOf(ConfigurationManager.getDefault().getString("DoubleJump.sound")), 1.0F, 0.0F);
+                        if (sound.contains(":"))
+                            player.playSound(player.getLocation(), Sound.valueOf(sound.split(":")[0]), 1F, Float.valueOf(sound.split(":")[1]));
+                        else
+                            player.playSound(player.getLocation(), Sound.valueOf(sound), 1F, 0F);
                     }
                 }
             }
