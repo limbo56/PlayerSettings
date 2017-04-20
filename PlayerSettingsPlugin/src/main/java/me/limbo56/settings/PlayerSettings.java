@@ -26,8 +26,6 @@ import org.bukkit.potion.PotionEffectType;
 
 import com.statiocraft.jukebox.scJukeBox;
 
-import fr.xephi.authme.api.NewAPI;
-
 import java.io.File;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -64,7 +62,7 @@ public class PlayerSettings extends JavaPlugin {
      * Method called when plugin is enabled.
      */
     public void onEnable() {
-        // Initialize instnace
+        // Initialize instance
         instance = this;
 
         // Default server version
@@ -98,6 +96,14 @@ public class PlayerSettings extends JavaPlugin {
             log("");
         }
 
+        // Check for settings incompatibility
+        if (ConfigurationManager.getDefault().getBoolean("Default.Fly") && ConfigurationManager.getDefault().getBoolean("Default.DoubleJump")) {
+            log("ALERT: You cannot have both Fly and DoubleJump enabled by default! Disabling DoubleJump");
+            ConfigurationManager.getDefault().set("Default.DoubleJump", false);
+            ConfigurationManager.getDefault().saveConfig();
+            ConfigurationManager.getDefault().reloadConfig();
+        }
+
         log("All data has been loaded");
         log("");
 
@@ -124,34 +130,34 @@ public class PlayerSettings extends JavaPlugin {
     public void onDisable() {
 
         // Save all cached player's settings
-    	if (!CustomPlayer.getPlayerList().isEmpty()) {
-    		for (Player player : CustomPlayer.getPlayerList().keySet()) {
-    			if (Utilities.hasAuthMePlugin() && !NewAPI.getInstance().isAuthenticated(player))
-    				return;
-    			CustomPlayer.getPlayerList().get(player).saveSettingsSync();
+        if (!CustomPlayer.getPlayerList().isEmpty()) {
+            for (Player player : CustomPlayer.getPlayerList().keySet()) {
+                if (Utilities.hasAuthMePlugin() && !Utilities.isAuthenticated(player))
+                    return;
+                CustomPlayer.getPlayerList().get(player).saveSettingsSync();
 
-    			if (Cache.WORLDS_ALLOWED.contains(player.getWorld().getName())) {
-    	            player.removePotionEffect(PotionEffectType.SPEED);
-    	            player.removePotionEffect(PotionEffectType.JUMP);
-    	            player.removePotionEffect(PotionEffectType.INVISIBILITY);
+                if (Cache.WORLDS_ALLOWED.contains(player.getWorld().getName())) {
+                    player.removePotionEffect(PotionEffectType.SPEED);
+                    player.removePotionEffect(PotionEffectType.JUMP);
+                    player.removePotionEffect(PotionEffectType.INVISIBILITY);
 
-    	            if (Utilities.hasRadioPlugin()) {
-    	                if (scJukeBox.getCurrentJukebox(player) != null)
-    	                    scJukeBox.getCurrentJukebox(player).removePlayer(player);
-    	            }
+                    if (Utilities.hasRadioPlugin()) {
+                        if (scJukeBox.getCurrentJukebox(player) != null)
+                            scJukeBox.getCurrentJukebox(player).removePlayer(player);
+                    }
 
-    	        }
+                }
 
-    		}
-    		CustomPlayer.getPlayerList().clear();
-    	}
+            }
+            CustomPlayer.getPlayerList().clear();
+        }
 
-    	// Uninitialize variables
-    	instance = null;
+        // Uninitialize variables
+        instance = null;
         pm = null;
 
         // Disable plugin
-    	Bukkit.getPluginManager().disablePlugin(this);
+        Bukkit.getPluginManager().disablePlugin(this);
     }
 
     private void setupConfig() {
@@ -224,7 +230,7 @@ public class PlayerSettings extends JavaPlugin {
         pm.registerEvents(new WorldListener(), this);
         pm.registerEvents(new SettingsMenu(), this);
         if (Utilities.hasAuthMePlugin())
-        	pm.registerEvents(new AuthMeListener(), this);
+            pm.registerEvents(new AuthMeListener(), this);
 
         // Creating help messages
         commandHelp.put(1, "§a/settings open §7- §cOpen the settings menu.");

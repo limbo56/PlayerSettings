@@ -15,7 +15,7 @@ public class CommandHelper {
 
     private CommandSender sender;
     @SuppressWarnings("unused")
-	private Command cmd;
+    private Command cmd;
 
     public CommandHelper(CommandSender sender, Command cmd) {
         this.sender = sender;
