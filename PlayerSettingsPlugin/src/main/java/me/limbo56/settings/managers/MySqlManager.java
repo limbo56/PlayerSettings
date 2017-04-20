@@ -59,31 +59,43 @@ public class MySqlManager {
                                         + "`Fly` TINYINT(0) DEFAULT NULL,"
                                         + "`Speed` TINYINT(0) DEFAULT NULL,"
                                         + "`Jump` TINYINT(0) DEFAULT NULL,"
-                                        + "`Radio` TINYINT(0) DEFAULT NULL, PRIMARY KEY (UUID))");
+                                        + "`Radio` TINYINT(0) DEFAULT NULL,"
+                                        + "`DoubleJump` TINYINT(0) DEFAULT NULL, PRIMARY KEY (UUID))");
                         if (ConfigurationManager.getConfig().getBoolean("Debug"))
-                        	PlayerSettings.getInstance().log("createTable: Table created or already existent");
+                            PlayerSettings.getInstance().log("createTable: Table created or already existent");
+
+                        ResultSetMetaData table = getCurrentConnection().createStatement().executeQuery("SELECT * FROM `PlayerSettings`").getMetaData();
+
+                        boolean radio = false;
+                        boolean doubleJump = false;
+                        for (int i = 1; i <= table.getColumnCount(); i++) {
+                            if ("Radio".equals(table.getColumnName(i))) {
+                                if (ConfigurationManager.getConfig().getBoolean("Debug"))
+                                    PlayerSettings.getInstance().log("createTable: Radio column found, doing nothing");
+                                radio = true;
+                            } else if ("DoubleJump".equals(table.getColumnName(i))) {
+                                if (ConfigurationManager.getConfig().getBoolean("Debug"))
+                                    PlayerSettings.getInstance().log("createTable: DoubleJump column found, doing nothing");
+                                doubleJump = true;
+                            }
+                            if (radio && doubleJump)
+                                break;
+                        }
+
+                        if (!radio) {
+                            getCurrentConnection().createStatement().executeUpdate("ALTER TABLE `PlayerSettings` ADD `Radio` TINYINT(0) DEFAULT NULL");
+                            if (ConfigurationManager.getConfig().getBoolean("Debug"))
+                                PlayerSettings.getInstance().log("createTable: Radio column created successfully");
+                        }
+
+                        if (!doubleJump) {
+                            getCurrentConnection().createStatement().executeUpdate("ALTER TABLE `PlayerSettings` ADD `DoubleJump` TINYINT(0) DEFAULT NULL");
+                            if (ConfigurationManager.getConfig().getBoolean("Debug"))
+                                PlayerSettings.getInstance().log("createTable: DoubleJump column created successfully");
+                        }
                     }
-
-	                ResultSetMetaData table = getCurrentConnection().createStatement().executeQuery("SELECT * FROM `PlayerSettings`").getMetaData();
-
-	                boolean found = false;
-	                for (int i = 1; i <= table.getColumnCount(); i++) {
-	                    if ("Radio".equals(table.getColumnName(i))) {
-	                    	if (ConfigurationManager.getConfig().getBoolean("Debug"))
-	                        	PlayerSettings.getInstance().log("createTable: Radio column found, doing nothing");
-	                        found = true;
-	                        break;
-	                    }
-	                }
-
-	                if (!found) {
-	                    getCurrentConnection().createStatement().executeUpdate("ALTER TABLE `PlayerSettings` ADD `Radio` TINYINT(0) DEFAULT NULL");
-	                    if (ConfigurationManager.getConfig().getBoolean("Debug"))
-	                    	PlayerSettings.getInstance().log("createTable: Radio column not found, created successfully");
-	                }
-
                 } catch (SQLException e) {
-                    Bukkit.getLogger().severe("Couldn't create tables on the database ;(.");
+                    Bukkit.getLogger().severe("Couldn't create tables on the database :(.");
                 }
             }
         });

@@ -35,11 +35,11 @@ public class MenuConfiguration {
 
         addDefault("Menu.Items.Enabled.Name", "&a&lOn");
         addDefault("Menu.Items.Enabled.Lore", Arrays.asList("", "&7Click to &aenable"));
-        addDefault("Menu.Items.Enabled.Material", "INK_SACK");
+        addDefault("Menu.Items.Enabled.Material", "INK_SACK:10");
 
         addDefault("Menu.Items.Disabled.Name", "&c&lOff");
         addDefault("Menu.Items.Disabled.Lore", Arrays.asList("", "&7Click to &cdisable"));
-        addDefault("Menu.Items.Disabled.Material", "INK_SACK");
+        addDefault("Menu.Items.Disabled.Material", "INK_SACK:8");
 
         addDefault("Menu.Items.Speed.Name", "&9Speed II");
         addDefault("Menu.Items.Speed.Material", "SUGAR");
@@ -60,6 +60,11 @@ public class MenuConfiguration {
         addDefault("Menu.Items.Vanish.Material", "EXP_BOTTLE");
         addDefault("Menu.Items.Vanish.Slot", 16);
         addDefault("Menu.Items.Vanish.Enabled", true);
+
+        addDefault("Menu.Items.DoubleJump.Name", "&3Double Jump");
+        addDefault("Menu.Items.DoubleJump.Material", "RABBIT_FOOT");
+        addDefault("Menu.Items.DoubleJump.Slot", 27);
+        addDefault("Menu.Items.DoubleJump.Enabled", true);
 
         addDefault("Menu.Items.Stacker.Name", "&cStacker");
         addDefault("Menu.Items.Stacker.Material", "MAGMA_CREAM");

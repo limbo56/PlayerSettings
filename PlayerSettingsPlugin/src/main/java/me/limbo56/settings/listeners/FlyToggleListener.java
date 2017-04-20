@@ -4,6 +4,9 @@ import me.limbo56.settings.managers.ConfigurationManager;
 import me.limbo56.settings.player.CustomPlayer;
 import me.limbo56.settings.utils.Cache;
 import me.limbo56.settings.utils.Utilities;
+
+import org.bukkit.GameMode;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -20,11 +23,36 @@ public class FlyToggleListener implements Listener {
     @EventHandler
     public void flightToggleEvent(PlayerToggleFlightEvent event) {
         Player player = event.getPlayer();
+        if (Utilities.hasAuthMePlugin() && !Utilities.isAuthenticated(player))
+            return;
+
         CustomPlayer customPlayer = Utilities.getOrCreateCustomPlayer(player);
 
-        if (ConfigurationManager.getMenu().getBoolean("Menu.Items.Fly.Enabled"))
+        if (ConfigurationManager.getMenu().getBoolean("Menu.Items.DoubleJump.Enabled")) {
             if (Cache.WORLDS_ALLOWED.contains(player.getWorld().getName())) {
-                if (player.getAllowFlight() && player.hasPermission("settings.fly")) {
+                if (!customPlayer.hasFly() && player.getGameMode() != GameMode.CREATIVE && player.hasPermission("settings.doublejump")) {
+                    if (customPlayer.hasDoubleJump() && customPlayer.doubleJumpStatus) {
+                        event.setCancelled(true);
+                        player.setAllowFlight(false);
+                        player.setFlying(false);
+                        customPlayer.doubleJumpStatus = false;
+                        player.setVelocity(player.getLocation().getDirection().multiply(1.6D).setY(1.0D));
+                        player.setFallDistance(-10000.0F);
+                        String sound = ConfigurationManager.getDefault().getString("DoubleJump.sound");
+                        if (sound == null || sound.isEmpty())
+                            return;
+                        if (sound.contains(":"))
+                            player.playSound(player.getLocation(), Sound.valueOf(sound.split(":")[0]), 1F, Float.valueOf(sound.split(":")[1]));
+                        else
+                            player.playSound(player.getLocation(), Sound.valueOf(sound), 1F, 0F);
+                    }
+                }
+            }
+        }
+
+        if (ConfigurationManager.getMenu().getBoolean("Menu.Items.Fly.Enabled")) {
+            if (Cache.WORLDS_ALLOWED.contains(player.getWorld().getName())) {
+                if (!customPlayer.hasDoubleJump() && player.getAllowFlight() && player.hasPermission("settings.fly")) {
                     if (!customPlayer.hasFly()) {
                         customPlayer.setFly(true);
                     }
@@ -34,6 +62,7 @@ public class FlyToggleListener implements Listener {
                     }
                 }
             }
+        }
     }
 
 }
