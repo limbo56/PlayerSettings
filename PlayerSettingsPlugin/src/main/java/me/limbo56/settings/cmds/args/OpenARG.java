@@ -26,7 +26,7 @@ public class OpenARG extends BaseCommand {
 
         Player player = (Player) sender;
 
-        int maxBounds = ConfigurationManager.getMenu().getInt("Menu.Options.Size");
+        int maxBounds = ConfigurationManager.getMenu().getInt("Menu.Options.Size") - 10;
 
         if (Cache.WORLDS_ALLOWED.contains(player.getWorld().getName())) {
             try {
@@ -35,8 +35,8 @@ public class OpenARG extends BaseCommand {
                 player.sendMessage(ColorUtils.Color(
                         Cache.CHAT_TITLE +
                                 "&4An item's slot is out of bounds, the max bounds is " + maxBounds +
-                                ", the item slot should not be over " + (maxBounds - 10) + "!" +
-                                " &cPlease check the menu.yml configuration, and set item slots between the boundaries (0 - " + (maxBounds - 10) + ")."));
+                                ", the item slot should not be over " + maxBounds + "!" +
+                                " &cPlease check the menu.yml configuration, and set item slots between the boundaries (0 - " + maxBounds + ")."));
 
                 if (ConfigurationManager.getConfig().getBoolean("Debug"))
                     PlayerSettings.getInstance().log("executeCommand: Item slot out of bounds");

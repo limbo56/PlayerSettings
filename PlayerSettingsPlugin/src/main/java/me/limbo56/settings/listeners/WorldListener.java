@@ -1,7 +1,6 @@
 package me.limbo56.settings.listeners;
 
 import com.statiocraft.jukebox.scJukeBox;
-
 import me.limbo56.settings.managers.ConfigurationManager;
 import me.limbo56.settings.player.CustomPlayer;
 import me.limbo56.settings.utils.Cache;

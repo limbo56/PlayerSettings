@@ -23,7 +23,7 @@ public class Updater {
      *
      * @param player The player which the message will be sent to
      */
-    public static void sendUpdater(Player player) {
+    static void sendUpdater(Player player) {
         try {
             HttpURLConnection con = (HttpURLConnection) new URL("http://www.spigotmc.org/api/general.php")
                     .openConnection();
@@ -45,7 +45,7 @@ public class Updater {
                 player.sendMessage(ColorUtils.Color(Cache.CHAT_TITLE + "&dPlugin is up to date, No updates available at this time."));
             }
         } catch (Exception ex) {
-            player.sendMessage(ColorUtils.Color(Cache.CHAT_TITLE + "&cFailed to check for a update on spigot."));
+            player.sendMessage(ColorUtils.Color(Cache.CHAT_TITLE + "&cFailed to check for an update on spigot."));
         }
     }
 
@@ -76,7 +76,7 @@ public class Updater {
                 plugin.log("Plugin is up to date, No updates available at this time.");
             }
         } catch (Exception ex) {
-            plugin.getLogger().info("Failed to check for a update on spigot.");
+            plugin.log("Failed to check for an update on spigot.");
         }
     }
 

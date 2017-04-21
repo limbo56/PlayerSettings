@@ -34,11 +34,11 @@ public class MenuConfiguration {
         addDefault("Menu.Options.Size", 54);
 
         addDefault("Menu.Items.Enabled.Name", "&a&lOn");
-        addDefault("Menu.Items.Enabled.Lore", Arrays.asList("", "&7Click to &aenable"));
+        addDefault("Menu.Items.Enabled.Lore", Arrays.asList("", "&7Click to &cdisable"));
         addDefault("Menu.Items.Enabled.Material", "INK_SACK:10");
 
         addDefault("Menu.Items.Disabled.Name", "&c&lOff");
-        addDefault("Menu.Items.Disabled.Lore", Arrays.asList("", "&7Click to &cdisable"));
+        addDefault("Menu.Items.Disabled.Lore", Arrays.asList("", "&7Click to &aenable"));
         addDefault("Menu.Items.Disabled.Material", "INK_SACK:8");
 
         addDefault("Menu.Items.Speed.Name", "&9Speed II");

@@ -14,21 +14,18 @@ public class VersionManager {
         this.serverVersion = serverVersion;
     }
 
-    public boolean load() {
-       try {
-           Class<?> itemGlower = Class.forName("me.limbo56.settings.nms." + serverVersion + ".ItemGlower");
-           Class<?> mount = Class.forName("me.limbo56.settings.nms." + serverVersion + ".Mount");
+    public void load() {
+        try {
+            Class<?> itemGlower = Class.forName("me.limbo56.settings.nms." + serverVersion + ".ItemGlower");
+            Class<?> mount = Class.forName("me.limbo56.settings.nms." + serverVersion + ".Mount");
 
-           if (IItemGlower.class.isAssignableFrom(itemGlower) && IMount.class.isAssignableFrom(mount)) {
+            if (IItemGlower.class.isAssignableFrom(itemGlower) && IMount.class.isAssignableFrom(mount)) {
                 this.itemGlower = (IItemGlower) itemGlower.getConstructor().newInstance();
                 this.mount = (IMount) mount.getConstructor().newInstance();
-                return true;
-           }
-       } catch (Exception exception) {
-           exception.printStackTrace();
-       }
-
-        return false;
+            }
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
     }
 
     public IItemGlower getItemGlower() {
