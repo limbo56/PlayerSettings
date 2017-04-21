@@ -126,7 +126,7 @@ public class PlayerListener implements Listener {
         boolean isNPC = event.getRightClicked().hasMetadata("NPC");
 
         Entity entity = event.getRightClicked();
-        if (Utilities.hasAuthMePlugin() && entity instanceof Player && !Utilities.isAuthenticated((Player)entity))
+        if (Utilities.hasAuthMePlugin() && entity instanceof Player && !Utilities.isAuthenticated((Player) entity))
             return;
 
         CustomPlayer cPlayer = Utilities.getOrCreateCustomPlayer(player);
@@ -164,7 +164,7 @@ public class PlayerListener implements Listener {
             return;
 
         Entity entity = player.getPassenger();
-        if (Utilities.hasAuthMePlugin() && entity instanceof Player && !Utilities.isAuthenticated((Player)entity))
+        if (Utilities.hasAuthMePlugin() && entity instanceof Player && !Utilities.isAuthenticated((Player) entity))
             return;
 
         if (ConfigurationManager.getMenu().getBoolean("Menu.Items.Stacker.Enabled"))

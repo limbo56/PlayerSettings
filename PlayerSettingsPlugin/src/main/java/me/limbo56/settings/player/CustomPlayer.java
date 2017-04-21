@@ -21,7 +21,7 @@ import java.util.UUID;
 public class CustomPlayer {
 
     private static HashMap<Player, CustomPlayer> playerList = new HashMap<>();
-
+    public Boolean doubleJumpStatus;
     private Player player;
     private UUID uuid;
     private Boolean visibility;
@@ -33,7 +33,6 @@ public class CustomPlayer {
     private Boolean jump;
     private Boolean radio;
     private Boolean doubleJump;
-    public Boolean doubleJumpStatus;
 
     public CustomPlayer(Player player) {
         this.player = player;
@@ -51,6 +50,10 @@ public class CustomPlayer {
             PlayerSettings.getInstance().log("CustomPlayer: UUID '" + uuid + "' created:");
             PlayerSettings.getInstance().log("CustomPlayer: Visibility: " + visibility + ", Stacker: " + stacker + ", Chat: " + chat + ", Vanish: " + vanish + ", Fly: " + fly + ", Speed: " + speed + ", Jump: " + jump + ", Radio: " + radio + ", DoubleJump: " + doubleJump);
         }
+    }
+
+    public static HashMap<Player, CustomPlayer> getPlayerList() {
+        return playerList;
     }
 
     public Player getPlayer() {
@@ -145,11 +148,11 @@ public class CustomPlayer {
                 this.stacker = getBoolean("Stacker");
                 this.chat = getBoolean("Chat");
                 this.vanish = getBoolean("Vanish");
-                this.fly = getBoolean("DoubleJump") ? false : getBoolean("Fly");
+                this.fly = !getBoolean("DoubleJump") && getBoolean("Fly");
                 this.speed = getBoolean("Speed");
                 this.jump = getBoolean("Jump");
                 this.radio = (Utilities.hasRadioPlugin() && getBoolean("Radio"));
-                this.doubleJump = getBoolean("Fly") ? false : getBoolean("DoubleJump");
+                this.doubleJump = !getBoolean("Fly") && getBoolean("DoubleJump");
 
             } else if (ConfigurationManager.getConfig().getBoolean("Debug"))
                 PlayerSettings.getInstance().log("loadSettings: checkTable returned false, table is not existent");
@@ -337,9 +340,5 @@ public class CustomPlayer {
 
     public boolean hasDoubleJump() {
         return doubleJump;
-    }
-
-    public static HashMap<Player, CustomPlayer> getPlayerList() {
-        return playerList;
     }
 }

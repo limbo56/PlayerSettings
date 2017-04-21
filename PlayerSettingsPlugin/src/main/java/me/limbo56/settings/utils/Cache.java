@@ -3,7 +3,6 @@ package me.limbo56.settings.utils;
 import me.limbo56.settings.config.MenuConfiguration;
 import me.limbo56.settings.config.MessageConfiguration;
 import me.limbo56.settings.managers.ConfigurationManager;
-
 import org.bukkit.permissions.Permission;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
