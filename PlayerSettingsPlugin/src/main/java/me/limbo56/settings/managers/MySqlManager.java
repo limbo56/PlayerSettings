@@ -1,8 +1,6 @@
 package me.limbo56.settings.managers;
 
 import me.limbo56.settings.PlayerSettings;
-import me.limbo56.settings.managers.ConfigurationManager;
-
 import org.bukkit.Bukkit;
 
 import java.sql.*;
@@ -68,6 +66,7 @@ public class MySqlManager {
 
                         boolean radio = false;
                         boolean doubleJump = false;
+
                         for (int i = 1; i <= table.getColumnCount(); i++) {
                             if ("Radio".equals(table.getColumnName(i))) {
                                 if (ConfigurationManager.getConfig().getBoolean("Debug"))

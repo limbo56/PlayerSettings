@@ -3,7 +3,6 @@ package me.limbo56.settings.utils;
 import com.statiocraft.jukebox.Shuffle;
 import com.statiocraft.jukebox.SingleSong;
 import com.statiocraft.jukebox.scJukeBox;
-
 import fr.xephi.authme.api.API;
 import fr.xephi.authme.api.NewAPI;
 import me.limbo56.settings.PlayerSettings;
@@ -75,12 +74,14 @@ public class Utilities {
     }
 
     public static boolean isAuthenticated(Player p) {
-        boolean auth = false;
+        boolean auth;
+
         try {
             auth = NewAPI.getInstance().isAuthenticated(p);
         } catch (NoClassDefFoundError e) {
             auth = API.isAuthenticated(p);
         }
+
         return auth;
     }
 

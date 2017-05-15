@@ -15,7 +15,7 @@ public class ItemGlower implements IItemGlower {
 
     @Override
     public ItemStack glow(ItemStack itemStack) {
-    	ItemMeta meta = itemStack.getItemMeta();
+        ItemMeta meta = itemStack.getItemMeta();
         meta.addEnchant(Enchantment.LURE, 1, false);
         meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         itemStack.setItemMeta(meta);

@@ -1,5 +1,6 @@
 package me.limbo56.settings;
 
+import com.statiocraft.jukebox.scJukeBox;
 import me.limbo56.settings.config.DefaultConfiguration;
 import me.limbo56.settings.config.MenuConfiguration;
 import me.limbo56.settings.config.MessageConfiguration;
@@ -9,9 +10,9 @@ import me.limbo56.settings.listeners.PlayerListener;
 import me.limbo56.settings.listeners.WorldListener;
 import me.limbo56.settings.managers.CommandManager;
 import me.limbo56.settings.managers.ConfigurationManager;
+import me.limbo56.settings.managers.MySqlManager;
 import me.limbo56.settings.managers.VersionManager;
 import me.limbo56.settings.menu.SettingsMenu;
-import me.limbo56.settings.managers.MySqlManager;
 import me.limbo56.settings.player.CustomPlayer;
 import me.limbo56.settings.utils.Cache;
 import me.limbo56.settings.utils.Updater;
@@ -23,8 +24,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffectType;
-
-import com.statiocraft.jukebox.scJukeBox;
 
 import java.io.File;
 import java.util.SortedMap;
@@ -48,6 +47,22 @@ public class PlayerSettings extends JavaPlugin {
     public SortedMap<Integer, String> commandHelp = new TreeMap<>();
 
     private PluginManager pm = Bukkit.getServer().getPluginManager();
+
+    public static PlayerSettings getInstance() {
+        return instance;
+    }
+
+    public static IItemGlower getItemGlower() {
+        return versionManager.getItemGlower();
+    }
+
+    public static IMount getMount() {
+        return versionManager.getMount();
+    }
+
+    public static MySqlManager getMySqlConnection() {
+        return mySqlConnection;
+    }
 
     /**
      * Method to log a string on console.
@@ -238,21 +253,5 @@ public class PlayerSettings extends JavaPlugin {
 
         // Register commands.
         getCommand("settings").setExecutor(new CommandManager(this));
-    }
-
-    public static PlayerSettings getInstance() {
-        return instance;
-    }
-
-    public static IItemGlower getItemGlower() {
-        return versionManager.getItemGlower();
-    }
-
-    public static IMount getMount() {
-        return versionManager.getMount();
-    }
-
-    public static MySqlManager getMySqlConnection() {
-        return mySqlConnection;
     }
 }

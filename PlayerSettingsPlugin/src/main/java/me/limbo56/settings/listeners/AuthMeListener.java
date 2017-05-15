@@ -1,12 +1,11 @@
 package me.limbo56.settings.listeners;
 
-import me.limbo56.settings.player.CustomPlayer;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-
 import fr.xephi.authme.events.LoginEvent;
 import fr.xephi.authme.events.LogoutEvent;
+import me.limbo56.settings.player.CustomPlayer;
 import me.limbo56.settings.utils.Utilities;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 
 public class AuthMeListener implements Listener {
 

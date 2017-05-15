@@ -5,7 +5,6 @@ import me.limbo56.settings.cmds.BaseCommand;
 import me.limbo56.settings.managers.ConfigurationManager;
 import me.limbo56.settings.utils.ColorUtils;
 import me.limbo56.settings.utils.Utilities;
-
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
