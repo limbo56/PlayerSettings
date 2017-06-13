@@ -2,8 +2,12 @@ package me.limbo56.settings.listeners;
 
 import fr.xephi.authme.events.LoginEvent;
 import fr.xephi.authme.events.LogoutEvent;
+import me.limbo56.settings.managers.ConfigurationManager;
 import me.limbo56.settings.player.CustomPlayer;
 import me.limbo56.settings.utils.Utilities;
+
+import org.bukkit.GameMode;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
@@ -19,6 +23,16 @@ public class AuthMeListener implements Listener {
 
     @EventHandler
     public void onUserLogout(LogoutEvent event) {
+    	Player player = event.getPlayer();
+
+        if (player.getGameMode() == GameMode.CREATIVE || player.getGameMode() == GameMode.SPECTATOR) {
+            CustomPlayer cPlayer = Utilities.getOrCreateCustomPlayer(player);
+
+            if (ConfigurationManager.getMenu().getBoolean("Menu.Items.Fly.Enabled"))
+                cPlayer.setFly(ConfigurationManager.getDefault().getBoolean("Default.Fly"));
+            if (ConfigurationManager.getMenu().getBoolean("Menu.Items.DoubleJump.Enabled"))
+                cPlayer.setDoubleJump(ConfigurationManager.getDefault().getBoolean("Default.DoubleJump"));
+        }
         Utilities.saveSettings(event.getPlayer());
     }
 

@@ -9,6 +9,7 @@ import me.limbo56.settings.player.CustomPlayer;
 import me.limbo56.settings.utils.Cache;
 import me.limbo56.settings.utils.Utilities;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Instrument;
 import org.bukkit.Note;
 import org.bukkit.entity.Player;
@@ -114,11 +115,17 @@ public class SettingsMenu implements Listener {
                             if (event.getSlot() == ConfigurationManager.getMenu().getInt("Menu.Items.Fly.Slot") ||
                                     event.getSlot() == (ConfigurationManager.getMenu().getInt("Menu.Items.Fly.Slot") + 9)) {
                                 if (player.hasPermission(Cache.FLY_PERMISSION)) {
+                                    if (player.getGameMode().equals(GameMode.CREATIVE) || player.getGameMode().equals(GameMode.SPECTATOR)) {
+                                        player.sendMessage(MessageConfiguration.get("Gamemode-Incompatibility"));
+                                        player.playNote(player.getLocation(), Instrument.PIANO, new Note(0));
+                                        return;
+                                    }
                                     if (cPlayer.hasDoubleJump()) {
                                         player.sendMessage(MessageConfiguration.get("Settings-Incompatibility"));
                                         player.playNote(player.getLocation(), Instrument.PIANO, new Note(0));
                                         return;
                                     }
+
                                     if (cPlayer.hasFly()) {
                                         cPlayer.setFly(false);
                                         player.setAllowFlight(false);
@@ -171,6 +178,11 @@ public class SettingsMenu implements Listener {
                             if (event.getSlot() == ConfigurationManager.getMenu().getInt("Menu.Items.DoubleJump.Slot") ||
                                     event.getSlot() == (ConfigurationManager.getMenu().getInt("Menu.Items.DoubleJump.Slot") + 9)) {
                                 if (player.hasPermission(Cache.DOUBLEJUMP_PERMISSION)) {
+                                    if (player.getGameMode().equals(GameMode.CREATIVE) || player.getGameMode().equals(GameMode.SPECTATOR)) {
+                                        player.sendMessage(MessageConfiguration.get("Gamemode-Incompatibility"));
+                                        player.playNote(player.getLocation(), Instrument.PIANO, new Note(0));
+                                        return;
+                                    }
                                     if (cPlayer.hasFly()) {
                                         player.sendMessage(MessageConfiguration.get("Settings-Incompatibility"));
                                         player.playNote(player.getLocation(), Instrument.PIANO, new Note(0));
@@ -195,14 +207,18 @@ public class SettingsMenu implements Listener {
                         if (ConfigurationManager.getMenu().getBoolean("Menu.Items.Stacker.Enabled"))
                             if (event.getSlot() == ConfigurationManager.getMenu().getInt("Menu.Items.Stacker.Slot") ||
                                     event.getSlot() == (ConfigurationManager.getMenu().getInt("Menu.Items.Stacker.Slot") + 9)) {
-                                if (cPlayer.hasStacker()) {
-                                    cPlayer.setStacker(false);
-                                    player.playNote(player.getLocation(), Instrument.PIANO, new Note(0));
-                                    openSettings(player);
-                                } else if (!cPlayer.hasStacker()) {
-                                    cPlayer.setStacker(true);
-                                    player.playNote(player.getLocation(), Instrument.PIANO, new Note(15));
-                                    openSettings(player);
+                                if (player.hasPermission(Cache.STACKER_PERMISSION)) {
+                                    if (cPlayer.hasStacker()) {
+                                        cPlayer.setStacker(false);
+                                        player.playNote(player.getLocation(), Instrument.PIANO, new Note(0));
+                                        openSettings(player);
+                                    } else if (!cPlayer.hasStacker()) {
+                                        cPlayer.setStacker(true);
+                                        player.playNote(player.getLocation(), Instrument.PIANO, new Note(15));
+                                        openSettings(player);
+                                    }
+                                } else if (!player.hasPermission(Cache.STACKER_PERMISSION)) {
+                                    player.sendMessage(Cache.NO_PERMISSIONS);
                                 }
                             }
 
@@ -210,27 +226,31 @@ public class SettingsMenu implements Listener {
                         if (ConfigurationManager.getMenu().getBoolean("Menu.Items.Visibility.Enabled"))
                             if (event.getSlot() == ConfigurationManager.getMenu().getInt("Menu.Items.Visibility.Slot") ||
                                     event.getSlot() == (ConfigurationManager.getMenu().getInt("Menu.Items.Visibility.Slot") + 9)) {
-                                if (cPlayer.hasVisibility()) {
-                                    cPlayer.setVisibility(false);
+                                if (player.hasPermission(Cache.VISIBILITY_PERMISSION)) {
+                                    if (cPlayer.hasVisibility()) {
+                                        cPlayer.setVisibility(false);
 
-                                    for (Player players : Bukkit.getOnlinePlayers()) {
-                                        player.hidePlayer(players);
-                                    }
-
-                                    player.playNote(player.getLocation(), Instrument.PIANO, new Note(0));
-                                    openSettings(player);
-                                } else if (!cPlayer.hasVisibility()) {
-                                    cPlayer.setVisibility(true);
-
-                                    for (Player online : Bukkit.getOnlinePlayers()) {
-                                        CustomPlayer oPlayer = Utilities.getOrCreateCustomPlayer(online);
-                                        if (!oPlayer.hasVanish()) {
-                                            player.showPlayer(online);
+                                        for (Player players : Bukkit.getOnlinePlayers()) {
+                                            player.hidePlayer(players);
                                         }
-                                    }
 
-                                    player.playNote(player.getLocation(), Instrument.PIANO, new Note(15));
-                                    openSettings(player);
+                                        player.playNote(player.getLocation(), Instrument.PIANO, new Note(0));
+                                        openSettings(player);
+                                    } else if (!cPlayer.hasVisibility()) {
+                                        cPlayer.setVisibility(true);
+
+                                        for (Player online : Bukkit.getOnlinePlayers()) {
+                                            CustomPlayer oPlayer = Utilities.getOrCreateCustomPlayer(online);
+                                            if (!oPlayer.hasVanish()) {
+                                                player.showPlayer(online);
+                                            }
+                                        }
+
+                                        player.playNote(player.getLocation(), Instrument.PIANO, new Note(15));
+                                        openSettings(player);
+                                    }
+                                } else if (!player.hasPermission(Cache.VISIBILITY_PERMISSION)) {
+                                    player.sendMessage(Cache.NO_PERMISSIONS);
                                 }
                             }
 
@@ -238,14 +258,18 @@ public class SettingsMenu implements Listener {
                         if (ConfigurationManager.getMenu().getBoolean("Menu.Items.Chat.Enabled"))
                             if (event.getSlot() == ConfigurationManager.getMenu().getInt("Menu.Items.Chat.Slot") ||
                                     event.getSlot() == (ConfigurationManager.getMenu().getInt("Menu.Items.Chat.Slot") + 9)) {
-                                if (cPlayer.hasChat()) {
-                                    cPlayer.setChat(false);
-                                    player.playNote(player.getLocation(), Instrument.PIANO, new Note(0));
-                                    openSettings(player);
-                                } else if (!cPlayer.hasChat()) {
-                                    cPlayer.setChat(true);
-                                    player.playNote(player.getLocation(), Instrument.PIANO, new Note(15));
-                                    openSettings(player);
+                                if (player.hasPermission(Cache.CHAT_PERMISSION)) {
+                                    if (cPlayer.hasChat()) {
+                                        cPlayer.setChat(false);
+                                        player.playNote(player.getLocation(), Instrument.PIANO, new Note(0));
+                                        openSettings(player);
+                                    } else if (!cPlayer.hasChat()) {
+                                        cPlayer.setChat(true);
+                                        player.playNote(player.getLocation(), Instrument.PIANO, new Note(15));
+                                        openSettings(player);
+                                    }
+                                } else if (!player.hasPermission(Cache.CHAT_PERMISSION)) {
+                                    player.sendMessage(Cache.NO_PERMISSIONS);
                                 }
                             }
 

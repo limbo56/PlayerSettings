@@ -37,6 +37,9 @@ public class Cache {
     public static final Permission VANISH_PERMISSION = new Permission("settings.vanish");
     public static final Permission RADIO_PERMISSION = new Permission("settings.radio");
     public static final Permission DOUBLEJUMP_PERMISSION = new Permission("settings.doublejump");
+    public static final Permission STACKER_PERMISSION = new Permission("settings.stacker");
+    public static final Permission VISIBILITY_PERMISSION = new Permission("settings.visibility");
+    public static final Permission CHAT_PERMISSION = new Permission("settings.chat");
 
     public static final PotionEffect INVISIBILITY = new PotionEffect(PotionEffectType.INVISIBILITY, 1000000000, 0);
     public static final PotionEffect SPEED = new PotionEffect(PotionEffectType.SPEED, 1000000000, ConfigurationManager.getDefault().getInt("Speed.level") - 1);

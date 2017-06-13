@@ -4,7 +4,7 @@ import com.statiocraft.jukebox.Shuffle;
 import com.statiocraft.jukebox.SingleSong;
 import com.statiocraft.jukebox.scJukeBox;
 import fr.xephi.authme.api.API;
-import fr.xephi.authme.api.NewAPI;
+import fr.xephi.authme.api.v3.AuthMeApi;
 import me.limbo56.settings.PlayerSettings;
 import me.limbo56.settings.managers.ConfigurationManager;
 import me.limbo56.settings.player.CustomPlayer;
@@ -77,7 +77,7 @@ public class Utilities {
         boolean auth;
 
         try {
-            auth = NewAPI.getInstance().isAuthenticated(p);
+            auth = AuthMeApi.getInstance().isAuthenticated(p);
         } catch (NoClassDefFoundError e) {
             auth = API.isAuthenticated(p);
         }
@@ -177,6 +177,25 @@ public class Utilities {
 
     public static void saveSettings(Player player) {
         CustomPlayer cPlayer = getOrCreateCustomPlayer(player);
+
+        if (!player.hasPermission(Cache.CHAT_PERMISSION))
+            cPlayer.setChat(false);
+        if (!player.hasPermission(Cache.DOUBLEJUMP_PERMISSION))
+            cPlayer.setDoubleJump(false);
+        if (!player.hasPermission(Cache.FLY_PERMISSION))
+            cPlayer.setFly(false);
+        if (!player.hasPermission(Cache.JUMP_PERMISSION))
+            cPlayer.setJump(false);
+        if (!player.hasPermission(Cache.RADIO_PERMISSION))
+            cPlayer.setRadio(false);
+        if (!player.hasPermission(Cache.SPEED_PERMISSION))
+            cPlayer.setSpeed(false);
+        if (!player.hasPermission(Cache.STACKER_PERMISSION))
+            cPlayer.setStacker(false);
+        if (!player.hasPermission(Cache.VANISH_PERMISSION))
+            cPlayer.setVanish(false);
+        if (!player.hasPermission(Cache.VISIBILITY_PERMISSION))
+            cPlayer.setVisibility(false);
 
         cPlayer.saveSettingsAsync();
 

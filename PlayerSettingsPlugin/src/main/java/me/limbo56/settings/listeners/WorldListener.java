@@ -48,7 +48,7 @@ public class WorldListener implements Listener {
                     scJukeBox.getCurrentJukebox(player).removePlayer(player);
             }
 
-            if (cPlayer.hasDoubleJump())
+            if (cPlayer.hasDoubleJump() || cPlayer.hasFly())
                 player.setAllowFlight(false);
 
         }

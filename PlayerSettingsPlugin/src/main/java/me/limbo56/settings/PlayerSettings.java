@@ -20,12 +20,14 @@ import me.limbo56.settings.utils.Utilities;
 import me.limbo56.settings.version.IItemGlower;
 import me.limbo56.settings.version.IMount;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffectType;
 
 import java.io.File;
+import java.util.Map.Entry;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
@@ -146,9 +148,18 @@ public class PlayerSettings extends JavaPlugin {
 
         // Save all cached player's settings
         if (!CustomPlayer.getPlayerList().isEmpty()) {
-            for (Player player : CustomPlayer.getPlayerList().keySet()) {
+            for (Entry<Player, CustomPlayer> entry : CustomPlayer.getPlayerList().entrySet()) {
+                Player player = entry.getKey();
                 if (Utilities.hasAuthMePlugin() && !Utilities.isAuthenticated(player))
                     return;
+                CustomPlayer cPlayer = entry.getValue();
+
+                if (player.getGameMode() == GameMode.CREATIVE || player.getGameMode() == GameMode.SPECTATOR) {
+                    if (ConfigurationManager.getMenu().getBoolean("Menu.Items.Fly.Enabled"))
+                        cPlayer.setFly(ConfigurationManager.getDefault().getBoolean("Default.Fly"));
+                    if (ConfigurationManager.getMenu().getBoolean("Menu.Items.DoubleJump.Enabled"))
+                        cPlayer.setDoubleJump(ConfigurationManager.getDefault().getBoolean("Default.DoubleJump"));
+                }
                 CustomPlayer.getPlayerList().get(player).saveSettingsSync();
 
                 if (Cache.WORLDS_ALLOWED.contains(player.getWorld().getName())) {

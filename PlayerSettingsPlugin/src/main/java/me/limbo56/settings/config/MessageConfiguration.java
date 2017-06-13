@@ -30,6 +30,7 @@ public class MessageConfiguration {
         addDefault("Target-Stacker-Disabled", "&c&lTARGET &7has stacker disabled.");
         addDefault("Chat-Disabled", "&c&lYOU &7have the chat disabled.");
         addDefault("Settings-Incompatibility", "&c&lYOU &7cannot activate Double Jump and Fly at the same time.");
+        addDefault("Gamemode-Incompatibility", "&c&lYOU &7cannot edit this setting while in Creative or Spectator gamemode.");
 
         addDefault("Send.Player-Stacker-Disabled", true);
         addDefault("Send.Target-Stacker-Disabled", true);

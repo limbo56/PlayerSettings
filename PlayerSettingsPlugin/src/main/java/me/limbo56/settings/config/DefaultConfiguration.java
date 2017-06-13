@@ -29,7 +29,7 @@ public class DefaultConfiguration {
         addDefault("Default.Fly", false);
         addDefault("Default.Speed", false);
         addDefault("Default.Jump", false);
-        addDefault("Default.DoubleJump", true);
+        addDefault("Default.DoubleJump", false);
 
         if (Utilities.hasRadioPlugin()) {
             addDefault("Default.Radio", true);
@@ -43,6 +43,8 @@ public class DefaultConfiguration {
         addDefault("Speed.level", 2);
         addDefault("Jump.level", 2);
         addDefault("DoubleJump.sound", "ENTITY_BAT_TAKEOFF:0");
+        addDefault("DoubleJump.velocity.forward", 1.6);
+        addDefault("DoubleJump.velocity.up", 1.0);
     }
 
 }

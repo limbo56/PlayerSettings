@@ -1,6 +1,7 @@
 package me.limbo56.settings.utils;
 
 import org.bukkit.Material;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -26,8 +27,9 @@ public class ItemFactory {
      * @return ItemStack
      */
     public static ItemStack createItem(String displayName, boolean useLore, Material material, int amount, int data, String... lore) {
-        org.bukkit.inventory.ItemStack item = new org.bukkit.inventory.ItemStack(material, amount, (byte) data);
+        ItemStack item = new ItemStack(material, amount, (byte) data);
         ItemMeta meta = item.getItemMeta();
+        meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_POTION_EFFECTS, ItemFlag.HIDE_ENCHANTS);
         meta.setDisplayName(displayName);
 
         if (useLore) {

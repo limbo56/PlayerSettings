@@ -42,6 +42,14 @@ public class PlayerListener implements Listener {
         if (Utilities.hasAuthMePlugin() && !Utilities.isAuthenticated(player))
             return;
 
+        if (player.getGameMode() == GameMode.CREATIVE || player.getGameMode() == GameMode.SPECTATOR) {
+            CustomPlayer cPlayer = Utilities.getOrCreateCustomPlayer(player);
+
+            if (ConfigurationManager.getMenu().getBoolean("Menu.Items.Fly.Enabled"))
+                cPlayer.setFly(ConfigurationManager.getDefault().getBoolean("Default.Fly"));
+            if (ConfigurationManager.getMenu().getBoolean("Menu.Items.DoubleJump.Enabled"))
+                cPlayer.setDoubleJump(ConfigurationManager.getDefault().getBoolean("Default.DoubleJump"));
+        }
         Utilities.saveSettings(player);
     }
 
@@ -53,18 +61,19 @@ public class PlayerListener implements Listener {
 
         CustomPlayer cPlayer = Utilities.getOrCreateCustomPlayer(player);
 
-        if (ConfigurationManager.getMenu().getBoolean("Menu.Items.Fly.Enabled"))
-            if (Cache.WORLDS_ALLOWED.contains(player.getWorld().getName()))
-                if (event.getNewGameMode() == GameMode.ADVENTURE || event.getNewGameMode() == GameMode.SURVIVAL) {
+        if (Cache.WORLDS_ALLOWED.contains(player.getWorld().getName())) {
+            if (event.getNewGameMode() == GameMode.ADVENTURE || event.getNewGameMode() == GameMode.SURVIVAL) {
+                if (ConfigurationManager.getMenu().getBoolean("Menu.Items.Fly.Enabled"))
                     cPlayer.setFly(ConfigurationManager.getDefault().getBoolean("Default.Fly"));
-                    if (ConfigurationManager.getMenu().getBoolean("Menu.Items.DoubleJump.Enabled"))
-                        cPlayer.setDoubleJump(ConfigurationManager.getDefault().getBoolean("Default.DoubleJump"));
-                } else if (event.getNewGameMode() == GameMode.CREATIVE || event.getNewGameMode() == GameMode.SPECTATOR) {
+                if (ConfigurationManager.getMenu().getBoolean("Menu.Items.DoubleJump.Enabled"))
+                    cPlayer.setDoubleJump(ConfigurationManager.getDefault().getBoolean("Default.DoubleJump"));
+            } else if (event.getNewGameMode() == GameMode.CREATIVE || event.getNewGameMode() == GameMode.SPECTATOR) {
+                if (ConfigurationManager.getMenu().getBoolean("Menu.Items.Fly.Enabled"))
                     cPlayer.setFly(true);
-                    if (ConfigurationManager.getMenu().getBoolean("Menu.Items.DoubleJump.Enabled"))
-                        cPlayer.setDoubleJump(false);
-                }
-
+                if (ConfigurationManager.getMenu().getBoolean("Menu.Items.DoubleJump.Enabled"))
+                    cPlayer.setDoubleJump(false);
+            }
+        }
     }
 
     @EventHandler(ignoreCancelled = true)
@@ -107,7 +116,7 @@ public class PlayerListener implements Listener {
                 if (cPlayer.hasFly())
                     return;
                 if (cPlayer.hasDoubleJump()) {
-                    if (player.getGameMode() != GameMode.CREATIVE && !player.getLocation().subtract(0D, 1D, 0D).getBlock().isEmpty()) {
+                    if (!player.getLocation().subtract(0D, 1D, 0D).getBlock().isEmpty()) {
                         player.setAllowFlight(true);
                         cPlayer.doubleJumpStatus = true;
                     }
@@ -131,7 +140,7 @@ public class PlayerListener implements Listener {
 
         CustomPlayer cPlayer = Utilities.getOrCreateCustomPlayer(player);
 
-        if (Utilities.isVersion("v1_9_R1") || Utilities.isVersion("v1_9_R2") || Utilities.isVersion("v1_10_R1") || Utilities.isVersion("v1_11_R1"))
+        if (!(Utilities.isVersion("v1_8_R1") || Utilities.isVersion("v1_8_R2") || Utilities.isVersion("v1_8_R3")))
             if (event.getHand() == EquipmentSlot.OFF_HAND)
                 return;
 

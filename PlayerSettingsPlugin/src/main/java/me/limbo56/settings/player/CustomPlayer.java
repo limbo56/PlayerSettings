@@ -46,6 +46,7 @@ public class CustomPlayer {
         this.jump = ConfigurationManager.getDefault().getBoolean("Default.Jump");
         this.radio = (Utilities.hasRadioPlugin() && ConfigurationManager.getDefault().getBoolean("Default.Radio"));
         this.doubleJump = ConfigurationManager.getDefault().getBoolean("Default.DoubleJump");
+        this.doubleJumpStatus = false;
         if (ConfigurationManager.getConfig().getBoolean("Debug")) {
             PlayerSettings.getInstance().log("CustomPlayer: UUID '" + uuid + "' created:");
             PlayerSettings.getInstance().log("CustomPlayer: Visibility: " + visibility + ", Stacker: " + stacker + ", Chat: " + chat + ", Vanish: " + vanish + ", Fly: " + fly + ", Speed: " + speed + ", Jump: " + jump + ", Radio: " + radio + ", DoubleJump: " + doubleJump);
