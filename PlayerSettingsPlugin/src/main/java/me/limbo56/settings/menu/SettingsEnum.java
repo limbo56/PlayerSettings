@@ -18,11 +18,11 @@ import java.util.List;
  * On 1/21/2017
  * At 12:24 AM
  */
-public enum SettingsEnum {
+public enum SettingsEnum implements Togglable {
 
     SPEED {
         @Override
-        void setEnabled(Inventory inventory) {
+        public void setEnabled(Inventory inventory) {
             if (ConfigurationManager.getMenu().getBoolean("Menu.Items.Speed.Enabled")) {
                 inventory.setItem(ConfigurationManager.getMenu().getInt("Menu.Items.Speed.Slot"), PlayerSettings.getItemGlower().glow(ItemFactory.createItem(MenuConfiguration.get("Menu.Items.Speed.Name"), false, Material.getMaterial(MenuConfiguration.get("Menu.Items.Speed.Material")), 1, 0)));
                 setTrue(inventory, ConfigurationManager.getMenu().getInt("Menu.Items.Speed.Slot") + 9);
@@ -30,7 +30,7 @@ public enum SettingsEnum {
         }
 
         @Override
-        void setDisabled(Inventory inventory) {
+        public void setDisabled(Inventory inventory) {
             if (ConfigurationManager.getMenu().getBoolean("Menu.Items.Speed.Enabled")) {
                 inventory.setItem(ConfigurationManager.getMenu().getInt("Menu.Items.Speed.Slot"), ItemFactory.createItem(MenuConfiguration.get("Menu.Items.Speed.Name"), false, Material.getMaterial(MenuConfiguration.get("Menu.Items.Speed.Material")), 1, 0));
                 setFalse(inventory, ConfigurationManager.getMenu().getInt("Menu.Items.Speed.Slot") + 9);
@@ -38,14 +38,14 @@ public enum SettingsEnum {
         }
 
         @Override
-        boolean getCondition(Player player) {
+        public boolean getCondition(Player player) {
             CustomPlayer cPlayer = Utilities.getOrCreateCustomPlayer(player);
             return cPlayer.hasSpeed();
         }
     },
     JUMP {
         @Override
-        void setEnabled(Inventory inventory) {
+        public void setEnabled(Inventory inventory) {
             if (ConfigurationManager.getMenu().getBoolean("Menu.Items.Jump.Enabled")) {
                 inventory.setItem(ConfigurationManager.getMenu().getInt("Menu.Items.Jump.Slot"), PlayerSettings.getItemGlower().glow(ItemFactory.createItem(MenuConfiguration.get("Menu.Items.Jump.Name"), false, Material.getMaterial(MenuConfiguration.get("Menu.Items.Jump.Material")), 1, 0)));
                 setTrue(inventory, ConfigurationManager.getMenu().getInt("Menu.Items.Jump.Slot") + 9);
@@ -53,7 +53,7 @@ public enum SettingsEnum {
         }
 
         @Override
-        void setDisabled(Inventory inventory) {
+        public void setDisabled(Inventory inventory) {
             if (ConfigurationManager.getMenu().getBoolean("Menu.Items.Jump.Enabled")) {
                 inventory.setItem(ConfigurationManager.getMenu().getInt("Menu.Items.Jump.Slot"), ItemFactory.createItem(MenuConfiguration.get("Menu.Items.Jump.Name"), false, Material.getMaterial(MenuConfiguration.get("Menu.Items.Jump.Material")), 1, 0));
                 setFalse(inventory, ConfigurationManager.getMenu().getInt("Menu.Items.Jump.Slot") + 9);
@@ -61,14 +61,14 @@ public enum SettingsEnum {
         }
 
         @Override
-        boolean getCondition(Player player) {
+        public boolean getCondition(Player player) {
             CustomPlayer cPlayer = Utilities.getOrCreateCustomPlayer(player);
             return cPlayer.hasJump();
         }
     },
     FLY {
         @Override
-        void setEnabled(Inventory inventory) {
+        public void setEnabled(Inventory inventory) {
             if (ConfigurationManager.getMenu().getBoolean("Menu.Items.Fly.Enabled")) {
                 inventory.setItem(ConfigurationManager.getMenu().getInt("Menu.Items.Fly.Slot"), PlayerSettings.getItemGlower().glow(ItemFactory.createItem(MenuConfiguration.get("Menu.Items.Fly.Name"), false, Material.getMaterial(MenuConfiguration.get("Menu.Items.Fly.Material")), 1, 0)));
                 setTrue(inventory, ConfigurationManager.getMenu().getInt("Menu.Items.Fly.Slot") + 9);
@@ -76,7 +76,7 @@ public enum SettingsEnum {
         }
 
         @Override
-        void setDisabled(Inventory inventory) {
+        public void setDisabled(Inventory inventory) {
             if (ConfigurationManager.getMenu().getBoolean("Menu.Items.Fly.Enabled")) {
                 inventory.setItem(ConfigurationManager.getMenu().getInt("Menu.Items.Fly.Slot"), ItemFactory.createItem(MenuConfiguration.get("Menu.Items.Fly.Name"), false, Material.getMaterial(MenuConfiguration.get("Menu.Items.Fly.Material")), 1, 0));
                 setFalse(inventory, ConfigurationManager.getMenu().getInt("Menu.Items.Fly.Slot") + 9);
@@ -84,14 +84,14 @@ public enum SettingsEnum {
         }
 
         @Override
-        boolean getCondition(Player player) {
+        public boolean getCondition(Player player) {
             CustomPlayer cPlayer = Utilities.getOrCreateCustomPlayer(player);
             return cPlayer.hasFly();
         }
     },
     VANISH {
         @Override
-        void setEnabled(Inventory inventory) {
+        public void setEnabled(Inventory inventory) {
             if (ConfigurationManager.getMenu().getBoolean("Menu.Items.Vanish.Enabled")) {
                 inventory.setItem(ConfigurationManager.getMenu().getInt("Menu.Items.Vanish.Slot"), PlayerSettings.getItemGlower().glow(ItemFactory.createItem(MenuConfiguration.get("Menu.Items.Vanish.Name"), false, Material.getMaterial(MenuConfiguration.get("Menu.Items.Vanish.Material")), 1, 0)));
                 setTrue(inventory, ConfigurationManager.getMenu().getInt("Menu.Items.Vanish.Slot") + 9);
@@ -99,7 +99,7 @@ public enum SettingsEnum {
         }
 
         @Override
-        void setDisabled(Inventory inventory) {
+        public void setDisabled(Inventory inventory) {
             if (ConfigurationManager.getMenu().getBoolean("Menu.Items.Vanish.Enabled")) {
                 inventory.setItem(ConfigurationManager.getMenu().getInt("Menu.Items.Vanish.Slot"), ItemFactory.createItem(MenuConfiguration.get("Menu.Items.Vanish.Name"), false, Material.getMaterial(MenuConfiguration.get("Menu.Items.Vanish.Material")), 1, 0));
                 setFalse(inventory, ConfigurationManager.getMenu().getInt("Menu.Items.Vanish.Slot") + 9);
@@ -107,14 +107,14 @@ public enum SettingsEnum {
         }
 
         @Override
-        boolean getCondition(Player player) {
+        public boolean getCondition(Player player) {
             CustomPlayer cPlayer = Utilities.getOrCreateCustomPlayer(player);
             return cPlayer.hasVanish();
         }
     },
     DOUBLEJUMP {
         @Override
-        void setEnabled(Inventory inventory) {
+        public void setEnabled(Inventory inventory) {
             if (ConfigurationManager.getMenu().getBoolean("Menu.Items.DoubleJump.Enabled")) {
                 inventory.setItem(ConfigurationManager.getMenu().getInt("Menu.Items.DoubleJump.Slot"), PlayerSettings.getItemGlower().glow(ItemFactory.createItem(MenuConfiguration.get("Menu.Items.DoubleJump.Name"), false, Material.getMaterial(MenuConfiguration.get("Menu.Items.DoubleJump.Material")), 1, 0)));
                 setTrue(inventory, ConfigurationManager.getMenu().getInt("Menu.Items.DoubleJump.Slot") + 9);
@@ -122,7 +122,7 @@ public enum SettingsEnum {
         }
 
         @Override
-        void setDisabled(Inventory inventory) {
+        public void setDisabled(Inventory inventory) {
             if (ConfigurationManager.getMenu().getBoolean("Menu.Items.DoubleJump.Enabled")) {
                 inventory.setItem(ConfigurationManager.getMenu().getInt("Menu.Items.DoubleJump.Slot"), ItemFactory.createItem(MenuConfiguration.get("Menu.Items.DoubleJump.Name"), false, Material.getMaterial(MenuConfiguration.get("Menu.Items.DoubleJump.Material")), 1, 0));
                 setFalse(inventory, ConfigurationManager.getMenu().getInt("Menu.Items.DoubleJump.Slot") + 9);
@@ -130,14 +130,14 @@ public enum SettingsEnum {
         }
 
         @Override
-        boolean getCondition(Player player) {
+        public boolean getCondition(Player player) {
             CustomPlayer cPlayer = Utilities.getOrCreateCustomPlayer(player);
             return cPlayer.hasDoubleJump();
         }
     },
     STACKER {
         @Override
-        void setEnabled(Inventory inventory) {
+        public void setEnabled(Inventory inventory) {
             if (ConfigurationManager.getMenu().getBoolean("Menu.Items.Stacker.Enabled")) {
                 inventory.setItem(ConfigurationManager.getMenu().getInt("Menu.Items.Stacker.Slot"), PlayerSettings.getItemGlower().glow(ItemFactory.createItem(MenuConfiguration.get("Menu.Items.Stacker.Name"), false, Material.getMaterial(MenuConfiguration.get("Menu.Items.Stacker.Material")), 1, 0)));
                 setTrue(inventory, ConfigurationManager.getMenu().getInt("Menu.Items.Stacker.Slot") + 9);
@@ -145,7 +145,7 @@ public enum SettingsEnum {
         }
 
         @Override
-        void setDisabled(Inventory inventory) {
+        public void setDisabled(Inventory inventory) {
             if (ConfigurationManager.getMenu().getBoolean("Menu.Items.Stacker.Enabled")) {
                 inventory.setItem(ConfigurationManager.getMenu().getInt("Menu.Items.Stacker.Slot"), ItemFactory.createItem(MenuConfiguration.get("Menu.Items.Stacker.Name"), false, Material.getMaterial(MenuConfiguration.get("Menu.Items.Stacker.Material")), 1, 0));
                 setFalse(inventory, ConfigurationManager.getMenu().getInt("Menu.Items.Stacker.Slot") + 9);
@@ -153,14 +153,14 @@ public enum SettingsEnum {
         }
 
         @Override
-        boolean getCondition(Player player) {
+        public boolean getCondition(Player player) {
             CustomPlayer cPlayer = Utilities.getOrCreateCustomPlayer(player);
             return cPlayer.hasStacker();
         }
     },
     VISIBILITY {
         @Override
-        void setEnabled(Inventory inventory) {
+        public void setEnabled(Inventory inventory) {
             if (ConfigurationManager.getMenu().getBoolean("Menu.Items.Visibility.Enabled")) {
                 inventory.setItem(ConfigurationManager.getMenu().getInt("Menu.Items.Visibility.Slot"), PlayerSettings.getItemGlower().glow(ItemFactory.createItem(MenuConfiguration.get("Menu.Items.Visibility.Name"), false, Material.getMaterial(MenuConfiguration.get("Menu.Items.Visibility.Material")), 1, 0)));
                 setTrue(inventory, ConfigurationManager.getMenu().getInt("Menu.Items.Visibility.Slot") + 9);
@@ -168,7 +168,7 @@ public enum SettingsEnum {
         }
 
         @Override
-        void setDisabled(Inventory inventory) {
+        public void setDisabled(Inventory inventory) {
             if (ConfigurationManager.getMenu().getBoolean("Menu.Items.Visibility.Enabled")) {
                 inventory.setItem(ConfigurationManager.getMenu().getInt("Menu.Items.Visibility.Slot"), ItemFactory.createItem(MenuConfiguration.get("Menu.Items.Visibility.Name"), false, Material.getMaterial(MenuConfiguration.get("Menu.Items.Visibility.Material")), 1, 0));
                 setFalse(inventory, ConfigurationManager.getMenu().getInt("Menu.Items.Visibility.Slot") + 9);
@@ -176,14 +176,14 @@ public enum SettingsEnum {
         }
 
         @Override
-        boolean getCondition(Player player) {
+        public boolean getCondition(Player player) {
             CustomPlayer cPlayer = Utilities.getOrCreateCustomPlayer(player);
             return cPlayer.hasVisibility();
         }
     },
     CHAT {
         @Override
-        void setEnabled(Inventory inventory) {
+        public void setEnabled(Inventory inventory) {
             if (ConfigurationManager.getMenu().getBoolean("Menu.Items.Chat.Enabled")) {
                 inventory.setItem(ConfigurationManager.getMenu().getInt("Menu.Items.Chat.Slot"), PlayerSettings.getItemGlower().glow(ItemFactory.createItem(MenuConfiguration.get("Menu.Items.Chat.Name"), false, Material.getMaterial(MenuConfiguration.get("Menu.Items.Chat.Material")), 1, 0)));
                 setTrue(inventory, ConfigurationManager.getMenu().getInt("Menu.Items.Chat.Slot") + 9);
@@ -191,7 +191,7 @@ public enum SettingsEnum {
         }
 
         @Override
-        void setDisabled(Inventory inventory) {
+        public void setDisabled(Inventory inventory) {
             if (ConfigurationManager.getMenu().getBoolean("Menu.Items.Chat.Enabled")) {
                 inventory.setItem(ConfigurationManager.getMenu().getInt("Menu.Items.Chat.Slot"), ItemFactory.createItem(MenuConfiguration.get("Menu.Items.Chat.Name"), false, Material.getMaterial(MenuConfiguration.get("Menu.Items.Chat.Material")), 1, 0));
                 setFalse(inventory, ConfigurationManager.getMenu().getInt("Menu.Items.Chat.Slot") + 9);
@@ -199,14 +199,14 @@ public enum SettingsEnum {
         }
 
         @Override
-        boolean getCondition(Player player) {
+        public boolean getCondition(Player player) {
             CustomPlayer cPlayer = Utilities.getOrCreateCustomPlayer(player);
             return cPlayer.hasChat();
         }
     },
     RADIO {
         @Override
-        void setEnabled(Inventory inventory) {
+        public void setEnabled(Inventory inventory) {
             if (radio) {
                 if (ConfigurationManager.getMenu().getBoolean("Menu.Items.Radio.Enabled")) {
                     inventory.setItem(ConfigurationManager.getMenu().getInt("Menu.Items.Radio.Slot"), PlayerSettings.getItemGlower().glow(ItemFactory.createItem(MenuConfiguration.get("Menu.Items.Radio.Name"), false, Material.getMaterial(MenuConfiguration.get("Menu.Items.Radio.Material")), 1, 0)));
@@ -216,7 +216,7 @@ public enum SettingsEnum {
         }
 
         @Override
-        void setDisabled(Inventory inventory) {
+        public void setDisabled(Inventory inventory) {
             if (radio) {
                 if (ConfigurationManager.getMenu().getBoolean("Menu.Items.Radio.Enabled")) {
                     inventory.setItem(ConfigurationManager.getMenu().getInt("Menu.Items.Radio.Slot"), ItemFactory.createItem(MenuConfiguration.get("Menu.Items.Radio.Name"), false, Material.getMaterial(MenuConfiguration.get("Menu.Items.Radio.Material")), 1, 0));
@@ -226,7 +226,7 @@ public enum SettingsEnum {
         }
 
         @Override
-        boolean getCondition(Player player) {
+        public boolean getCondition(Player player) {
             CustomPlayer cPlayer = Utilities.getOrCreateCustomPlayer(player);
             return cPlayer.hasRadio();
         }
@@ -255,11 +255,5 @@ public enum SettingsEnum {
         else
             inventory.setItem(slot, ItemFactory.createItem(Cache.DISABLED_NAME, true, Material.getMaterial(Cache.DISABLED_MATERIAL), 1, 0, disabledLoreArray));
     }
-
-    abstract void setEnabled(Inventory inventory);
-
-    abstract void setDisabled(Inventory inventory);
-
-    abstract boolean getCondition(Player player);
 
 }
