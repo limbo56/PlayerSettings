@@ -222,11 +222,6 @@ public enum SoundUtils {
         if (splittedSound.contains("BLOCK_") || splittedSound.contains("ENTITY_") || splittedSound.contains("ITEM_"))
             splittedSound = splittedSound.split("_", 2)[1];
 
-        if (!Arrays.toString(SoundUtils.values()).contains(splittedSound)) {
-            resolveSound = Sound.valueOf(sound);
-            return null;
-        }
-
         return SoundUtils.valueOf(splittedSound);
     }
 

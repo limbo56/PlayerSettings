@@ -51,7 +51,8 @@ public class FlyToggleListener implements Listener {
                             if (sound.contains(":"))
                                 player.playSound(player.getLocation(), SoundUtils.getEnumSound(sound.split(":")[0]).resolveSound(), 1F, Float.valueOf(sound.split(":")[1]));
                             else
-                                player.playSound(player.getLocation(), SoundUtils.valueOf(sound).resolveSound(), 1F, 0F);
+                                player.playSound(player.getLocation(), SoundUtils.getEnumSound(sound).resolveSound(), 1F, 0F);
+
                         } catch (IllegalArgumentException exception) {
                             if (player.isOp()) {
                                 player.sendMessage(ColorUtils.Color(

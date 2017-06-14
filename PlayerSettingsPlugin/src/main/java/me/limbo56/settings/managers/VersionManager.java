@@ -16,12 +16,18 @@ public class VersionManager {
 
     public void load() {
         try {
-            Class<?> itemGlower = Class.forName("me.limbo56.settings.nms." + serverVersion + ".ItemGlower");
-            Class<?> mount = Class.forName("me.limbo56.settings.nms." + serverVersion + ".Mount");
+            Class<?> itemGlowerClass = Class.forName("me.limbo56.settings.nms." + serverVersion + ".ItemGlower");
 
-            if (IItemGlower.class.isAssignableFrom(itemGlower) && IMount.class.isAssignableFrom(mount)) {
-                this.itemGlower = (IItemGlower) itemGlower.getConstructor().newInstance();
-                this.mount = (IMount) mount.getConstructor().newInstance();
+            if (IItemGlower.class.isAssignableFrom(itemGlowerClass)) {
+                this.itemGlower = (IItemGlower) itemGlowerClass.getConstructor().newInstance();
+            }
+
+            if (serverVersion.contains("1_9")) {
+                Class<?> mountClass = Class.forName("me.limbo56.settings.nms." + serverVersion + ".Mount");
+
+                if (IMount.class.isAssignableFrom(mountClass)) {
+                    this.mount = (IMount) mountClass.getConstructor().newInstance();
+                }
             }
         } catch (Exception exception) {
             exception.printStackTrace();
