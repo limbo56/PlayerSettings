@@ -2,7 +2,7 @@
 #### This is the official source code of the plugin Player Settings.
 
 # Info
-#### 1. Player Settings supports from 1.8 to 1.11. The plugin adds a very cool and configurable menu to your server's lobby/hub
+#### 1. Player Settings supports from 1.8 to 1.12. The plugin adds a very cool and configurable menu to your server's lobby/hub.
 
 #### 2. The plugin works with the spigot/craftbukkit/paperspigot etc.
 
