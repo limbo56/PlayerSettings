@@ -1,0 +1,67 @@
+name: PlayerSettings
+version: ${project.version}
+main: me.limbo56.settings.PlayerSettings
+author: lim_bo56
+softDepend: ['AuthMe', 'icJukeBox']
+commands:
+    settings:
+        description: Main command of the plugin!
+permissions:
+    settings.*:
+        description: All PlayerSettings permissions
+        default: op
+        children:
+            settings.reload: true
+            settings.speed: true
+            settings.jump: true
+            settings.fly: true
+            settings.vanish: true
+            settings.radio: true
+            settings.doublejump: true
+            settings.stacker: true
+            settings.visibility: true
+            settings.chat: true
+    settings.toggles:
+        description: All PlayerSettings toggles
+        default: false
+        children:
+            settings.reload: false
+            settings.speed: true
+            settings.jump: true
+            settings.fly: true
+            settings.vanish: true
+            settings.radio: true
+            settings.doublejump: true
+            settings.stacker: true
+            settings.visibility: true
+            settings.chat: true
+    settings.reload:
+        description: Reloads plugin configuration
+        default: op
+    settings.speed:
+        description: Permission for toggling Speed
+        default: op
+    settings.jump:
+        description: Permission for toggling Jump
+        default: op
+    settings.fly:
+        description: Permission for toggling Fly
+        default: op
+    settings.vanish:
+        description: Permission for toggling Vanish
+        default: op
+    settings.radio:
+        description: Permission for toggling Radio
+        default: true
+    settings.doublejump:
+        description: Permission for toggling DoubleJump
+        default: op
+    settings.stacker:
+        description: Permission for toggling Stacker
+        default: op
+    settings.visibility:
+        description: Permission for toggling Visibility
+        default: true
+    settings.chat:
+        description: Permission for toggling Chat
+        default: true
