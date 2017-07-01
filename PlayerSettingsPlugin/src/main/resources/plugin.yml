@@ -1,8 +1,0 @@
-name: PlayerSettings
-version: ${project.version}
-main: me.limbo56.settings.PlayerSettings
-author: lim_bo56
-softDepend: ['AuthMe', 'icJukeBox']
-commands:
-      settings:
-           description: Main command of the plugin!
