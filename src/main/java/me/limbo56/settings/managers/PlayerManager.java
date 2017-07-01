@@ -18,8 +18,8 @@ import java.util.UUID;
  */
 public class PlayerManager {
 
-    private final String ADD = "INSERT INTO `PlayerSettings` (UUID, Visibility, Stacker, Chat, Vanish, Fly, Speed, Jump, Radio, DoubleJump) VALUES ('?', '?', '?', '?', '?', '?', '?', '?', '?', '?')";
-    private final String SAVE = "UPDATE PlayerSettings SET Visibility = '?', Stacker = '?', Chat = '?', Vanish = '?', Fly = '?', Speed = '?', Jump = '?', Radio = '?', DoubleJump = '?'";
+    private final String ADD = "INSERT INTO `PlayerSettings` (UUID, Visibility, Stacker, Chat, Vanish, Fly, Speed, Jump, Radio, DoubleJump) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    private final String SAVE = "UPDATE `PlayerSettings` SET Visibility = ?, Stacker = ?, Chat = ?, Vanish = ?, Fly = ?, Speed = ?, Jump = ?, Radio = ?, DoubleJump = ?";
 
     private HashMap<UUID, CustomPlayer> playerList = new HashMap<>();
 
@@ -27,7 +27,7 @@ public class PlayerManager {
         if (PlayerSettings.getInstance().getConfig().getBoolean("MySQL.enable")) {
             try {
                 PreparedStatement select = PlayerSettings.getMySqlManager().getCurrentConnection().prepareStatement(
-                        "SELECT UUID FROM `PlayerSettings` WHERE UUID = '?'");
+                        "SELECT UUID FROM `PlayerSettings` WHERE UUID = ?");
 
                 select.setString(1, customPlayer.getUuid().toString());
 
@@ -195,7 +195,7 @@ public class PlayerManager {
                         update.executeQuery();
 
                         if (ConfigurationManager.getConfig().getBoolean("Debug")) {
-                            PlayerSettings.getInstance().log("saveSettings: UUID '" + customPlayer.getUuid().toString() + "' settigns updated in the database:");
+                            PlayerSettings.getInstance().log("saveSettings: UUID '" + customPlayer.getUuid().toString() + "' settings updated in the database:");
                             PlayerSettings.getInstance().log("saveSettings: Visibility: " + customPlayer.getVisibility() + ", Stacker: " + customPlayer.getStacker() + ", Chat: " + customPlayer.getChat() + ", Vanish: " + customPlayer.getVanish() + ", Fly: " + customPlayer.getFly() + ", Speed: " + customPlayer.getDoubleJump() + ", Jump: " + customPlayer.getDoubleJump() + ", Radio: " + customPlayer.getDoubleJump() + ", DoubleJump: " + customPlayer.getDoubleJump());
                         }
 
@@ -214,7 +214,7 @@ public class PlayerManager {
 
     private boolean getBoolean(CustomPlayer customPlayer, String str) {
         try {
-            PreparedStatement select = PlayerSettings.getMySqlManager().getCurrentConnection().prepareStatement("SELECT ? FROM `PlayerSettings` WHERE UUID = '?'");
+            PreparedStatement select = PlayerSettings.getMySqlManager().getCurrentConnection().prepareStatement("SELECT ? FROM `PlayerSettings` WHERE UUID = ?");
 
             select.setString(1, str);
             select.setString(2, customPlayer.getUuid().toString());
