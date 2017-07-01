@@ -104,6 +104,7 @@ public class PlayerSettings extends JavaPlugin {
 
         // Connect to database if it's enabled
         if (getConfig().getBoolean("MySQL.enable")) {
+            log("");
             log("Connecting to database...");
 
             mySqlManager.openConnection();
