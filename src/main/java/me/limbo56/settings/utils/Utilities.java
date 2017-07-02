@@ -94,7 +94,6 @@ public class Utilities {
 
             return (boolean) isAuthenticatedMethod.invoke(player);
         } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException | InstantiationException e) {
-            e.printStackTrace();
             return false;
         }
     }
