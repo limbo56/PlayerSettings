@@ -88,7 +88,7 @@ public class Utilities {
 
     private static boolean isAuthenticatedReflection(String location, Player player) throws ClassNotFoundException {
         try {
-            Class authMeApi = Class.forName("fr.xephi.authme.api.v3.AuthMeApi");
+            Class authMeApi = Class.forName(location);
             Object authMeApiInstance = authMeApi.newInstance();
             Method isAuthenticatedMethod = authMeApiInstance.getClass().getMethod("isAuthenticated", Player.class);
 
