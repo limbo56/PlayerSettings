@@ -21,7 +21,7 @@ public class MySqlManager {
 
     public void openConnection() {
         try {
-            connection = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database, name, password);
+            connection = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database + "?autoReconnect=true", name, password);
 
             PlayerSettings.getInstance().log("Connected to database");
         } catch (SQLException exception) {
