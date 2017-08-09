@@ -47,6 +47,12 @@ public class OpenARG extends BaseCommand {
                     PlayerSettings.getInstance().log("executeCommand: Chest size is not multiple of 9");
             }
 
+        } else {
+            if (player.isOp() || player.hasPermission("settings.*")) {
+                player.sendMessage(ColorUtils.Color(Cache.CHAT_TITLE
+                        + "The plugin is not enabled in this world, "
+                        + "please add the name of this world to the list in menu.yml to enable it"));
+            }
         }
     }
 
