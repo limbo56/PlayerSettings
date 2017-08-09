@@ -85,7 +85,7 @@ public class PlayerManager {
                         insert.setInt(9, radio);
                         insert.setInt(10, doubleJump);
 
-                        insert.execute();
+                        insert.executeUpdate();
 
                         if (ConfigurationManager.getConfig().getBoolean("Debug")) {
                             PlayerSettings.getInstance().log("addPlayer: UUID '" + customPlayer.getUuid().toString() + "' added to the database:");
@@ -147,7 +147,7 @@ public class PlayerManager {
                 update.setInt(8, radio);
                 update.setInt(9, doubleJump);
 
-                update.executeQuery();
+                update.executeUpdate();
 
                 if (ConfigurationManager.getConfig().getBoolean("Debug")) {
                     PlayerSettings.getInstance().log("saveSettings: UUID '" + customPlayer.getUuid().toString() + "' settigns updated in the database:");
@@ -192,7 +192,7 @@ public class PlayerManager {
                         update.setInt(8, radio);
                         update.setInt(9, doubleJump);
 
-                        update.executeQuery();
+                        update.executeUpdate();
 
                         if (ConfigurationManager.getConfig().getBoolean("Debug")) {
                             PlayerSettings.getInstance().log("saveSettings: UUID '" + customPlayer.getUuid().toString() + "' settings updated in the database:");

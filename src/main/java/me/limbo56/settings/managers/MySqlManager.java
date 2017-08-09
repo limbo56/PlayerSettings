@@ -4,6 +4,7 @@ import me.limbo56.settings.PlayerSettings;
 import org.bukkit.Bukkit;
 
 import java.sql.*;
+
 /**
  * Created by lim_bo56
  * On 8/11/2016
@@ -59,6 +60,7 @@ public class MySqlManager {
                                         + "`Jump` TINYINT(0) DEFAULT NULL,"
                                         + "`Radio` TINYINT(0) DEFAULT NULL,"
                                         + "`DoubleJump` TINYINT(0) DEFAULT NULL, PRIMARY KEY (UUID))");
+
                         if (ConfigurationManager.getConfig().getBoolean("Debug"))
                             PlayerSettings.getInstance().log("createTable: Table created or already existent");
 
@@ -98,7 +100,7 @@ public class MySqlManager {
                         }
                     }
                 } catch (SQLException e) {
-                    Bukkit.getLogger().severe("Couldn't create tables on the database :(.");
+                    Bukkit.getLogger().severe("Couldn't create tables on the database :(");
                 }
             }
         });
