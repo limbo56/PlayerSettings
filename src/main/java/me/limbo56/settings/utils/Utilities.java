@@ -90,12 +90,11 @@ public class Utilities {
         try {
             Class authMeApi = Class.forName(location);
             Object authMeApiInstance = authMeApi.newInstance();
-            Method isAuthenticatedMethod = authMeApiInstance.getClass().getMethod("isAuthenticated", Player.class);
+            Method isAuthenticatedMethod = authMeApiInstance.getClass().getMethod("isAuthenticated");
 
             return (boolean) isAuthenticatedMethod.invoke(player);
         } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException | InstantiationException e) {
             return false;
         }
     }
-
 }

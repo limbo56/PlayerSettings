@@ -94,5 +94,4 @@ public class CommandManager implements CommandExecutor, TabCompleter {
 
         return null;
     }
-
 }

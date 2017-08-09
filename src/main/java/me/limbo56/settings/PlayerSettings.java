@@ -8,7 +8,10 @@ import me.limbo56.settings.listeners.AuthMeListener;
 import me.limbo56.settings.listeners.FlyToggleListener;
 import me.limbo56.settings.listeners.PlayerListener;
 import me.limbo56.settings.listeners.WorldListener;
-import me.limbo56.settings.managers.*;
+import me.limbo56.settings.managers.CommandManager;
+import me.limbo56.settings.managers.ConfigurationManager;
+import me.limbo56.settings.managers.MySqlManager;
+import me.limbo56.settings.managers.PlayerManager;
 import me.limbo56.settings.menu.SettingsMenu;
 import me.limbo56.settings.player.CustomPlayer;
 import me.limbo56.settings.utils.Cache;
@@ -32,7 +35,7 @@ import java.util.UUID;
  * Created by lim_bo56
  * On Aug 7, 2016
  * At 2:24:36 AM
- *
+ * <p>
  * Contributors: Maxetto
  */
 public class PlayerSettings extends JavaPlugin {

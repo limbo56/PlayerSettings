@@ -25,22 +25,22 @@ public class Updater {
      */
     static void sendUpdater(Player player) {
         try {
-            HttpURLConnection con = (HttpURLConnection) new URL("http://www.spigotmc.org/api/general.php")
-                    .openConnection();
+            HttpURLConnection con = (HttpURLConnection) new URL("http://www.spigotmc.org/api/general.php").openConnection();
             con.setDoOutput(true);
+            con.setConnectTimeout(2000);
             con.setRequestMethod("POST");
             con.getOutputStream()
-                    .write(("key=98BE0FE67F88AB82B4C197FAF1DC3B69206EFDCC4D3B80FC83A00037510B99B4&resource=" + "14622")
-                            .getBytes("UTF-8"));
-            String spigotVersionString = new BufferedReader(new InputStreamReader(con.getInputStream())).readLine()
-                    .replaceAll("[a-zA-Z ]", "");
+                    .write(("key=98BE0FE67F88AB82B4C197FAF1DC3B69206EFDCC4D3B80FC83A00037510B99B4&resource=14622").getBytes("UTF-8"));
 
-            double spigotVersion = Double.valueOf(spigotVersionString);
+            String spigotVersionString = new BufferedReader(new InputStreamReader(con.getInputStream())).readLine().replaceAll("[a-zA-Z ]", "");
 
-            double actualVersion = Double.valueOf(plugin.getDescription().getVersion());
+            int spigotVersion = Integer.valueOf(spigotVersionString.replace(".", ""));
+            int actualVersion = Integer.valueOf(plugin.getDescription().getVersion().replace(".", ""));
 
             if (spigotVersion > actualVersion) {
-                player.sendMessage(ColorUtils.Color(Cache.CHAT_TITLE + "&dNew version available &b" + spigotVersion + "\n" + "&aDownload&f>&7> &fhttp://bit.ly/PlayerSettings"));
+                player.sendMessage(ColorUtils.Color(Cache.CHAT_TITLE +
+                        "&dNew version available &b" + spigotVersionString + "\n"
+                        + "&aDownload&f>&7> &fhttp://bit.ly/PlayerSettings"));
             }
         } catch (Exception ex) {
             player.sendMessage(ColorUtils.Color(Cache.CHAT_TITLE + "&cFailed to check for an update on spigot."));
@@ -53,19 +53,17 @@ public class Updater {
      */
     public static void sendUpdater() {
         try {
-            HttpURLConnection con = (HttpURLConnection) new URL("http://www.spigotmc.org/api/general.php")
-                    .openConnection();
+            HttpURLConnection con = (HttpURLConnection) new URL("http://www.spigotmc.org/api/general.php").openConnection();
             con.setDoOutput(true);
+            con.setConnectTimeout(2000);
             con.setRequestMethod("POST");
             con.getOutputStream()
-                    .write(("key=98BE0FE67F88AB82B4C197FAF1DC3B69206EFDCC4D3B80FC83A00037510B99B4&resource=" + "14622")
-                            .getBytes("UTF-8"));
-            String spigotVersionString = new BufferedReader(new InputStreamReader(con.getInputStream())).readLine()
-                    .replaceAll("[a-zA-Z ]", "");
+                    .write(("key=98BE0FE67F88AB82B4C197FAF1DC3B69206EFDCC4D3B80FC83A00037510B99B4&resource=14622").getBytes("UTF-8"));
 
-            double spigotVersion = Double.valueOf(spigotVersionString);
+            String spigotVersionString = new BufferedReader(new InputStreamReader(con.getInputStream())).readLine().replaceAll("[a-zA-Z ]", "");
 
-            double actualVersion = Double.valueOf(plugin.getDescription().getVersion());
+            int spigotVersion = Integer.valueOf(spigotVersionString.replace(".", ""));
+            int actualVersion = Integer.valueOf(plugin.getDescription().getVersion().replace(".", ""));
 
             if (spigotVersion > actualVersion) {
                 plugin.log("New version available " + spigotVersionString);
@@ -77,5 +75,4 @@ public class Updater {
             plugin.log("Failed to check for an update on spigot.");
         }
     }
-
 }

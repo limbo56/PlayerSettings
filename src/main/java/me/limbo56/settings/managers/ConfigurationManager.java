@@ -148,5 +148,4 @@ public class ConfigurationManager {
     public boolean contains(String path) {
         return fileConfiguration.contains(path);
     }
-
 }

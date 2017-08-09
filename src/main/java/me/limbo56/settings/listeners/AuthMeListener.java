@@ -37,5 +37,4 @@ public class AuthMeListener implements Listener {
 
         PlayerUtils.saveSettings(event.getPlayer());
     }
-
 }

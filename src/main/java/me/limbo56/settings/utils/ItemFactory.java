@@ -59,5 +59,4 @@ public class ItemFactory {
         itemStack.setItemMeta(meta);
         return itemStack;
     }
-
 }

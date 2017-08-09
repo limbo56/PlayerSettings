@@ -14,12 +14,9 @@ import java.util.UUID;
  */
 public class CustomPlayer {
 
-    public Boolean doubleJumpStatus;
-
+    public boolean doubleJumpStatus;
     private Player player;
-
     private UUID uuid;
-
     private boolean visibility;
     private boolean stacker;
     private boolean chat;
