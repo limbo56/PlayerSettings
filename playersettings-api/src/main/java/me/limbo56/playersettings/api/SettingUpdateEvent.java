@@ -1,48 +1,37 @@
 package me.limbo56.playersettings.api;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.experimental.Accessors;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
 /**
- * Event called when player enabled/disables a setting
+ * Event called when a a setting is toggled for a player
  *
  * @author lim_bo56
  * @since 3/6/2018
  */
+@AllArgsConstructor
+@Getter
 public class SettingUpdateEvent extends Event {
     private static final HandlerList HANDLERS = new HandlerList();
-
     private Player player;
     private Setting setting;
+    @Accessors(fluent = true)
+    private boolean getValue;
 
-    public SettingUpdateEvent(Player player, Setting setting) {
-        this.player = player;
-        this.setting = setting;
+    public static HandlerList getHandlerList() {
+        return HANDLERS;
     }
 
-    public Player getPlayer() {
-        return player;
-    }
-
-    public Setting getSetting() {
-        return setting;
-    }
-
-    public boolean getTo() {
-        return setting.getSettingWatcher().isEnabled();
-    }
-
-    public boolean getFrom() {
-        return !setting.getSettingWatcher().isEnabled();
+    public boolean getPreviousValue() {
+        return !getValue();
     }
 
     @Override
     public HandlerList getHandlers() {
-        return HANDLERS;
-    }
-
-    public HandlerList getHandlerList() {
         return HANDLERS;
     }
 }

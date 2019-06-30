@@ -1,13 +1,32 @@
 # Player Settings
-This is the official source code of the plugin PlayerSettings.
+A plugin which allows the creation of custom 
+settings for players.
 
-## Information
-1. Player Settings has support for versions 1.8 to 1.12.2.
-2. It contains an API which allows developers to create new settings easily.
-3. Works with the Spigot/Bukkit/PaperSpigot.
-4. Compatible with [icJukeBox](https://www.spigotmc.org/resources/icjukebox.6129/) and [AuthMe Reloaded](https://www.spigotmc.org/resources/authme-reloaded.6269/).
+Supports Spigot/Bukkit 1.8 - 1.14.2
+
+## Wiki
+The wiki contains a lot of information about the plugin
+and could help you to have a better understanding of how it works.
+Before asking for help or making an issue, please refer to the wiki
+and try to find a fix for your issue.
+
+Clearly if this does not work, you can open an issue
+using the issue templates we provide
+
+Read the wiki here: [Wiki](https://github.com/limbo56/PlayerSettings/wiki)
+
+## Issues
+Before opening any issues, make sure you use one of
+the templates we provide.
+
+* [Feature request template](https://github.com/limbo56/PlayerSettings/blob/master/.github/ISSUE_TEMPLATE/feature_request.md)
+* [Bug report template](https://github.com/limbo56/PlayerSettings/blob/master/.github/ISSUE_TEMPLATE/bug_report.md)
+
+
+## License
+This repository is under the MIT License.
+Before doing anything, make sure to [read it](https://github.com/limbo56/PlayerSettings/blob/master/LICENSE).
 
 ## Links
-* [Wiki](https://github.com/limbo56/PlayerSettings/wiki)
 * [Discord](https://discord.gg/6gkkJ6y​)
 * [Plugin Page](https://www.spigotmc.org/resources/player-settings.14622/)

@@ -1,3 +1,0 @@
-name: Playersettings Example
-version: ${project.version}
-main: me.limbo56.playersettings.example.PlayersettingsExample

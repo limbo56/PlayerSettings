@@ -2,6 +2,7 @@ name: PlayerSettings
 version: ${project.version}
 main: me.limbo56.playersettings.PlayerSettings
 author: limbo56
+prefix: "PlayerSettings"
 commands:
-     settings:
-         description: Main command of the plugin.
+  settings:
+    description: Main command of the plugin.

@@ -1,5 +1,5 @@
-import me.limbo56.playersettings.utils.database.DatabaseField;
-import me.limbo56.playersettings.utils.database.DatabaseTable;
+import me.limbo56.playersettings.utils.database.Field;
+import me.limbo56.playersettings.utils.database.Table;
 import me.limbo56.playersettings.utils.database.constraints.ForeignKeyConstraint;
 import me.limbo56.playersettings.utils.database.constraints.NotNullConstraint;
 import org.junit.Test;
@@ -19,20 +19,20 @@ public class TableTest {
                 "`value` BOOLEAN NOT NULL," + " " +
                 "FOREIGN KEY (`uuid`) REFERENCES `players`(`uuid`)," +
                 " " +
-                "FOREIGN KEY (`settingName`) REFERENCES `settings`(`settingName`));";
+                "FOREIGN KEY (`settingName`) REFERENCES `defined`(`settingName`));";
 
         // Create table
-        DatabaseTable playerSettingsTable = new DatabaseTable("player_settings");
+        Table playerSettingsTable = new Table("player_settings");
 
         // Create constraints
         NotNullConstraint notNullConstraint = new NotNullConstraint();
         ForeignKeyConstraint uuidFieldConstraint = new ForeignKeyConstraint("uuid", "players", "uuid");
-        ForeignKeyConstraint settingNameFieldConstraint = new ForeignKeyConstraint("settingName", "settings", "settingName");
+        ForeignKeyConstraint settingNameFieldConstraint = new ForeignKeyConstraint("settingName", "defined", "settingName");
 
         // Create fields
-        DatabaseField uuidField = new DatabaseField("uuid", JDBCType.VARCHAR, "255", notNullConstraint);
-        DatabaseField settingNameField = new DatabaseField("settingName", JDBCType.VARCHAR, "255", notNullConstraint);
-        DatabaseField valueField = new DatabaseField("value", JDBCType.BOOLEAN, notNullConstraint);
+        Field uuidField = new Field("uuid", JDBCType.VARCHAR, "255", notNullConstraint);
+        Field settingNameField = new Field("settingName", JDBCType.VARCHAR, "255", notNullConstraint);
+        Field valueField = new Field("value", JDBCType.BOOLEAN, notNullConstraint);
 
         // Add table constraints
         playerSettingsTable.addConstraint(uuidFieldConstraint);
@@ -43,8 +43,6 @@ public class TableTest {
         playerSettingsTable.addField(settingNameField);
         playerSettingsTable.addField(valueField);
 
-        String actualQuery = playerSettingsTable.toString();
-
-        assertEquals(expectedQuery, actualQuery);
+        assertEquals(expectedQuery, playerSettingsTable.toString());
     }
 }

@@ -1,18 +1,14 @@
 package me.limbo56.playersettings.database.tasks;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import me.limbo56.playersettings.PlayerSettings;
+
 import java.sql.Connection;
-import java.sql.SQLException;
 
-public abstract class DatabaseTask {
+@AllArgsConstructor
+@Getter
+public abstract class DatabaseTask implements Runnable {
+    private PlayerSettings plugin;
     private Connection connection;
-
-    public DatabaseTask(Connection connection) {
-        this.connection = connection;
-    }
-
-    public abstract void run() throws SQLException;
-
-    public Connection getConnection() {
-        return connection;
-    }
 }

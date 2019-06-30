@@ -1,43 +1,33 @@
 package me.limbo56.playersettings.listeners;
 
+import lombok.AllArgsConstructor;
 import me.limbo56.playersettings.PlayerSettings;
 import me.limbo56.playersettings.utils.storage.CollectionStore;
 import org.bukkit.Bukkit;
+import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 
-import java.util.ArrayList;
-import java.util.Collection;
-
-public class ListenerStore implements CollectionStore<Listener> {
+@AllArgsConstructor
+public class ListenerStore extends CollectionStore<Listener> {
     private PlayerSettings plugin;
-    private Collection<Listener> listenerCollection;
-
-    public ListenerStore(PlayerSettings plugin) {
-        this.plugin = plugin;
-    }
 
     @Override
     public void register() {
-        listenerCollection = new ArrayList<>();
+        super.register();
         addToStore(new PlayerListener(plugin));
         addToStore(new InventoryListener(plugin));
+        addToStore(new ChatSettingListener(plugin));
+        addToStore(new StackerSettingListener(plugin));
 
         // Register listeners
-        listenerCollection.forEach(listener -> Bukkit.getPluginManager().registerEvents(listener, plugin));
+        getStored().forEach(listener ->
+                Bukkit.getPluginManager().registerEvents(listener, plugin)
+        );
     }
 
     @Override
     public void unregister() {
-        listenerCollection.clear();
-    }
-
-    @Override
-    public void addToStore(Listener listener) {
-        listenerCollection.add(listener);
-    }
-
-    @Override
-    public Collection<Listener> getStored() {
-        return listenerCollection;
+        getStored().forEach(HandlerList::unregisterAll);
+        super.unregister();
     }
 }

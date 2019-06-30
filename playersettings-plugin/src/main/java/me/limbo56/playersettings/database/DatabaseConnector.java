@@ -1,42 +1,42 @@
 package me.limbo56.playersettings.database;
 
 import com.zaxxer.hikari.HikariDataSource;
+import lombok.RequiredArgsConstructor;
 import me.limbo56.playersettings.PlayerSettings;
 import me.limbo56.playersettings.configuration.YmlConfiguration;
-import me.limbo56.playersettings.utils.PluginLogger;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 
+@RequiredArgsConstructor
 public class DatabaseConnector {
-    private PlayerSettings plugin;
+    private final PlayerSettings plugin;
     private HikariDataSource hikariDataSource;
 
-    public DatabaseConnector(PlayerSettings plugin) {
-        this.plugin = plugin;
-    }
-
     public void connect() {
-        if (plugin.getConfiguration().getBoolean("Mysql.enable")) {
-            PluginLogger.info("Connecting to database");
-            YmlConfiguration config = plugin.getConfiguration();
+        plugin.debug("Connecting to database");
 
-            // Initialize data source
-            hikariDataSource = new HikariDataSource();
-            hikariDataSource.setPoolName("PlayerSettings");
-            hikariDataSource.setMaximumPoolSize(10);
-            hikariDataSource.setDataSourceClassName("com.mysql.jdbc.jdbc2.optional.MysqlDataSource");
-            hikariDataSource.addDataSourceProperty("serverName", config.getString("Mysql.host"));
-            hikariDataSource.addDataSourceProperty("port", config.getInt("Mysql.port"));
-            hikariDataSource.addDataSourceProperty("databaseName", config.getString("Mysql.database"));
-            hikariDataSource.addDataSourceProperty("user", config.getString("Mysql.user"));
-            hikariDataSource.addDataSourceProperty("password", config.getString("Mysql.password"));
-        }
+        YmlConfiguration config = plugin.getConfiguration();
+        String host = config.getString("Database.host");
+        int port = config.getInt("Database.port");
+        String databaseName = config.getString("Database.name");
+        String user = config.getString("Database.user");
+        String password = config.getString("Database.password");
+
+        // Initialize data source
+        hikariDataSource = new HikariDataSource();
+        hikariDataSource.setMaximumPoolSize(10);
+        hikariDataSource.setDataSourceClassName("com.mysql.jdbc.jdbc2.optional.MysqlDataSource");
+        hikariDataSource.addDataSourceProperty("serverName", host);
+        hikariDataSource.addDataSourceProperty("port", port);
+        hikariDataSource.addDataSourceProperty("databaseName", databaseName);
+        hikariDataSource.addDataSourceProperty("user", user);
+        hikariDataSource.addDataSourceProperty("password", password);
     }
 
     public void disconnect() {
         if (hikariDataSource != null && hikariDataSource.isRunning()) {
-            PluginLogger.info("Disconnecting from database");
+            plugin.debug("Disconnecting from database");
             hikariDataSource.close();
         }
     }

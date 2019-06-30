@@ -1,30 +1,34 @@
 package me.limbo56.playersettings.utils.storage;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
  * Interface that represents an storage class using a map
  */
-public interface MapStore<K, V> extends Store<Map<K, V>> {
-    /**
-     * Adds a value to the storage map
-     *
-     * @param key   Key of the value
-     * @param value Value being stored
-     */
-    void addToStore(K key, V value);
+public class MapStore<K, V> implements Store<Map<K, V>> {
+    private Map<K, V> store;
 
-    /**
-     * Removes a value stored in the map
-     *
-     * @param key Key to be removed
-     */
-    void removeFromStore(K key);
+    public void addToStore(K key, V value) {
+        store.put(key, value);
+    }
 
-    /**
-     * Get what is being stored
-     *
-     * @return Stored
-     */
-    Map<K, V> getStored();
+    public void removeFromStore(K key) {
+        store.remove(key);
+    }
+
+    @Override
+    public void register() {
+        store = new HashMap<>();
+    }
+
+    @Override
+    public void unregister() {
+        store.clear();
+    }
+
+    @Override
+    public Map<K, V> getStored() {
+        return store;
+    }
 }

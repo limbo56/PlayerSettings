@@ -1,16 +1,16 @@
 package me.limbo56.playersettings.configuration;
 
 import com.google.common.base.Preconditions;
-import me.limbo56.playersettings.utils.item.ConfigurationItem;
-import me.limbo56.playersettings.utils.item.ItemBuilder;
-import org.bukkit.Material;
+import me.limbo56.playersettings.PlayerSettings;
+import me.limbo56.playersettings.api.Setting;
+import me.limbo56.playersettings.settings.ConfigurationSetting;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Collections;
 
 public class ItemsConfiguration extends YmlConfiguration {
-    ItemsConfiguration() {
-        super("items");
+    ItemsConfiguration(PlayerSettings plugin) {
+        super(plugin, "items");
     }
 
     @Override
@@ -19,39 +19,56 @@ public class ItemsConfiguration extends YmlConfiguration {
         addDefault("Enabled.name", "&a&lOn");
         addDefault("Enabled.lore", Collections.singletonList("&7Click to &cdisable"));
         addDefault("Enabled.material", "INK_SACK:10");
+        addDefault("Enabled.amount", 1);
 
         // Disable item
         addDefault("Disabled.name", "&c&lOff");
         addDefault("Disabled.lore", Collections.singletonList("&7Click to &aenable"));
         addDefault("Disabled.material", "INK_SACK:8");
+        addDefault("Disabled.amount", 1);
+
+        // Next page item
+        addDefault("NextPage.name", "&aNext Page &7(%current%/%max%)");
+        addDefault("NextPage.lore", Collections.emptyList());
+        addDefault("NextPage.material", "ARROW:0");
+        addDefault("NextPage.amount", 1);
+        addDefault("NextPage.slot", 53);
+
+        // Next page item
+        addDefault("PreviousPage.name", "&cPrevious Page &7(%current%/%max%)");
+        addDefault("PreviousPage.lore", Collections.emptyList());
+        addDefault("PreviousPage.material", "ARROW:0");
+        addDefault("PreviousPage.amount", 1);
+        addDefault("PreviousPage.slot", 45);
     }
 
-    public ItemStack createSetting(String rawName) {
-        ItemBuilder itemBuilder = new ItemBuilder(Material.DIRT, 1);
-        itemBuilder.name("&e" + rawName);
-        itemBuilder.lore(Collections.singletonList(""));
+    public ConfigurationSetting getSetting(Setting setting) {
+        String rawName = setting.getRawName();
+        ItemStack itemStack = setting.getItem();
+        String data = itemStack.getData() != null ? ":" + itemStack.getData().getData() : "";
 
-        return createSetting(rawName, itemBuilder.build());
-    }
-
-    public ItemStack createSetting(String rawName, ItemStack itemStack) {
         Preconditions.checkNotNull(rawName);
-        // Check if the item already exists
-        if (getString(rawName + ".name") != null) {
-            return new ConfigurationItem(rawName).getItem();
+
+        // Check if the item doesn't exist
+        if (!contains(rawName)) {
+            createSetting(setting, rawName, itemStack, data);
         }
 
-        String data = itemStack.getData() != null ? ":" + String.valueOf(itemStack.getData().getData()) : "";
+        return new ConfigurationSetting(rawName);
+    }
+
+    private void createSetting(Setting setting, String rawName, ItemStack itemStack, String data) {
+        Collections.replaceAll(itemStack.getItemMeta().getLore(), "§", "&");
 
         // Create the item in the configuration
-        addDefault(rawName + ".enabled", true);
-        addDefault(rawName + ".name", itemStack.getItemMeta().getDisplayName());
-        addDefault(rawName + ".material", itemStack.getType() + data);
-        addDefault(rawName + ".amount", itemStack.getAmount());
-        addDefault(rawName + ".lore", itemStack.getItemMeta().getLore());
-        addDefault(rawName + ".page", 1);
-        addDefault(rawName + ".slot", 0);
-
-        return new ConfigurationItem(rawName).getItem();
+        set(rawName + ".enabled", true);
+        set(rawName + ".name", itemStack.getItemMeta().getDisplayName().replaceAll("§", "&"));
+        set(rawName + ".material", itemStack.getType() + data);
+        set(rawName + ".default", setting.getDefaultValue());
+        set(rawName + ".amount", itemStack.getAmount());
+        set(rawName + ".lore", itemStack.getItemMeta().getLore());
+        set(rawName + ".page", setting.getPage());
+        set(rawName + ".slot", setting.getSlot());
+        save();
     }
 }

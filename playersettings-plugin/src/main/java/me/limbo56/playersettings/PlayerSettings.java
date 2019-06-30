@@ -1,39 +1,42 @@
 package me.limbo56.playersettings;
 
-import me.limbo56.playersettings.api.PlayerSettingsAPI;
+import lombok.Getter;
+import me.limbo56.playersettings.api.PlayerSettingsApi;
 import me.limbo56.playersettings.api.Setting;
-import me.limbo56.playersettings.api.SettingUpdateEvent;
+import me.limbo56.playersettings.api.SettingCallback;
 import me.limbo56.playersettings.command.CommandStore;
 import me.limbo56.playersettings.configuration.ConfigurationStore;
 import me.limbo56.playersettings.configuration.YmlConfiguration;
 import me.limbo56.playersettings.database.DatabaseConnector;
 import me.limbo56.playersettings.database.DatabaseManager;
 import me.limbo56.playersettings.database.tables.DatabaseTableStore;
-import me.limbo56.playersettings.database.tables.ITable;
 import me.limbo56.playersettings.listeners.ListenerStore;
-import me.limbo56.playersettings.listeners.MessageReceiveListener;
-import me.limbo56.playersettings.menu.SettingStore;
-import me.limbo56.playersettings.player.SPlayer;
-import me.limbo56.playersettings.player.SPlayerStore;
-import me.limbo56.playersettings.utils.PluginLogger;
-import me.limbo56.playersettings.utils.storage.CollectionStore;
+import me.limbo56.playersettings.menu.SettingsHolder;
+import me.limbo56.playersettings.settings.SPlayer;
+import me.limbo56.playersettings.settings.SettingsRegistry;
+import me.limbo56.playersettings.utils.PlayerUtils;
+import me.limbo56.playersettings.utils.PluginUpdater;
 import me.limbo56.playersettings.utils.storage.MapStore;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
+import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.UUID;
 
-public class PlayerSettings extends JavaPlugin implements PlayerSettingsAPI {
+@Getter
+public class PlayerSettings extends JavaPlugin implements PlayerSettingsApi {
     private ConfigurationStore configurationStore;
-    private SPlayerStore sPlayerStore;
+    private MapStore<UUID, SPlayer> sPlayerStore;
     private CommandStore commandStore;
-    private SettingStore settingStore;
+    private SettingsRegistry settingsRegistry;
     private DatabaseTableStore databaseTableStore;
     private ListenerStore listenerStore;
 
+    // Database
     private DatabaseConnector databaseConnector;
     private DatabaseManager databaseManager;
+
+    private boolean reloading = false;
 
     public static PlayerSettings getPlugin() {
         return getPlugin(PlayerSettings.class);
@@ -42,10 +45,10 @@ public class PlayerSettings extends JavaPlugin implements PlayerSettingsAPI {
     @Override
     public void onEnable() {
         // Initialize
-        configurationStore = new ConfigurationStore();
-        sPlayerStore = new SPlayerStore();
+        configurationStore = new ConfigurationStore(this);
+        sPlayerStore = new MapStore<>();
         commandStore = new CommandStore();
-        settingStore = new SettingStore(this);
+        settingsRegistry = new SettingsRegistry(this);
         databaseTableStore = new DatabaseTableStore(this);
         listenerStore = new ListenerStore(this);
         databaseConnector = new DatabaseConnector(this);
@@ -55,69 +58,80 @@ public class PlayerSettings extends JavaPlugin implements PlayerSettingsAPI {
         configurationStore.register();
         sPlayerStore.register();
         commandStore.register();
-        settingStore.register();
+        settingsRegistry.register();
         databaseTableStore.register();
         listenerStore.register();
 
-        // Register plugin channel
-        Bukkit.getMessenger().registerIncomingPluginChannel(this, "BungeeCord", new MessageReceiveListener(this));
-
         // Connect to database and create tables
-        if (getConfiguration().getBoolean("Mysql.enable")) {
+        if (getConfiguration().getBoolean("Database.enabled")) {
             databaseConnector.connect();
             databaseTableStore.createTables();
         }
+
+        // Send update message to console
+        PluginUpdater.sendUpdateMessage();
+
+        // Load online players after all plugins load
+        Bukkit.getScheduler().scheduleSyncDelayedTask(getPlugin(), () ->
+                Bukkit.getOnlinePlayers().forEach(PlayerUtils::loadPlayer)
+        );
     }
 
     @Override
     public void onDisable() {
+        // Unload players
+        synchronized (this) {
+            for (SPlayer sPlayer : sPlayerStore.getStored().values()) {
+                sPlayer.unloadPlayer();
+            }
+        }
+
         // Unregister stores
         sPlayerStore.unregister();
         commandStore.unregister();
-        settingStore.unregister();
-        databaseTableStore.unregister();
+        settingsRegistry.unregister();
         listenerStore.unregister();
+        databaseTableStore.unregister();
         configurationStore.unregister();
+    }
 
-        // Disconnect from database
-        databaseConnector.disconnect();
+    public void debug(String message) {
+        if (!getConfiguration().getBoolean("debug")) return;
+        getLogger().info("[DEBUG] " + message);
+    }
+
+    @Override
+    public Setting getSetting(String rawName) {
+        return settingsRegistry.getStored().get(rawName);
     }
 
     @Override
     public void registerSetting(Setting setting) {
-        getSettingStore().addToStore(setting.getRawName(), setting);
+        settingsRegistry.addToStore(setting.getRawName(), setting);
     }
 
     @Override
-    public void callSettingUpdate(Player player, Setting setting) {
-        Bukkit.getPluginManager().callEvent(new SettingUpdateEvent(player, setting));
+    public void registerCallback(Setting setting, SettingCallback settingCallback) {
+        settingsRegistry.addCallback(setting, settingCallback);
+    }
+
+    public void setReloading(boolean reloading) {
+        Bukkit.getOnlinePlayers().forEach(player -> {
+            InventoryHolder holder = player.getOpenInventory().getTopInventory().getHolder();
+            if (holder instanceof SettingsHolder) player.closeInventory();
+        });
+        this.reloading = reloading;
+    }
+
+    public SPlayer getSPlayer(UUID uuid) {
+        return getSPlayerStore().getStored().get(uuid);
     }
 
     public YmlConfiguration getConfiguration() {
         return getConfigurationStore().getStored().get("config");
     }
 
-    public MapStore<UUID, SPlayer> getsPlayerStore() {
-        return sPlayerStore;
-    }
-
-    public MapStore<String, YmlConfiguration> getConfigurationStore() {
-        return configurationStore;
-    }
-
-    public MapStore<String, Setting> getSettingStore() {
-        return settingStore;
-    }
-
-    public CollectionStore<ITable> getDatabaseTableStore() {
-        return databaseTableStore;
-    }
-
-    public DatabaseConnector getDatabaseConnector() {
-        return databaseConnector;
-    }
-
-    public DatabaseManager getDatabaseManager() {
-        return databaseManager;
+    public YmlConfiguration getConfiguration(String name) {
+        return getConfigurationStore().getStored().get(name);
     }
 }

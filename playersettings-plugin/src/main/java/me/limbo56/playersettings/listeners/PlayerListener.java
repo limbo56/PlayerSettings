@@ -1,50 +1,47 @@
 package me.limbo56.playersettings.listeners;
 
+import lombok.AllArgsConstructor;
 import me.limbo56.playersettings.PlayerSettings;
-import me.limbo56.playersettings.player.SPlayer;
+import me.limbo56.playersettings.api.SettingWatcher;
+import me.limbo56.playersettings.settings.SPlayer;
+import me.limbo56.playersettings.settings.SimpleSettingWatcher;
+import me.limbo56.playersettings.utils.PluginUpdater;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-import java.sql.SQLException;
 import java.util.UUID;
 
+@AllArgsConstructor
 public class PlayerListener implements Listener {
     private PlayerSettings plugin;
-
-    public PlayerListener(PlayerSettings plugin) {
-        this.plugin = plugin;
-    }
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         UUID uuid = event.getPlayer().getUniqueId();
-        SPlayer toBeLoaded = new SPlayer(uuid, plugin.getSettingStore());
+        SettingWatcher settingWatcher = new SimpleSettingWatcher(
+                event.getPlayer(),
+                plugin.getSettingsRegistry().getStored(),
+                plugin.getSettingsRegistry().getCallbacks().getStored()
+        );
+        SPlayer sPlayer = new SPlayer(uuid, settingWatcher);
 
-        // Add player to database & load settings
-        try {
-            plugin.getDatabaseManager().addPlayer(toBeLoaded);
-            plugin.getDatabaseManager().loadPlayer(
-                    toBeLoaded,
-                    (sPlayer) -> plugin.getsPlayerStore().addToStore(sPlayer.getUuid(), sPlayer));
-        } catch (SQLException exception) {
-            exception.printStackTrace();
-        }
+        if (event.getPlayer().isOp()) PluginUpdater.sendUpdateMessage(event.getPlayer());
+
+        // Load player
+        sPlayer.loadPlayer();
+        plugin.getSPlayerStore().addToStore(uuid, sPlayer);
+        plugin.debug("Loaded player " + event.getPlayer().getName());
     }
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
         UUID uuid = event.getPlayer().getUniqueId();
-        SPlayer toBeSaved = plugin.getsPlayerStore().getStored().get(uuid);
+        SPlayer sPlayer = plugin.getSPlayer(uuid);
 
-        // Add player to database & load settings
-        try {
-            plugin.getDatabaseManager().savePlayer(
-                    toBeSaved,
-                    (sPlayer) -> plugin.getsPlayerStore().removeFromStore(sPlayer.getUuid()));
-        } catch (SQLException exception) {
-            exception.printStackTrace();
-        }
+        sPlayer.unloadPlayer();
+        plugin.getSPlayerStore().removeFromStore(uuid);
+        plugin.debug("Saved player " + event.getPlayer().getName());
     }
 }

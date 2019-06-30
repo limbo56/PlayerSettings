@@ -1,40 +1,39 @@
 package me.limbo56.playersettings.api;
 
-/**
- * Tracks and notifies when a {@link Setting} is enabled/disabled
- *
- * @author lim_bo56
- * @since 3/6/2018
- */
-public class SettingWatcher {
-    private String permission;
-    private boolean enabled;
+import org.bukkit.entity.Player;
 
-    public SettingWatcher(String permission, boolean enabled) {
-        this.permission = permission;
-        this.enabled = enabled;
-    }
+import java.util.Map;
 
+public interface SettingWatcher {
     /**
-     * Changes the state of the setting to enabled/disabled
+     * Gets the value of the provided setting
      *
-     * @param enabled Whether or not the setting is enabled
+     * @param setting Setting where value is stored
+     * @return The value of the setting
      */
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
-    }
+    boolean getValue(Setting setting);
 
     /**
-     * @return Permission required to enable and disable setting
+     * Sets the value of the setting provided
+     *
+     * @param setting Setting which value will be changed
+     * @param value   Value to be set
+     * @param silent  If true, it changes the value without activating the side effect
      */
-    public String getPermission() {
-        return permission;
-    }
+    void setValue(Setting setting, boolean value, boolean silent);
 
     /**
-     * @return If the setting is enabled or disabled
+     * Gets the callback map
+     *
+     * @return Map with settings callback
      */
-    public boolean isEnabled() {
-        return enabled;
-    }
+    Map<Setting, SettingCallback> getCallbackMap();
+
+    /**
+     * Gets the player that this watcher
+     * was assigned to
+     *
+     * @return {@link Player} that owns the setting
+     */
+    Player getOwner();
 }

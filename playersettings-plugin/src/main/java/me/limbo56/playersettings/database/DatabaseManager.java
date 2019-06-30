@@ -1,45 +1,41 @@
 package me.limbo56.playersettings.database;
 
+import lombok.RequiredArgsConstructor;
 import me.limbo56.playersettings.PlayerSettings;
-import me.limbo56.playersettings.api.Setting;
-import me.limbo56.playersettings.database.tasks.*;
-import me.limbo56.playersettings.player.SPlayer;
-import me.limbo56.playersettings.utils.database.DatabaseTable;
+import me.limbo56.playersettings.database.tasks.CreateTableTask;
+import me.limbo56.playersettings.database.tasks.LoadPlayerTask;
+import me.limbo56.playersettings.database.tasks.SavePlayerTask;
+import me.limbo56.playersettings.settings.SPlayer;
+import me.limbo56.playersettings.utils.database.Table;
+import org.bukkit.Bukkit;
 
 import java.sql.SQLException;
-import java.util.function.Consumer;
 
+@RequiredArgsConstructor
 public class DatabaseManager {
-    private PlayerSettings plugin;
+    private final PlayerSettings plugin;
 
-    public DatabaseManager(PlayerSettings plugin) {
-        this.plugin = plugin;
+    public void createTable(Table table) {
+        try {
+            Bukkit.getScheduler().runTask(plugin, new CreateTableTask(plugin, plugin.getDatabaseConnector().getConnection(), table));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
-    public void createTable(DatabaseTable databaseTable) throws SQLException {
-        if (plugin.getConfiguration().getBoolean("Mysql.enable"))
-            new CreateTableTask(plugin.getDatabaseConnector().getConnection(), databaseTable).run();
+    public void loadPlayer(SPlayer sPlayer) {
+        try {
+            Bukkit.getScheduler().runTaskAsynchronously(plugin, new LoadPlayerTask(plugin, plugin.getDatabaseConnector().getConnection(), sPlayer));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
-    public void addSetting(Setting setting) throws SQLException {
-        if (plugin.getConfiguration().getBoolean("Mysql.enable"))
-            new AddSettingTask(plugin.getDatabaseConnector().getConnection(), setting).run();
-    }
-
-    public void addPlayer(SPlayer sPlayer) throws SQLException {
-        if (plugin.getConfiguration().getBoolean("Mysql.enable"))
-            new AddPlayerTask(plugin.getDatabaseConnector().getConnection(), sPlayer).run();
-    }
-
-    public void loadPlayer(SPlayer sPlayer, Consumer<SPlayer> sPlayerSupplier) throws SQLException {
-        if (plugin.getConfiguration().getBoolean("Mysql.enable"))
-            new LoadPlayerTask(plugin.getDatabaseConnector().getConnection(), sPlayer).run();
-        sPlayerSupplier.accept(sPlayer);
-    }
-
-    public void savePlayer(SPlayer sPlayer, Consumer<SPlayer> sPlayerSupplier) throws SQLException {
-        if (plugin.getConfiguration().getBoolean("Mysql.enable"))
-            new SavePlayerTask(plugin.getDatabaseConnector().getConnection(), sPlayer).run();
-        sPlayerSupplier.accept(sPlayer);
+    public void savePlayer(SPlayer sPlayer) {
+        try {
+            Bukkit.getScheduler().runTaskAsynchronously(plugin, new SavePlayerTask(plugin, plugin.getDatabaseConnector().getConnection(), sPlayer));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }

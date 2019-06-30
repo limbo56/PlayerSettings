@@ -3,7 +3,7 @@ package me.limbo56.playersettings.utils.storage;
 /**
  * Interface that represents an storage class
  */
-public interface Store<T> {
+public interface Store<T> extends Cloneable {
     /**
      * Registers the store
      */

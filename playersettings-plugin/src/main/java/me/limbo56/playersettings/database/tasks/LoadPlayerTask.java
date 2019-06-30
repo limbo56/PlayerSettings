@@ -1,7 +1,10 @@
 package me.limbo56.playersettings.database.tasks;
 
+import me.limbo56.playersettings.PlayerSettings;
 import me.limbo56.playersettings.api.Setting;
-import me.limbo56.playersettings.player.SPlayer;
+import me.limbo56.playersettings.settings.ConfigurationSetting;
+import me.limbo56.playersettings.settings.SPlayer;
+import org.bukkit.entity.Player;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -9,28 +12,33 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class LoadPlayerTask extends DatabaseTask {
+    private static final String LOAD_QUERY = "SELECT * FROM player_settings WHERE owner=?";
     private SPlayer sPlayer;
 
-    public LoadPlayerTask(Connection connection, SPlayer sPlayer) {
-        super(connection);
+    public LoadPlayerTask(PlayerSettings plugin, Connection connection, SPlayer sPlayer) {
+        super(plugin, connection);
         this.sPlayer = sPlayer;
     }
 
     @Override
-    public void run() throws SQLException {
-        String loadPlayerQuery = "SELECT * FROM player_settings WHERE uuid=?";
+    public void run() {
+        Player player = sPlayer.getPlayer();
 
-        PreparedStatement loadPlayerStatement = getConnection().prepareStatement(loadPlayerQuery);
-        loadPlayerStatement.setString(1, sPlayer.getUuid().toString());
+        try {
+            PreparedStatement loadStatement = getConnection().prepareStatement(LOAD_QUERY);
+            loadStatement.setString(1, player.getUniqueId().toString());
 
-        ResultSet resultSet = loadPlayerStatement.executeQuery();
+            ResultSet resultSet = loadStatement.executeQuery();
+            while (resultSet.next()) {
+                String settingName = resultSet.getString("settingName");
+                boolean enabled = resultSet.getBoolean("value");
 
-        while (resultSet.next()) {
-            String settingName = resultSet.getString("settingName");
-            boolean enabled = resultSet.getBoolean("enabled");
-
-            Setting setting = sPlayer.getSetting(settingName);
-            setting.getSettingWatcher().setEnabled(enabled);
+                Setting setting = getPlugin().getSetting(settingName);
+                sPlayer.getSettingWatcher().setValue(setting, enabled, !new ConfigurationSetting(settingName).getExecuteOnJoin());
+            }
+        } catch (SQLException e) {
+            getPlugin().getLogger().severe("Failed to load settings for player " + player.getName());
+            e.printStackTrace();
         }
     }
 }

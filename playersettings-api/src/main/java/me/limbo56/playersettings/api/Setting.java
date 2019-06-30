@@ -2,61 +2,39 @@ package me.limbo56.playersettings.api;
 
 import org.bukkit.inventory.ItemStack;
 
-/**
- * Class that represents a Setting
- *
- * @author lim_bo56
- * @since 3/6/2018
- */
-
-// TODO: Implement page and slot
-public class Setting {
-    private String rawName;
-    private ItemStack item;
-    private SettingWatcher settingWatcher;
-
-    public Setting(String rawName, ItemStack item) {
-        this(rawName, item, "");
-    }
-
-    public Setting(String rawName, ItemStack item, String permission) {
-        this(rawName, item, permission, true);
-    }
-
-    public Setting(String rawName, ItemStack item, String permission, boolean enabled) {
-        this(rawName, item, new SettingWatcher(permission, enabled));
-    }
-
-    public Setting(String rawName, ItemStack item, SettingWatcher settingWatcher) {
-        this.rawName = rawName;
-        this.item = item;
-        this.settingWatcher = settingWatcher;
-    }
-
+public interface Setting {
     /**
-     * Returns the raw name of the setting
+     * Gets the raw name of the setting
      *
      * @return Raw name of the setting
      */
-    public String getRawName() {
-        return rawName;
-    }
+    String getRawName();
 
     /**
-     * Builds an ItemStack with the values in the configuration
+     * Gets the ItemStack defined by in the configuration
      *
-     * @return ItemStack of the setting
+     * @return ItemStack
      */
-    public ItemStack getItem() {
-        return item;
-    }
-    
+    ItemStack getItem();
+
     /**
-     * Returns the watcher of the setting
+     * Gets the page where the setting is rendered
      *
-     * @return Get SettingWatcher
+     * @return The page
      */
-    public SettingWatcher getSettingWatcher() {
-        return settingWatcher;
-    }
+    int getPage();
+
+    /**
+     * Gets the slot where the setting is rendered
+     *
+     * @return The slot
+     */
+    int getSlot();
+
+    /**
+     * Gets the default value for the setting
+     *
+     * @return Default value
+     */
+    boolean getDefaultValue();
 }

@@ -1,42 +1,23 @@
 package me.limbo56.playersettings.configuration;
 
+import lombok.AllArgsConstructor;
+import me.limbo56.playersettings.PlayerSettings;
 import me.limbo56.playersettings.utils.storage.MapStore;
 
-import java.util.HashMap;
-import java.util.Map;
-
-public class ConfigurationStore implements MapStore<String, YmlConfiguration> {
-    private Map<String, YmlConfiguration> configurationMap;
+@AllArgsConstructor
+public class ConfigurationStore extends MapStore<String, YmlConfiguration> {
+    private PlayerSettings plugin;
 
     @Override
     public void register() {
-        configurationMap = new HashMap<>();
-        addToStore(new ItemsConfiguration());
-        addToStore(new MenuConfiguration());
-        addToStore(new PluginConfiguration());
-    }
-
-    @Override
-    public void unregister() {
-        configurationMap.clear();
+        super.register();
+        addToStore(new PluginConfiguration(plugin));
+        addToStore(new MenuConfiguration(plugin));
+        addToStore(new ItemsConfiguration(plugin));
+        addToStore(new MessagesConfiguration(plugin));
     }
 
     private void addToStore(YmlConfiguration configuration) {
         addToStore(configuration.getName(), configuration);
-    }
-
-    @Override
-    public void addToStore(String name, YmlConfiguration configuration) {
-        configurationMap.put(name, configuration);
-    }
-
-    @Override
-    public void removeFromStore(String name) {
-        configurationMap.remove(name);
-    }
-
-    @Override
-    public Map<String, YmlConfiguration> getStored() {
-        return configurationMap;
     }
 }

@@ -1,16 +1,13 @@
 package me.limbo56.playersettings.database.tables;
 
 import me.limbo56.playersettings.PlayerSettings;
-import me.limbo56.playersettings.utils.PluginLogger;
+import me.limbo56.playersettings.utils.database.Table;
 import me.limbo56.playersettings.utils.storage.CollectionStore;
 
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.function.Supplier;
 
-public class DatabaseTableStore implements CollectionStore<ITable> {
+public class DatabaseTableStore extends CollectionStore<Supplier<Table>> {
     private PlayerSettings plugin;
-    private Collection<ITable> iTableCollection;
 
     public DatabaseTableStore(PlayerSettings plugin) {
         this.plugin = plugin;
@@ -18,35 +15,20 @@ public class DatabaseTableStore implements CollectionStore<ITable> {
 
     @Override
     public void register() {
-        iTableCollection = new ArrayList<>();
-        addToStore(new PlayersTable());
-        addToStore(new SettingsTable());
+        super.register();
         addToStore(new PlayerSettingsTable());
-    }
-
-    public void createTables() {
-        PluginLogger.info("Creating tables");
-        plugin.getDatabaseTableStore().getStored().forEach(iTable -> {
-            try {
-                plugin.getDatabaseManager().createTable(iTable.getTable());
-            } catch (SQLException exception) {
-                exception.printStackTrace();
-            }
-        });
     }
 
     @Override
     public void unregister() {
-        iTableCollection.clear();
+        super.unregister();
+        plugin.getDatabaseConnector().disconnect();
     }
 
-    @Override
-    public void addToStore(ITable iTable) {
-        iTableCollection.add(iTable);
-    }
-
-    @Override
-    public Collection<ITable> getStored() {
-        return iTableCollection;
+    public void createTables() {
+        plugin.debug("Creating tables");
+        plugin.getDatabaseTableStore().getStored().forEach(iTableCreator ->
+                plugin.getDatabaseManager().createTable(iTableCreator.get())
+        );
     }
 }
