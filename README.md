@@ -49,5 +49,5 @@ This repository is under the MIT License.
 Before doing anything, make sure to [read it](https://github.com/limbo56/PlayerSettings/blob/master/LICENSE).
 
 ## Links
-* [Discord](https://discord.gg/6gkkJ6y​)
+* [Discord](https://discordapp.com/invite/6gkkJ6y)
 * [Plugin Page](https://www.spigotmc.org/resources/player-settings.14622/)
