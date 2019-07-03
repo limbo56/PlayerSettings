@@ -10,6 +10,8 @@ import org.bukkit.Sound;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.Arrays;
+
 public class SetCommand extends CommandBase {
     public SetCommand() {
         super(3, "set", "<setting> <value>", "Sets the value of a specified setting", null);
@@ -38,7 +40,15 @@ public class SetCommand extends CommandBase {
         SettingWatcher settingWatcher = sPlayer.getSettingWatcher();
         settingWatcher.setValue(setting, value.equals("on"), false);
 
-        player.playSound(player.getLocation(), Sound.NOTE_PIANO, 1, value.equals("on") ? 1 : -99);
+        Sound pianoSound;
+
+        // Check if they have new sound system
+        if (Arrays.stream(Sound.values()).noneMatch(sound -> sound.toString().equals("NOTE_PIANO")))
+            pianoSound = Sound.valueOf("BLOCK_NOTE_HARP");
+        else
+            pianoSound = Sound.NOTE_PIANO;
+
+        player.playSound(player.getLocation(), pianoSound, 1, value.equals("on") ? 1 : -99);
         PlayerUtils.sendConfigMessage(player, "commands.setSetting", message ->
                 messageModifier(message, settingName, value)
         );
