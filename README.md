@@ -1,8 +1,6 @@
 # Player Settings
 A plugin which allows the creation of custom 
-settings for players.
-
-Supports Spigot/Bukkit 1.8 - 1.14.2
+in-game settings in Minecraft servers. Supports Spigot/Bukkit 1.8 - 1.14.2.
 
 ## Wiki
 The wiki contains a lot of information about the plugin
@@ -22,24 +20,24 @@ the templates we provide.
 * [Bug report template](https://github.com/limbo56/PlayerSettings/blob/master/.github/ISSUE_TEMPLATE/bug_report.md)
 
 ## Installing
-Java 8 is required to use this api. Older versions will not work  
+Java 8 or above is required to use this API. Older versions will not work.
 
-First you will need to add the JitPack repository to your `pom.xml` file  
+First you will need to add the JitPack repository to your `pom.xml` file.
 ```xml
 <repositories>
     <repository>
-    <id>jitpack.io</id>
-    <url>https://jitpack.io</url>
+        <id>jitpack.io</id>
+        <url>https://jitpack.io</url>
     </repository>
 </repositories>
 ```
-Next you need to add the `playersettings-api` as a dependency
+Next you need to add the `playersettings-api` as a dependency.
 ```xml
 <dependencies>
     <dependency>
-    <groupId>com.github.limbo56.PlayerSettings</groupId>
-    <artifactId>playersettings-api</artifactId>
-    <version>master-0312b1f6ff-1</version>
+        <groupId>com.github.limbo56.PlayerSettings</groupId>
+        <artifactId>playersettings-api</artifactId>
+        <version>master-0312b1f6ff-1</version>
     </dependency>
 </dependencies>
 ```
