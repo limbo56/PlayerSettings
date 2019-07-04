@@ -22,10 +22,10 @@ public class SPlayer {
         }
     }
 
-    public void unloadPlayer() {
+    public void unloadPlayer(boolean async) {
         // Try to save player
         if (isSqlEnabled()) {
-            getPlugin().getDatabaseManager().savePlayer(this);
+            getPlugin().getDatabaseManager().savePlayer(this, async);
         }
     }
 

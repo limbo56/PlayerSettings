@@ -31,9 +31,17 @@ public class DatabaseManager {
         }
     }
 
-    public void savePlayer(SPlayer sPlayer) {
+    public void savePlayer(SPlayer sPlayer, boolean async) {
         try {
-            Bukkit.getScheduler().runTaskAsynchronously(plugin, new SavePlayerTask(plugin, plugin.getDatabaseConnector().getConnection(), sPlayer));
+            Runnable task = new SavePlayerTask(plugin, plugin.getDatabaseConnector().getConnection(), sPlayer);
+            if (async) {
+                Bukkit.getScheduler().runTaskAsynchronously(plugin, task);
+                return;
+            }
+
+            synchronized(this) {
+                task.run();
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }

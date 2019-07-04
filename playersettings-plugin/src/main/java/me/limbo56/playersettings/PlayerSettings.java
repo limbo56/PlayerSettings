@@ -80,10 +80,8 @@ public class PlayerSettings extends JavaPlugin implements PlayerSettingsApi {
     @Override
     public void onDisable() {
         // Unload players
-        synchronized (this) {
-            for (SPlayer sPlayer : sPlayerStore.getStored().values()) {
-                sPlayer.unloadPlayer();
-            }
+        for (SPlayer sPlayer : sPlayerStore.getStored().values()) {
+            sPlayer.unloadPlayer(false);
         }
 
         // Unregister stores

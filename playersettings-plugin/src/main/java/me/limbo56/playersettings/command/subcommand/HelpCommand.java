@@ -18,7 +18,7 @@ public class HelpCommand extends CommandBase {
 
         CommandStore commandStore = PlayerSettings.getPlugin().getCommandStore();
         for (CommandBase commandBase : commandStore.getStored()) {
-            String helpFormat = ColorUtils.translateString("&e- /%s%s &7: &6%s \n");
+            String helpFormat = ColorUtils.translateString("&e- /settings %s%s &7: &6%s \n");
             String name = commandBase.getName();
             String usage = commandBase.getUsage().equals("") ? "" : " " + commandBase.getUsage();
             String description = commandBase.getDescription();

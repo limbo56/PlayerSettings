@@ -16,9 +16,9 @@ public class ReloadCommand extends CommandBase {
     public void executeCommand(CommandSender sender, String[] args) {
         Player player = (Player) sender;
         String message = "&e&lWarning\n" +
-                " &cIt is not recommended to run this command on a live server. " +
-                "The command could potentially break the settings plugin " +
-                "or lag your whole server. " +
+                "&cIt is not recommended to run this command on a live server.\n" +
+                "The command could potentially break the settings plugin" +
+                "or lag your whole server.\n" +
                 "Please refrain from using it on a live server and only " +
                 "while configuring the plugin.";
         PlayerUtils.sendMessage(player, message);
@@ -28,11 +28,9 @@ public class ReloadCommand extends CommandBase {
         plugin.setReloading(true);
 
         // Save players
-        synchronized (this) {
-            Bukkit.getOnlinePlayers().forEach((players) ->
-                    plugin.getSPlayer(players.getUniqueId()).unloadPlayer()
-            );
-        }
+        Bukkit.getOnlinePlayers().forEach((players) ->
+                plugin.getSPlayer(players.getUniqueId()).unloadPlayer(false)
+        );
 
         // Unregister & register stores
         plugin.getListenerStore().unregister();
@@ -48,6 +46,7 @@ public class ReloadCommand extends CommandBase {
         Bukkit.getOnlinePlayers().forEach(PlayerUtils::loadPlayer);
 
         plugin.setReloading(false);
+        plugin.getLogger().info("The settings configuration has been reloaded");
         PlayerUtils.sendMessage(player, "&aThe settings configuration has been reloaded");
     }
 }

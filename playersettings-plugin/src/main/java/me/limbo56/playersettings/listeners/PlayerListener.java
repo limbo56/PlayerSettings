@@ -40,7 +40,7 @@ public class PlayerListener implements Listener {
         UUID uuid = event.getPlayer().getUniqueId();
         SPlayer sPlayer = plugin.getSPlayer(uuid);
 
-        sPlayer.unloadPlayer();
+        sPlayer.unloadPlayer(true);
         plugin.getSPlayerStore().removeFromStore(uuid);
         plugin.debug("Saved player " + event.getPlayer().getName());
     }
