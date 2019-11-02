@@ -40,15 +40,22 @@ public class SetCommand extends CommandBase {
         SettingWatcher settingWatcher = sPlayer.getSettingWatcher();
         settingWatcher.setValue(setting, value.equals("on"), false);
 
-        Sound pianoSound;
+        try{
+            Sound pianoSound;
 
-        // Check if they have new sound system
-        if (Arrays.stream(Sound.values()).noneMatch(sound -> sound.toString().equals("NOTE_PIANO")))
-            pianoSound = Sound.valueOf("BLOCK_NOTE_HARP");
-        else
-            pianoSound = Sound.NOTE_PIANO;
+            // Check if they have new sound system
+            if (Arrays.stream(Sound.values()).anyMatch(sound -> sound.toString().equals("BLOCK_NOTE_HARP")))
+                pianoSound = Sound.valueOf("BLOCK_NOTE_HARP");
+            else if (Arrays.stream(Sound.values()).anyMatch(sound -> sound.toString().equals("BLOCK_NOTE_BLOCK_HARP")))
+                pianoSound = Sound.valueOf("BLOCK_NOTE_BLOCK_HARP");
+            else
+                pianoSound = Sound.NOTE_PIANO;
 
-        player.playSound(player.getLocation(), pianoSound, 1, value.equals("on") ? 1 : -99);
+            player.playSound(player.getLocation(), pianoSound, 1, value.equals("on") ? 1 : -99);
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
+
         PlayerUtils.sendConfigMessage(player, "commands.setSetting", message ->
                 messageModifier(message, settingName, value)
         );
