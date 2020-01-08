@@ -32,6 +32,7 @@ public class DatabaseConnector {
         hikariDataSource.addDataSourceProperty("databaseName", databaseName);
         hikariDataSource.addDataSourceProperty("user", user);
         hikariDataSource.addDataSourceProperty("password", password);
+        hikariDataSource.addDataSourceProperty("autoReconnect", true);
     }
 
     public void disconnect() {
