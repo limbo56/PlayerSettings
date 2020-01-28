@@ -69,7 +69,7 @@ public class PlayerSettings extends JavaPlugin implements PlayerSettingsApi {
         }
 
         // Send update message to console
-        PluginUpdater.sendUpdateMessage();
+        PluginUpdater.logUpdateMessage();
 
         // Load online players after all plugins load
         Bukkit.getScheduler().scheduleSyncDelayedTask(getPlugin(), () ->
