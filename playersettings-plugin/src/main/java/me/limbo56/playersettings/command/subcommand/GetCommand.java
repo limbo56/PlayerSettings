@@ -5,6 +5,7 @@ import me.limbo56.playersettings.api.Setting;
 import me.limbo56.playersettings.command.CommandBase;
 import me.limbo56.playersettings.settings.SPlayer;
 import me.limbo56.playersettings.utils.PlayerUtils;
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -16,10 +17,10 @@ public class GetCommand extends CommandBase {
     @Override
     protected void executeCommand(CommandSender sender, String[] args) {
         Player player = (Player) sender;
-        String settingName = args[1];
+        String rawName = args[1];
 
         PlayerSettings plugin = PlayerSettings.getPlugin();
-        Setting setting = plugin.getSetting(settingName);
+        Setting setting = plugin.getSetting(rawName);
 
         if (setting == null) {
             PlayerUtils.sendConfigMessage(player, "commands.settingNotFound");
@@ -28,6 +29,7 @@ public class GetCommand extends CommandBase {
 
         SPlayer sPlayer = plugin.getSPlayer(player.getUniqueId());
         boolean settingValue = sPlayer.getSettingWatcher().getValue(setting);
+        String settingName = setting.getItem().getItemMeta().getDisplayName();
 
         PlayerUtils.sendConfigMessage(player, "commands.getSetting", message ->
                 fillPlaceholders(message, settingName, settingValue)
@@ -38,7 +40,7 @@ public class GetCommand extends CommandBase {
         String value = String.valueOf(settingValue)
                 .replaceAll("true", "on")
                 .replaceAll("false", "off");
-        return message.replaceAll("%name%", settingName)
+        return message.replaceAll("%name%", ChatColor.stripColor(settingName))
                 .replaceAll("%value%", value);
     }
 }
