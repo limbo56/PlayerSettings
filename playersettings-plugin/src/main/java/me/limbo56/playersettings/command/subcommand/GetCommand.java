@@ -30,14 +30,15 @@ public class GetCommand extends CommandBase {
         boolean settingValue = sPlayer.getSettingWatcher().getValue(setting);
 
         PlayerUtils.sendConfigMessage(player, "commands.getSetting", message ->
-                messageModifier(message, settingName, settingValue)
+                fillPlaceholders(message, settingName, settingValue)
         );
     }
 
-    private String messageModifier(String message, String settingName, boolean settingValue) {
+    private String fillPlaceholders(String message, String settingName, boolean settingValue) {
         String value = String.valueOf(settingValue)
                 .replaceAll("true", "on")
                 .replaceAll("false", "off");
-        return message.replaceAll("%name%", settingName).replaceAll("%value%", value);
+        return message.replaceAll("%name%", settingName)
+                .replaceAll("%value%", value);
     }
 }

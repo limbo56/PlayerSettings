@@ -40,7 +40,7 @@ public class SetCommand extends CommandBase {
         SettingWatcher settingWatcher = sPlayer.getSettingWatcher();
         settingWatcher.setValue(setting, value.equals("on"), false);
 
-        try{
+        try {
             Sound pianoSound;
 
             // Check if they have new sound system
@@ -52,16 +52,20 @@ public class SetCommand extends CommandBase {
                 pianoSound = Sound.NOTE_PIANO;
 
             player.playSound(player.getLocation(), pianoSound, 1, value.equals("on") ? 1 : -99);
-        }catch (Exception ex){
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
 
+        if (!plugin.getConfiguration("messages")
+                .getBoolean("messages.sendMessageOnChange"))
+            return;
+
         PlayerUtils.sendConfigMessage(player, "commands.setSetting", message ->
-                messageModifier(message, settingName, value)
+                fillPlaceholders(message, settingName, value)
         );
     }
 
-    private String messageModifier(String message, String settingName, String settingValue) {
+    private String fillPlaceholders(String message, String settingName, String settingValue) {
         return message.replaceAll("%name%", settingName)
                 .replaceAll("%value%", settingValue);
     }

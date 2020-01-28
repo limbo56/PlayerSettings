@@ -9,6 +9,7 @@ public class MessagesConfiguration extends YmlConfiguration {
 
     @Override
     protected void addDefaults() {
+        addDefault("messages.sendMessageOnChange", true);
         addDefault("settings.noPermission", "&cYou don't have permissions to toggle this setting");
         addDefault("settings.selfStackerDisabled", "&cYou have stacker disabled");
         addDefault("settings.targetStackerDisabled", "&cThat player has stacker disabled");
