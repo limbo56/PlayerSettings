@@ -15,7 +15,7 @@ public class MessagesConfiguration extends YmlConfiguration {
         addDefault("settings.targetStackerDisabled", "&cThat player has stacker disabled");
         addDefault("settings.cantStackEntity", "&cYou can't stack that entity");
         addDefault("settings.chatDisabled", "&cYou have chat disabled");
-        addDefault("commands.settingNotFound", "&cThe setting specified is wasn't found");
+        addDefault("commands.settingNotFound", "&cThe setting specified wasn't found");
         addDefault("commands.acceptedValues", "&cThe only accepted values are: on, off");
         addDefault("commands.setSetting", "&aThe value of &f%name% &ahas been set to &e%value%");
         addDefault("commands.getSetting", "%name% &7- &e%value%");
