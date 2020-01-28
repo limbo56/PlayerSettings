@@ -5,11 +5,11 @@
     <parent>
         <artifactId>playersettings-parent</artifactId>
         <groupId>me.limbo56.playersettings</groupId>
-        <version>5.0.0</version>
+        <version>${revision}</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <name>PlayerSettings Api</name>
     <artifactId>playersettings-api</artifactId>
-    <version>5.0.0</version>
+    <version>${revision}</version>
 </project>

@@ -5,20 +5,20 @@
     <parent>
         <artifactId>playersettings-parent</artifactId>
         <groupId>me.limbo56.playersettings</groupId>
-        <version>5.0.0</version>
+        <version>${revision}</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>playersettings-plugin</artifactId>
     <name>PlayerSettings Plugin</name>
-    <version>5.0.1</version>
+    <version>${revision}</version>
 
     <dependencies>
         <!-- PlayerSettingsApi Api -->
         <dependency>
             <groupId>me.limbo56.playersettings</groupId>
             <artifactId>playersettings-api</artifactId>
-            <version>5.0.0</version>
+            <version>${revision}</version>
         </dependency>
         <!-- Database -->
         <dependency>
