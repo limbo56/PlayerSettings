@@ -37,7 +37,7 @@ Next you need to add the `playersettings-api` as a dependency.
     <dependency>
         <groupId>com.github.limbo56.PlayerSettings</groupId>
         <artifactId>playersettings-api</artifactId>
-        <version>master-0312b1f6ff-1</version>
+        <version>master-SNAPSHOT</version>
     </dependency>
 </dependencies>
 ```
