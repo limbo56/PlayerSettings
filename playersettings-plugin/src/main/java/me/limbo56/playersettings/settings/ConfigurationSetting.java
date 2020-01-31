@@ -1,5 +1,6 @@
 package me.limbo56.playersettings.settings;
 
+import com.cryptomorin.xseries.XMaterial;
 import me.limbo56.playersettings.PlayerSettings;
 import me.limbo56.playersettings.api.Setting;
 import me.limbo56.playersettings.configuration.YmlConfiguration;
@@ -9,6 +10,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 public class ConfigurationSetting implements Setting {
     private String rawName;
@@ -30,21 +32,37 @@ public class ConfigurationSetting implements Setting {
         int amount = section.getInt("amount");
         List<String> lore = section.getStringList("lore");
 
-        Item.ItemBuilder item;
+        String materialName;
+        byte data = -1;
+        boolean hasMaterial;
+        ItemStack parsedItem;
 
-        // Check if the material has data
         if (material.contains(":")) {
-            // Split the material and the data
-            String[] splitMaterial = material.split(":");
-
-            item = Item.builder()
-                    .material(Material.valueOf(splitMaterial[0]))
-                    .data(Byte.valueOf(splitMaterial[1]));
+            hasMaterial = Stream
+                    .of(Material.values())
+                    .anyMatch(e -> e.name().equals(material.split(":")[0]));
+            materialName = material.split(":")[0];
+            data = Byte.parseByte(material.split(":")[1]);
         } else {
-            item = Item.builder().material(Material.valueOf(material));
+            hasMaterial = Stream.of(Material.values()).anyMatch(e -> e.name().equals(material));
+            materialName = material;
         }
 
-        return item.name(displayName).amount(amount).lore(lore).build();
+        if (hasMaterial || (XMaterial.isNewVersion() && materialName.startsWith("LEGACY"))) {
+            parsedItem = new ItemStack(Material.valueOf(materialName), amount, data);
+        } else {
+            parsedItem = XMaterial
+                    .matchXMaterial(material)
+                    .orElse(XMaterial.BEDROCK)
+                    .parseItem(true);
+        }
+
+        return Item.builder()
+                .item(parsedItem)
+                .name(displayName)
+                .amount(amount)
+                .lore(lore)
+                .build();
     }
 
     public boolean isEnabled() {

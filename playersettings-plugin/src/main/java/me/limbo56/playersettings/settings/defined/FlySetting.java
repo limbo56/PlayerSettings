@@ -1,5 +1,6 @@
 package me.limbo56.playersettings.settings.defined;
 
+import com.cryptomorin.xseries.XMaterial;
 import me.limbo56.playersettings.api.Setting;
 import me.limbo56.playersettings.api.SettingCallback;
 import me.limbo56.playersettings.utils.Item;
@@ -16,7 +17,7 @@ public class FlySetting implements Setting {
     @Override
     public ItemStack getItem() {
         return Item.builder()
-                .material(Material.FEATHER)
+                .material(XMaterial.FEATHER.parseMaterial())
                 .name("&aFly")
                 .lore("&7Change the way you move")
                 .lore("&7around the map")

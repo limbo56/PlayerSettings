@@ -33,6 +33,20 @@
             <version>1.7.26</version>
             <scope>compile</scope>
         </dependency>
+        <!-- Backward compatibility -->
+        <dependency>
+            <groupId>com.github.cryptomorin</groupId>
+            <artifactId>XSeries</artifactId>
+            <version>5.1.0</version>
+            <scope>compile</scope>
+        </dependency>
+        <!-- Tests -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.13-rc-2</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>

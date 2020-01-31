@@ -1,5 +1,6 @@
 package me.limbo56.playersettings.settings.defined;
 
+import com.cryptomorin.xseries.XMaterial;
 import me.limbo56.playersettings.api.Setting;
 import me.limbo56.playersettings.api.SettingCallback;
 import me.limbo56.playersettings.utils.Item;
@@ -18,7 +19,7 @@ public class SpeedSetting implements Setting {
     @Override
     public ItemStack getItem() {
         return Item.builder()
-                .material(Material.SUGAR)
+                .material(XMaterial.SUGAR.parseMaterial())
                 .name("&aSpeed Boost")
                 .lore("&7Ever wonder what happens")
                 .lore("&7when you eat too much sugar?")

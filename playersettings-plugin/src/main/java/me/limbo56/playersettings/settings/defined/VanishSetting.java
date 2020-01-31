@@ -1,5 +1,6 @@
 package me.limbo56.playersettings.settings.defined;
 
+import com.cryptomorin.xseries.XMaterial;
 import me.limbo56.playersettings.api.Setting;
 import me.limbo56.playersettings.api.SettingCallback;
 import me.limbo56.playersettings.utils.Item;
@@ -19,7 +20,7 @@ public class VanishSetting implements Setting {
     @Override
     public ItemStack getItem() {
         return Item.builder()
-                .material(Material.ENDER_PEARL)
+                .material(XMaterial.ENDER_PEARL.parseMaterial())
                 .name("&aVanish")
                 .lore("&7Make yourself invisible to")
                 .lore("&7other players")

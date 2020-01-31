@@ -1,5 +1,6 @@
 package me.limbo56.playersettings.command.subcommand;
 
+import com.cryptomorin.xseries.XSound;
 import me.limbo56.playersettings.PlayerSettings;
 import me.limbo56.playersettings.api.Setting;
 import me.limbo56.playersettings.api.SettingWatcher;
@@ -10,8 +11,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.Sound;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-
-import java.util.Arrays;
 
 public class SetCommand extends CommandBase {
     public SetCommand() {
@@ -39,32 +38,18 @@ public class SetCommand extends CommandBase {
 
         SPlayer sPlayer = plugin.getSPlayer(player.getUniqueId());
         SettingWatcher settingWatcher = sPlayer.getSettingWatcher();
+        Sound pianoSound = XSound.BLOCK_NOTE_BLOCK_HARP.parseSound();
+
         settingWatcher.setValue(setting, value.equals("on"), false);
+        player.playSound(player.getLocation(), pianoSound, 1, value.equals("on") ? 1 : -99);
 
-        try {
-            Sound pianoSound;
-
-            // Check if they have new sound system
-            if (Arrays.stream(Sound.values()).anyMatch(sound -> sound.toString().equals("BLOCK_NOTE_HARP")))
-                pianoSound = Sound.valueOf("BLOCK_NOTE_HARP");
-            else if (Arrays.stream(Sound.values()).anyMatch(sound -> sound.toString().equals("BLOCK_NOTE_BLOCK_HARP")))
-                pianoSound = Sound.valueOf("BLOCK_NOTE_BLOCK_HARP");
-            else
-                pianoSound = Sound.NOTE_PIANO;
-
-            player.playSound(player.getLocation(), pianoSound, 1, value.equals("on") ? 1 : -99);
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        // Send message change message if it's enabled
+        if (plugin.getConfiguration("messages").getBoolean("messages.sendMessageOnChange")) {
+            String settingName = setting.getItem().getItemMeta().getDisplayName();
+            PlayerUtils.sendConfigMessage(player, "commands.setSetting", message ->
+                    fillPlaceholders(message, settingName, value)
+            );
         }
-
-        if (!plugin.getConfiguration("messages")
-                .getBoolean("messages.sendMessageOnChange"))
-            return;
-
-        String settingName = setting.getItem().getItemMeta().getDisplayName();
-        PlayerUtils.sendConfigMessage(player, "commands.setSetting", message ->
-                fillPlaceholders(message, settingName, value)
-        );
     }
 
     private String fillPlaceholders(String message, String settingName, String settingValue) {

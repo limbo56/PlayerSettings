@@ -1,5 +1,6 @@
 package me.limbo56.playersettings.settings.defined;
 
+import com.cryptomorin.xseries.XMaterial;
 import me.limbo56.playersettings.api.Setting;
 import me.limbo56.playersettings.api.SettingCallback;
 import me.limbo56.playersettings.utils.Item;
@@ -17,7 +18,7 @@ public class VisibilitySetting implements Setting {
     @Override
     public ItemStack getItem() {
         return Item.builder()
-                .material(Material.EYE_OF_ENDER)
+                .material(XMaterial.ENDER_EYE.parseMaterial())
                 .name("&aVisibility")
                 .lore("&7Shows and hides other")
                 .lore("&7players from your sight")

@@ -1,5 +1,6 @@
 package me.limbo56.playersettings.listeners;
 
+import com.cryptomorin.xseries.XMaterial;
 import lombok.AllArgsConstructor;
 import me.limbo56.playersettings.PlayerSettings;
 import me.limbo56.playersettings.menu.CustomItem;
@@ -26,7 +27,7 @@ public class InventoryListener implements Listener {
 
         // Check if not empty
         ItemStack itemStack = event.getCurrentItem();
-        if (itemStack == null || itemStack.getType() == Material.AIR) return;
+        if (itemStack == null || itemStack.getType() == XMaterial.AIR.parseMaterial()) return;
 
         // Check if item is not null
         SettingsHolder holder = (SettingsHolder) event.getView().getTopInventory().getHolder();

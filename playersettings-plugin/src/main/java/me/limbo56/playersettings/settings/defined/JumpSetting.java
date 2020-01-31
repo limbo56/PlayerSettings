@@ -1,5 +1,6 @@
 package me.limbo56.playersettings.settings.defined;
 
+import com.cryptomorin.xseries.XMaterial;
 import me.limbo56.playersettings.api.Setting;
 import me.limbo56.playersettings.api.SettingCallback;
 import me.limbo56.playersettings.utils.Item;
@@ -18,7 +19,7 @@ public class JumpSetting implements Setting {
     @Override
     public ItemStack getItem() {
         return Item.builder()
-                .material(Material.SLIME_BLOCK)
+                .material(XMaterial.SLIME_BLOCK.parseMaterial())
                 .name("&aJump Boost")
                 .lore("&7Ever wanted to be a slime?")
                 .lore("&7Click this to feel like one")

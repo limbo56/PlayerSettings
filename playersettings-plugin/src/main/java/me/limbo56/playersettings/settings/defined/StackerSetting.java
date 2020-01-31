@@ -1,5 +1,6 @@
 package me.limbo56.playersettings.settings.defined;
 
+import com.cryptomorin.xseries.XMaterial;
 import me.limbo56.playersettings.api.Setting;
 import me.limbo56.playersettings.utils.Item;
 import org.bukkit.Material;
@@ -14,7 +15,7 @@ public class StackerSetting implements Setting {
     @Override
     public ItemStack getItem() {
         return Item.builder()
-                .material(Material.SADDLE)
+                .material(XMaterial.SADDLE.parseMaterial())
                 .name("&aStacker")
                 .lore("&7Grants the ability to stack")
                 .lore("&7players on top of your head")
