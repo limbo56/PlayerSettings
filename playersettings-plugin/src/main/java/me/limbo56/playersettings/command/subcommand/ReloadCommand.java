@@ -17,7 +17,7 @@ public class ReloadCommand extends CommandBase {
         Player player = (Player) sender;
         String message = "&e&lWarning\n" +
                 "&cIt is not recommended to run this command on a live server.\n" +
-                "The command could potentially break the settings plugin" +
+                "The command could potentially break the settings plugin " +
                 "or lag your whole server.\n" +
                 "Please refrain from using it on a live server and only " +
                 "while configuring the plugin.";
