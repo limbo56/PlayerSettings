@@ -29,14 +29,14 @@ public class ItemsConfiguration extends YmlConfiguration {
 
         // Next page item
         addDefault("NextPage.name", "&aNext Page &7(%current%/%max%)");
-        addDefault("NextPage.lore", Collections.emptyList());
+        addDefault("NextPage.lore", Collections.singletonList(""));
         addDefault("NextPage.material", "ARROW:0");
         addDefault("NextPage.amount", 1);
         addDefault("NextPage.slot", 53);
 
         // Next page item
         addDefault("PreviousPage.name", "&cPrevious Page &7(%current%/%max%)");
-        addDefault("PreviousPage.lore", Collections.emptyList());
+        addDefault("PreviousPage.lore", Collections.singletonList(""));
         addDefault("PreviousPage.material", "ARROW:0");
         addDefault("PreviousPage.amount", 1);
         addDefault("PreviousPage.slot", 45);
@@ -58,15 +58,13 @@ public class ItemsConfiguration extends YmlConfiguration {
     }
 
     private void createSetting(Setting setting, String rawName, ItemStack itemStack, String data) {
-        Collections.replaceAll(itemStack.getItemMeta().getLore(), "§", "&");
-
         // Create the item in the configuration
         set(rawName + ".enabled", true);
         set(rawName + ".name", itemStack.getItemMeta().getDisplayName().replaceAll("§", "&"));
         set(rawName + ".material", itemStack.getType() + data);
         set(rawName + ".default", setting.getDefaultValue());
         set(rawName + ".amount", itemStack.getAmount());
-        set(rawName + ".lore", itemStack.getItemMeta().getLore());
+        set(rawName + ".lore", Collections.replaceAll(itemStack.getItemMeta().getLore(), "§", "&"));
         set(rawName + ".page", setting.getPage());
         set(rawName + ".slot", setting.getSlot());
         save();
