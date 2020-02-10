@@ -18,31 +18,32 @@ public class Item {
     private String name;
     @Singular(value = "lore")
     private List<String> lore;
-    @Builder.Default()
-    private byte data = -1;
+    private byte data;
 
     public static class ItemBuilder {
-        public ItemStack build() {
-            if (item == null) {
-                if (amount < 1) amount = 1;
+        private byte data = -1;
 
-                if (data != -1 && data >= 0) {
-                    item = new ItemStack(material, amount, data);
+        public ItemStack build() {
+            if (this.item == null) {
+                if (this.amount < 1) this.amount = 1;
+
+                if (this.data != -1 && this.data >= 0) {
+                    this.item = new ItemStack(this.material, this.amount, this.data);
                 } else {
-                    item = new ItemStack(material, amount);
+                    this.item = new ItemStack(this.material, this.amount);
                 }
             }
 
-            ItemMeta itemMeta = item.getItemMeta();
+            ItemMeta itemMeta = this.item.getItemMeta();
 
-            if (name != null)
-                itemMeta.setDisplayName(ColorUtils.translateString(name));
+            if (this.name != null)
+                itemMeta.setDisplayName(ColorUtils.translateString(this.name));
 
-            if (lore != null)
-                itemMeta.setLore(ColorUtils.translateStringList(lore));
+            if (this.lore != null)
+                itemMeta.setLore(ColorUtils.translateStringList(this.lore));
 
-            item.setItemMeta(itemMeta);
-            return item;
+            this.item.setItemMeta(itemMeta);
+            return this.item;
         }
     }
 }

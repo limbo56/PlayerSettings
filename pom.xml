@@ -11,9 +11,9 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <revision>5.0.2</revision>
-        <lombok.dependency.version>1.18.8</lombok.dependency.version>
-        <lombok.plugin.version>1.18.6.0</lombok.plugin.version>
+        <revision>5.0.3</revision>
+        <lombok.dependency.version>1.18.12</lombok.dependency.version>
+        <lombok.plugin.version>1.18.10.0</lombok.plugin.version>
     </properties>
 
     <modules>
@@ -29,7 +29,7 @@
     </repositories>
 
     <dependencies>
-        <!-- Bukkit & Spigot -->
+        <!-- Spigot Api -->
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
@@ -46,6 +46,7 @@
     </dependencies>
 
     <build>
+        <sourceDirectory>${project.build.directory}/generated-sources/delombok</sourceDirectory>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -66,17 +67,40 @@
             <plugin>
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok-maven-plugin</artifactId>
-                <version>1.18.6.0</version>
+                <version>${lombok.plugin.version}</version>
                 <executions>
                     <execution>
+                        <id>delombok</id>
                         <phase>generate-sources</phase>
                         <goals>
                             <goal>delombok</goal>
                         </goals>
                         <configuration>
-                            <encoding>UTF-8</encoding>
                             <addOutputDirectory>false</addOutputDirectory>
-                            <sourceDirectory>/src/main/java</sourceDirectory>
+                            <sourceDirectory>src/main/java</sourceDirectory>
+                            <encoding>UTF-8</encoding>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-clean-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <id>delombok-removal</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>clean</goal>
+                        </goals>
+                        <configuration>
+                            <excludeDefaultDirectories>true</excludeDefaultDirectories>
+                            <filesets>
+                                <fileset>
+                                    <directory>${project.build.sourceDirectory}/me</directory>
+                                </fileset>
+                            </filesets>
                         </configuration>
                     </execution>
                 </executions>
