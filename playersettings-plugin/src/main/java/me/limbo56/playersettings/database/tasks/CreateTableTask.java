@@ -17,7 +17,8 @@ public class CreateTableTask extends DatabaseTask {
 
     @Override
     public void run() {
-        try (PreparedStatement preparedStatement = getConnection().prepareStatement(table.toString())) {
+        try (Connection connection = getConnection()) {
+            PreparedStatement preparedStatement = connection.prepareStatement(table.toString());
             preparedStatement.execute();
         } catch (SQLException e) {
             getPlugin().getLogger().severe("Could not create table");

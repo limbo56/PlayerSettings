@@ -24,7 +24,8 @@ public class LoadPlayerTask extends DatabaseTask {
     public void run() {
         Player player = sPlayer.getPlayer();
 
-        try (PreparedStatement loadStatement = getConnection().prepareStatement(LOAD_QUERY)) {
+        try (Connection connection = getConnection()) {
+            PreparedStatement loadStatement = connection.prepareStatement(LOAD_QUERY);
             loadStatement.setString(1, player.getUniqueId().toString());
 
             ResultSet resultSet = loadStatement.executeQuery();
