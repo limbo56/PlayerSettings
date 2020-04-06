@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import me.limbo56.playersettings.PlayerSettings;
 import me.limbo56.playersettings.api.Setting;
 import me.limbo56.playersettings.settings.SPlayer;
+import me.limbo56.playersettings.utils.PlayerUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -34,7 +35,8 @@ public class SettingsHolder implements InventoryHolder {
             // (UX shows "will set to X" but will actually set to Y)
             int newValue = oldValue < 0 ? -oldValue : oldValue + 1;
             Setting configSetting = PlayerSettings.getPlugin().getSettingsRegistry().getSetting(setting.getRawName());
-            if (newValue > configSetting.getMaxValue())
+            int maxValue = Math.min(configSetting.getMaxValue(), PlayerUtils.getPermissionInt(player, "settings." + setting.getRawName()));
+            if (newValue > maxValue)
                 newValue = 0;
             String value = String.valueOf(newValue);
             player.performCommand("settings set " + setting.getRawName() + " " + value);

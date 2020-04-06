@@ -5,6 +5,7 @@ import me.limbo56.playersettings.api.SettingWatcher;
 import me.limbo56.playersettings.settings.SPlayer;
 import me.limbo56.playersettings.settings.SimpleSettingWatcher;
 import org.bukkit.entity.Player;
+import org.bukkit.permissions.PermissionAttachmentInfo;
 
 import java.util.List;
 import java.util.function.Function;
@@ -52,5 +53,29 @@ public class PlayerUtils {
         return PlayerSettings.getPlugin().getSPlayerStore().getStored().values().stream()
                 .filter(filter)
                 .collect(Collectors.toList());
+    }
+
+    public static int getPermissionInt(Player player, String permission) {
+        permission = permission.toLowerCase() + ".";
+        if (player.hasPermission(permission + "*"))
+            return Integer.MAX_VALUE;
+        int computedLevel = 0;
+        for (PermissionAttachmentInfo pai : player.getEffectivePermissions()) {
+            String playerPerm = pai.getPermission().toLowerCase();
+            if (pai.getValue() && playerPerm.startsWith(permission)) {
+                try {
+                    String levelString = playerPerm.substring(permission.length());
+                    int level = Integer.parseInt(levelString); // throws NumberFormatException
+                    if (level < 0)
+                        throw new NumberFormatException("Level must be positive");
+                    if (level > computedLevel)
+                        computedLevel = level;
+                } catch (NumberFormatException ex) {
+                    PlayerSettings.getPlugin().getLogger().warning("Invalid permission level for " + player.getName() + ": " + playerPerm);
+                    PlayerSettings.getPlugin().getLogger().warning(ex.getLocalizedMessage());
+                }
+            }
+        }
+        return computedLevel;
     }
 }

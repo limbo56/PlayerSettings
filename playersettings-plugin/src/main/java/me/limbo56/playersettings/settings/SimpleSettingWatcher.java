@@ -12,6 +12,7 @@ import org.bukkit.entity.Player;
 
 import java.util.AbstractMap;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class SimpleSettingWatcher extends MapStore<Setting, Integer> implements SettingWatcher {
@@ -38,6 +39,20 @@ public class SimpleSettingWatcher extends MapStore<Setting, Integer> implements 
     public void setValue(Setting setting, int value, boolean silent) {
         if (!getOwner().hasPermission("settings." + setting.getRawName())) {
             PlayerUtils.sendConfigMessage(getOwner(), "settings.noPermission");
+            return;
+        }
+        int abs = Math.abs(value);
+        int maxAllowed = PlayerUtils.getPermissionInt(getOwner(), "settings." + setting.getRawName());
+        if (abs > 1 && abs > maxAllowed) {
+            Function<String, String> modifier = s -> s.replaceAll("%max%", String.valueOf(maxAllowed));
+            PlayerUtils.sendConfigMessage(getOwner(), "settings.tooLowPermission", modifier);
+            return;
+        }
+
+        int maxValue = PlayerSettings.getPlugin().getSettingsRegistry().getSetting(setting.getRawName()).getMaxValue();
+        if (abs > maxValue) {
+            Function<String, String> modifier = s -> s.replaceAll("%max%", String.valueOf(maxValue));
+            PlayerUtils.sendConfigMessage(getOwner(), "commands.acceptedValues", modifier);
             return;
         }
 

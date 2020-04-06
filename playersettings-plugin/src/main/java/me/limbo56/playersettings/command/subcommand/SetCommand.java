@@ -12,6 +12,8 @@ import org.bukkit.Sound;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.function.Function;
+
 import static me.limbo56.playersettings.utils.ParseUtils.parseInt;
 
 public class SetCommand extends CommandBase {
@@ -35,8 +37,9 @@ public class SetCommand extends CommandBase {
 
         Integer valueInt = parseInt(value);
 
-        if (valueInt == null || valueInt > setting.getMaxValue() || valueInt < -setting.getMaxValue()) {
-            PlayerUtils.sendConfigMessage(player, "commands.acceptedValues");
+        if (valueInt == null) {
+            Function<String, String> modifier = s -> s.replaceAll("%max%", String.valueOf(setting.getMaxValue()));
+            PlayerUtils.sendConfigMessage(player, "commands.acceptedValues", modifier);
             return;
         }
 
