@@ -17,7 +17,7 @@ public class PlayerSettingsTable implements Supplier<Table> {
         // Define fields
         Field owner = new Field("owner", JDBCType.VARCHAR, "255");
         Field setting = new Field("settingName", JDBCType.VARCHAR, "255", new NotNullConstraint());
-        Field value = new Field("value", JDBCType.BOOLEAN, new NotNullConstraint());
+        Field value = new Field("value", JDBCType.INTEGER, new NotNullConstraint());
 
         // Add fields to table
         Table playerSettingsTable = new Table("player_settings");

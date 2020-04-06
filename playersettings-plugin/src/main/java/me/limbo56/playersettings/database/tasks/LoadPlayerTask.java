@@ -31,10 +31,10 @@ public class LoadPlayerTask extends DatabaseTask {
             ResultSet resultSet = loadStatement.executeQuery();
             while (resultSet.next()) {
                 String settingName = resultSet.getString("settingName");
-                boolean enabled = resultSet.getBoolean("value");
+                int value = resultSet.getInt("value");
 
                 Setting setting = getPlugin().getSetting(settingName);
-                sPlayer.getSettingWatcher().setValue(setting, enabled, !new ConfigurationSetting(settingName).getExecuteOnJoin());
+                sPlayer.getSettingWatcher().setValue(setting, value, !new ConfigurationSetting(settingName).getExecuteOnJoin());
             }
         } catch (SQLException e) {
             getPlugin().getLogger().severe("Failed to load settings for player " + player.getName());

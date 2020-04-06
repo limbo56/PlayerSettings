@@ -36,5 +36,12 @@ public interface Setting {
      *
      * @return Default value
      */
-    boolean getDefaultValue();
+    int getDefaultValue();
+
+    /**
+     * Gets the maximum value for the setting
+     *
+     * @return Maximum value
+     */
+    int getMaxValue();
 }

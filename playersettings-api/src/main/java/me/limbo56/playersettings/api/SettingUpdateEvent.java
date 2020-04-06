@@ -20,14 +20,18 @@ public class SettingUpdateEvent extends Event {
     private Player player;
     private Setting setting;
     @Accessors(fluent = true)
-    private boolean getValue;
+    private int getValue;
 
     public static HandlerList getHandlerList() {
         return HANDLERS;
     }
 
-    public boolean getPreviousValue() {
-        return !getValue();
+    // fixme what if it is toggled instead??
+    public int getPreviousValue() {
+        int previous = getValue() - 1;
+        if (previous < 0)
+            return setting.getMaxValue();
+        return previous;
     }
 
     @Override

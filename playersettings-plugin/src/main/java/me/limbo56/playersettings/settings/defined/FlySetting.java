@@ -4,7 +4,7 @@ import com.cryptomorin.xseries.XMaterial;
 import me.limbo56.playersettings.api.Setting;
 import me.limbo56.playersettings.api.SettingCallback;
 import me.limbo56.playersettings.utils.Item;
-import org.bukkit.Material;
+import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -35,15 +35,24 @@ public class FlySetting implements Setting {
     }
 
     @Override
-    public boolean getDefaultValue() {
-        return false;
+    public int getDefaultValue() {
+        return 0;
+    }
+
+    @Override
+    public int getMaxValue() {
+        return 10;
     }
 
     public static class FlySettingCallback implements SettingCallback {
         @Override
-        public void notifyChange(Setting setting, Player player, boolean newValue) {
-            player.setAllowFlight(newValue);
-            player.setFlying(newValue);
+        public void notifyChange(Setting setting, Player player, int newValue) {
+            GameMode gm = player.getGameMode();
+            if (gm != GameMode.CREATIVE && gm != GameMode.SPECTATOR) {
+                player.setAllowFlight(newValue > 0);
+                player.setFlying(newValue > 0);
+            }
+            player.setFlySpeed(Math.max(1, newValue) * 0.1F);
         }
     }
 }

@@ -78,7 +78,8 @@ public class SettingsMenu {
         }
 
         // Add glow if enabled
-        if (sPlayer.getSettingWatcher().getValue(setting)) {
+        int value = sPlayer.getSettingWatcher().getValue(setting);
+        if (value > 0) {
             toggleItem = new ConfigurationSetting("Enabled").getItem();
             addGlow(settingItem);
         } else {
@@ -86,7 +87,7 @@ public class SettingsMenu {
             removeGlow(settingItem);
         }
 
-        menu.renderSetting(setting, toggleItem);
+        menu.renderSetting(setting, toggleItem, value);
     }
 
     private static int getHighestPage() {

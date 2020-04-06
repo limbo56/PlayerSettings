@@ -3,7 +3,6 @@ package me.limbo56.playersettings.settings.defined;
 import com.cryptomorin.xseries.XMaterial;
 import me.limbo56.playersettings.api.Setting;
 import me.limbo56.playersettings.utils.Item;
-import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 public class ChatSettings implements Setting {
@@ -32,7 +31,12 @@ public class ChatSettings implements Setting {
     }
 
     @Override
-    public boolean getDefaultValue() {
-        return true;
+    public int getDefaultValue() {
+        return 1;
+    }
+
+    @Override
+    public int getMaxValue() {
+        return 1;
     }
 }

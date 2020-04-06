@@ -10,5 +10,5 @@ public interface SettingCallback {
      * @param player   Player who it was changed for
      * @param newValue The new value of the setting
      */
-    void notifyChange(Setting setting, Player player, boolean newValue);
+    void notifyChange(Setting setting, Player player, int newValue);
 }

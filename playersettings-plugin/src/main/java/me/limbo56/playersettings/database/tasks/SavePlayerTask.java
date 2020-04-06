@@ -13,7 +13,7 @@ public class SavePlayerTask extends DatabaseTask {
     private static final String SAVE_QUERY = "INSERT INTO player_settings (owner, settingName, value)" +
             "VALUES (?, ?, ?)" +
             "ON DUPLICATE KEY " +
-            "UPDATE value=?";
+            "UPDATE value = VALUES(value)";
     private SPlayer player;
 
     public SavePlayerTask(PlayerSettings plugin, Connection connection, SPlayer player) {
@@ -31,8 +31,7 @@ public class SavePlayerTask extends DatabaseTask {
 
                 statement.setString(1, player.getUuid().toString());
                 statement.setString(2, rawName);
-                statement.setBoolean(3, player.getSettingWatcher().getValue(setting));
-                statement.setBoolean(4, player.getSettingWatcher().getValue(setting));
+                statement.setInt(3, player.getSettingWatcher().getValue(setting));
                 statement.executeUpdate();
             }
         } catch (SQLException e) {

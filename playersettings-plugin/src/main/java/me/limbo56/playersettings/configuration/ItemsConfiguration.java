@@ -63,6 +63,8 @@ public class ItemsConfiguration extends YmlConfiguration {
         set(rawName + ".name", itemStack.getItemMeta().getDisplayName().replaceAll("§", "&"));
         set(rawName + ".material", itemStack.getType() + data);
         set(rawName + ".default", setting.getDefaultValue());
+        if (setting.getMaxValue() > 1)
+            set(rawName + ".max", setting.getMaxValue());
         set(rawName + ".amount", itemStack.getAmount());
         set(rawName + ".lore", Collections.replaceAll(itemStack.getItemMeta().getLore(), "§", "&"));
         set(rawName + ".page", setting.getPage());

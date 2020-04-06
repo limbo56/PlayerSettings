@@ -1,5 +1,6 @@
 package me.limbo56.playersettings.settings;
 
+import me.limbo56.playersettings.PlayerSettings;
 import me.limbo56.playersettings.api.Setting;
 import me.limbo56.playersettings.api.SettingCallback;
 import me.limbo56.playersettings.api.SettingUpdateEvent;
@@ -13,7 +14,7 @@ import java.util.AbstractMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class SimpleSettingWatcher extends MapStore<Setting, Boolean> implements SettingWatcher {
+public class SimpleSettingWatcher extends MapStore<Setting, Integer> implements SettingWatcher {
     private Player owner;
     private MapStore<Setting, SettingCallback> callbackMap = new MapStore<>();
 
@@ -24,24 +25,28 @@ public class SimpleSettingWatcher extends MapStore<Setting, Boolean> implements 
 
         // Initialize fields
         this.owner = owner;
-        this.getStored().putAll(convertToBooleanMap(settingRegistry));
+        this.getStored().putAll(convertToIntegerMap(settingRegistry));
         this.callbackMap.getStored().putAll(callbackMap);
     }
 
     @Override
-    public boolean getValue(Setting setting) {
+    public int getValue(Setting setting) {
         return getStored().get(setting);
     }
 
     @Override
-    public void setValue(Setting setting, boolean value, boolean silent) {
+    public void setValue(Setting setting, int value, boolean silent) {
         if (!getOwner().hasPermission("settings." + setting.getRawName())) {
             PlayerUtils.sendConfigMessage(getOwner(), "settings.noPermission");
             return;
         }
 
         getStored().replace(setting, value);
-        Bukkit.getPluginManager().callEvent(new SettingUpdateEvent(getOwner(), setting, value));
+        Runnable runnable = () -> Bukkit.getPluginManager().callEvent(new SettingUpdateEvent(getOwner(), setting, value));
+        if (Bukkit.isPrimaryThread())
+            runnable.run();
+        else
+            Bukkit.getScheduler().runTask(PlayerSettings.getPlugin(), runnable);
         if (callbackMap.getStored().containsKey(setting) && !silent)
             callbackMap.getStored().get(setting).notifyChange(setting, getOwner(), value);
     }
@@ -56,7 +61,7 @@ public class SimpleSettingWatcher extends MapStore<Setting, Boolean> implements 
         return owner;
     }
 
-    private Map<Setting, Boolean> convertToBooleanMap(Map<String, Setting> settingMap) {
+    private Map<Setting, Integer> convertToIntegerMap(Map<String, Setting> settingMap) {
         return settingMap.values().stream()
                 .map(setting -> new AbstractMap.SimpleEntry<>(
                         setting,

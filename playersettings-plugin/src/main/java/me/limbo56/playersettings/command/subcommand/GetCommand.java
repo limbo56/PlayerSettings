@@ -28,18 +28,18 @@ public class GetCommand extends CommandBase {
         }
 
         SPlayer sPlayer = plugin.getSPlayer(player.getUniqueId());
-        boolean settingValue = sPlayer.getSettingWatcher().getValue(setting);
-        String settingName = setting.getItem().getItemMeta().getDisplayName();
+        int settingValue = sPlayer.getSettingWatcher().getValue(setting);
 
         PlayerUtils.sendConfigMessage(player, "commands.getSetting", message ->
-                fillPlaceholders(message, settingName, settingValue)
+                fillPlaceholders(message, setting, settingValue)
         );
     }
 
-    private String fillPlaceholders(String message, String settingName, boolean settingValue) {
-        String value = String.valueOf(settingValue)
-                .replaceAll("true", "on")
-                .replaceAll("false", "off");
+    private String fillPlaceholders(String message, Setting setting, int settingValue) {
+        String value = String.valueOf(settingValue);
+        if (setting.getMaxValue() == 1)
+            value = settingValue == 1 ? "on" : "off";
+        String settingName = setting.getItem().getItemMeta().getDisplayName();
         return message.replaceAll("%name%", ChatColor.stripColor(settingName))
                 .replaceAll("%value%", value);
     }

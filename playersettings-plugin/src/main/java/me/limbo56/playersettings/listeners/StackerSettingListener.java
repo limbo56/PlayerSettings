@@ -29,7 +29,7 @@ public class StackerSettingListener implements Listener {
 
         if (!isAllowedWorld(player.getWorld().getName())) return;
 
-        if (!sPlayer.getSettingWatcher().getValue(stackerSetting)) {
+        if (sPlayer.getSettingWatcher().getValue(stackerSetting) != 1) {
             PlayerUtils.sendConfigMessage(player, "settings.selfStackerDisabled");
             return;
         }
@@ -47,7 +47,7 @@ public class StackerSettingListener implements Listener {
         Player clicked = (Player) event.getRightClicked();
         SPlayer sPlayerClicked = plugin.getSPlayer(clicked.getUniqueId());
 
-        if (!sPlayerClicked.getSettingWatcher().getValue(stackerSetting)) {
+        if (sPlayerClicked.getSettingWatcher().getValue(stackerSetting) != 1) {
             PlayerUtils.sendConfigMessage(player, "settings.targetStackerDisabled");
             return;
         }
@@ -90,7 +90,7 @@ public class StackerSettingListener implements Listener {
         SPlayer sPlayerClicked = plugin.getSPlayer(entity.getUniqueId());
         Setting stackerSetting = plugin.getSetting("stacker_setting");
 
-        if (!sPlayer.getSettingWatcher().getValue(stackerSetting)) return true;
-        return !sPlayerClicked.getSettingWatcher().getValue(stackerSetting);
+        if (sPlayer.getSettingWatcher().getValue(stackerSetting) != 1) return true;
+        return sPlayerClicked.getSettingWatcher().getValue(stackerSetting) != 1;
     }
 }

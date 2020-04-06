@@ -16,7 +16,7 @@ public class TableTest {
                 " " +
                 "`settingName` VARCHAR(255) NOT NULL," +
                 " " +
-                "`value` BOOLEAN NOT NULL," + " " +
+                "`value` INTEGER NOT NULL," + " " +
                 "FOREIGN KEY (`uuid`) REFERENCES `players`(`uuid`)," +
                 " " +
                 "FOREIGN KEY (`settingName`) REFERENCES `defined`(`settingName`));";
@@ -32,7 +32,7 @@ public class TableTest {
         // Create fields
         Field uuidField = new Field("uuid", JDBCType.VARCHAR, "255", notNullConstraint);
         Field settingNameField = new Field("settingName", JDBCType.VARCHAR, "255", notNullConstraint);
-        Field valueField = new Field("value", JDBCType.BOOLEAN, notNullConstraint);
+        Field valueField = new Field("value", JDBCType.INTEGER, notNullConstraint);
 
         // Add table constraints
         playerSettingsTable.addConstraint(uuidFieldConstraint);

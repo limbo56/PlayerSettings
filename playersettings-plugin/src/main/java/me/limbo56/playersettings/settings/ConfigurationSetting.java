@@ -84,8 +84,13 @@ public class ConfigurationSetting implements Setting {
     }
 
     @Override
-    public boolean getDefaultValue() {
-        return section.getBoolean("default");
+    public int getDefaultValue() {
+        return section.getInt("default");
+    }
+
+    @Override
+    public int getMaxValue() {
+        return Math.max(1, section.getInt("max"));
     }
 
     private YmlConfiguration getConfiguration() {

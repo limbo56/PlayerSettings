@@ -16,7 +16,7 @@ public class MessagesConfiguration extends YmlConfiguration {
         addDefault("settings.cantStackEntity", "&cYou can't stack that entity");
         addDefault("settings.chatDisabled", "&cYou have chat disabled");
         addDefault("commands.settingNotFound", "&cThe setting specified wasn't found");
-        addDefault("commands.acceptedValues", "&cThe only accepted values are: on, off");
+        addDefault("commands.acceptedValues", "&cThe only accepted values are: on, off or integers");
         addDefault("commands.setSetting", "&aThe value of %name% &ahas been set to &e%value%");
         addDefault("commands.getSetting", "%name% &7- &e%value%");
     }

@@ -3,7 +3,6 @@ package me.limbo56.playersettings.settings.defined;
 import com.cryptomorin.xseries.XMaterial;
 import me.limbo56.playersettings.api.Setting;
 import me.limbo56.playersettings.utils.Item;
-import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 public class StackerSetting implements Setting {
@@ -34,7 +33,12 @@ public class StackerSetting implements Setting {
     }
 
     @Override
-    public boolean getDefaultValue() {
-        return false;
+    public int getDefaultValue() {
+        return 0;
+    }
+
+    @Override
+    public int getMaxValue() {
+        return 1;
     }
 }

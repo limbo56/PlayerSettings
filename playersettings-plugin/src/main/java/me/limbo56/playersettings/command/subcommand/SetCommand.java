@@ -12,6 +12,8 @@ import org.bukkit.Sound;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import static me.limbo56.playersettings.utils.ParseUtils.parseInt;
+
 public class SetCommand extends CommandBase {
     public SetCommand() {
         super(3, "set", "<setting> <value>", "Sets the value of a specified setting", null);
@@ -31,7 +33,9 @@ public class SetCommand extends CommandBase {
             return;
         }
 
-        if (!value.equals("on") && !value.equals("off")) {
+        Integer valueInt = parseInt(value);
+
+        if (valueInt == null || valueInt > setting.getMaxValue() || valueInt < -setting.getMaxValue()) {
             PlayerUtils.sendConfigMessage(player, "commands.acceptedValues");
             return;
         }
@@ -40,7 +44,7 @@ public class SetCommand extends CommandBase {
         SettingWatcher settingWatcher = sPlayer.getSettingWatcher();
         Sound pianoSound = XSound.BLOCK_NOTE_BLOCK_HARP.parseSound();
 
-        settingWatcher.setValue(setting, value.equals("on"), false);
+        settingWatcher.setValue(setting, valueInt, false);
         player.playSound(player.getLocation(), pianoSound, 1, value.equals("on") ? 1 : -99);
 
         // Send message change message if it's enabled

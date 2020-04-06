@@ -1,8 +1,8 @@
 name: PlayerSettings
 version: ${revision}
 main: me.limbo56.playersettings.PlayerSettings
-author: limbo56
+authors: [limbo56, BullCheat]
 prefix: "PlayerSettings"
 commands:
   settings:
-    description: Main command of the plugin.
+    description: Main command of PlayerSettings.

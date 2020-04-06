@@ -75,7 +75,8 @@ public class SettingsRegistry extends MapStore<String, Setting> {
 
             addToStore(configurationSetting);
             addCallback(configurationSetting, (setting, player, newValue) -> {
-                if (newValue) {
+                if (newValue > 0) {
+                    // that's not ok!
                     onEnable.ifPresent(strings -> strings.forEach(player::performCommand));
                 } else {
                     onDisable.ifPresent(strings -> strings.forEach(player::performCommand));
@@ -90,7 +91,7 @@ public class SettingsRegistry extends MapStore<String, Setting> {
         settingCallbacks.addToStore(getSetting(setting.getRawName()), settingCallback);
     }
 
-    private Setting getSetting(String rawName) {
+    public Setting getSetting(String rawName) {
         return getStored().get(rawName);
     }
 

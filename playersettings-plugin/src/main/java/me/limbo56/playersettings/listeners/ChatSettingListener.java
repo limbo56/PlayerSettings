@@ -20,7 +20,7 @@ public class ChatSettingListener implements Listener {
     public void onPlayerChat(AsyncPlayerChatEvent event) {
         Player player = event.getPlayer();
         SPlayer sPlayer = plugin.getSPlayer(player.getUniqueId());
-        boolean hasChatEnabled = sPlayer.getSettingWatcher().getValue(plugin.getSetting("chat_setting"));
+        boolean hasChatEnabled = sPlayer.getSettingWatcher().getValue(plugin.getSetting("chat_setting")) == 1;
 
         if (!isAllowedWorld(player.getWorld().getName())) return;
         if (hasChatEnabled) {
@@ -35,6 +35,6 @@ public class ChatSettingListener implements Listener {
     }
 
     private boolean filterByChatDisabled(SPlayer sPlayer) {
-        return !sPlayer.getSettingWatcher().getValue(plugin.getSetting("chat_setting"));
+        return sPlayer.getSettingWatcher().getValue(plugin.getSetting("chat_setting")) != 1;
     }
 }

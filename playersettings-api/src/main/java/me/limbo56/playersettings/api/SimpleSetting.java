@@ -14,10 +14,12 @@ public class SimpleSetting implements Setting {
     private int page;
     private int slot;
     @Getter(AccessLevel.NONE)
-    private boolean defaultValue;
+    private int defaultValue;
+    private int maxValue;
 
     @Override
-    public boolean getDefaultValue() {
+    public int getDefaultValue() {
         return defaultValue;
     }
+
 }

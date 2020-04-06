@@ -11,7 +11,7 @@ public interface SettingWatcher {
      * @param setting Setting where value is stored
      * @return The value of the setting
      */
-    boolean getValue(Setting setting);
+    int getValue(Setting setting);
 
     /**
      * Sets the value of the setting provided
@@ -20,7 +20,7 @@ public interface SettingWatcher {
      * @param value   Value to be set
      * @param silent  If true, it changes the value without activating the side effect
      */
-    void setValue(Setting setting, boolean value, boolean silent);
+    void setValue(Setting setting, int value, boolean silent);
 
     /**
      * Gets the callback map

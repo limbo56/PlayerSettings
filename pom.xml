@@ -11,7 +11,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <revision>5.0.3</revision>
+        <revision>5.1.0</revision>
         <lombok.dependency.version>1.18.12</lombok.dependency.version>
         <lombok.plugin.version>1.18.10.0</lombok.plugin.version>
     </properties>
