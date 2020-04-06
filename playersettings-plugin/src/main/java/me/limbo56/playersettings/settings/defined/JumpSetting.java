@@ -42,14 +42,14 @@ public class JumpSetting implements Setting {
 
     @Override
     public int getMaxValue() {
-        return 1;
+        return 10;
     }
 
     public static class JumpSettingCallback implements SettingCallback {
         @Override
         public void notifyChange(Setting setting, Player player, int newValue) {
             if (newValue > 0) {
-                player.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, 99999, 2));
+                player.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, 99999, 1 + newValue));
             } else {
                 player.removePotionEffect(PotionEffectType.JUMP);
             }
