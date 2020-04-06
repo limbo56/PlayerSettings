@@ -22,6 +22,7 @@ public class JumpSetting implements Setting {
                 .name("&aJump Boost")
                 .lore("&7Ever wanted to be a slime?")
                 .lore("&7Click this to feel like one")
+                .amount(0)
                 .build();
     }
 

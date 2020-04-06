@@ -22,6 +22,7 @@ public class SpeedSetting implements Setting {
                 .name("&aSpeed Boost")
                 .lore("&7Ever wonder what happens")
                 .lore("&7when you eat too much sugar?")
+                .amount(0)
                 .build();
     }
 

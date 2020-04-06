@@ -51,7 +51,9 @@ public class SettingsHolder implements InventoryHolder {
             SettingsMenu.openMenu(sPlayer, setting.getPage());
         };
         ItemStack itemStack = setting.getItem();
-        itemStack.setAmount(Math.max(1, Math.abs(oldValue)));
+        if (itemStack.getAmount() == 0) {
+            itemStack.setAmount(Math.max(1, Math.abs(oldValue)));
+        }
         this.renderItem(new CustomItem(setting.getSlot(), itemStack, playerConsumer));
         this.renderItem(new CustomItem(setting.getSlot() + 9, toggleItem, toggleConsumer));
     }

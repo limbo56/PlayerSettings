@@ -21,6 +21,7 @@ public class FlySetting implements Setting {
                 .name("&aFly")
                 .lore("&7Change the way you move")
                 .lore("&7around the map")
+                .amount(0)
                 .build();
     }
 
