@@ -49,7 +49,8 @@ public class JumpSetting implements Setting {
         @Override
         public void notifyChange(Setting setting, Player player, int newValue) {
             if (newValue > 0) {
-                player.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, 99999, 1 + newValue));
+                // 3, 6, 9...
+                player.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, 99999, newValue * 3 - 1));
             } else {
                 player.removePotionEffect(PotionEffectType.JUMP);
             }
