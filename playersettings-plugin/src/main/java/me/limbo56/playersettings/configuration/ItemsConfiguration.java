@@ -69,6 +69,7 @@ public class ItemsConfiguration extends YmlConfiguration {
         set(rawName + ".lore", Collections.replaceAll(itemStack.getItemMeta().getLore(), "§", "&"));
         set(rawName + ".page", setting.getPage());
         set(rawName + ".slot", setting.getSlot());
+        set(rawName + ".executeOnJoin", true);
         save();
     }
 }
