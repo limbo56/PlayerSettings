@@ -57,13 +57,15 @@ public class SimpleSettingWatcher extends MapStore<Setting, Integer> implements 
         }
 
         getStored().replace(setting, value);
-        Runnable runnable = () -> Bukkit.getPluginManager().callEvent(new SettingUpdateEvent(getOwner(), setting, value));
+        Runnable runnable = () -> {
+            Bukkit.getPluginManager().callEvent(new SettingUpdateEvent(getOwner(), setting, value));
+            if (callbackMap.getStored().containsKey(setting) && !silent)
+                callbackMap.getStored().get(setting).notifyChange(setting, getOwner(), value);
+        };
         if (Bukkit.isPrimaryThread())
             runnable.run();
         else
             Bukkit.getScheduler().runTask(PlayerSettings.getPlugin(), runnable);
-        if (callbackMap.getStored().containsKey(setting) && !silent)
-            callbackMap.getStored().get(setting).notifyChange(setting, getOwner(), value);
     }
 
     @Override
