@@ -59,7 +59,7 @@ public class PlayerUtils {
         permission = permission.toLowerCase() + ".";
         if (player.hasPermission(permission + "*"))
             return Integer.MAX_VALUE;
-        int computedLevel = 0;
+        int computedLevel = 1;
         for (PermissionAttachmentInfo pai : player.getEffectivePermissions()) {
             String playerPerm = pai.getPermission().toLowerCase();
             if (pai.getValue() && playerPerm.startsWith(permission)) {

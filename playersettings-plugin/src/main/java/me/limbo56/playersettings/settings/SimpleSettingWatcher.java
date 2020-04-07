@@ -37,30 +37,33 @@ public class SimpleSettingWatcher extends MapStore<Setting, Integer> implements 
 
     @Override
     public void setValue(Setting setting, int value, boolean silent) {
-        if (!getOwner().hasPermission("settings." + setting.getRawName())) {
-            PlayerUtils.sendConfigMessage(getOwner(), "settings.noPermission");
-            return;
-        }
-        int abs = Math.abs(value);
-        int maxAllowed = PlayerUtils.getPermissionInt(getOwner(), "settings." + setting.getRawName());
-        if (abs > 1 && abs > maxAllowed) {
-            Function<String, String> modifier = s -> s.replaceAll("%max%", String.valueOf(maxAllowed));
-            PlayerUtils.sendConfigMessage(getOwner(), "settings.tooLowPermission", modifier);
-            return;
-        }
+        if (value != setting.getDefaultValue()) {
+            if (!getOwner().hasPermission("settings." + setting.getRawName())) {
+                PlayerUtils.sendConfigMessage(getOwner(), "settings.noPermission");
+                return;
+            }
+            int maxAllowed = PlayerUtils.getPermissionInt(getOwner(), "settings." + setting.getRawName());
+            if (value > 1 && value > maxAllowed) {
+                Function<String, String> modifier = s -> s.replaceAll("%max%", String.valueOf(maxAllowed));
+                PlayerUtils.sendConfigMessage(getOwner(), "settings.tooLowPermission", modifier);
+                return;
+            }
+            if (value < -maxAllowed) value = -maxAllowed;
 
-        int maxValue = PlayerSettings.getPlugin().getSettingsRegistry().getSetting(setting.getRawName()).getMaxValue();
-        if (abs > maxValue) {
-            Function<String, String> modifier = s -> s.replaceAll("%max%", String.valueOf(maxValue));
-            PlayerUtils.sendConfigMessage(getOwner(), "commands.acceptedValues", modifier);
-            return;
+            int maxValue = PlayerSettings.getPlugin().getSettingsRegistry().getSetting(setting.getRawName()).getMaxValue();
+            if (value > maxValue) {
+                Function<String, String> modifier = s -> s.replaceAll("%max%", String.valueOf(maxValue));
+                PlayerUtils.sendConfigMessage(getOwner(), "commands.acceptedValues", modifier);
+                return;
+            }
         }
 
         getStored().replace(setting, value);
+        int finalValue = value;
         Runnable runnable = () -> {
-            Bukkit.getPluginManager().callEvent(new SettingUpdateEvent(getOwner(), setting, value));
+            Bukkit.getPluginManager().callEvent(new SettingUpdateEvent(getOwner(), setting, finalValue));
             if (callbackMap.getStored().containsKey(setting) && !silent)
-                callbackMap.getStored().get(setting).notifyChange(setting, getOwner(), value);
+                callbackMap.getStored().get(setting).notifyChange(setting, getOwner(), finalValue);
         };
         if (Bukkit.isPrimaryThread())
             runnable.run();
