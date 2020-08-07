@@ -33,6 +33,8 @@ public class DatabaseConnector {
         hikariDataSource.addDataSourceProperty("user", user);
         hikariDataSource.addDataSourceProperty("password", password);
         hikariDataSource.addDataSourceProperty("autoReconnect", true);
+        hikariDataSource.addDataSourceProperty("useSSL", false);
+        hikariDataSource.addDataSourceProperty("serverTimezone", "UTC");
     }
 
     public void disconnect() {
