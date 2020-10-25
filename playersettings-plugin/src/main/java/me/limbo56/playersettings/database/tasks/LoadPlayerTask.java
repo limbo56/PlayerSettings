@@ -39,12 +39,17 @@ public class LoadPlayerTask extends DatabaseTask {
                 boolean enabled = resultSet.getBoolean("value");
                 Setting setting = getPlugin().getSetting(settingName);
 
-                // Set setting value
-                sPlayer.getSettingWatcher().setValue(setting, enabled, !new ConfigurationSetting(settingName).getExecuteOnJoin());
+                // Set setting value on main thread
+                Bukkit.getScheduler().runTask(getPlugin(), setSettingValue(settingName, enabled, setting));
             }
         } catch (SQLException e) {
             getPlugin().getLogger().severe("Failed to load settings for player " + player.getName());
             e.printStackTrace();
         }
+    }
+
+    private Runnable setSettingValue(String settingName, boolean enabled, Setting setting) {
+        boolean executeOnJoin = new ConfigurationSetting(settingName).getExecuteOnJoin();
+        return () -> sPlayer.getSettingWatcher().setValue(setting, enabled, !executeOnJoin);
     }
 }
