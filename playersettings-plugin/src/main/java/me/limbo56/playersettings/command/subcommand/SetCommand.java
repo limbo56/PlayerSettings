@@ -12,6 +12,8 @@ import org.bukkit.Sound;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.function.Function;
+
 public class SetCommand extends CommandBase {
 
     public SetCommand() {
@@ -37,24 +39,32 @@ public class SetCommand extends CommandBase {
             return;
         }
 
+        if (!player.hasPermission("settings." + setting.getRawName())) {
+            PlayerUtils.sendConfigMessage(player, "settings.noPermission");
+            return;
+        }
+
+        // Set value
         SPlayer sPlayer = plugin.getSPlayer(player.getUniqueId());
         SettingWatcher settingWatcher = sPlayer.getSettingWatcher();
-        Sound pianoSound = XSound.BLOCK_NOTE_BLOCK_HARP.parseSound();
-
         settingWatcher.setValue(setting, value.equals("on"), false);
+
+        // Play sound
+        Sound pianoSound = XSound.BLOCK_NOTE_BLOCK_HARP.parseSound();
         player.playSound(player.getLocation(), pianoSound, 1, value.equals("on") ? 1 : -99);
 
-        // Send message change message if it's enabled
-        if (plugin.getConfiguration("messages").getBoolean("messages.sendMessageOnChange")) {
-            String settingName = setting.getItem().getItemMeta().getDisplayName();
-            PlayerUtils.sendConfigMessage(player, "commands.setSetting", message ->
-                    fillPlaceholders(message, settingName, value)
-            );
+        // Send change message if it's enabled
+        if (!plugin.getConfiguration("messages").getBoolean("messages.sendMessageOnChange")) {
+            return;
         }
+
+        String settingName = setting.getItem().getItemMeta().getDisplayName();
+        PlayerUtils.sendConfigMessage(player, "commands.setSetting", replaceVariables(value, settingName));
     }
 
-    private String fillPlaceholders(String message, String settingName, String settingValue) {
-        return message.replaceAll("%name%", ChatColor.stripColor(settingName))
-                .replaceAll("%value%", settingValue);
+    private Function<String, String> replaceVariables(String value, String settingName) {
+        return message -> message
+                .replaceAll("%name%", ChatColor.stripColor(settingName))
+                .replaceAll("%value%", value);
     }
 }

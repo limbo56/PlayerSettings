@@ -36,12 +36,6 @@ public class SimpleSettingWatcher extends MapStore<Setting, Boolean> implements 
 
     @Override
     public void setValue(Setting setting, boolean value, boolean silent) {
-        if (!getOwner().hasPermission("settings." + setting.getRawName())) {
-            PlayerUtils.sendConfigMessage(getOwner(), "settings.noPermission");
-            return;
-        }
-
-        // Change value
         getStored().put(setting, value);
 
         // Call setting update event
