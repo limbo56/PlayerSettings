@@ -35,6 +35,12 @@ public class StackerSettingListener implements Listener {
             return;
         }
 
+        if (VersionUtil.isGreaterThan("v1_8_R3")) {
+            if (event.getHand() == EquipmentSlot.OFF_HAND) {
+                return;
+            }
+        }
+
         if (!sPlayer.getSettingWatcher().getValue(stackerSetting)) {
             PlayerUtils.sendConfigMessage(player, "settings.selfStackerDisabled");
             return;
@@ -122,9 +128,9 @@ public class StackerSettingListener implements Listener {
     }
 
     private boolean checkIfDisabled(Player player, Entity entity) {
+        Setting stackerSetting = plugin.getSetting("stacker_setting");
         SPlayer sPlayer = plugin.getSPlayer(player.getUniqueId());
         SPlayer sPlayerClicked = plugin.getSPlayer(entity.getUniqueId());
-        Setting stackerSetting = plugin.getSetting("stacker_setting");
 
         if (!sPlayer.getSettingWatcher().getValue(stackerSetting)) {
             return true;
