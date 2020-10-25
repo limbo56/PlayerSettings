@@ -8,10 +8,11 @@ import java.util.Arrays;
 import java.util.List;
 
 public class Field {
-    private String name;
-    private JDBCType type;
-    private String typeData;
-    private List<FieldConstraint> fieldConstraints;
+
+    private final String name;
+    private final JDBCType type;
+    private final String typeData;
+    private final List<FieldConstraint> fieldConstraints;
 
     public Field(String name, JDBCType type) {
         this(name, type, "");

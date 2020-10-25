@@ -6,7 +6,8 @@ import me.limbo56.playersettings.utils.storage.MapStore;
 
 @AllArgsConstructor
 public class ConfigurationStore extends MapStore<String, YmlConfiguration> {
-    private PlayerSettings plugin;
+
+    private final PlayerSettings plugin;
 
     @Override
     public void register() {

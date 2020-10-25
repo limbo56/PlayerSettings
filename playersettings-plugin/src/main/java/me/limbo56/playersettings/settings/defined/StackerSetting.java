@@ -3,10 +3,10 @@ package me.limbo56.playersettings.settings.defined;
 import com.cryptomorin.xseries.XMaterial;
 import me.limbo56.playersettings.api.Setting;
 import me.limbo56.playersettings.utils.Item;
-import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 public class StackerSetting implements Setting {
+
     @Override
     public String getRawName() {
         return "stacker_setting";

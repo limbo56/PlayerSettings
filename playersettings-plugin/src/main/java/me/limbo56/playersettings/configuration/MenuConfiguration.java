@@ -5,6 +5,7 @@ import me.limbo56.playersettings.PlayerSettings;
 import java.util.Collections;
 
 public class MenuConfiguration extends YmlConfiguration {
+
     public MenuConfiguration(PlayerSettings plugin) {
         super(plugin, "menu");
     }

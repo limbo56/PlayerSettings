@@ -9,6 +9,7 @@ import org.bukkit.inventory.ItemStack;
 import java.util.Collections;
 
 public class ItemsConfiguration extends YmlConfiguration {
+
     ItemsConfiguration(PlayerSettings plugin) {
         super(plugin, "items");
     }

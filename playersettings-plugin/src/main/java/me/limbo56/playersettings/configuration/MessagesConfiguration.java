@@ -3,6 +3,7 @@ package me.limbo56.playersettings.configuration;
 import me.limbo56.playersettings.PlayerSettings;
 
 public class MessagesConfiguration extends YmlConfiguration {
+
     public MessagesConfiguration(PlayerSettings plugin) {
         super(plugin, "messages");
     }

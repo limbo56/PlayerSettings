@@ -13,6 +13,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class SetCommand extends CommandBase {
+
     public SetCommand() {
         super(3, "set", "<setting> <value>", "Sets the value of a specified setting", null);
     }

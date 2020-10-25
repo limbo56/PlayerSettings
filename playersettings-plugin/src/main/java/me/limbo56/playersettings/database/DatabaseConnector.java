@@ -10,6 +10,7 @@ import java.sql.SQLException;
 
 @RequiredArgsConstructor
 public class DatabaseConnector {
+
     private final PlayerSettings plugin;
     private HikariDataSource hikariDataSource;
 

@@ -8,6 +8,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class ReloadCommand extends CommandBase {
+
     public ReloadCommand() {
         super(1, "reload", "", "Reloads the configuration of the plugin", "settings.commands.reloadConfig");
     }
@@ -35,11 +36,11 @@ public class ReloadCommand extends CommandBase {
         // Unregister & register stores
         plugin.getListenerStore().unregister();
         plugin.getSPlayerStore().unregister();
-        plugin.getSettingsRegistry().unregister();
+        plugin.getSettingStore().unregister();
         plugin.getConfigurationStore().unregister();
         plugin.getSPlayerStore().register();
         plugin.getConfigurationStore().register();
-        plugin.getSettingsRegistry().register();
+        plugin.getSettingStore().register();
         plugin.getListenerStore().register();
 
         // Load online players again

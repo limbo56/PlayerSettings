@@ -7,7 +7,7 @@ import me.limbo56.playersettings.utils.storage.CollectionStore;
 import java.util.function.Supplier;
 
 public class DatabaseTableStore extends CollectionStore<Supplier<Table>> {
-    private PlayerSettings plugin;
+    private final PlayerSettings plugin;
 
     public DatabaseTableStore(PlayerSettings plugin) {
         this.plugin = plugin;

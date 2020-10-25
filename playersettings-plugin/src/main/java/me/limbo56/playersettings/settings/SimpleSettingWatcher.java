@@ -14,8 +14,9 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class SimpleSettingWatcher extends MapStore<Setting, Boolean> implements SettingWatcher {
-    private Player owner;
-    private MapStore<Setting, SettingCallback> callbackMap = new MapStore<>();
+
+    private final Player owner;
+    private final MapStore<Setting, SettingCallback> callbackMap = new MapStore<>();
 
     public SimpleSettingWatcher(Player owner, Map<String, Setting> settingRegistry, Map<Setting, SettingCallback> callbackMap) {
         // Register stores
@@ -40,10 +41,17 @@ public class SimpleSettingWatcher extends MapStore<Setting, Boolean> implements 
             return;
         }
 
-        getStored().replace(setting, value);
+        // Change value
+        getStored().put(setting, value);
+
+        // Call setting update event
         Bukkit.getPluginManager().callEvent(new SettingUpdateEvent(getOwner(), setting, value));
-        if (callbackMap.getStored().containsKey(setting) && !silent)
-            callbackMap.getStored().get(setting).notifyChange(setting, getOwner(), value);
+
+        // Notify change
+        Map<Setting, SettingCallback> stored = callbackMap.getStored();
+        if (stored.containsKey(setting) && !silent) {
+            stored.get(setting).notifyChange(setting, getOwner(), value);
+        }
     }
 
     @Override
@@ -58,10 +66,7 @@ public class SimpleSettingWatcher extends MapStore<Setting, Boolean> implements 
 
     private Map<Setting, Boolean> convertToBooleanMap(Map<String, Setting> settingMap) {
         return settingMap.values().stream()
-                .map(setting -> new AbstractMap.SimpleEntry<>(
-                        setting,
-                        setting.getDefaultValue()
-                ))
+                .map(setting -> new AbstractMap.SimpleEntry<>(setting, setting.getDefaultValue()))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 }

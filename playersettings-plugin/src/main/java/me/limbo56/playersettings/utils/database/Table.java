@@ -7,9 +7,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Table {
-    private String name;
-    private List<TableConstraint> tableConstraints = new ArrayList<>();
-    private List<Field> fields = new ArrayList<>();
+
+    private final String name;
+    private final List<TableConstraint> tableConstraints = new ArrayList<>();
+    private final List<Field> fields = new ArrayList<>();
 
     public Table(String name) {
         this.name = name;

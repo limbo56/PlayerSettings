@@ -10,11 +10,12 @@ import org.bukkit.entity.Player;
 @AllArgsConstructor
 @Getter
 public abstract class CommandBase {
-    private int arguments;
-    private String name;
-    private String usage;
-    private String description;
-    private String permission;
+
+    private final int arguments;
+    private final String name;
+    private final String usage;
+    private final String description;
+    private final String permission;
 
     protected abstract void executeCommand(CommandSender sender, String[] args);
 

@@ -17,26 +17,38 @@ import java.util.function.Consumer;
 @Getter
 @RequiredArgsConstructor
 public class SettingsHolder implements InventoryHolder {
+
     private final String title;
     private final int size;
     private final int page;
-    private List<CustomItem> renderedItems = new ArrayList<>();
+    private final List<CustomItem> renderedItems = new ArrayList<>();
 
     public void renderItem(CustomItem customItem) {
         this.renderedItems.add(customItem);
     }
 
     public void renderSetting(Setting setting, ItemStack toggleItem) {
-        Consumer<SPlayer> playerConsumer = sPlayer -> {
+        this.renderItem(new CustomItem(setting.getSlot(), setting.getItem(), toggleSetting(setting)));
+        this.renderItem(new CustomItem(setting.getSlot() + 9, toggleItem, toggleSetting(setting)));
+    }
+
+    private Consumer<SPlayer> toggleSetting(Setting setting) {
+        return sPlayer -> {
             Player player = sPlayer.getPlayer();
-            String value = String.valueOf(!sPlayer.getSettingWatcher().getValue(setting))
-                    .replaceAll("true", "on")
-                    .replaceAll("false", "off");
-            player.performCommand("settings set " + setting.getRawName() + " " + value);
+            String newValue = resolveValue(setting, sPlayer);
+
+            // Toggle setting
+            player.performCommand("settings set " + setting.getRawName() + " " + newValue);
+
+            // Refresh menu
             SettingsMenu.openMenu(sPlayer, setting.getPage());
         };
-        this.renderItem(new CustomItem(setting.getSlot(), setting.getItem(), playerConsumer));
-        this.renderItem(new CustomItem(setting.getSlot() + 9, toggleItem, playerConsumer));
+    }
+
+    private String resolveValue(Setting setting, SPlayer sPlayer) {
+        return String.valueOf(!sPlayer.getSettingWatcher().getValue(setting))
+                .replaceAll("true", "on")
+                .replaceAll("false", "off");
     }
 
     public CustomItem getItem(int slot) {

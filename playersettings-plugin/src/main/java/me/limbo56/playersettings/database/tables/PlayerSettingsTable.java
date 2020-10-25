@@ -9,6 +9,7 @@ import java.sql.JDBCType;
 import java.util.function.Supplier;
 
 public class PlayerSettingsTable implements Supplier<Table> {
+
     @Override
     public Table get() {
         // Define constraints

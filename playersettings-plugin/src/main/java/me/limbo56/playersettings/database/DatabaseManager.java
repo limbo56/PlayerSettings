@@ -13,6 +13,7 @@ import java.sql.SQLException;
 
 @RequiredArgsConstructor
 public class DatabaseManager {
+
     private final PlayerSettings plugin;
 
     public void createTable(Table table) {
@@ -39,7 +40,7 @@ public class DatabaseManager {
                 return;
             }
 
-            synchronized(this) {
+            synchronized (this) {
                 task.run();
             }
         } catch (SQLException e) {
