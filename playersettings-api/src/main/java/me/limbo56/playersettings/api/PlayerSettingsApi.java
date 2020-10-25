@@ -3,10 +3,10 @@ package me.limbo56.playersettings.api;
 /**
  * Interface that represents the API of the plugin
  *
- * @author lim_bo56
- * @since 3/6/2018
+ * @author David Rodriguez
  */
 public interface PlayerSettingsApi {
+
     /**
      * Registers the setting provided in the
      * PlayerSettings plugin to be shown
