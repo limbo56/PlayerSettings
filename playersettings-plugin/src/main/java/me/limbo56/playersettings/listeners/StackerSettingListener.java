@@ -6,8 +6,6 @@ import me.limbo56.playersettings.api.Setting;
 import me.limbo56.playersettings.settings.SPlayer;
 import me.limbo56.playersettings.utils.PlayerUtils;
 import me.limbo56.playersettings.utils.VersionUtil;
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -70,17 +68,12 @@ public class StackerSettingListener implements Listener {
     @EventHandler
     public void onPlayerLaunch(PlayerInteractEvent event) {
         Player player = event.getPlayer();
-        Entity entity = player.getPassenger();
 
         if (!isAllowedWorld(player.getWorld().getName())) {
             return;
         }
 
-        if (entity == null) {
-            return;
-        }
-
-        if (!(entity instanceof Player)) {
+        if (!(player.getPassenger() instanceof Player)) {
             return;
         }
 
@@ -88,19 +81,25 @@ public class StackerSettingListener implements Listener {
             return;
         }
 
-        if (checkIfDisabled(player, entity)) {
+        Player passenger = (Player) player.getPassenger();
+
+        if (passenger == null) {
+            return;
+        }
+
+        if (hasStackerDisabled(player) && hasStackerDisabled(passenger)) {
             return;
         }
 
         Vector direction = player.getLocation().getDirection();
 
-        if (entity.getVehicle() == null) {
+        if (passenger.getVehicle() == null) {
             return;
         }
 
-        entity.getVehicle().eject();
-        entity.setVelocity(direction.multiply(new Vector(1, 2, 1)));
-        entity.setFallDistance(-10000.0F);
+        passenger.getVehicle().eject();
+        passenger.setVelocity(direction.multiply(new Vector(1, 2, 1)));
+        passenger.setFallDistance(-10000.0F);
     }
 
     @EventHandler
@@ -120,22 +119,20 @@ public class StackerSettingListener implements Listener {
             return;
         }
 
-        if (checkIfDisabled(player, entity)) {
+        if (entity.hasMetadata("NPC")) {
+            return;
+        }
+
+        if (hasStackerDisabled(player) && hasStackerDisabled(entity)) {
             return;
         }
 
         event.setCancelled(true);
     }
 
-    private boolean checkIfDisabled(Player player, Entity entity) {
+    private boolean hasStackerDisabled(Player player) {
         Setting stackerSetting = plugin.getSetting("stacker_setting");
         SPlayer sPlayer = plugin.getSPlayer(player.getUniqueId());
-        SPlayer sPlayerClicked = plugin.getSPlayer(entity.getUniqueId());
-
-        if (!sPlayer.getSettingWatcher().getValue(stackerSetting)) {
-            return true;
-        }
-
-        return !sPlayerClicked.getSettingWatcher().getValue(stackerSetting);
+        return !sPlayer.getSettingWatcher().getValue(stackerSetting);
     }
 }
