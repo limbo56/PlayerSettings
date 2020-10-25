@@ -4,9 +4,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Interface that represents an storage class using a map
+ * A base implementation of a {@link Store} using a {@link Map}
+ *
+ * @author David Rodriguez
  */
 public class MapStore<K, V> implements Store<Map<K, V>> {
+
     private Map<K, V> store;
 
     public void addToStore(K key, V value) {

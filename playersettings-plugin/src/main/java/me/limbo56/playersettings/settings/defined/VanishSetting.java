@@ -5,13 +5,13 @@ import me.limbo56.playersettings.api.Setting;
 import me.limbo56.playersettings.api.SettingCallback;
 import me.limbo56.playersettings.utils.Item;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 public class VanishSetting implements Setting {
+
     @Override
     public String getRawName() {
         return "vanish_setting";

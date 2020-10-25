@@ -12,13 +12,14 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class PlayerUtils {
+
     private static final PlayerSettings PLUGIN = PlayerSettings.getPlugin();
 
     public static void loadPlayer(Player player) {
         SettingWatcher settingWatcher = new SimpleSettingWatcher(
                 player,
-                PLUGIN.getSettingsRegistry().getStored(),
-                PLUGIN.getSettingsRegistry().getCallbacks().getStored()
+                PLUGIN.getSettingStore().getStored(),
+                PLUGIN.getSettingStore().getCallbacks().getStored()
         );
         SPlayer sPlayer = new SPlayer(player.getUniqueId(), settingWatcher);
 
@@ -32,7 +33,13 @@ public class PlayerUtils {
     }
 
     public static void sendConfigMessage(Player player, String path) {
-        player.sendMessage(PLUGIN.getConfiguration("messages").getString(path));
+        String messages = PLUGIN.getConfiguration("messages").getString(path);
+
+        if (messages == null || messages.trim().length() == 0) {
+            return;
+        }
+
+        player.sendMessage(messages);
     }
 
     public static void sendConfigMessage(Player player, String path, Function<String, String> modifier) {

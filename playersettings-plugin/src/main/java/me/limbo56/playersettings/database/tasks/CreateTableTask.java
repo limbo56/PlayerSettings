@@ -8,7 +8,8 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 public class CreateTableTask extends DatabaseTask {
-    private Table table;
+
+    private final Table table;
 
     public CreateTableTask(PlayerSettings plugin, Connection connection, Table table) {
         super(plugin, connection);

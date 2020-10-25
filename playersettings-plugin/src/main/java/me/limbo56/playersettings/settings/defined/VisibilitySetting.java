@@ -5,11 +5,11 @@ import me.limbo56.playersettings.api.Setting;
 import me.limbo56.playersettings.api.SettingCallback;
 import me.limbo56.playersettings.utils.Item;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 public class VisibilitySetting implements Setting {
+
     @Override
     public String getRawName() {
         return "visibility_setting";

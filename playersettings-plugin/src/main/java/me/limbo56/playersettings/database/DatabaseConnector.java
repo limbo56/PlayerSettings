@@ -10,6 +10,7 @@ import java.sql.SQLException;
 
 @RequiredArgsConstructor
 public class DatabaseConnector {
+
     private final PlayerSettings plugin;
     private HikariDataSource hikariDataSource;
 
@@ -22,6 +23,7 @@ public class DatabaseConnector {
         String databaseName = config.getString("Database.name");
         String user = config.getString("Database.user");
         String password = config.getString("Database.password");
+        boolean useSSL = config.getBoolean("Database.useSSL");
 
         // Initialize data source
         hikariDataSource = new HikariDataSource();
@@ -33,6 +35,7 @@ public class DatabaseConnector {
         hikariDataSource.addDataSourceProperty("user", user);
         hikariDataSource.addDataSourceProperty("password", password);
         hikariDataSource.addDataSourceProperty("autoReconnect", true);
+        hikariDataSource.addDataSourceProperty("useSSL", useSSL);
     }
 
     public void disconnect() {

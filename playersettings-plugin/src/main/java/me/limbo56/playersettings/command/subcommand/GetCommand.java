@@ -10,6 +10,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class GetCommand extends CommandBase {
+
     public GetCommand() {
         super(2, "get", "<setting>", "Gets the value of a specified setting", null);
     }

@@ -2,11 +2,14 @@ package me.limbo56.playersettings.settings.defined;
 
 import com.cryptomorin.xseries.XMaterial;
 import me.limbo56.playersettings.api.Setting;
+import me.limbo56.playersettings.api.SettingCallback;
 import me.limbo56.playersettings.utils.Item;
-import org.bukkit.Material;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 public class StackerSetting implements Setting {
+
     @Override
     public String getRawName() {
         return "stacker_setting";
@@ -36,5 +39,24 @@ public class StackerSetting implements Setting {
     @Override
     public boolean getDefaultValue() {
         return false;
+    }
+
+    public static class StackerSettingCallback implements SettingCallback {
+
+        @Override
+        public void notifyChange(Setting setting, Player player, boolean newValue) {
+            if (newValue) {
+                return;
+            }
+
+            Entity vehicle = player.getVehicle();
+
+            if (!(vehicle instanceof Player)) {
+                return;
+            }
+
+            vehicle.eject();
+            player.eject();
+        }
     }
 }

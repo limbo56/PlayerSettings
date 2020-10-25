@@ -7,6 +7,7 @@ import me.limbo56.playersettings.utils.ColorUtils;
 import org.bukkit.command.CommandSender;
 
 public class HelpCommand extends CommandBase {
+
     public HelpCommand() {
         super(1, "help", "", "Prints a list with available commands", null);
     }

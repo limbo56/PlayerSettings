@@ -1,7 +1,8 @@
 package me.limbo56.playersettings.utils.database.constraints;
 
 public class PrimaryKeyConstraint implements TableConstraint {
-    private String[] columnNames;
+
+    private final String[] columnNames;
 
     public PrimaryKeyConstraint(String... columnNames) {
         this.columnNames = columnNames;

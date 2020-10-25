@@ -3,6 +3,7 @@ package me.limbo56.playersettings.configuration;
 import me.limbo56.playersettings.PlayerSettings;
 
 public class PluginConfiguration extends YmlConfiguration {
+
     public PluginConfiguration(PlayerSettings plugin) {
         super(plugin, "config");
     }
@@ -16,5 +17,6 @@ public class PluginConfiguration extends YmlConfiguration {
         addDefault("Database.name", "player_settings");
         addDefault("Database.user", "root");
         addDefault("Database.password", "");
+        addDefault("Database.useSSL", true);
     }
 }

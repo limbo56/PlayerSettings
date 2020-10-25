@@ -17,6 +17,10 @@ import static me.limbo56.playersettings.utils.ItemUtils.addGlow;
 import static me.limbo56.playersettings.utils.ItemUtils.removeGlow;
 
 public class SettingsMenu {
+
+    private static final ItemStack ENABLED_ITEM = new ConfigurationSetting("Enabled").getItem();
+    private static final ItemStack DISABLED_ITEM = new ConfigurationSetting("Disabled").getItem();
+
     public static void openMenu(SPlayer sPlayer, int page) {
         List<Setting> settings = getPageSettings(page);
 
@@ -30,7 +34,7 @@ public class SettingsMenu {
         if (page != getHighestPage() && getHighestPage() > 1) {
             ConfigurationSetting nextPage = new ConfigurationSetting("NextPage");
             ItemStack item = nextPage.getItem();
-            replaceData(item, page);
+            replacePaginationInfo(item, page);
             menu.renderItem(new CustomItem(nextPage.getSlot(), item, player ->
                     SettingsMenu.openMenu(sPlayer, page + 1)
             ));
@@ -39,7 +43,7 @@ public class SettingsMenu {
         if (page != 1) {
             ConfigurationSetting previousPage = new ConfigurationSetting("PreviousPage");
             ItemStack item = previousPage.getItem();
-            replaceData(item, page);
+            replacePaginationInfo(item, page);
             menu.renderItem(new CustomItem(previousPage.getSlot(), item, player ->
                     SettingsMenu.openMenu(sPlayer, page - 1)
             ));
@@ -50,17 +54,21 @@ public class SettingsMenu {
         sPlayer.getPlayer().openInventory(menu.getInventory());
     }
 
-    private static void replaceData(ItemStack itemStack, int page) {
+    private static void replacePaginationInfo(ItemStack itemStack, int page) {
         ItemMeta meta = itemStack.getItemMeta();
-        Optional<List<String>> lore = Optional.ofNullable(meta.getLore());
-        lore.ifPresent(strings -> {
-            Collections.replaceAll(strings, "%current%", String.valueOf(page));
-            Collections.replaceAll(strings, "%max%", String.valueOf(getHighestPage()));
+
+        // Replace in lore
+        Optional.ofNullable(meta.getLore()).ifPresent(lore -> {
+            Collections.replaceAll(lore, "%current%", String.valueOf(page));
+            Collections.replaceAll(lore, "%max%", String.valueOf(getHighestPage()));
         });
+
+        // Replace in display name
         meta.setDisplayName(meta.getDisplayName()
                 .replaceAll("%current%", String.valueOf(page))
                 .replaceAll("%max%", String.valueOf(getHighestPage()))
         );
+
         itemStack.setItemMeta(meta);
     }
 
@@ -79,10 +87,10 @@ public class SettingsMenu {
 
         // Add glow if enabled
         if (sPlayer.getSettingWatcher().getValue(setting)) {
-            toggleItem = new ConfigurationSetting("Enabled").getItem();
+            toggleItem = ENABLED_ITEM;
             addGlow(settingItem);
         } else {
-            toggleItem = new ConfigurationSetting("Disabled").getItem();
+            toggleItem = DISABLED_ITEM;
             removeGlow(settingItem);
         }
 
@@ -90,7 +98,7 @@ public class SettingsMenu {
     }
 
     private static int getHighestPage() {
-        Collection<Setting> settings = PlayerSettings.getPlugin().getSettingsRegistry().getStored().values();
+        Collection<Setting> settings = PlayerSettings.getPlugin().getSettingStore().getStored().values();
         return settings.stream()
                 .max(Comparator.comparingInt(Setting::getPage))
                 .orElse(Iterables.get(settings, 0))
@@ -98,7 +106,7 @@ public class SettingsMenu {
     }
 
     private static List<Setting> getPageSettings(int page) {
-        return PlayerSettings.getPlugin().getSettingsRegistry()
+        return PlayerSettings.getPlugin().getSettingStore()
                 .getStored().values().stream()
                 .filter(setting -> setting.getPage() == page)
                 .collect(Collectors.toList());

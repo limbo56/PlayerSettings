@@ -1,9 +1,10 @@
 package me.limbo56.playersettings.utils.database.constraints;
 
 public class ForeignKeyConstraint implements TableConstraint {
-    private String columnName;
-    private String referenceTable;
-    private String referenceColumn;
+
+    private final String columnName;
+    private final String referenceTable;
+    private final String referenceColumn;
 
     public ForeignKeyConstraint(String columnName, String referenceTable, String referenceColumn) {
         this.columnName = columnName;

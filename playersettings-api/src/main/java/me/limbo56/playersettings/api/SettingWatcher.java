@@ -4,7 +4,14 @@ import org.bukkit.entity.Player;
 
 import java.util.Map;
 
+/**
+ * Represents an object that is used to mutate the state of a setting and to store any callbacks
+ * that it might need
+ *
+ * @author David Rodriguez
+ */
 public interface SettingWatcher {
+
     /**
      * Gets the value of the provided setting
      *

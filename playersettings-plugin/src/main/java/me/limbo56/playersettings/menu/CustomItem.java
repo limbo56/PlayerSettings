@@ -10,7 +10,8 @@ import java.util.function.Consumer;
 @AllArgsConstructor
 @Getter
 public class CustomItem {
-    private int slot;
-    private ItemStack item;
-    private Consumer<SPlayer> clickAction;
+
+    private final int slot;
+    private final ItemStack item;
+    private final Consumer<SPlayer> clickAction;
 }

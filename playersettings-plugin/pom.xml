@@ -50,7 +50,7 @@
     </dependencies>
 
     <build>
-        <finalName>PlayerSettings</finalName>
+        <finalName>PlayerSettings-${revision}</finalName>
         <resources>
             <resource>
                 <directory>src/main/resources</directory>

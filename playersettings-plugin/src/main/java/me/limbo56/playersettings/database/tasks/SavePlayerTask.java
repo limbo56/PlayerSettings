@@ -10,11 +10,12 @@ import java.sql.SQLException;
 import java.util.Map;
 
 public class SavePlayerTask extends DatabaseTask {
+
     private static final String SAVE_QUERY = "INSERT INTO player_settings (owner, settingName, value)" +
             "VALUES (?, ?, ?)" +
             "ON DUPLICATE KEY " +
             "UPDATE value=?";
-    private SPlayer player;
+    private final SPlayer player;
 
     public SavePlayerTask(PlayerSettings plugin, Connection connection, SPlayer player) {
         super(plugin, connection);
@@ -25,7 +26,7 @@ public class SavePlayerTask extends DatabaseTask {
     public void run() {
         try (Connection connection = getConnection()) {
             PreparedStatement statement = connection.prepareStatement(SAVE_QUERY);
-            for (Map.Entry<String, Setting> entry : getPlugin().getSettingsRegistry().getStored().entrySet()) {
+            for (Map.Entry<String, Setting> entry : getPlugin().getSettingStore().getStored().entrySet()) {
                 String rawName = entry.getKey();
                 Setting setting = entry.getValue();
 

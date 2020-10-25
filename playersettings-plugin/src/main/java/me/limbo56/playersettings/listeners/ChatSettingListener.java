@@ -14,7 +14,8 @@ import static me.limbo56.playersettings.utils.PlayerUtils.isAllowedWorld;
 
 @AllArgsConstructor
 public class ChatSettingListener implements Listener {
-    private PlayerSettings plugin;
+
+    private final PlayerSettings plugin;
 
     @EventHandler
     public void onPlayerChat(AsyncPlayerChatEvent event) {

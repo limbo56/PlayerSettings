@@ -6,7 +6,6 @@ import me.limbo56.playersettings.PlayerSettings;
 import me.limbo56.playersettings.menu.CustomItem;
 import me.limbo56.playersettings.menu.SettingsHolder;
 import me.limbo56.playersettings.settings.SPlayer;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -17,7 +16,8 @@ import static me.limbo56.playersettings.utils.PlayerUtils.isAllowedWorld;
 
 @AllArgsConstructor
 public class InventoryListener implements Listener {
-    private PlayerSettings plugin;
+
+    private final PlayerSettings plugin;
 
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {

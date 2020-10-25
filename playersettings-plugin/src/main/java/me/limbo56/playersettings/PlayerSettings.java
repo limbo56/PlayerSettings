@@ -13,24 +13,26 @@ import me.limbo56.playersettings.database.tables.DatabaseTableStore;
 import me.limbo56.playersettings.listeners.ListenerStore;
 import me.limbo56.playersettings.menu.SettingsHolder;
 import me.limbo56.playersettings.settings.SPlayer;
-import me.limbo56.playersettings.settings.SettingsRegistry;
+import me.limbo56.playersettings.settings.SettingStore;
 import me.limbo56.playersettings.utils.PlayerUtils;
 import me.limbo56.playersettings.utils.PluginUpdater;
 import me.limbo56.playersettings.utils.storage.MapStore;
 import org.bukkit.Bukkit;
-import org.bukkit.inventory.InventoryHolder;
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.UUID;
 
 @Getter
 public class PlayerSettings extends JavaPlugin implements PlayerSettingsApi {
+
+    // Stores
     private ConfigurationStore configurationStore;
     private MapStore<UUID, SPlayer> sPlayerStore;
     private CommandStore commandStore;
-    private SettingsRegistry settingsRegistry;
     private DatabaseTableStore databaseTableStore;
     private ListenerStore listenerStore;
+    private SettingStore settingStore;
 
     // Database
     private DatabaseConnector databaseConnector;
@@ -48,7 +50,7 @@ public class PlayerSettings extends JavaPlugin implements PlayerSettingsApi {
         configurationStore = new ConfigurationStore(this);
         sPlayerStore = new MapStore<>();
         commandStore = new CommandStore();
-        settingsRegistry = new SettingsRegistry(this);
+        settingStore = new SettingStore(this);
         databaseTableStore = new DatabaseTableStore(this);
         listenerStore = new ListenerStore(this);
         databaseConnector = new DatabaseConnector(this);
@@ -58,7 +60,7 @@ public class PlayerSettings extends JavaPlugin implements PlayerSettingsApi {
         configurationStore.register();
         sPlayerStore.register();
         commandStore.register();
-        settingsRegistry.register();
+        settingStore.register();
         databaseTableStore.register();
         listenerStore.register();
 
@@ -87,37 +89,42 @@ public class PlayerSettings extends JavaPlugin implements PlayerSettingsApi {
         // Unregister stores
         sPlayerStore.unregister();
         commandStore.unregister();
-        settingsRegistry.unregister();
+        settingStore.unregister();
         listenerStore.unregister();
         databaseTableStore.unregister();
         configurationStore.unregister();
     }
 
     public void debug(String message) {
-        if (!getConfiguration().getBoolean("debug")) return;
+        if (!getConfiguration().getBoolean("debug")) {
+            return;
+        }
+
         getLogger().info("[DEBUG] " + message);
     }
 
     @Override
     public Setting getSetting(String rawName) {
-        return settingsRegistry.getStored().get(rawName);
+        return settingStore.getStored().get(rawName);
     }
 
     @Override
     public void registerSetting(Setting setting) {
-        settingsRegistry.addToStore(setting.getRawName(), setting);
+        settingStore.addToStore(setting.getRawName(), setting);
     }
 
     @Override
     public void registerCallback(Setting setting, SettingCallback settingCallback) {
-        settingsRegistry.addCallback(setting, settingCallback);
+        settingStore.addCallback(setting, settingCallback);
     }
 
     public void setReloading(boolean reloading) {
-        Bukkit.getOnlinePlayers().forEach(player -> {
-            InventoryHolder holder = player.getOpenInventory().getTopInventory().getHolder();
-            if (holder instanceof SettingsHolder) player.closeInventory();
-        });
+        // Close settings inventories
+        Bukkit.getOnlinePlayers().stream()
+                .filter(player -> player.getOpenInventory().getTopInventory().getHolder() instanceof SettingsHolder)
+                .forEach(HumanEntity::closeInventory);
+
+        // Set reloading
         this.reloading = reloading;
     }
 

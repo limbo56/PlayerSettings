@@ -4,13 +4,13 @@ import com.cryptomorin.xseries.XMaterial;
 import me.limbo56.playersettings.api.Setting;
 import me.limbo56.playersettings.api.SettingCallback;
 import me.limbo56.playersettings.utils.Item;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 public class JumpSetting implements Setting {
+
     @Override
     public String getRawName() {
         return "jump_setting";

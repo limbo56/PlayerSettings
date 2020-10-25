@@ -9,7 +9,8 @@ import org.bukkit.event.Listener;
 
 @AllArgsConstructor
 public class ListenerStore extends CollectionStore<Listener> {
-    private PlayerSettings plugin;
+
+    private final PlayerSettings plugin;
 
     @Override
     public void register() {

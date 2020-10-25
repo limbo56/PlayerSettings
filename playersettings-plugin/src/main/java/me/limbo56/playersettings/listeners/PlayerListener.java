@@ -15,15 +15,16 @@ import java.util.UUID;
 
 @AllArgsConstructor
 public class PlayerListener implements Listener {
-    private PlayerSettings plugin;
+
+    private final PlayerSettings plugin;
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         UUID uuid = event.getPlayer().getUniqueId();
         SettingWatcher settingWatcher = new SimpleSettingWatcher(
                 event.getPlayer(),
-                plugin.getSettingsRegistry().getStored(),
-                plugin.getSettingsRegistry().getCallbacks().getStored()
+                plugin.getSettingStore().getStored(),
+                plugin.getSettingStore().getCallbacks().getStored()
         );
         SPlayer sPlayer = new SPlayer(uuid, settingWatcher);
 

@@ -4,9 +4,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 /**
- * Interface that represents an storage class using a collection
+ * A base implementation of a {@link Store} using a {@link Collection}
+ *
+ * @author David Rodriguez
  */
 public class CollectionStore<T> implements Store<Collection<T>> {
+
     private Collection<T> store;
 
     public void addToStore(T t) {

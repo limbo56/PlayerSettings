@@ -11,9 +11,10 @@ import java.io.IOException;
 
 @Getter
 public abstract class YmlConfiguration extends YamlConfiguration {
-    private PlayerSettings plugin;
-    private String name;
-    private File file;
+
+    private final PlayerSettings plugin;
+    private final String name;
+    private final File file;
 
     public YmlConfiguration(PlayerSettings plugin, String name) {
         this.plugin = plugin;

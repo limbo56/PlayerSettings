@@ -9,6 +9,7 @@ import java.sql.Connection;
 @AllArgsConstructor
 @Getter
 public abstract class DatabaseTask implements Runnable {
-    private PlayerSettings plugin;
-    private Connection connection;
+
+    private final PlayerSettings plugin;
+    private final Connection connection;
 }

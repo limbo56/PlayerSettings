@@ -13,8 +13,9 @@ import java.util.List;
 import java.util.stream.Stream;
 
 public class ConfigurationSetting implements Setting {
-    private String rawName;
-    private ConfigurationSection section;
+
+    private final String rawName;
+    private final ConfigurationSection section;
 
     public ConfigurationSetting(String rawName) {
         this.rawName = rawName;

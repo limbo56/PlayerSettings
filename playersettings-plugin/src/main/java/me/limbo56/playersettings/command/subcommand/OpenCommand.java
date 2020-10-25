@@ -11,6 +11,7 @@ import org.bukkit.entity.Player;
 import static me.limbo56.playersettings.utils.PlayerUtils.isAllowedWorld;
 
 public class OpenCommand extends CommandBase {
+
     public OpenCommand() {
         super(1, "open", "", "Opens the main menu", null);
     }

@@ -1,8 +1,15 @@
 package me.limbo56.playersettings.api;
 
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+/**
+ * Represents a setting that can be toggled by a {@link Player}
+ *
+ * @author David Rodriguez
+ */
 public interface Setting {
+
     /**
      * Gets the raw name of the setting
      *

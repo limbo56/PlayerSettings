@@ -12,8 +12,9 @@ import java.util.UUID;
 @AllArgsConstructor
 @Getter
 public class SPlayer {
-    private UUID uuid;
-    private SettingWatcher settingWatcher;
+
+    private final UUID uuid;
+    private final SettingWatcher settingWatcher;
 
     public void loadPlayer() {
         // Try player to load settings
