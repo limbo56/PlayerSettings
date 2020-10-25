@@ -17,5 +17,6 @@ public class PluginConfiguration extends YmlConfiguration {
         addDefault("Database.name", "player_settings");
         addDefault("Database.user", "root");
         addDefault("Database.password", "");
+        addDefault("Database.useSSL", true);
     }
 }
