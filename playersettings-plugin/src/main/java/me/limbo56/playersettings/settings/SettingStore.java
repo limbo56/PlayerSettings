@@ -25,6 +25,7 @@ public class SettingStore extends MapStore<String, Setting> {
         SpeedSetting speedSetting = new SpeedSetting();
         FlySetting flySetting = new FlySetting();
         JumpSetting jumpSetting = new JumpSetting();
+        StackerSetting stackerSetting = new StackerSetting();
         VanishSetting vanishSetting = new VanishSetting();
         VisibilitySetting visibilitySetting = new VisibilitySetting();
 
@@ -33,7 +34,7 @@ public class SettingStore extends MapStore<String, Setting> {
         addToStore(new ChatSettings());
         addToStore(flySetting);
         addToStore(jumpSetting);
-        addToStore(new StackerSetting());
+        addToStore(stackerSetting);
         addToStore(vanishSetting);
         addToStore(visibilitySetting);
 
@@ -41,6 +42,7 @@ public class SettingStore extends MapStore<String, Setting> {
         addCallback(speedSetting, new SpeedSetting.SpeedSettingCallback());
         addCallback(flySetting, new FlySetting.FlySettingCallback());
         addCallback(jumpSetting, new JumpSetting.JumpSettingCallback());
+        addCallback(stackerSetting, new StackerSetting.StackerSettingCallback());
         addCallback(vanishSetting, new VanishSetting.VanishSettingCallback());
         addCallback(visibilitySetting, new VisibilitySetting.VisibilitySettingCallback());
 
