@@ -28,7 +28,7 @@ public class DatabaseConnector {
         // Initialize data source
         hikariDataSource = new HikariDataSource();
         hikariDataSource.setMaximumPoolSize(10);
-        hikariDataSource.setDataSourceClassName("com.mysql.jdbc.jdbc2.optional.MysqlDataSource");
+        hikariDataSource.setDataSourceClassName("com.mysql.jdbc.Driver");
         hikariDataSource.addDataSourceProperty("serverName", host);
         hikariDataSource.addDataSourceProperty("port", port);
         hikariDataSource.addDataSourceProperty("databaseName", databaseName);
