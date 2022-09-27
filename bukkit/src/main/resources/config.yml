@@ -1,0 +1,100 @@
+#======================================================================#
+#                                                                      #
+#  ██████╗ ██╗      █████╗ ██╗   ██╗███████╗██████╗                    #
+#  ██╔══██╗██║     ██╔══██╗╚██╗ ██╔╝██╔════╝██╔══██╗                   #
+#  ██████╔╝██║     ███████║ ╚████╔╝ █████╗  ██████╔╝                   #
+#  ██╔═══╝ ██║     ██╔══██║  ╚██╔╝  ██╔══╝  ██╔══██╗                   #
+#  ██║     ███████╗██║  ██║   ██║   ███████╗██║  ██║                   #
+#  ╚═╝     ╚══════╝╚═╝  ╚═╝   ╚═╝   ╚══════╝╚═╝  ╚═╝                   #
+#                                                                      #
+#    ███████╗███████╗████████╗████████╗██╗███╗   ██╗ ██████╗ ███████╗  #
+#    ██╔════╝██╔════╝╚══██╔══╝╚══██╔══╝██║████╗  ██║██╔════╝ ██╔════╝  #
+#    ███████╗█████╗     ██║      ██║   ██║██╔██╗ ██║██║  ███╗███████╗  #
+#    ╚════██║██╔══╝     ██║      ██║   ██║██║╚██╗██║██║   ██║╚════██║  #
+#    ███████║███████╗   ██║      ██║   ██║██║ ╚████║╚██████╔╝███████║  #
+#    ╚══════╝╚══════╝   ╚═╝      ╚═╝   ╚═╝╚═╝  ╚═══╝ ╚═════╝ ╚══════╝  #
+#                                                                      #
+#======================================================================#
+#
+# WARNING:
+# The configuration files may change with new versions of the plugin. You will need to copy the
+# changes over to your local files, or generate new configuration files.
+#
+# You can find the latest version of all the configuration files here:
+# https://github.com/limbo56/PlayerSettings/wiki/Configurations
+#
+
+# This section has the general configuration properties for the plugin
+general:
+  debug: false
+  # List of worlds where the plugin will be enabled
+  #
+  # * You can place the '*' symbol in the list to enable the plugin in all the worlds
+  worlds:
+    - "world"
+  # List of metadata tags to treat as NPCs. This is used to ignore targets of the stacker setting
+  #
+  # * By default, the "Citizens" plugin adds the "NPC" metadata tag to all of its entities
+  npc-metadata:
+    - "NPC"
+
+# This section has the configuration properties for the settings menu
+menu:
+  name: "&6&lSettings"
+  size: 54
+  # This section defines sounds that are played when a player interacts with a setting
+  #
+  # Format: [Sound], [Volume], [Pitch]
+  # Examples:
+  # - ENTITY_PLAYER_BURP, 2.5f, 0.5
+  # - ENTITY_PLAYER_BURP, 0.5, 1f
+  # - MUSIC_END, 10f
+  sounds:
+    setting-toggle-on: "BLOCK_NOTE_BLOCK_HARP, 1, 1"
+    setting-toggle-off: "BLOCK_NOTE_BLOCK_HARP, 1, -99"
+
+# This section has the configuration properties of the data storage manager
+storage:
+  enabled: false
+  # The host address and port of the database
+  #
+  # Format: [Host]:[Port]
+  host: "localhost:3306"
+  # The name of the database to store PlayerSettings data in
+  #
+  # * The database must already exist before running the plugin!
+  database: "player_settings"
+  # The credentials used to authenticate with the database and establish connections
+  username: "root"
+  password: "root"
+  # This section defines properties that control how connections are managed by the plugin
+  pool:
+    # This value controls the maximum number of connections to the database
+    # https://github.com/brettwooldridge/HikariCP/wiki/About-Pool-Sizing
+    maximum-pool-size: 10
+    # This property controls the minimum number of idle connections to maintain in the pool
+    #
+    # * For maximum performance and responsiveness to spike demands, we recommend not setting this
+    #   value and instead allowing the pool to act as a fixed size connection pool
+    #   (set this value to the same as 'maximum-pool-size')
+    minimum-idle: 10
+    # This property controls the maximum lifetime in milliseconds of a connection in the pool
+    #
+    # * We strongly recommend setting this value to at least 30 seconds shorter than any database
+    #   or infrastructure imposed connection time limit
+    max-lifetime: 1800000 # 30 minutes
+    # This property controls how frequently the pool will attempt to keep a connection alive, in
+    # order to prevent it from being timed out by the database or network infrastructure
+    #
+    # * This value must be less than the 'max-lifetime' value
+    # * Setting the value to zero will disable the keepalive functionality
+    keepalive-time: 0
+    # This property controls the maximum number of milliseconds that the plugin will wait for a
+    # connection from the pool before timing out
+    connection-timeout: 5000 # 5 seconds
+  # This section contains extra properties for the connection
+  properties:
+    use-unicode: true
+    character-encoding: utf8
+    use-ssl: false
+    verify-server-certificate: false

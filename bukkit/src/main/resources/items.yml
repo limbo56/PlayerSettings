@@ -1,0 +1,86 @@
+# Format:
+#
+# | A unique name to identify this item or the name of the setting that it's displaying
+# example-setting:
+#   | The slot of the menu in which the item will be placed
+#   slot: 4
+#
+#   | The page of the menu where the item will appear
+#   page: 1
+#
+#   | The display name of the item
+#   name: "&aExample"
+#
+#   | The material of the item (https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html)
+#   | Format: [Material](:[Data])
+#   | Examples:
+#     - DIAMOND_SWORD
+#     - INK_SACK:10
+#   material: "LIME_WOOL"
+#
+#   | The amount of the item to show in the stack
+#   amount: 1
+#
+#   | A list of text that will be set as the lore of the item
+#   lore:
+#     - "&aExample lore"
+#
+# Examples:
+#
+# premium-setting:
+#   page: 1
+#   slot: 34
+#   name: '&dPremium'
+#   material: JUKEBOX
+#   amount: 1
+#   lore:
+#     - '&7Toggle your account as authenticated and skip the login step!'
+#     - ''
+#     - '&f&lClick &7to toggle'
+#
+# radio-setting:
+#   page: 1
+#   slot: 34
+#   name: '&dRadio'
+#   material: JUKEBOX
+#   amount: 1
+#   lore:
+#     - '&7Resume and pause the active radio song!'
+#     - ''
+#     - '&f&lClick &7to toggle'
+
+# This section defines the display properties of the toggle on item
+enabled:
+  name: "&aOn"
+  material: "INK_SACK:10"
+  amount: 1
+  lore:
+    - ""
+    - "&f&lClick &7to &cdisable"
+
+# This section defines the display properties of the toggle off item
+disabled:
+  name: "&cOff"
+  material: "INK_SACK:8"
+  amount: 1
+  lore:
+    - ""
+    - "&f&lClick &7to &aenable"
+
+next-page:
+  slot: 53
+  name: "&aNext page &7(%current%/%max%)"
+  material: "ARROW:1"
+  amount: 1
+  lore:
+    - ""
+    - "&f&lClick &7to go to the next page"
+
+previous-page:
+  slot: 45
+  name: "&cPrevious page &7(%current%/%max%)"
+  material: "ARROW:0"
+  amount: 1
+  lore:
+    - ""
+    - "&f&lClick &7to go to the previous page"

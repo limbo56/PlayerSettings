@@ -1,51 +1,53 @@
+[logo]: https://i.imgur.com/d2mkPIL.png
+
+[logo-link]: https://www.spigotmc.org/resources/player-settings.14622/
+
+[license]:https://img.shields.io/github/license/limbo56/PlayerSettings?color=F3722B&
+
+[license-link]: https://github.com/limbo56/PlayerSettings/blob/master/LICENSE
+
+[discord]: https://img.shields.io/discord/222447071163056129?color=F3722B&label=discord
+
+[discord-link]: https://discord.gg/6gkkJ6y
+
+[feature-report-template]: https://github.com/limbo56/PlayerSettings/issues/new?assignees=&labels=enhancement&template=feature_request.md&title=%5BFEATURE%5D
+
+[bug-report-template]: https://github.com/limbo56/PlayerSettings/issues/new?assignees=&labels=bug%2C+enhancement&template=bug_report.md&title=%5BBUG%5D
+
+[![Player Settings logo][logo]][logo-link]
+
+[![Github License][license]][license-link]
+[![Discord link][discord]][discord-link]
+
 # Player Settings
-A plugin which allows the creation of custom 
-in-game settings in Minecraft servers. Supports Spigot/Bukkit 1.8 - 1.14.2.
+
+A Spigot/Bukkit plugin with an in-game settings menu for players in Minecraft servers. The plugin
+includes some predefined settings by default that can be disabled. It also provides a configuration
+section and API to define custom settings.
+
+## Requirements
+
+The plugin supports API versions **1.8-1.19 of Spigot/Bukkit/Paper** and requires at minimum **Java
+8** to be used.
 
 ## Wiki
-The wiki contains a lot of information about the plugin
-and could help you to have a better understanding of how it works. 
-It also contains information on how to use the api.
-Before asking for help or making an issue, please refer to the wiki
-and try to find a fix for your issue.
-Clearly, if this does not work, you can open an issue.
 
-Read the wiki here: [Wiki](https://github.com/limbo56/PlayerSettings/wiki)
+You can find additional information about the plugin and help with frequently asked questions in the
+[Wiki](https://github.com/limbo56/PlayerSettings/wiki) page.
+
+Please refer to the Wiki before asking for help. If you cannot find a solution using the Wiki, feel
+free to ask for help in the discord server or open an issue.
 
 ## Issues
-Before opening any issues, make sure you use one of
-the templates we provide.
 
-* [Feature request template](https://github.com/limbo56/PlayerSettings/blob/master/.github/ISSUE_TEMPLATE/feature_request.md)
-* [Bug report template](https://github.com/limbo56/PlayerSettings/blob/master/.github/ISSUE_TEMPLATE/bug_report.md)
+If you are creating an issue, make sure to use the appropriate template from the ones below:
 
-## Installing
-Java 8 or above is required to use this API. Older versions will not work.
-
-First you will need to add the JitPack repository to your `pom.xml` file.
-```xml
-<repositories>
-    <repository>
-        <id>jitpack.io</id>
-        <url>https://jitpack.io</url>
-    </repository>
-</repositories>
-```
-Next you need to add the `playersettings-api` as a dependency.
-```xml
-<dependencies>
-    <dependency>
-        <groupId>com.github.limbo56.PlayerSettings</groupId>
-        <artifactId>playersettings-api</artifactId>
-        <version>master-SNAPSHOT</version>
-    </dependency>
-</dependencies>
-```
+* [Feature request template][feature-report-template]
+* [Bug report template][bug-report-template]
 
 ## License
-This repository is under the MIT License.
-Before doing anything, make sure to [read it](https://github.com/limbo56/PlayerSettings/blob/master/LICENSE).
 
-## Links
-* [Discord](https://discordapp.com/invite/6gkkJ6y)
-* [Plugin Page](https://www.spigotmc.org/resources/player-settings.14622/)
+This repository is licensed under
+the [MIT License](https://github.com/limbo56/PlayerSettings/blob/master/LICENSE). Make sure to read
+it before cloning or using
+this resource.

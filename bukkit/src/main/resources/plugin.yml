@@ -1,0 +1,9 @@
+name: PlayerSettings
+version: ${revision}
+main: me.limbo56.playersettings.PlayerSettings
+authors: [ limbo56, Maxetto, BullCheat ]
+api-version: 1.13
+prefix: "PlayerSettings"
+commands:
+  settings:
+    description: Main command of PlayerSettings.

@@ -1,0 +1,36 @@
+# If you want to disable a message, you can leave empty quotes as the message
+#
+# Examples:
+# - prefix: ""
+# - setting-changed: ""
+
+# This property is the prefix that will be appended to every message sent by the plugin
+prefix: "&f&l(&6Settings&f&l) &f"
+
+settings:
+  no-access: "&cYou don't have permissions to toggle this setting"
+  # %setting% - The name of the setting the user tried to change
+  # %max% - The maximum value this user can change the level of this setting to
+  low-access-level: "&cNot enough permissions. You can only set setting &6%setting% &cto &e%max%!"
+  no-settings-data: "&cNo settings data found for your account"
+  wait-loading: "&cPlease wait until your settings load before doing any changes"
+
+commands:
+  no-access: "&cYou don't have permissions to use this command"
+  # %setting% - The name of the setting the user tried to change
+  setting-not-found: "&cThe setting &6%setting% &cwasn't found!"
+  # %max% - The maximum value this user can change the level of this setting to
+  setting-invalid-level: "&cIncorrect value! &cThe only accepted values are: &aon&c, &coff&c, &e0-%max%"
+  # %setting% - The name of the setting that was changed
+  # %value% - The value the setting was changed to
+  setting-changed: "Setting &6%setting% &fhas been set to &e%value%"
+  setting-show: "&6%setting% &f- &e%value%"
+  setting-unchanged: "&cThe setting &6%setting% &cis already set to &e%value%"
+
+stacker:
+  self-disabled: "&cYou have the &6stacker &csetting disabled!"
+  target-disabled: "&cThat player has the &6stacker &csetting disabled!"
+  target-invalid-entity: "&cYou can't stack that entity!"
+
+chat:
+  self-disabled: "&cYou have the &6chat &csetting disabled!"
