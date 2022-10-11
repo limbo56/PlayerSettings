@@ -24,18 +24,14 @@ public class FlySettingListener implements Listener {
     }
 
     SettingUser user = optionalUser.get();
-    String flySettingName = FLY_SETTING.getSetting().getName();
-    if (!user.hasSettingEnabled(flySettingName)) {
-      return;
-    }
-
     SettingWatcher settingWatcher = user.getSettingWatcher();
+    String flySettingName = FLY_SETTING.getSetting().getName();
     int flySetting = settingWatcher.getValue(flySettingName);
-    if (!event.isFlying()) {
+    if (!user.hasSettingEnabled(flySettingName) || !event.isFlying()) {
       return;
     }
 
-    settingWatcher.setValue(flySettingName, Math.max(1, -flySetting), false);
+    settingWatcher.setValue(flySettingName, flySetting, false);
   }
 
   @EventHandler

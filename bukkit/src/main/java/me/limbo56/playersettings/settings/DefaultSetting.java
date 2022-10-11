@@ -161,7 +161,6 @@ public enum DefaultSetting {
 
             float flySpeed = Math.max(1, value) * 0.1F;
             player.setFlySpeed(flySpeed);
-            player.setFlying(value > 0);
           };
       private static final ItemStack ITEM =
           ItemBuilder.builder()
