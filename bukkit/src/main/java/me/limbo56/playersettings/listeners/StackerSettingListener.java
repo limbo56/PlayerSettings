@@ -80,7 +80,7 @@ public class StackerSettingListener implements Listener {
     Entity target = player.getPassenger();
     boolean isTargetNotAPlayer = !(target instanceof Player);
     boolean actionIsNotLeftClick = event.getAction() != Action.LEFT_CLICK_AIR;
-    boolean playerHasNoPassenger = player.getPassengers().size() == 0;
+    boolean playerHasNoPassenger = player.getPassenger() == null;
     if (isTargetNotAPlayer
         || actionIsNotLeftClick
         || playerHasNoPassenger
@@ -128,8 +128,8 @@ public class StackerSettingListener implements Listener {
       vehicle.removePassenger(player);
     }
 
-    List<Entity> passengers = player.getPassengers();
-    if (passengers.size() > 0) {
+    Entity passenger = player.getPassenger();
+    if (passenger != null) {
       player.eject();
     }
   }

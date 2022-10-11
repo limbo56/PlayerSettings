@@ -10,15 +10,11 @@ import me.limbo56.playersettings.user.SettingUser;
 
 public class SaveUsersTask extends DatabaseTask {
   private static final String SAVE_PLAYER_QUERY =
-      "INSERT INTO playersettings_settings(owner, settingName, value) "
+      "INSERT INTO playersettings_settings (owner, settingName, value) "
           + "VALUES (?, ?, ?) "
-          + "ON DUPLICATE KEY "
-          + "UPDATE value = VALUES(value)";
+          + "ON DUPLICATE KEY UPDATE value = VALUES(value)";
   private static final String SAVE_PLAYER_QUERY_SQLITE =
-      "INSERT INTO playersettings_settings(owner, settingName, value) "
-          + "VALUES (?, ?, ?) "
-          + "ON CONFLICT(owner, settingName) "
-          + "DO UPDATE SET value = excluded.value";
+      "INSERT OR REPLACE INTO playersettings_settings (owner, settingName, value) VALUES (?, ?, ?)";
   private final Collection<SettingUser> players;
   private final String query;
 
