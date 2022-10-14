@@ -19,8 +19,10 @@ jobs:
           distribution: 'adopt'
           cache: maven
       - name: Build with Maven
-        run: mvn --batch-mode --update-snapshots package && mkdir artifacts && cp target/*.jar artifacts
-      - uses: actions/upload-artifact@v3
+        run: mvn --batch-mode --update-snapshots package
+      - name: Copy build artifacts
+        run: mkdir artifacts && cp bukkit/target/*.jar artifacts
+      - name: Package artifacts
+        uses: actions/upload-artifact@v3
         with:
-          name: Package artifacts
           path: artifacts
