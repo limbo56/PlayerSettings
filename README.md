@@ -2,7 +2,7 @@
 
 [logo-link]: https://www.spigotmc.org/resources/player-settings.14622/
 
-[license]:https://img.shields.io/github/license/limbo56/PlayerSettings?color=F3722B&
+[license]:https://img.shields.io/github/license/limbo56/PlayerSettings?color=F3722B
 
 [license-link]: https://github.com/limbo56/PlayerSettings/blob/master/LICENSE
 
@@ -28,7 +28,7 @@ section and API to define custom settings.
 ## Requirements
 
 The plugin supports API versions **1.8-1.19 of Spigot/Bukkit/Paper** and requires at minimum **Java
-8** to be used.
+11** to be used.
 
 ## Wiki
 
