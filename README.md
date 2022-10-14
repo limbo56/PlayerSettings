@@ -10,13 +10,16 @@
 
 [discord-link]: https://discord.gg/6gkkJ6y
 
+[build-status]: https://img.shields.io/github/workflow/status/limbo56/PlayerSettings/Java%20CI
+
 [feature-report-template]: https://github.com/limbo56/PlayerSettings/issues/new?assignees=&labels=enhancement&template=feature_request.md&title=%5BFEATURE%5D
 
 [bug-report-template]: https://github.com/limbo56/PlayerSettings/issues/new?assignees=&labels=bug%2C+enhancement&template=bug_report.md&title=%5BBUG%5D
 
 [![Player Settings logo][logo]][logo-link]
 
-[![Github License][license]][license-link]
+![Build status][build-status]
+[![Project license][license]][license-link]
 [![Discord link][discord]][discord-link]
 
 # Player Settings
