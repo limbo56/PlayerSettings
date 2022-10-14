@@ -91,6 +91,9 @@ cmake-build-release/
 out/
 .idea/
 
+# Fleet
+.fleet
+
 # mpeltonen/sbt-idea plugin
 .idea_modules/
 

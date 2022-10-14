@@ -1,0 +1,62 @@
+# Format:
+#
+# | A unique name to identify this setting
+# example-setting:
+#   | Property to toggle the setting
+#   enabled: true
+#
+#   | The default value that players will have for this setting
+#   default: 0
+#
+#   | The max value that this setting can be set to
+#   | * This property is optional, by default all settings will have a max value of 1
+#   max: 1
+#
+#   | Toggle of whether the setting effects/commands should be executed when the player joins
+#   executeOnJoin: false
+#
+#   | Toggleable settings:
+#   | A list of commands that will be executed when the setting is enabled and disabled
+#   |
+#   | * If the 'values' property is defined these callbacks will be ignored
+#   onEnable:
+#     - "me %player% %value%"
+#   onDisable:
+#     - "me %player% %value%"
+#
+#   | Multi level settings:
+#   | A map of values that each hold a list of commands that will be executed respective to the
+#   | value of the setting
+#   |
+#   | * You can run a command in the console by appending 'SUDO ' to the command
+#   | * The 'default' section allows your setting to fallback to a default list of commands when the
+#   |   value the setting was changed to is not defined in this list
+#   values:
+#     0:
+#       - "me %player% %value%"
+#     1:
+#       - "me %player% %value%"
+#     default:
+#       - "me %player% %value%"
+#
+# Examples:
+#
+# | AuthMeReloaded https://www.spigotmc.org/resources/authmereloaded.6269/
+# premium-setting:
+#   enabled: true
+#   default: 0
+#   executeOnJoin: false
+#   onEnable:
+#     - "SUDO premium %player%"
+#   onDisable:
+#     - "SUDO cracked %player%"
+#
+# | GMusic https://www.spigotmc.org/resources/gmusic-%E2%9C%A8-modern-jukebox-music-note-block-plugin-1-13-x-1-19-x.84004/
+# radio-setting:
+#   enabled: true
+#   default: 0
+#   executeOnJoin: false
+#   onEnable:
+#     - "music resume"
+#   onDisable:
+#     - "music pause"
