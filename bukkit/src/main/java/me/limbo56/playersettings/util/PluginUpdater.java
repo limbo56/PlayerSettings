@@ -33,7 +33,7 @@ public class PluginUpdater {
 
   private static void getOrRefreshUpdateMessage(Consumer<String> consumer) {
     Instant lastUpdated = PluginUpdater.lastUpdated.get();
-    if (lastUpdated == null || lastUpdated.plus(15, ChronoUnit.MINUTES).isAfter(Instant.now())) {
+    if (lastUpdated == null || Instant.now().isAfter(lastUpdated.plus(15, ChronoUnit.MINUTES))) {
       Bukkit.getScheduler()
           .runTaskAsynchronously(
               plugin,
