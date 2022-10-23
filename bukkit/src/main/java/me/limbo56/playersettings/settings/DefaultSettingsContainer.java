@@ -1,7 +1,6 @@
 package me.limbo56.playersettings.settings;
 
 import com.google.common.base.Preconditions;
-import com.google.common.base.Predicates;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
@@ -35,8 +34,7 @@ public class DefaultSettingsContainer implements SettingsContainer {
       }
 
       YamlConfiguration itemsConfiguration = plugin.getItemsConfiguration();
-      ConfigUtil.configureSerializable(
-          itemsConfiguration, settingName, setting.getItem());
+      ConfigUtil.configureSerializable(itemsConfiguration, settingName, setting.getItem());
       try {
         File pluginFile = ConfigUtil.getPluginFile("items.yml");
         itemsConfiguration.save(pluginFile);
@@ -79,7 +77,7 @@ public class DefaultSettingsContainer implements SettingsContainer {
     // Log removed settings
     Collection<String> removedSettings =
         settings.stream()
-            .filter(Predicates.not(PlayerSettingsProvider::isSettingConfigured))
+            .filter(setting -> !PlayerSettingsProvider.isSettingConfigured(setting))
             .collect(Collectors.toList());
     removedSettings.forEach(
         removedSetting -> plugin.getLogger().info("Removed setting '" + removedSetting + "'"));
@@ -87,7 +85,7 @@ public class DefaultSettingsContainer implements SettingsContainer {
     // Log disabled settings
     Collection<String> disabledSettings =
         settings.stream()
-            .filter(Predicates.not(removedSettings::contains))
+            .filter(setting -> !removedSettings.contains(setting))
             .filter(setting -> !plugin.getSettingsConfiguration().getSetting(setting).isEnabled())
             .collect(Collectors.toList());
     disabledSettings.forEach(
@@ -95,8 +93,8 @@ public class DefaultSettingsContainer implements SettingsContainer {
 
     // Load settings
     settings.stream()
-        .filter(Predicates.not(removedSettings::contains))
-        .filter(Predicates.not(disabledSettings::contains))
+        .filter(setting -> !removedSettings.contains(setting))
+        .filter(setting -> !disabledSettings.contains(setting))
         .map(setting -> plugin.getSettingsConfiguration().getSetting(setting))
         .forEach(
             setting -> {

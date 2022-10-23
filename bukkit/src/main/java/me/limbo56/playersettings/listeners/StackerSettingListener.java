@@ -2,7 +2,6 @@ package me.limbo56.playersettings.listeners;
 
 import static me.limbo56.playersettings.settings.DefaultSetting.STACKER_SETTING;
 
-import java.util.List;
 import me.limbo56.playersettings.PlayerSettings;
 import me.limbo56.playersettings.PlayerSettingsProvider;
 import me.limbo56.playersettings.api.event.SettingUpdateEvent;

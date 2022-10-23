@@ -24,7 +24,7 @@ import me.limbo56.playersettings.listeners.PlayerListener;
 import me.limbo56.playersettings.settings.DefaultSetting;
 import me.limbo56.playersettings.settings.DefaultSettingsContainer;
 import me.limbo56.playersettings.user.SettingUserManager;
-import me.limbo56.playersettings.util.DebugLogHandler;
+import me.limbo56.playersettings.util.PluginLogHandler;
 import me.limbo56.playersettings.util.PluginUpdater;
 import org.bukkit.Bukkit;
 import org.bukkit.command.PluginCommand;
@@ -75,7 +75,7 @@ public class PlayerSettings extends JavaPlugin {
     }
 
     // Setup debug logger
-    getLogger().addHandler(new DebugLogHandler());
+    getLogger().addHandler(new PluginLogHandler());
     if (pluginConfiguration.getBoolean("general.debug")) {
       getLogger().setLevel(Level.FINE);
     }
