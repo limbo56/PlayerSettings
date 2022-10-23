@@ -9,6 +9,7 @@ import me.limbo56.playersettings.configuration.ConfigurationManager;
 import me.limbo56.playersettings.menu.SettingsInventory;
 import me.limbo56.playersettings.settings.DefaultSettingsContainer;
 import me.limbo56.playersettings.user.SettingUserManager;
+import me.limbo56.playersettings.util.PluginLogHandler;
 import me.limbo56.playersettings.util.Text;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -32,7 +33,7 @@ public class ReloadSubCommand extends SubCommand {
   @Override
   public void execute(@NotNull CommandSender sender, @NotNull String @NotNull [] args) {
     Player player = (Player) sender;
-    plugin.getLogger().info(ChatColor.YELLOW + "Reloading plugin...");
+    PluginLogHandler.log(ChatColor.YELLOW + "Reloading plugin...");
     Text.from(
             "&cThis command could potentially break the plugin or lag your server. "
                 + "Please refrain from using it on a live server and only while configuring the plugin.")
@@ -67,7 +68,7 @@ public class ReloadSubCommand extends SubCommand {
 
     // Send successfully reloaded message
     plugin.setReloading(false);
-    plugin.getLogger().info(ChatColor.GREEN + "Plugin reloaded successfully!");
+    PluginLogHandler.log(ChatColor.GREEN + "Plugin reloaded successfully!");
     Text.from("&aThe settings configuration has been reloaded")
         .sendMessage(player, PlayerSettingsProvider.getMessagePrefix());
   }
