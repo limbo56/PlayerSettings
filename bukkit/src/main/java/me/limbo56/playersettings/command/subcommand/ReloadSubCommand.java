@@ -5,10 +5,7 @@ import java.util.List;
 import me.limbo56.playersettings.PlayerSettings;
 import me.limbo56.playersettings.PlayerSettingsProvider;
 import me.limbo56.playersettings.command.SubCommand;
-import me.limbo56.playersettings.configuration.ConfigurationManager;
 import me.limbo56.playersettings.menu.SettingsInventory;
-import me.limbo56.playersettings.settings.DefaultSettingsContainer;
-import me.limbo56.playersettings.user.SettingUserManager;
 import me.limbo56.playersettings.util.PluginLogHandler;
 import me.limbo56.playersettings.util.Text;
 import org.bukkit.Bukkit;
@@ -46,25 +43,21 @@ public class ReloadSubCommand extends SubCommand {
         .forEach(HumanEntity::closeInventory);
 
     // Unload users
-    SettingUserManager userManager = plugin.getUserManager();
-    userManager.unloadAllUsers();
+    plugin.getUserManager().unloadAllUsers();
 
     // Disconnect data manager
     plugin.getDataManager().disconnect();
 
     // Clear data
-    ConfigurationManager configurationManager = plugin.getConfigurationManager();
-    DefaultSettingsContainer settingManager = plugin.getSettingsContainer();
-    configurationManager.reloadConfigurations();
-    settingManager.reloadLoadedSettings();
-    settingManager.loadSettingsFromConfiguration();
+    plugin.getConfigurationManager().reloadConfigurations();
+    plugin.getSettingsContainer().reloadSettings();
 
     // Connect data manager
     plugin.initializeDataManager();
     plugin.getDataManager().connect();
 
     // Load users
-    userManager.loadOnlineUsers();
+    plugin.getUserManager().loadOnlineUsers();
 
     // Send successfully reloaded message
     plugin.setReloading(false);

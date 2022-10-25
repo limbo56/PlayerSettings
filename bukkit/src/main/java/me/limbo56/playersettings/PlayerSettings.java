@@ -93,7 +93,7 @@ public class PlayerSettings extends JavaPlugin {
 
     getLogger().info("Loading default settings...");
     DefaultSetting.getSettings().forEach(settingsContainer::registerSetting);
-    settingsContainer.loadSettingsFromConfiguration();
+    settingsConfiguration.getSettingsFromConfiguration().forEach(settingsContainer::loadSetting);
 
     // Load commands, listeners and online players
     SubCommandExecutor executor = new SubCommandExecutor();
@@ -128,7 +128,7 @@ public class PlayerSettings extends JavaPlugin {
     userManager.invalidateAll();
     listenerManager.unregisterAll();
     commandManager.unregisterAll();
-    settingsContainer.clear();
+    settingsContainer.unloadAll();
     configurationManager.invalidateAll();
   }
 

@@ -2,9 +2,9 @@ package me.limbo56.playersettings.configuration;
 
 import static me.limbo56.playersettings.settings.SettingParser.SETTING_PARSER;
 
+import com.google.common.base.Preconditions;
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -16,9 +16,6 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 public class SettingsConfiguration implements PluginConfiguration {
-  private static final Collection<String> CUSTOM_SETTING_PROPERTIES =
-      Arrays.asList("onEnable", "onDisable", "values");
-
   public void configureSetting(Setting setting) {
     YamlConfiguration settingsConfiguration = getFile();
     String settingName = setting.getName();
@@ -40,41 +37,31 @@ public class SettingsConfiguration implements PluginConfiguration {
     return getFile().contains(settingName);
   }
 
-  public Setting getSetting(Setting setting) {
-    Setting parsedSetting = getSetting(setting.getName());
+  public Setting getConfiguredSetting(Setting setting) {
+    Setting parsedSetting = getSettingByName(setting.getName());
     return ImmutableSetting.copyOf(parsedSetting)
         .withListeners(setting.getListeners())
         .withCallbacks(setting.getCallbacks());
   }
 
-  public Setting getSetting(String settingName) {
-    return SETTING_PARSER.parse(getFile().getConfigurationSection(settingName));
+  public Setting getSettingByName(String settingName) {
+    ConfigurationSection section =
+        Preconditions.checkNotNull(
+            getFile().getConfigurationSection(settingName),
+            "Failed to find setting '" + settingName + "'");
+    return SETTING_PARSER.parse(section);
   }
 
   public Collection<Setting> getSettingsFromConfiguration() {
     YamlConfiguration settingsConfiguration = getFile();
     return settingsConfiguration.getKeys(false).stream()
-        .map(this::getSetting)
+        .map(this::getSettingByName)
         .filter(Objects::nonNull)
         .collect(Collectors.toList());
-  }
-
-  public SettingType getSettingType(ConfigurationSection section) {
-    Collection<String> sectionKeys = section.getKeys(false);
-    if (sectionKeys.containsAll(CUSTOM_SETTING_PROPERTIES)) {
-      return SettingType.CUSTOM_SETTING;
-    } else {
-      return SettingType.SETTING;
-    }
   }
 
   @Override
   public String getFileName() {
     return "settings.yml";
-  }
-
-  private enum SettingType {
-    CUSTOM_SETTING,
-    SETTING
   }
 }

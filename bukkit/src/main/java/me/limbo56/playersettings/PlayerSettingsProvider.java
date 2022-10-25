@@ -23,6 +23,14 @@ public final class PlayerSettingsProvider {
     PlayerSettingsProvider.plugin = plugin;
   }
 
+  public static Setting getConfiguredSetting(Setting setting) {
+    return plugin.getSettingsConfiguration().getConfiguredSetting(setting);
+  }
+
+  public static Setting getSettingByName(String name) {
+    return plugin.getSettingsConfiguration().getSettingByName(name);
+  }
+
   public static boolean isAllowedWorld(String name) {
     List<String> worldList = plugin.getPluginConfiguration().getStringList("general.worlds");
     return worldList.contains(name) || worldList.contains("*");
