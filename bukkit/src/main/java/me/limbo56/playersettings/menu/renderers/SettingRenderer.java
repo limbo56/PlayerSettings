@@ -4,6 +4,7 @@ import static me.limbo56.playersettings.menu.ItemParser.ITEM_PARSER;
 
 import com.google.common.base.Preconditions;
 import java.util.Collection;
+import java.util.List;
 import me.limbo56.playersettings.PlayerSettings;
 import me.limbo56.playersettings.PlayerSettingsProvider;
 import me.limbo56.playersettings.api.setting.Setting;
@@ -35,14 +36,19 @@ public class SettingRenderer implements ItemRenderer {
     int menuSize = inventory.getSize();
     int slot = setting.getItem().getSlot();
     if (!isWithinBounds(menuSize, slot)) {
-      String settingWarning = "Setting %s is not between the bounds of the menu (%d-%d)";
-      plugin.getLogger().warning(String.format(settingWarning, settingName, 0, menuSize));
+      String settingWarning =
+          "Setting '"
+              + settingName
+              + "' is not between the bounds of the menu (0-"
+              + menuSize
+              + ")";
+      plugin.getLogger().warning(settingWarning);
       return;
     }
 
     // Render setting item
     int value = inventory.getUser().getSettingWatcher().getValue(settingName);
-    ItemStack settingItem = buildSettingItem(setting, value);
+    ItemStack settingItem = buildSettingItem(inventory, setting, value);
     inventory.renderItem(
         new InventoryItem(slot, settingItem, new AugmentSettingAction(this, inventory, setting)));
 
@@ -55,24 +61,33 @@ public class SettingRenderer implements ItemRenderer {
         new InventoryItem(slot + 9, toggleItem, new ToggleSettingAction(this, inventory, setting)));
   }
 
-  private ItemStack buildSettingItem(Setting setting, int value) {
-    ItemStack itemStack = setting.getItem().getItemStack().clone();
-    itemStack.setAmount(Math.max(1, Math.abs(value)));
+  private ItemStack buildSettingItem(SettingsInventory inventory, Setting setting, int value) {
+    ItemStack itemStack = inventory.getInventory().getItem(setting.getItem().getSlot());
+    if (itemStack == null) {
+      itemStack = setting.getItem().getItemStack().clone();
+    }
 
-    // Format lore
+    // Display setting value as item amount
+    itemStack.setAmount(Math.max(value, 1));
+
     ItemMeta meta = itemStack.getItemMeta();
-    if (meta.getLore() != null) {
-      meta.setLore(formatSettingText(Text.from(meta.getLore()), setting, value).build());
-    }
-    // Add glow to item if enabled
-    if (value > 0) {
-      meta.addEnchant(Enchantment.LURE, 1, false);
-      meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-    } else {
-      meta.removeEnchant(Enchantment.LURE);
-    }
+    if (meta != null) {
+      // Format lore
+      List<String> lore = meta.getLore();
+      if (lore != null) {
+        meta.setLore(formatSettingText(Text.from(lore), setting, value).build());
+      }
 
-    itemStack.setItemMeta(meta);
+      // Add or remove glow
+      if (value > 0) {
+        meta.addEnchant(Enchantment.LURE, 1, false);
+        meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+      } else {
+        meta.removeEnchant(Enchantment.LURE);
+      }
+
+      itemStack.setItemMeta(meta);
+    }
     return itemStack;
   }
 

@@ -3,6 +3,7 @@ package me.limbo56.playersettings.util;
 import com.cryptomorin.xseries.SkullUtils;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -12,10 +13,11 @@ public class ItemBuilder {
   private ItemStack item;
   private String name;
   private Material material;
-  private int amount;
-  private byte data = -1;
-  private List<String> lore = new ArrayList<>();
+  private Integer modelData;
   private String textures;
+  private Integer amount;
+  private Byte data = -1;
+  private List<String> lore = new ArrayList<>();
 
   public static ItemBuilder builder() {
     return new ItemBuilder();
@@ -33,6 +35,16 @@ public class ItemBuilder {
 
   public ItemBuilder material(@NotNull Material material) {
     this.material = material;
+    return this;
+  }
+
+  public ItemBuilder modelData(int modelData) {
+    this.modelData = modelData;
+    return this;
+  }
+
+  public ItemBuilder textures(@NotNull String textures) {
+    this.textures = textures;
     return this;
   }
 
@@ -56,15 +68,10 @@ public class ItemBuilder {
     return this;
   }
 
-  public ItemBuilder textures(@NotNull String textures) {
-    this.textures = textures;
-    return this;
-  }
-
   public ItemStack build() {
     if (this.item == null) {
-      this.amount = Math.max(this.amount, 1);
-      if (this.data != -1 && this.data >= 0) {
+      this.amount = Math.max(Optional.ofNullable(this.amount).orElse(1), 1);
+      if (this.data != null) {
         this.item = new ItemStack(this.material, this.amount, this.data);
       } else {
         this.item = new ItemStack(this.material, this.amount);
@@ -81,6 +88,9 @@ public class ItemBuilder {
       }
       if (this.textures != null) {
         SkullUtils.applySkin(itemMeta, this.textures);
+      }
+      if (this.modelData != null) {
+        itemMeta.setCustomModelData(this.modelData);
       }
       this.item.setItemMeta(itemMeta);
     }

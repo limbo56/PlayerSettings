@@ -16,7 +16,8 @@ public class SettingsMenu {
 
   public static void openMenu(SettingUser player, int page) {
     // Create menu
-    ConfigurationSection menuConfiguration = getMenuConfiguration();
+    ConfigurationSection menuConfiguration =
+        plugin.getPluginConfiguration().getConfigurationSection("menu");
     String menuName = ColorUtil.translateColorCodes(menuConfiguration.getString("name"));
     int menuSize = menuConfiguration.getInt("size");
     SettingsInventory menu = new SettingsInventory(player.getUniqueId(), menuName, menuSize, page);
@@ -25,9 +26,5 @@ public class SettingsMenu {
 
     // Open menu
     player.getPlayer().openInventory(menu.getInventory());
-  }
-
-  private static ConfigurationSection getMenuConfiguration() {
-    return plugin.getPluginConfiguration().getConfigurationSection("menu");
   }
 }
