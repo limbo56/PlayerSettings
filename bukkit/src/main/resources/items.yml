@@ -18,6 +18,10 @@
 #     - INK_SACK:10
 #   material: "LIME_WOOL"
 #
+#   | The texture URL to assign to the material if it's a player skull
+#   | * Accepts usernames, texture URLs, and base64 encoded texture URLs
+#   textures: "ewogICJ0aW1lc3RhbXAiIDogMTY2NjY1ODAwNzgxMiwKICAicHJvZmlsZUlkIiA6ICIwNjlhNzlmNDQ0ZTk0NzI2YTViZWZjYTkwZTM4YWFmNSIsCiAgInByb2ZpbGVOYW1lIiA6ICJOb3RjaCIsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS8yOTIwMDlhNDkyNWI1OGYwMmM3N2RhZGMzZWNlZjA3ZWE0Yzc0NzJmNjRlMGZkYzMyY2U1NTIyNDg5MzYyNjgwIgogICAgfQogIH0KfQ=="
+#
 #   | The amount of the item to show in the stack
 #   amount: 1
 #

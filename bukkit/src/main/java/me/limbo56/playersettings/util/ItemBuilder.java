@@ -1,5 +1,6 @@
 package me.limbo56.playersettings.util;
 
+import com.cryptomorin.xseries.SkullUtils;
 import java.util.ArrayList;
 import java.util.List;
 import org.bukkit.Material;
@@ -14,6 +15,7 @@ public class ItemBuilder {
   private int amount;
   private byte data = -1;
   private List<String> lore = new ArrayList<>();
+  private String textures;
 
   public static ItemBuilder builder() {
     return new ItemBuilder();
@@ -54,6 +56,11 @@ public class ItemBuilder {
     return this;
   }
 
+  public ItemBuilder textures(@NotNull String textures) {
+    this.textures = textures;
+    return this;
+  }
+
   public ItemStack build() {
     if (this.item == null) {
       this.amount = Math.max(this.amount, 1);
@@ -71,6 +78,9 @@ public class ItemBuilder {
       }
       if (this.lore != null) {
         itemMeta.setLore(this.lore);
+      }
+      if (this.textures != null) {
+        SkullUtils.applySkin(itemMeta, this.textures);
       }
       this.item.setItemMeta(itemMeta);
     }

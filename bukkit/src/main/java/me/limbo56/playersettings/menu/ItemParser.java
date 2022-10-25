@@ -25,13 +25,19 @@ public class ItemParser implements Parser<ConfigurationSection, ItemStack> {
         Preconditions.checkNotNull(
             XMaterial.matchXMaterial(material).orElse(XMaterial.BEDROCK).parseItem(),
             "Unknown material '" + material + "' for item '" + itemName + "'");
+
     int amount = section.getInt("amount", 1);
-    List<String> lore = section.getStringList("lore");
-    return ItemBuilder.builder()
+    List<String> lore = ColorUtil.translateColorCodes(section.getStringList("lore"));
+    ItemBuilder builder = ItemBuilder.builder();
+    if (section.contains("textures")) {
+      builder = builder.textures(section.getString("textures"));
+    }
+
+    return builder
         .item(item)
         .name(ColorUtil.translateColorCodes(displayName))
         .amount(amount)
-        .lore(ColorUtil.translateColorCodes(lore))
+        .lore(lore)
         .build();
   }
 }
