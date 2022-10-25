@@ -65,4 +65,8 @@ public final class PlayerSettingsProvider {
         .mapToObj(SETTING_VALUE::format)
         .collect(Collectors.toSet());
   }
+
+  public static boolean isUpdateMessageEnabled() {
+    return getPlugin().getPluginConfiguration().getBoolean("general.version-alert");
+  }
 }
