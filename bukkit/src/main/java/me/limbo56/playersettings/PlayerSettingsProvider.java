@@ -41,6 +41,10 @@ public final class PlayerSettingsProvider {
         && plugin.getItemsConfiguration().contains(settingName);
   }
 
+  public static boolean isUpdateMessageEnabled() {
+    return getPlugin().getPluginConfiguration().getBoolean("general.update-alert");
+  }
+
   public static String getMessagePrefix() {
     return plugin.getMessagesConfiguration().getString("prefix", "");
   }
@@ -76,9 +80,5 @@ public final class PlayerSettingsProvider {
         .filter(value -> value <= level)
         .mapToObj(SETTING_VALUE::format)
         .collect(Collectors.toSet());
-  }
-
-  public static boolean isUpdateMessageEnabled() {
-    return getPlugin().getPluginConfiguration().getBoolean("general.version-alert");
   }
 }
