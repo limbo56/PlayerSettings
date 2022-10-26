@@ -33,7 +33,7 @@ public class ItemParser implements Parser<ConfigurationSection, ItemStack> {
     if (section.contains("textures")) {
       builder = builder.textures(section.getString("textures"));
     }
-    if (section.contains("model-data") && Version.getCurrentVersion().isOlderThan("1.17")) {
+    if (section.contains("model-data") && !Version.getCurrentVersion().isOlderThan("1.14")) {
       builder = builder.modelData(section.getInt("model-data"));
     }
 
