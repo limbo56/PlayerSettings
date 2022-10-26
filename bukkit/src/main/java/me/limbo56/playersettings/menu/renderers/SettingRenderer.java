@@ -1,10 +1,13 @@
 package me.limbo56.playersettings.menu.renderers;
 
 import static me.limbo56.playersettings.menu.ItemParser.ITEM_PARSER;
+import static me.limbo56.playersettings.settings.SettingValue.SETTING_VALUE;
 
 import com.google.common.base.Preconditions;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import me.limbo56.playersettings.PlayerSettings;
 import me.limbo56.playersettings.PlayerSettingsProvider;
 import me.limbo56.playersettings.api.setting.Setting;
@@ -53,12 +56,18 @@ public class SettingRenderer implements ItemRenderer {
         new InventoryItem(slot, settingItem, new AugmentSettingAction(this, inventory, setting)));
 
     // Render toggle item
-    ConfigurationSection toggleItemSection =
-        plugin.getItemsConfiguration().getConfigurationSection(value > 0 ? "enabled" : "disabled");
-    Preconditions.checkNotNull(toggleItemSection, "Toggle item section is null");
-    ItemStack toggleItem = ITEM_PARSER.parse(toggleItemSection);
-    inventory.renderItem(
-        new InventoryItem(slot + 9, toggleItem, new ToggleSettingAction(this, inventory, setting)));
+    if (PlayerSettingsProvider.isToggleButtonEnabled()) {
+      ConfigurationSection toggleItemSection =
+          Preconditions.checkNotNull(
+              plugin
+                  .getItemsConfiguration()
+                  .getConfigurationSection(value > 0 ? "enabled" : "disabled"),
+              "Toggle item section is null");
+      ItemStack toggleItem = ITEM_PARSER.parse(toggleItemSection);
+      inventory.renderItem(
+          new InventoryItem(
+              slot + 9, toggleItem, new ToggleSettingAction(this, inventory, setting)));
+    }
   }
 
   private ItemStack buildSettingItem(SettingsInventory inventory, Setting setting, int value) {
@@ -70,13 +79,13 @@ public class SettingRenderer implements ItemRenderer {
     // Display setting value as item amount
     itemStack.setAmount(Math.max(value, 1));
 
+    ItemMeta templateMeta = setting.getItem().getItemStack().getItemMeta();
     ItemMeta meta = itemStack.getItemMeta();
     if (meta != null) {
       // Format lore
-      List<String> lore = meta.getLore();
-      if (lore != null) {
-        meta.setLore(formatSettingText(Text.from(lore), setting, value).build());
-      }
+      List<String> lore =
+          Optional.ofNullable(templateMeta).map(ItemMeta::getLore).orElse(new ArrayList<>());
+      meta.setLore(formatSettingLore(Text.from(lore), value, setting.getMaxValue()));
 
       // Add or remove glow
       if (value > 0) {
@@ -91,17 +100,38 @@ public class SettingRenderer implements ItemRenderer {
     return itemStack;
   }
 
-  private Text formatSettingText(Text text, Setting setting, int value) {
-    int maxValue = setting.getMaxValue();
-    int nextValue = value + 1 > maxValue ? 0 : value + 1;
-    int previousValue = value - 1 < 0 ? maxValue : value - 1;
-    return text.placeholder("%current%", String.valueOf(value))
-        .placeholder("%max%", String.valueOf(maxValue))
-        .placeholder("%next%", String.valueOf(nextValue))
-        .placeholder("%previous%", String.valueOf(previousValue));
+  private List<String> formatSettingLore(Text text, int value, int maxValue) {
+    int nextValue = getNextValue(maxValue, value);
+    int previousValue = getPreviousValue(maxValue, value);
+    return text.placeholder("%current%", SETTING_VALUE.format(value))
+        .placeholder("%max%", SETTING_VALUE.format(maxValue))
+        .placeholder("%next%", SETTING_VALUE.format(nextValue))
+        .placeholder("%previous%", SETTING_VALUE.format(previousValue))
+        .build();
   }
 
   private boolean isWithinBounds(int size, int slot) {
-    return slot < size && (slot + 9) <= size;
+    int offset = PlayerSettingsProvider.isToggleButtonEnabled() ? 9 : 0;
+    return slot < size && (slot + offset) < size;
+  }
+
+  private int getPreviousValue(int maxValue, int value) {
+    int previousValue = value - 1;
+    if (value < 0) {
+      previousValue = -value;
+    } else if (previousValue < 0) {
+      previousValue = maxValue;
+    }
+    return previousValue;
+  }
+
+  private int getNextValue(int maxValue, int value) {
+    int nextValue = value + 1;
+    if (value < 0) {
+      nextValue = -value;
+    } else if (nextValue > maxValue) {
+      nextValue = 0;
+    }
+    return nextValue;
   }
 }

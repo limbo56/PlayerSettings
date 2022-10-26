@@ -44,6 +44,8 @@ general:
 menu:
   name: "&6&lSettings"
   size: 54
+  # This property toggles the toggle button displayed below all settings
+  toggle-button: true
   # This section defines sounds that are played when a player interacts with a setting
   #
   # Format: [Sound], [Volume], [Pitch]

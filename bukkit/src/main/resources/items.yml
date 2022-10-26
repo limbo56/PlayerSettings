@@ -30,6 +30,11 @@
 #   amount: 1
 #
 #   | A list of text that will be set as the lore of the item
+#   | Placeholders:
+#     - %current%  : Current value of the setting
+#     - %max%      : Maximum value allowed for the setting
+#     - %next%     : Next value of the setting
+#     - %previous% : Previous value of the setting
 #   lore:
 #     - "&aExample lore"
 #

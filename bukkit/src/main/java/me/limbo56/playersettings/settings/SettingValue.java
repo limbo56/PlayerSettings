@@ -22,12 +22,6 @@ public final class SettingValue implements Parser<String, Integer>, Formatter<In
 
   @Override
   public String format(Integer value) {
-    if (value == 1) {
-      return "on";
-    }
-    if (value < 1) {
-      return "off";
-    }
-    return String.valueOf(value);
+    return value == 1 ? "on" : value < 1 ? "off" : String.valueOf(value);
   }
 }

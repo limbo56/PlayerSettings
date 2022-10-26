@@ -45,6 +45,10 @@ public final class PlayerSettingsProvider {
     return plugin.getMessagesConfiguration().getString("prefix", "");
   }
 
+  public static boolean isToggleButtonEnabled() {
+    return plugin.getPluginConfiguration().getBoolean("menu.toggle-button");
+  }
+
   public static String getToggleOnSound() {
     return plugin.getPluginConfiguration().getString("menu.sounds.setting-toggle-on");
   }
