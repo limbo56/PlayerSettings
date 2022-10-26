@@ -10,7 +10,9 @@ public class ColorUtil {
   private static final Pattern HEX_COLOR = Pattern.compile("&x#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})");
 
   public static String translateColorCodes(String input) {
-    return ChatColor.translateAlternateColorCodes('&', translateHexColors(input));
+    String textToTranslate =
+        Version.getCurrentVersion().isOlderThan("1.16") ? input : translateHexColors(input);
+    return ChatColor.translateAlternateColorCodes('&', textToTranslate);
   }
 
   public static List<String> translateColorCodes(List<String> input) {
