@@ -3,6 +3,7 @@ package me.limbo56.playersettings.settings;
 import com.google.common.base.Preconditions;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
@@ -28,74 +29,90 @@ public class DefaultSettingsContainer implements SettingsContainer {
   public void registerSetting(Setting setting) {
     String settingName =
         Preconditions.checkNotNull(setting.getName(), "Setting name cannot be null");
-    if (!PlayerSettingsProvider.isSettingConfigured(settingName)) {
-      if (!plugin.getSettingsConfiguration().hasSetting(settingName)) {
-        plugin.getSettingsConfiguration().configureSetting(setting);
-      }
-
-      YamlConfiguration itemsConfiguration = plugin.getItemsConfiguration();
-      ConfigUtil.configureSerializable(itemsConfiguration, settingName, setting.getItem());
-      try {
-        File pluginFile = ConfigUtil.getPluginFile("items.yml");
-        itemsConfiguration.save(pluginFile);
-      } catch (IOException e) {
-        plugin.getLogger().severe("Failed to save setting '" + settingName + "' to configuration");
-        e.printStackTrace();
-      }
-    }
+    this.configureSetting(setting);
 
     if (settingMap.containsKey(settingName)) {
-      plugin
-          .getLogger()
-          .config(
-              "Skipping registration of setting '"
-                  + settingName
-                  + "'. A setting with the same name is already registered!");
+      String message =
+          "Skipping registration of setting '"
+              + settingName
+              + "'. A setting with the same name is already registered!";
+      plugin.getLogger().config(message);
       return;
     }
 
-    Setting configuredSetting = plugin.getSettingsConfiguration().getSetting(setting);
+    Setting configuredSetting = PlayerSettingsProvider.getConfiguredSetting(setting);
     if (configuredSetting == null || !configuredSetting.isEnabled()) {
-      plugin
-          .getLogger()
-          .config(
-              "Skipping registration of setting '"
-                  + settingName
-                  + "'. Missing or not enabled in configuration.");
+      String message =
+          "Skipping registration of setting '"
+              + settingName
+              + "'. Missing or not enabled in configuration.";
+      plugin.getLogger().config(message);
       return;
     }
 
     this.loadSetting(configuredSetting);
   }
 
-  public void reloadLoadedSettings() {
+  private void configureSetting(Setting setting) {
+    String name = setting.getName();
+    if (PlayerSettingsProvider.isSettingConfigured(name)) {
+      return;
+    }
+
+    if (!plugin.getSettingsConfiguration().hasSetting(name)) {
+      plugin.getSettingsConfiguration().configureSetting(setting);
+    }
+
+    YamlConfiguration itemsConfiguration = plugin.getItemsConfiguration();
+    ConfigUtil.configureSerializable(itemsConfiguration, name, setting.getItem());
+    try {
+      File pluginFile = ConfigUtil.getPluginFile("items.yml");
+      itemsConfiguration.save(pluginFile);
+    } catch (IOException e) {
+      plugin.getLogger().severe("Failed to save setting '" + name + "' to configuration");
+      e.printStackTrace();
+    }
+  }
+
+  public void reloadSettings() {
     // Unload settings
-    Collection<String> settings =
-        settingMap.values().stream().map(Setting::getName).collect(Collectors.toList());
-    settings.forEach(this::unloadSetting);
+    Collection<Setting> settings = new ArrayList<>(settingMap.values());
+    Collection<String> settingNames =
+        settings.stream().map(Setting::getName).collect(Collectors.toList());
+    settingNames.forEach(this::unloadSetting);
 
     // Log removed settings
     Collection<String> removedSettings =
-        settings.stream()
+        settingNames.stream()
             .filter(setting -> !PlayerSettingsProvider.isSettingConfigured(setting))
             .collect(Collectors.toList());
     removedSettings.forEach(
         removedSetting -> plugin.getLogger().info("Removed setting '" + removedSetting + "'"));
+    settingNames.removeAll(removedSettings);
 
     // Log disabled settings
     Collection<String> disabledSettings =
-        settings.stream()
-            .filter(setting -> !removedSettings.contains(setting))
-            .filter(setting -> !plugin.getSettingsConfiguration().getSetting(setting).isEnabled())
+        settingNames.stream()
+            .filter(setting -> !PlayerSettingsProvider.getSettingByName(setting).isEnabled())
             .collect(Collectors.toList());
     disabledSettings.forEach(
         disabledSetting -> plugin.getLogger().info("Disabled setting '" + disabledSetting + "'"));
+    settingNames.removeAll(disabledSettings);
+
+    // Log new settings
+    Collection<Setting> newSettings =
+        plugin.getSettingsConfiguration().getSettingsFromConfiguration().stream()
+            .filter(setting -> !settingNames.contains(setting.getName()))
+            .collect(Collectors.toList());
+    newSettings.forEach(
+        newSetting ->
+            plugin.getLogger().info("Detected new setting '" + newSetting.getName() + "'"));
+    settings.addAll(newSettings);
 
     // Load settings
     settings.stream()
-        .filter(setting -> !removedSettings.contains(setting))
-        .filter(setting -> !disabledSettings.contains(setting))
-        .map(setting -> plugin.getSettingsConfiguration().getSetting(setting))
+        .filter(setting -> settingNames.contains(setting.getName()))
+        .map(PlayerSettingsProvider::getConfiguredSetting)
         .forEach(
             setting -> {
               loadSetting(setting);
@@ -103,15 +120,7 @@ public class DefaultSettingsContainer implements SettingsContainer {
             });
   }
 
-  public void loadSettingsFromConfiguration() {
-    plugin.getSettingsConfiguration().getSettingsFromConfiguration().forEach(this::loadSetting);
-  }
-
-  public boolean isSettingLoaded(String settingName) {
-    return settingMap.containsKey(settingName);
-  }
-
-  private void loadSetting(Setting setting) {
+  public void loadSetting(Setting setting) {
     String settingName = setting.getName();
     setting.getListeners().forEach(plugin.getListenerManager()::registerListener);
     settingMap.putIfAbsent(settingName, setting);
@@ -123,7 +132,11 @@ public class DefaultSettingsContainer implements SettingsContainer {
         .ifPresent(listeners -> listeners.forEach(plugin.getListenerManager()::unregisterListener));
   }
 
-  public void clear() {
+  public boolean isSettingLoaded(String settingName) {
+    return settingMap.containsKey(settingName);
+  }
+
+  public void unloadAll() {
     settingMap.clear();
   }
 

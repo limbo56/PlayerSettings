@@ -27,6 +27,8 @@
 # This section has the general configuration properties for the plugin
 general:
   debug: false
+  # This property toggles the update message that is sent to server operators when they join
+  update-alert: true
   # List of worlds where the plugin will be enabled
   #
   # * You can place the '*' symbol in the list to enable the plugin in all the worlds
@@ -42,6 +44,8 @@ general:
 menu:
   name: "&6&lSettings"
   size: 54
+  # This property toggles the toggle button displayed below all settings
+  toggle-button: true
   # This section defines sounds that are played when a player interacts with a setting
   #
   # Format: [Sound], [Volume], [Pitch]

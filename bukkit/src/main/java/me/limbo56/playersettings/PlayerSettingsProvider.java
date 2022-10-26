@@ -23,6 +23,14 @@ public final class PlayerSettingsProvider {
     PlayerSettingsProvider.plugin = plugin;
   }
 
+  public static Setting getConfiguredSetting(Setting setting) {
+    return plugin.getSettingsConfiguration().getConfiguredSetting(setting);
+  }
+
+  public static Setting getSettingByName(String name) {
+    return plugin.getSettingsConfiguration().getSettingByName(name);
+  }
+
   public static boolean isAllowedWorld(String name) {
     List<String> worldList = plugin.getPluginConfiguration().getStringList("general.worlds");
     return worldList.contains(name) || worldList.contains("*");
@@ -33,8 +41,16 @@ public final class PlayerSettingsProvider {
         && plugin.getItemsConfiguration().contains(settingName);
   }
 
+  public static boolean isUpdateMessageEnabled() {
+    return getPlugin().getPluginConfiguration().getBoolean("general.update-alert");
+  }
+
   public static String getMessagePrefix() {
     return plugin.getMessagesConfiguration().getString("prefix", "");
+  }
+
+  public static boolean isToggleButtonEnabled() {
+    return plugin.getPluginConfiguration().getBoolean("menu.toggle-button");
   }
 
   public static String getToggleOnSound() {

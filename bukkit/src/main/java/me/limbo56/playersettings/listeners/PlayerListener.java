@@ -18,7 +18,7 @@ public class PlayerListener implements Listener {
   public void onPlayerJoin(PlayerJoinEvent event) {
     Player player = event.getPlayer();
     UUID uuid = player.getUniqueId();
-    if (player.isOp()) {
+    if (player.isOp() && PlayerSettingsProvider.isUpdateMessageEnabled()) {
       PluginUpdater.sendUpdateMessage(player);
     }
 

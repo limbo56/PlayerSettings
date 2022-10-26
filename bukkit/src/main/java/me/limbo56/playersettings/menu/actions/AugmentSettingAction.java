@@ -22,7 +22,7 @@ public class AugmentSettingAction extends SettingItemAction {
     int currentValue = settingsPlayer.getSettingWatcher().getValue(setting.getName());
     int newValue = calculateNewValue(type, maxValue, currentValue);
     player.performCommand("settings set " + setting.getName() + " " + newValue);
-    renderer.renderSetting(inventory, setting);
+    super.execute(type, settingsPlayer);
   }
 
   private int calculateNewValue(ClickType type, int maxValue, int currentValue) {

@@ -4,10 +4,13 @@ import me.limbo56.playersettings.api.setting.Setting;
 import org.bukkit.plugin.ServicesManager;
 
 /**
- * An object that stores and provides access to a registry of {@link Setting Settings}.
+ * An object that stores and provides access to a list of {@link Setting settings}.
  *
- * <p>You can get an instance of this class by using the Bukkit {@link ServicesManager#load(Class)}
- * method. Below is an example that shows how to load and register a setting.
+ * <p>You can get an instance of this class using the Bukkit service manager API {@link
+ * ServicesManager#load(Class)}.
+ *
+ * <p>Below is an example of how to load the {@link SettingsContainer} and use it to register a
+ * setting.
  *
  * <pre>{@code
  * SettingsContainer container = Bukkit.getServicesManager().load(SettingsContainer.class);
