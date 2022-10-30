@@ -26,6 +26,7 @@ import me.limbo56.playersettings.settings.DefaultSettingsContainer;
 import me.limbo56.playersettings.user.SettingUserManager;
 import me.limbo56.playersettings.util.PluginLogHandler;
 import me.limbo56.playersettings.util.PluginUpdater;
+import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.configuration.ConfigurationSection;
@@ -114,6 +115,11 @@ public class PlayerSettings extends JavaPlugin {
     long startupTime = Duration.between(loadStart, loadFinish).toMillis();
     getLogger().info("Successfully loaded (took " + startupTime + "ms)");
     PluginUpdater.logUpdateMessage();
+
+    // Start bStats metrics
+    if (PlayerSettingsProvider.hasMetricsEnabled()) {
+      new Metrics(this, 16730);
+    }
   }
 
   @Override

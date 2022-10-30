@@ -41,6 +41,10 @@ public final class PlayerSettingsProvider {
         && plugin.getItemsConfiguration().contains(settingName);
   }
 
+  public static boolean hasMetricsEnabled() {
+    return getPlugin().getPluginConfiguration().getBoolean("general.metrics");
+  }
+
   public static boolean isUpdateMessageEnabled() {
     return getPlugin().getPluginConfiguration().getBoolean("general.update-alert");
   }

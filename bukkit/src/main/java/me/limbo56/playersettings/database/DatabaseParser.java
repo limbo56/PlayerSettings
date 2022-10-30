@@ -1,6 +1,7 @@
 package me.limbo56.playersettings.database;
 
 import com.zaxxer.hikari.HikariConfig;
+import me.limbo56.playersettings.util.Version;
 import me.limbo56.playersettings.util.data.Parser;
 import org.bukkit.configuration.ConfigurationSection;
 
@@ -14,7 +15,11 @@ public class DatabaseParser implements Parser<ConfigurationSection, HikariConfig
     HikariConfig config = new HikariConfig();
 
     // Configure driver and credentials
-    config.setDriverClassName("com.mysql.cj.jdbc.Driver");
+    if (Version.getCurrentVersion().isOlderThan("1.12.2")) {
+      config.setDriverClassName("com.mysql.jdbc.Driver");
+    } else {
+      config.setDriverClassName("com.mysql.cj.jdbc.Driver");
+    }
     config.setJdbcUrl(String.format("jdbc:mysql://%s/%s", host, database));
     config.setUsername(databaseSection.getString("username"));
     config.setPassword(databaseSection.getString("password"));

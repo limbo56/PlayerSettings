@@ -27,6 +27,12 @@
 # This section has the general configuration properties for the plugin
 general:
   debug: false
+  # This property toggles the plugin usage metrics
+  # * This can be safely disabled without affecting plugin functionality
+  # * Most of the collected data is information about the plugin's server like player count, online
+  #   mode, Minecraft version, Java version, and more. All data gets sent and stored completely
+  #   anonymously.
+  metrics: true
   # This property toggles the update message that is sent to server operators when they join
   update-alert: true
   # List of worlds where the plugin will be enabled
