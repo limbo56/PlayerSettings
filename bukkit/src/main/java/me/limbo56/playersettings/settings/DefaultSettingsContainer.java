@@ -101,7 +101,7 @@ public class DefaultSettingsContainer implements SettingsContainer {
 
     // Log new settings
     Collection<Setting> newSettings =
-        plugin.getSettingsConfiguration().getSettingsFromConfiguration().stream()
+        plugin.getSettingsConfiguration().getEnabledSettings().stream()
             .filter(setting -> !settingNames.contains(setting.getName()))
             .collect(Collectors.toList());
     newSettings.forEach(
