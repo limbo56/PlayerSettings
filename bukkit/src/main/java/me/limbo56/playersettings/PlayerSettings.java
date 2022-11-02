@@ -94,7 +94,7 @@ public class PlayerSettings extends JavaPlugin {
 
     getLogger().info("Loading default settings...");
     DefaultSetting.getSettings().forEach(settingsContainer::registerSetting);
-    settingsConfiguration.getEnabledSettings().forEach(settingsContainer::loadSetting);
+    settingsConfiguration.getSettingsFromConfiguration().forEach(settingsContainer::loadSetting);
 
     // Load commands, listeners and online players
     SubCommandExecutor executor = new SubCommandExecutor();
