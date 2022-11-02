@@ -2,34 +2,22 @@ package me.limbo56.playersettings.configuration;
 
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.LoadingCache;
-import java.io.File;
-import java.io.IOException;
+
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.concurrent.ExecutionException;
-import me.limbo56.playersettings.PlayerSettingsProvider;
-import me.limbo56.playersettings.util.ConfigUtil;
-import org.bukkit.configuration.InvalidConfigurationException;
+
 import org.bukkit.configuration.file.YamlConfiguration;
 
 public class ConfigurationManager {
   private final LoadingCache<String, YamlConfiguration> configurations =
-      CacheBuilder.newBuilder().build(new ConfigurationLoader());
+    CacheBuilder.newBuilder().build(new ConfigurationLoader());
 
-  /** Invalidates all the cached configurations and reloads them. */
+  /**
+   * Invalidates all the cached configurations and reloads them.
+   */
   public void reloadConfigurations() {
-    for (Entry<String, YamlConfiguration> entry : getConfigurations().entrySet()) {
-      String fileName = entry.getKey();
-      YamlConfiguration configuration = entry.getValue();
-      try {
-        File configurationFile = ConfigUtil.getPluginFile(fileName);
-        configuration.load(configurationFile);
-      } catch (IOException | InvalidConfigurationException e) {
-        PlayerSettingsProvider.getPlugin()
-            .getLogger()
-            .severe("Failed to reload configuration '" + fileName + "'");
-        e.printStackTrace();
-      }
+    for (String configuration : getConfigurations().keySet()) {
+      configurations.refresh(configuration);
     }
   }
 
