@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
@@ -13,6 +14,7 @@ import java.util.stream.Collectors;
 import me.limbo56.playersettings.PlayerSettings;
 import me.limbo56.playersettings.PlayerSettingsProvider;
 import me.limbo56.playersettings.api.SettingsContainer;
+import me.limbo56.playersettings.api.setting.ImmutableSetting;
 import me.limbo56.playersettings.api.setting.Setting;
 import me.limbo56.playersettings.util.ConfigUtil;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -75,43 +77,70 @@ public class DefaultSettingsContainer implements SettingsContainer {
   }
 
   public void reloadSettings() {
-    // Unload settings
-    Collection<Setting> settings = new ArrayList<>(settingMap.values());
-    Collection<String> settingNames =
-        settings.stream().map(Setting::getName).collect(Collectors.toList());
-    settingNames.forEach(this::unloadSetting);
+    // Unload loaded settings
+    Collection<Setting> loadedSettings = new ArrayList<>(settingMap.values());
+    loadedSettings.stream().map(Setting::getName).forEach(this::unloadSetting);
 
-    // Log removed settings
-    Collection<String> removedSettings =
-        settingNames.stream()
-            .filter(setting -> !PlayerSettingsProvider.isSettingConfigured(setting))
+    // Filter out removed and disabled settings
+    loadedSettings =
+        loadedSettings.stream()
+            .filter(
+                setting -> {
+                  String settingName = setting.getName();
+
+                  // Log removed settings
+                  if (!PlayerSettingsProvider.isSettingConfigured(settingName)) {
+                    plugin.getLogger().info("Removed setting '" + settingName + "'");
+                    return false;
+                  }
+
+                  // Log disabled settings
+                  if (!PlayerSettingsProvider.getSettingByName(settingName).isEnabled()) {
+                    plugin.getLogger().info("Disabled setting '" + settingName + "'");
+                    return false;
+                  }
+
+                  return true;
+                })
             .collect(Collectors.toList());
-    removedSettings.forEach(
-        removedSetting -> plugin.getLogger().info("Removed setting '" + removedSetting + "'"));
-    settingNames.removeAll(removedSettings);
 
-    // Log disabled settings
-    Collection<String> disabledSettings =
-        settingNames.stream()
-            .filter(setting -> !PlayerSettingsProvider.getSettingByName(setting).isEnabled())
-            .collect(Collectors.toList());
-    disabledSettings.forEach(
-        disabledSetting -> plugin.getLogger().info("Disabled setting '" + disabledSetting + "'"));
-    settingNames.removeAll(disabledSettings);
+    // Register and log new settings
+    List<String> loadedSettingNames =
+        loadedSettings.stream().map(Setting::getName).collect(Collectors.toList());
+    loadedSettings.addAll(
+        plugin.getSettingsConfiguration().getEnabledSettings().stream()
+            .filter(
+                setting -> {
+                  String settingName = setting.getName();
 
-    // Log new settings
-    Collection<Setting> newSettings =
-        plugin.getSettingsConfiguration().getSettingsFromConfiguration().stream()
-            .filter(setting -> !settingNames.contains(setting.getName()))
-            .collect(Collectors.toList());
-    newSettings.forEach(
-        newSetting ->
-            plugin.getLogger().info("Detected new setting '" + newSetting.getName() + "'"));
-    settings.addAll(newSettings);
+                  if (!loadedSettingNames.contains(settingName)) {
+                    plugin.getLogger().info("Detected new setting '" + settingName + "'");
+                    return true;
+                  }
 
-    // Load settings
-    settings.stream()
-        .filter(setting -> settingNames.contains(setting.getName()))
+                  return false;
+                })
+            .map(
+                setting -> {
+                  // Restore default setting effects
+                  Optional<Setting> optionalSetting =
+                      DefaultSetting.getSettings().stream()
+                          .filter(
+                              defaultSetting -> defaultSetting.getName().equals(setting.getName()))
+                          .findFirst();
+                  if (optionalSetting.isPresent()) {
+                    Setting defaultSetting = optionalSetting.get();
+                    return ImmutableSetting.copyOf(setting)
+                        .withListeners(defaultSetting.getListeners())
+                        .withCallbacks(defaultSetting.getCallbacks());
+                  }
+
+                  return setting;
+                })
+            .collect(Collectors.toList()));
+
+    // Load loaded settings
+    loadedSettings.stream()
         .map(PlayerSettingsProvider::getConfiguredSetting)
         .forEach(
             setting -> {
