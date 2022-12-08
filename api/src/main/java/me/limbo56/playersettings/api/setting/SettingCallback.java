@@ -12,4 +12,11 @@ public interface SettingCallback {
    * @param value New value of the setting
    */
   void notifyChange(Setting setting, Player player, int value);
+
+  /**
+   * Removes any effects that this callback might have applied to a {@link Player}
+   *
+   * @param player Player to clear the effects from
+   */
+  default void clear(Player player) {}
 }

@@ -1,19 +1,19 @@
 package me.limbo56.playersettings.api;
 
+import com.cryptomorin.xseries.XItemStack;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.immutables.value.Value;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * A {@link ConfigurationSerializable} that contains the display properties of an item which will be
  * displayed in the settings menu.
  */
 @Value.Immutable
-@Value.Style(defaults = @Value.Immutable(copy = false))
 public interface MenuItem extends ConfigurationSerializable {
   /**
    * Gets the {@link ItemStack} defined that will be used to display the setting
@@ -40,21 +40,21 @@ public interface MenuItem extends ConfigurationSerializable {
   int getSlot();
 
   @Override
-  default Map<String, Object> serialize() {
-    ItemStack itemStack = getItemStack();
-    String data = itemStack.getDurability() != 0 ? ":" + itemStack.getDurability() : "";
-    ItemMeta itemMeta = itemStack.getItemMeta();
-    List<String> lore = itemMeta.getLore();
-    String displayName = itemMeta.getDisplayName().replaceAll("§", "&");
-    lore.replaceAll(text -> text.replaceAll("§", "&"));
+  default @NotNull Map<String, Object> serialize() {
+    Map<String, Object> mappedItemStack = XItemStack.serialize(getItemStack());
+    Map<String, Object> mappedMenuItem = new LinkedHashMap<>(mappedItemStack);
+    mappedMenuItem.put("page", getPage());
+    mappedMenuItem.put("slot", getSlot());
+    return mappedMenuItem;
+  }
 
-    Map<String, Object> mappedObject = new LinkedHashMap<>();
-    mappedObject.put("page", getPage());
-    mappedObject.put("slot", getSlot());
-    mappedObject.put("name", displayName);
-    mappedObject.put("material", itemStack.getType() + data);
-    mappedObject.put("amount", itemStack.getAmount());
-    mappedObject.put("lore", lore);
-    return mappedObject;
+  static MenuItem deserialize(ConfigurationSection section) {
+    int page = section.getInt("page", 1);
+    int slot = section.getInt("slot");
+    return ImmutableMenuItem.builder()
+        .itemStack(XItemStack.deserialize(section))
+        .page(page)
+        .slot(slot)
+        .build();
   }
 }

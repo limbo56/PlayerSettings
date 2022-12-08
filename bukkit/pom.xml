@@ -89,11 +89,13 @@
       <artifactId>HikariCP</artifactId>
       <version>4.0.3</version>
     </dependency>
-    <!-- Backward compatibility -->
+
+    <!-- Placeholders -->
     <dependency>
-      <groupId>com.github.cryptomorin</groupId>
-      <artifactId>XSeries</artifactId>
-      <version>9.1.0</version>
+      <groupId>me.clip</groupId>
+      <artifactId>placeholderapi</artifactId>
+      <version>2.11.2</version>
+      <scope>provided</scope>
     </dependency>
     <!-- Stats -->
     <dependency>

@@ -2,6 +2,7 @@ package me.limbo56.playersettings.settings;
 
 import java.util.List;
 import java.util.Map;
+import me.clip.placeholderapi.PlaceholderAPI;
 import me.limbo56.playersettings.PlayerSettings;
 import me.limbo56.playersettings.PlayerSettingsProvider;
 import me.limbo56.playersettings.api.setting.Setting;
@@ -12,7 +13,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
 
 public class CustomSettingCallback implements SettingCallback {
-  private static final PlayerSettings plugin = PlayerSettingsProvider.getPlugin();
+  private static final PlayerSettings PLUGIN = PlayerSettingsProvider.getPlugin();
   private static final String CONSOLE_PREFIX = "SUDO ";
   private static final String DEFAULT_SECTION = "default";
   private final Map<String, List<String>> commandsMap;
@@ -40,7 +41,7 @@ public class CustomSettingCallback implements SettingCallback {
     }
 
     if (!commandsMap.containsKey(stringValue)) {
-      plugin
+      PLUGIN
           .getLogger()
           .warning("No action '" + stringValue + "' found for setting '" + setting.getName() + "'");
       return null;
@@ -59,11 +60,15 @@ public class CustomSettingCallback implements SettingCallback {
   private void dispatchCommands(Player player, List<String> commands) {
     for (String command : commands) {
       if (!command.startsWith(CONSOLE_PREFIX)) {
-        Bukkit.dispatchCommand(player, command);
+        player.performCommand(command);
         return;
       }
 
       String formattedCommand = command.replace(CONSOLE_PREFIX, "");
+      if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+        formattedCommand = PlaceholderAPI.setPlaceholders(player, formattedCommand);
+      }
+
       Bukkit.dispatchCommand(Bukkit.getConsoleSender(), formattedCommand);
     }
   }

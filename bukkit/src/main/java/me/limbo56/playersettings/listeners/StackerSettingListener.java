@@ -1,6 +1,6 @@
 package me.limbo56.playersettings.listeners;
 
-import static me.limbo56.playersettings.settings.DefaultSetting.STACKER_SETTING;
+import static me.limbo56.playersettings.settings.DefaultSettings.STACKER_SETTING;
 
 import me.limbo56.playersettings.PlayerSettings;
 import me.limbo56.playersettings.PlayerSettingsProvider;
@@ -12,31 +12,33 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.util.Vector;
 
 public class StackerSettingListener implements Listener {
-  private static final PlayerSettings plugin = PlayerSettingsProvider.getPlugin();
+  private static final PlayerSettings PLUGIN = PlayerSettingsProvider.getPlugin();
 
   @EventHandler
   public void onPlayerStack(PlayerInteractAtEntityEvent event) {
+    String stackerSettingName = STACKER_SETTING.getName();
+    if (!PLUGIN.getSettingsManager().isSettingLoaded(stackerSettingName)) {
+      return;
+    }
+
     Player player = event.getPlayer();
     if (!PlayerSettingsProvider.isAllowedWorld(player.getWorld().getName())) {
       return;
     }
 
-    // Fix bug in 1.9+ where this event is fired twice due to OFF_HAND being added
+    // Fix bug in 1.9+ where this event is fired twice due to OFF_HAND
     if (!Version.getCurrentVersion().isOlderThan("1.9")
         && event.getHand() == EquipmentSlot.OFF_HAND) {
       return;
     }
 
-    SettingUser user = plugin.getUserManager().getUser(player.getUniqueId());
-    String stackerSettingName = STACKER_SETTING.getSetting().getName();
+    SettingUser user = PLUGIN.getUserManager().getUser(player.getUniqueId());
     Entity clicked = event.getRightClicked();
     boolean hasStackerDisabled = !user.hasSettingEnabled(stackerSettingName);
     boolean isTargetNotAPlayer = !(clicked instanceof Player);
@@ -59,7 +61,7 @@ public class StackerSettingListener implements Listener {
     }
 
     // Alert the user that the target has the stacker setting disabled
-    SettingUser targetUser = plugin.getUserManager().getUser(clicked.getUniqueId());
+    SettingUser targetUser = PLUGIN.getUserManager().getUser(clicked.getUniqueId());
     if (!targetUser.hasSettingEnabled(stackerSettingName)) {
       Text.fromMessages("stacker.target-disabled")
           .sendMessage(player, PlayerSettingsProvider.getMessagePrefix());
@@ -70,53 +72,40 @@ public class StackerSettingListener implements Listener {
   }
 
   @EventHandler
-  public void onPlayerLaunch(PlayerInteractEvent event) {
-    Player player = event.getPlayer();
-    if (!PlayerSettingsProvider.isAllowedWorld(player.getWorld().getName())) {
+  public void onPlayerLaunch(EntityDamageByEntityEvent event) {
+    String stackerSettingName = STACKER_SETTING.getName();
+    if (!PLUGIN.getSettingsManager().isSettingLoaded(stackerSettingName)) {
       return;
     }
 
-    Entity target = player.getPassenger();
-    boolean isTargetNotAPlayer = !(target instanceof Player);
-    boolean actionIsNotLeftClick = event.getAction() != Action.LEFT_CLICK_AIR;
-    boolean playerHasNoPassenger = player.getPassenger() == null;
-    if (isTargetNotAPlayer
-        || actionIsNotLeftClick
-        || playerHasNoPassenger
-        || eitherHasStackerDisabled(player, target)) {
-      return;
-    }
-
-    Vector direction = player.getLocation().getDirection();
-    target.getVehicle().eject();
-    target.setVelocity(direction.multiply(new Vector(1, 2, 1)));
-    target.setFallDistance(-10000.0F);
-  }
-
-  @EventHandler
-  public void onEntityDamage(EntityDamageByEntityEvent event) {
     Entity damager = event.getDamager();
-    boolean isDamagerNotAPlayer = !(damager instanceof Player);
-    if (isDamagerNotAPlayer
-        || !PlayerSettingsProvider.isAllowedWorld(damager.getWorld().getName())) {
+    Entity damaged = event.getEntity();
+    if (!(damager instanceof Player) || !(damaged instanceof Player)) {
       return;
     }
 
-    Entity target = event.getEntity();
-    boolean isTargetNotAPlayer = !(target instanceof Player);
-    boolean vehicleIsNotDamager = target.getVehicle() != damager;
-    if (isTargetNotAPlayer
-        || isMarkedAsNPC(target)
-        || vehicleIsNotDamager
-        || eitherHasStackerDisabled(damager, target)) {
+    if (!PlayerSettingsProvider.isAllowedWorld(damager.getWorld().getName())) {
       return;
     }
 
+    Entity target = damager.getPassenger();
+    if (target == null || !target.equals(damaged) || eitherHasStackerDisabled(damager, target)) {
+      return;
+    }
+
+    Vector direction = damager.getLocation().getDirection();
+    target.getVehicle().eject();
+    target.setVelocity(direction.multiply(1.2));
+    target.setFallDistance(-10000.0F);
     event.setCancelled(true);
   }
 
   @EventHandler
   public void onStackerDisable(SettingUpdateEvent event) {
+    if (!event.getSetting().getName().equals(STACKER_SETTING.getName())) {
+      return;
+    }
+
     Player player = event.getPlayer();
     if (event.getNewValue() == 1) {
       return;
@@ -134,15 +123,15 @@ public class StackerSettingListener implements Listener {
   }
 
   private boolean eitherHasStackerDisabled(Entity player, Entity target) {
-    SettingUser playerUser = plugin.getUserManager().getUser(player.getUniqueId());
-    SettingUser targetUser = plugin.getUserManager().getUser(target.getUniqueId());
-    String stackerSettingName = STACKER_SETTING.getSetting().getName();
+    SettingUser playerUser = PLUGIN.getUserManager().getUser(player.getUniqueId());
+    SettingUser targetUser = PLUGIN.getUserManager().getUser(target.getUniqueId());
+    String stackerSettingName = STACKER_SETTING.getName();
     return !playerUser.hasSettingEnabled(stackerSettingName)
         || !targetUser.hasSettingEnabled(stackerSettingName);
   }
 
   private boolean isMarkedAsNPC(Entity entity) {
-    return plugin.getPluginConfiguration().getStringList("general.npc-metadata").stream()
+    return PLUGIN.getPluginConfiguration().getStringList("general.npc-metadata").stream()
         .anyMatch(entity::hasMetadata);
   }
 }

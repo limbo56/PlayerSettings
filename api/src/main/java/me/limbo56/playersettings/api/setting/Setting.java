@@ -1,12 +1,17 @@
 package me.limbo56.playersettings.api.setting;
 
+import me.limbo56.playersettings.api.ImmutableMenuItem;
+import me.limbo56.playersettings.api.MenuItem;
+import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.serialization.ConfigurationSerializable;
+import org.bukkit.event.Listener;
+import org.bukkit.inventory.ItemStack;
+import org.immutables.value.Value;
+
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import me.limbo56.playersettings.api.MenuItem;
-import org.bukkit.configuration.serialization.ConfigurationSerializable;
-import org.bukkit.event.Listener;
-import org.immutables.value.Value;
 
 /**
  * An object that represents a {@code Setting}.
@@ -20,6 +25,7 @@ import org.immutables.value.Value;
  *     .name("example-setting")
  *     .defaultValue(0)
  *     .maxValue(1)
+ *     .triggers("join", death")
  *     .addCallback(
  *         (setting, player, value) -> player.sendMessage(setting.getName() + " - " + value))
  *     .build();
@@ -30,6 +36,18 @@ import org.immutables.value.Value;
     depluralize = true,
     get = {"should*", "is*", "get*"})
 public interface Setting extends ConfigurationSerializable {
+  static Setting deserialize(ConfigurationSection section) {
+    String settingName = section.getName();
+    String[] triggers = section.getStringList("triggers").toArray(new String[0]);
+    return ImmutableSetting.builder()
+        .name(settingName)
+        .enabled(section.getBoolean("enabled", true))
+        .defaultValue(section.getInt("default", 0))
+        .maxValue(section.getInt("max", 1))
+        .triggers(triggers)
+        .build();
+  }
+
   /**
    * Gets the name of the setting
    *
@@ -42,7 +60,14 @@ public interface Setting extends ConfigurationSerializable {
    *
    * @return {@link MenuItem} that displays this setting
    */
-  MenuItem getItem();
+  @Value.Default
+  default MenuItem getItem() {
+    return ImmutableMenuItem.builder()
+        .itemStack(new ItemStack(Material.BEDROCK))
+        .page(1)
+        .slot(0)
+        .build();
+  }
 
   /**
    * Gets the default value for the setting
@@ -69,14 +94,12 @@ public interface Setting extends ConfigurationSerializable {
   }
 
   /**
-   * Gets the flag that indicates whether the setting effects should be executed when a player joins
+   * An array of {@link String} triggers/events that should execute the side effects for the current
+   * value of the setting
    *
-   * @return whether the setting effects should be applied when a player joins
+   * @return Array of triggers/events
    */
-  @Value.Default
-  default boolean shouldExecuteOnJoin() {
-    return true;
-  }
+  String[] getTriggers();
 
   /**
    * Gets the list of callbacks that will be executed when the setting is changed
@@ -98,7 +121,7 @@ public interface Setting extends ConfigurationSerializable {
     mappedObject.put("enabled", isEnabled());
     mappedObject.put("default", getDefaultValue());
     mappedObject.put("max", getMaxValue());
-    mappedObject.put("executeOnJoin", shouldExecuteOnJoin());
+    mappedObject.put("triggers", getTriggers());
     return mappedObject;
   }
 }

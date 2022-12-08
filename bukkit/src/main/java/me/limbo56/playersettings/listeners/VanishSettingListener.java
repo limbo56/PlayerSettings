@@ -1,9 +1,9 @@
 package me.limbo56.playersettings.listeners;
 
-import static me.limbo56.playersettings.PlayerSettingsProvider.getPlugin;
-import static me.limbo56.playersettings.settings.DefaultSetting.VANISH_SETTING;
+import static me.limbo56.playersettings.settings.DefaultSettings.STACKER_SETTING;
+import static me.limbo56.playersettings.settings.DefaultSettings.VANISH_SETTING;
 
-import java.util.List;
+import java.util.Collection;
 import me.limbo56.playersettings.PlayerSettings;
 import me.limbo56.playersettings.PlayerSettingsProvider;
 import me.limbo56.playersettings.user.SettingUser;
@@ -13,23 +13,28 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 
 public class VanishSettingListener implements Listener {
-  private static final PlayerSettings plugin = PlayerSettingsProvider.getPlugin();
+  private static final PlayerSettings PLUGIN = PlayerSettingsProvider.getPlugin();
 
   @EventHandler
   public void onPlayerJoin(PlayerJoinEvent event) {
+    String vanishSettingName = VANISH_SETTING.getName();
+    if (!PLUGIN.getSettingsManager().isSettingLoaded(vanishSettingName)) {
+      return;
+    }
+
     Player player = event.getPlayer();
     if (!PlayerSettingsProvider.isAllowedWorld(player.getWorld().getName())) {
       return;
     }
 
-    getVanishedPlayers().forEach(vanished -> player.hidePlayer(getPlugin(), vanished));
+    for (SettingUser vanishedPlayer : getVanishedPlayers()) {
+      player.hidePlayer(vanishedPlayer.getPlayer());
+    }
   }
 
-  private List<Player> getVanishedPlayers() {
-    String vanishSettingName = VANISH_SETTING.getSetting().getName();
-    return plugin.getUserManager().getUsers().stream()
-        .filter(user -> user.hasSettingEnabled(vanishSettingName))
-        .map(SettingUser::getPlayer)
-        .collect(java.util.stream.Collectors.toList());
+  private Collection<SettingUser> getVanishedPlayers() {
+    return PLUGIN
+        .getUserManager()
+        .getUsersWithSettingValue(VANISH_SETTING.getName(), true);
   }
 }

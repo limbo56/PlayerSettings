@@ -1,8 +1,7 @@
 package me.limbo56.playersettings.command.subcommand;
 
-import static me.limbo56.playersettings.settings.SettingValue.SETTING_VALUE;
-
 import com.cryptomorin.xseries.XSound;
+import com.google.common.collect.Range;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -18,12 +17,13 @@ import me.limbo56.playersettings.user.SettingUser;
 import me.limbo56.playersettings.util.Text;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
 
 public class SetSubCommand extends SubCommand {
-  private static final PlayerSettings plugin = PlayerSettingsProvider.getPlugin();
+  private static final PlayerSettings PLUGIN = PlayerSettingsProvider.getPlugin();
 
   public SetSubCommand() {
     super("set", "Sets the value of a setting", "<setting> <value>", 3, null);
@@ -34,7 +34,7 @@ public class SetSubCommand extends SubCommand {
     // Check if the setting provided is valid
     String settingName = args[1];
     Player player = (Player) sender;
-    Setting setting = plugin.getSettingsContainer().getSetting(settingName);
+    Setting setting = PLUGIN.getSettingsManager().getSetting(settingName);
     if (setting == null) {
       Text.fromMessages("commands.setting-not-found")
           .placeholder("%setting%", settingName)
@@ -44,7 +44,7 @@ public class SetSubCommand extends SubCommand {
 
     // Check if the value provided is valid
     String value = args[2];
-    Integer parsedValue = SETTING_VALUE.parse(value);
+    Integer parsedValue = PlayerSettingsProvider.parseSettingValue(value);
     if (parsedValue == null) {
       Text.fromMessages("commands.setting-invalid-value")
           .placeholder("%max%", String.valueOf(setting.getMaxValue()))
@@ -53,7 +53,7 @@ public class SetSubCommand extends SubCommand {
     }
 
     // Check if user is not loading
-    SettingUser user = plugin.getUserManager().getUser(player.getUniqueId());
+    SettingUser user = PLUGIN.getUserManager().getUser(player.getUniqueId());
     if (user.isLoading()) {
       Text.fromMessages("settings.wait-loading")
           .sendMessage(player, PlayerSettingsProvider.getMessagePrefix());
@@ -62,19 +62,19 @@ public class SetSubCommand extends SubCommand {
 
     // Check if user can change the setting
     SettingWatcher watcher = user.getSettingWatcher();
-    if (!user.canChangeSettingTo(setting, parsedValue)) {
+    if (!this.canChangeSettingToLevel(user, watcher, setting, parsedValue)) {
       return;
     }
 
     // Change setting value and play sound
     int previousValue = watcher.getValue(settingName);
     watcher.setValue(settingName, parsedValue, false);
-    playChangeSound(player, previousValue, parsedValue);
+    playSettingToggleSound(setting, player, previousValue, parsedValue);
 
     // Send setting change message
     String placeholderName =
         ChatColor.stripColor(setting.getItem().getItemStack().getItemMeta().getDisplayName());
-    String placeholderValue = SETTING_VALUE.format(parsedValue);
+    String placeholderValue = PlayerSettingsProvider.formatSettingValue(parsedValue);
     Text.fromMessages("commands.setting-changed")
         .placeholder("%setting%", placeholderName)
         .placeholder("%value%", placeholderValue)
@@ -92,8 +92,8 @@ public class SetSubCommand extends SubCommand {
     }
 
     // Show allowed values in completions
-    if (args.length > 2 && plugin.getSettingsContainer().isSettingLoaded(args[1])) {
-      Setting setting = plugin.getSettingsContainer().getSetting(args[1]);
+    if (args.length > 2 && PLUGIN.getSettingsManager().isSettingLoaded(args[1])) {
+      Setting setting = PLUGIN.getSettingsManager().getSetting(args[1]);
       int permissionLevel = PlayerSettingsProvider.getSettingPermissionLevel(sender, setting);
       Set<String> settingValues = PlayerSettingsProvider.getAllowedLevels(setting, permissionLevel);
       StringUtil.copyPartialMatches(args[2], settingValues, completions);
@@ -103,19 +103,81 @@ public class SetSubCommand extends SubCommand {
     return completions;
   }
 
-  private void playChangeSound(Player player, int previousValue, int newValue) {
-    if (newValue < previousValue) {
-      Objects.requireNonNull(
-              XSound.parse(PlayerSettingsProvider.getToggleOffSound()),
-              "Could not parse 'setting-toggle-off' sound from 'config.yml'")
-          .forPlayer(player)
-          .play();
-      return;
+  private boolean canChangeSettingToLevel(
+      SettingUser user, SettingWatcher watcher, Setting setting, int level) {
+    Player player = user.getPlayer();
+
+    // Check if the value was changed
+    String settingName = setting.getName();
+    if (level == watcher.getValue(settingName)) {
+      Text.fromMessages("commands.setting-unchanged")
+          .placeholder("%setting%", settingName)
+          .placeholder("%value%", PlayerSettingsProvider.formatSettingValue(level))
+          .sendMessage(player, PlayerSettingsProvider.getMessagePrefix());
+      return false;
     }
+
+    // Allow change to default setting value
+    if (level == setting.getDefaultValue()) {
+      return true;
+    }
+
+    // Ignore players who don't have permission to change the setting
+    if (!user.hasSettingPermissions(settingName)) {
+      Text.fromMessages("settings.no-access")
+          .sendMessage(player, PlayerSettingsProvider.getMessagePrefix());
+      return false;
+    }
+
+    // Ignore values higher than the player's max permission level
+    int playerMaxLevel = PlayerSettingsProvider.getSettingPermissionLevel(player, setting);
+    if (!Range.closed(-playerMaxLevel, playerMaxLevel).contains(level)) {
+      Text.fromMessages("settings.low-access-level")
+          .placeholder("%setting%", settingName)
+          .placeholder("%max%", String.valueOf(playerMaxLevel))
+          .sendMessage(player, PlayerSettingsProvider.getMessagePrefix());
+      return false;
+    }
+
+    // Ignore levels out of the setting's value range
+    int settingMaxLevel = setting.getMaxValue();
+    if (!Range.closed(-settingMaxLevel, settingMaxLevel).contains(level)) {
+      Text.fromMessages("commands.setting-invalid-level")
+          .placeholder("%max%", String.valueOf(settingMaxLevel))
+          .sendMessage(player, PlayerSettingsProvider.getMessagePrefix());
+      return false;
+    }
+
+    return true;
+  }
+
+  private void playSettingToggleSound(
+      Setting setting, Player player, int previousValue, int newValue) {
+    boolean isToggleOn = newValue > previousValue;
+    String toggleSound = getSettingToggleSound(setting, isToggleOn);
     Objects.requireNonNull(
-            XSound.parse(PlayerSettingsProvider.getToggleOnSound()),
-            "Could not parse 'setting-toggle-on' sound from 'config.yml'")
+            XSound.parse(toggleSound),
+            "Invalid sound '" + toggleSound + "' for setting '" + setting.getName() + "'")
         .forPlayer(player)
         .play();
+  }
+
+  @NotNull
+  private String getSettingToggleSound(Setting setting, boolean enabled) {
+    ConfigurationSection overrideSection =
+        PLUGIN.getSettingsConfiguration().getSettingOverridesSection(setting.getName());
+    if (overrideSection == null) {
+      return getDefaultToggleSound(enabled);
+    }
+
+    String soundPath = enabled ? "setting-toggle-on" : "setting-toggle-off";
+    String overrideSound = overrideSection.getString("sounds." + soundPath);
+    return overrideSound == null ? getDefaultToggleSound(enabled) : overrideSound;
+  }
+
+  private String getDefaultToggleSound(boolean enabled) {
+    return enabled
+        ? PlayerSettingsProvider.getToggleOnSound()
+        : PlayerSettingsProvider.getToggleOffSound();
   }
 }

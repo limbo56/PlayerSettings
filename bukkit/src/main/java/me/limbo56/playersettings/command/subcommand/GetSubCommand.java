@@ -1,7 +1,5 @@
 package me.limbo56.playersettings.command.subcommand;
 
-import static me.limbo56.playersettings.settings.SettingValue.SETTING_VALUE;
-
 import com.google.common.collect.ImmutableSet;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -20,7 +18,7 @@ import org.bukkit.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
 
 public class GetSubCommand extends SubCommand {
-  private static final PlayerSettings plugin = PlayerSettingsProvider.getPlugin();
+  private static final PlayerSettings PLUGIN = PlayerSettingsProvider.getPlugin();
 
   public GetSubCommand() {
     super("get", "Gets the value of a setting", "<setting>", 2, null);
@@ -29,7 +27,7 @@ public class GetSubCommand extends SubCommand {
   @Override
   protected void execute(@NotNull CommandSender sender, @NotNull String @NotNull [] args) {
     Player player = (Player) sender;
-    SettingUser user = plugin.getUserManager().getUser(player.getUniqueId());
+    SettingUser user = PLUGIN.getUserManager().getUser(player.getUniqueId());
     if (user == null) {
       Text.fromMessages("settings.no-settings-data")
           .sendMessage(sender, PlayerSettingsProvider.getMessagePrefix());
@@ -44,7 +42,7 @@ public class GetSubCommand extends SubCommand {
     }
 
     String settingName = args[1];
-    Setting setting = plugin.getSettingsContainer().getSetting(settingName);
+    Setting setting = PLUGIN.getSettingsManager().getSetting(settingName);
     if (setting == null) {
       Text.fromMessages("commands.setting-not-found")
           .placeholder("%setting%", settingName)
@@ -55,16 +53,15 @@ public class GetSubCommand extends SubCommand {
     String placeholderName =
         ChatColor.stripColor(setting.getItem().getItemStack().getItemMeta().getDisplayName());
     int value = user.getSettingWatcher().getValue(settingName);
-    String placeholderValue = SETTING_VALUE.format(value);
     Text.fromMessages("commands.setting-show")
         .placeholder("%setting%", placeholderName)
-        .placeholder("%value%", placeholderValue)
+        .placeholder("%value%", PlayerSettingsProvider.formatSettingValue(value))
         .sendMessage(player, PlayerSettingsProvider.getMessagePrefix());
   }
 
   @Override
   public List<String> onTabComplete(CommandSender sender, String[] args) {
-    SettingUser user = plugin.getUserManager().getUser(((Player) sender).getUniqueId());
+    SettingUser user = PLUGIN.getUserManager().getUser(((Player) sender).getUniqueId());
     final List<String> completions = new ArrayList<>();
     Set<String> settingNames = ImmutableSet.copyOf(user.getSettingWatcher().getWatched());
     StringUtil.copyPartialMatches(args[1], settingNames, completions);

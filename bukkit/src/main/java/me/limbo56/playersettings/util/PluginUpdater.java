@@ -15,7 +15,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 public class PluginUpdater {
-  private static final PlayerSettings plugin = PlayerSettingsProvider.getPlugin();
+  private static final PlayerSettings PLUGIN = PlayerSettingsProvider.getPlugin();
   private static final String PREFIX = "&f&l(&6PlayerSettings&f&l) &f";
   private static final String API_URL = "https://api.spigotmc.org/legacy/update.php?resource=%s";
   private static final String PLUGIN_ID = "14622";
@@ -27,8 +27,7 @@ public class PluginUpdater {
   }
 
   public static void logUpdateMessage() {
-    getOrRefreshUpdateMessage(
-        message -> PluginLogHandler.log(ColorUtil.translateColorCodes(message)));
+    getOrRefreshUpdateMessage(message -> PluginLogHandler.log(Colors.translateColorCodes(message)));
   }
 
   private static void getOrRefreshUpdateMessage(Consumer<String> consumer) {
@@ -36,10 +35,10 @@ public class PluginUpdater {
     if (lastUpdated == null || Instant.now().isAfter(lastUpdated.plus(15, ChronoUnit.MINUTES))) {
       Bukkit.getScheduler()
           .runTaskAsynchronously(
-              plugin,
+              PLUGIN,
               () -> {
                 refreshPluginVersion();
-                Bukkit.getScheduler().runTask(plugin, () -> consumer.accept(getUpdateMessage()));
+                Bukkit.getScheduler().runTask(PLUGIN, () -> consumer.accept(getUpdateMessage()));
               });
       return;
     }
@@ -48,25 +47,25 @@ public class PluginUpdater {
   }
 
   private static String getUpdateMessage() {
-    String latestVersion = PluginUpdater.latestVersion.get();
+    String latestVersionNumber = PluginUpdater.latestVersion.get();
     if (latestVersion.equals("ERROR")) {
       return "&cAn error occurred while checking for updates!";
     }
 
-    String currentVersion = plugin.getDescription().getVersion();
-    int latestVersionNumber = Integer.parseInt(latestVersion.replaceAll("\\.", ""));
-    int currentVersionNumber = Integer.parseInt(currentVersion.replaceAll("\\.", ""));
-    if (latestVersionNumber > currentVersionNumber) {
-      return String.format("New version available &av%s", latestVersion);
-    } else if (currentVersionNumber > latestVersionNumber) {
-      return String.format("Running unknown version &cv%s", currentVersion);
+    String currentVersionNumber = PLUGIN.getDescription().getVersion();
+    Version latestVersion = Version.from(latestVersionNumber);
+    Version currentVersion = Version.from(currentVersionNumber);
+    if (currentVersion.isOlderThan(latestVersion)) {
+      return String.format("New version available &av%s", latestVersionNumber);
+    } else if (latestVersion.isOlderThan(currentVersion)) {
+      return String.format("Running unknown version &cv%s", currentVersionNumber);
     } else {
-      return String.format("Running version &6v%s", currentVersion);
+      return String.format("Running version &6v%s", currentVersionNumber);
     }
   }
 
   private static void refreshPluginVersion() {
-    String version = PluginUpdater.fetchPluginVersion();
+    String version = fetchPluginVersion();
     latestVersion.set(version);
     lastUpdated.set(Instant.now());
   }

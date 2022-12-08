@@ -21,10 +21,8 @@ public class ListenerManager {
     HandlerList.unregisterAll(listener);
   }
 
-  public void unregisterAll() {
-    for (Listener listener : listenerList) {
-      HandlerList.unregisterAll(listener);
-    }
+  public void unloadAll() {
+    listenerList.forEach(HandlerList::unregisterAll);
     listenerList.clear();
   }
 }

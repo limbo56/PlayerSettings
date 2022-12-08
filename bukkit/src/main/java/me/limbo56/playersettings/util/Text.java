@@ -97,7 +97,7 @@ public class Text {
     if (message.isEmpty()) {
       return;
     }
-    sender.sendMessage(ColorUtil.translateColorCodes(prefix) + message);
+    sender.sendMessage(Colors.translateColorCodes(prefix) + message);
   }
 
   /**
@@ -109,7 +109,7 @@ public class Text {
   private List<String> apply(Collection<String> text) {
     return text.stream()
         .map(modifiers.stream().reduce(Function::andThen).orElse(Function.identity()))
-        .map(ColorUtil::translateColorCodes)
+        .map(Colors::translateColorCodes)
         .collect(Collectors.toList());
   }
 }

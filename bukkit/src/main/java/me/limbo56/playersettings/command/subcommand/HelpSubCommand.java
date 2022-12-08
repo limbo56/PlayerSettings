@@ -11,7 +11,7 @@ import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
 public class HelpSubCommand extends SubCommand {
-  private static final PlayerSettings plugin = PlayerSettingsProvider.getPlugin();
+  private static final PlayerSettings PLUGIN = PlayerSettingsProvider.getPlugin();
 
   public HelpSubCommand() {
     super("help", "Prints a list with available commands", "", 1, null);
@@ -28,13 +28,13 @@ public class HelpSubCommand extends SubCommand {
   }
 
   private String buildHelpMessage(CommandSender senders) {
-    return plugin.getCommandManager().getAccessibleCommands(senders).stream()
+    return PLUGIN.getCommandManager().getAccessibleCommands(senders).stream()
         .map(this::buildCommandHelpMessage)
         .collect(Collectors.joining("\n", "&e------- &6Settings Help &e---------\n", ""));
   }
 
   private String buildCommandHelpMessage(String commandName) {
-    SubCommand command = plugin.getCommandManager().getCommand(commandName);
+    SubCommand command = PLUGIN.getCommandManager().getCommand(commandName);
     String helpFormat = "&f/settings %s%s &8: &7%s";
     String name = command.getName();
     String usage = command.getUsage().equals("") ? "" : " " + command.getUsage();
