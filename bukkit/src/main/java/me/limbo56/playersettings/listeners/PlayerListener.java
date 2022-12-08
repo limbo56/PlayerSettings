@@ -1,41 +1,105 @@
 package me.limbo56.playersettings.listeners;
 
-import java.util.UUID;
 import me.limbo56.playersettings.PlayerSettings;
 import me.limbo56.playersettings.PlayerSettingsProvider;
+import me.limbo56.playersettings.api.setting.Setting;
+import me.limbo56.playersettings.api.setting.SettingWatcher;
+import me.limbo56.playersettings.user.SettingUser;
 import me.limbo56.playersettings.util.PluginUpdater;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
+
+import java.util.Arrays;
+import java.util.UUID;
 
 public class PlayerListener implements Listener {
-  private final PlayerSettings plugin = PlayerSettingsProvider.getPlugin();
+  private static final PlayerSettings PLUGIN = PlayerSettingsProvider.getPlugin();
 
   @EventHandler
   public void onPlayerJoin(PlayerJoinEvent event) {
     Player player = event.getPlayer();
-    UUID uuid = player.getUniqueId();
+    if (!PlayerSettingsProvider.isAllowedWorld(player.getWorld().getName())) {
+      return;
+    }
+
     if (player.isOp() && PlayerSettingsProvider.isUpdateMessageEnabled()) {
       PluginUpdater.sendUpdateMessage(player);
     }
 
     // Load player
-    plugin.getLogger().fine("Loading settings of player '" + player.getName() + "'");
-    Bukkit.getScheduler()
-        .runTaskAsynchronously(plugin, () -> plugin.getUserManager().loadUser(uuid));
+    loadPlayer(player);
   }
 
   @EventHandler
   public void onPlayerQuit(PlayerQuitEvent event) {
     Player player = event.getPlayer();
-    UUID uuid = player.getUniqueId();
+    if (!PlayerSettingsProvider.isAllowedWorld(player.getWorld().getName())) {
+      return;
+    }
 
-    // Unload player
-    plugin.getLogger().fine("Saving settings of player '" + player.getName() + "'");
+    unloadPlayer(player);
+  }
+
+  @EventHandler
+  public void onChangeWorld(PlayerChangedWorldEvent event) {
+    Player player = event.getPlayer();
+    UUID uniqueId = player.getUniqueId();
+    String worldName = player.getWorld().getName();
+    boolean userLoaded = PLUGIN.getUserManager().isUserLoaded(uniqueId);
+    boolean allowedWorld = PlayerSettingsProvider.isAllowedWorld(worldName);
+    if (allowedWorld && !userLoaded) {
+      loadPlayer(player);
+    } else if (!allowedWorld && userLoaded) {
+      unloadPlayer(player);
+    }
+  }
+
+  @EventHandler
+  public void onPlayerDeath(PlayerRespawnEvent event) {
+    Player player = event.getPlayer();
+    if (!PlayerSettingsProvider.isAllowedWorld(player.getWorld().getName())) {
+      return;
+    }
+
+    SettingWatcher watcher = PLUGIN.getUserManager().getSettingWatcher(player.getUniqueId());
+    for (Setting setting : PLUGIN.getSettingsManager().getSettingMap().values()) {
+      if (Arrays.stream(setting.getTriggers()).noneMatch(trigger -> trigger.equals("respawn"))) {
+        continue;
+      }
+
+      String settingName = setting.getName();
+      int value = watcher.getValue(settingName);
+      watcher.setValue(settingName, value, false);
+    }
+  }
+
+  private void loadPlayer(Player player) {
+    PLUGIN.getLogger().fine("Loading settings of player '" + player.getName() + "'");
     Bukkit.getScheduler()
-        .runTaskAsynchronously(plugin, () -> plugin.getUserManager().unloadUser(uuid));
+        .runTaskAsynchronously(
+            PLUGIN, () -> PLUGIN.getUserManager().loadUser(player.getUniqueId()));
+  }
+
+  private void unloadPlayer(Player player) {
+    UUID uuid = player.getUniqueId();
+    SettingUser user = PLUGIN.getUserManager().getUser(uuid);
+    user.clearSettingEffects();
+
+    // Save and unload user
+    PLUGIN.getLogger().fine("Saving settings of player '" + player.getName() + "'");
+    Bukkit.getScheduler()
+        .runTaskAsynchronously(
+            PLUGIN,
+            () -> {
+              PLUGIN.getSettingsMenuManager().unload(uuid);
+              PLUGIN.getUserManager().saveUser(uuid);
+              PLUGIN.getUserManager().unloadUser(uuid);
+            });
   }
 }

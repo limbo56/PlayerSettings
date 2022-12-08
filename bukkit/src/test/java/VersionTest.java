@@ -5,18 +5,36 @@ import org.junit.Test;
 public class VersionTest {
   @Test
   public void testVersionsComparator() {
-    Version v1_10_2 = Version.from("1.10.2");
+    String minecraft_v1_10_2 = "1.10.2";
+    String minecraft_v1_14 = "1.14";
+    assertOlder(minecraft_v1_10_2, "1.10.3");
+    assertEqual(minecraft_v1_10_2, minecraft_v1_10_2);
+    assertNewer(minecraft_v1_10_2, "1.9.2");
+    assertOlder("1.8.8", minecraft_v1_14);
+    assertOlder("1.13", minecraft_v1_14);
+    assertOlder(minecraft_v1_14, "1.16");
+
+    String plugin_v6_2_0 = "6.2.0";
+    assertNewer(plugin_v6_2_0, "6.1.2");
+    assertEqual(plugin_v6_2_0, plugin_v6_2_0);
+  }
+
+  private void assertNewer(String version, String version2) {
     Assert.assertTrue(
-        "Version 1.10.2 should be older than version 1.10.3", v1_10_2.isOlderThan("1.10.3"));
+        "Version " + version + " should be newer than version " + version2,
+        Version.from(version).compareTo(version2) > 0);
+  }
+
+  private void assertOlder(String version, String version2) {
     Assert.assertTrue(
-        "Version 1.8.8 should be older than version 1.14",
-        Version.from("1.8.8").isOlderThan("1.14"));
-    Assert.assertTrue(
-        "Version 1.13 should be older than version 1.14", Version.from("1.13").isOlderThan("1.14"));
-    Assert.assertTrue(
-        "Version 1.14 should be older than version 1.16", Version.from("1.14").isOlderThan("1.16"));
+        "Version " + version + " should be older than version " + version2,
+        Version.from(version).compareTo(version2) < 0);
+  }
+
+  private void assertEqual(String version, String version2) {
     Assert.assertEquals(
-        "Version 1.10.2 should be equal to version 1.10.2", 0, v1_10_2.compareTo("1.10.2"));
-    Assert.assertEquals("Version 1.10.2 should be newer than 1.9.2", 1, v1_10_2.compareTo("1.9.2"));
+        "Version " + version + " should be equal to version " + version2,
+        0,
+        Version.from(version).compareTo(version2));
   }
 }

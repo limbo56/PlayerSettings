@@ -1,21 +1,24 @@
 package me.limbo56.playersettings.menu.actions;
 
-import me.limbo56.playersettings.menu.SettingsMenu;
-import me.limbo56.playersettings.menu.renderers.PaginationRenderer.PaginationItem;
+import me.limbo56.playersettings.PlayerSettingsProvider;
+import me.limbo56.playersettings.menu.SettingsMenuItem;
+import me.limbo56.playersettings.menu.SettingsMenuManager;
+import me.limbo56.playersettings.menu.renderers.MenuPaginationRenderer.PaginationItem;
 import me.limbo56.playersettings.user.SettingUser;
 import org.bukkit.event.inventory.ClickType;
 
-public class PaginationAction implements InventoryItemAction {
+public class PaginationAction implements MenuItemAction {
+  private static final SettingsMenuManager SETTINGS_MENU_MANAGER =
+      PlayerSettingsProvider.getPlugin().getSettingsMenuManager();
   private final PaginationItem direction;
-  private final int page;
 
-  public PaginationAction(PaginationItem direction, int page) {
+  public PaginationAction(PaginationItem direction) {
     this.direction = direction;
-    this.page = page;
   }
 
   @Override
-  public void execute(ClickType clickType, SettingUser user) {
-    SettingsMenu.openMenu(user, direction.calculatePage(page));
+  public void execute(SettingsMenuItem menuItem, ClickType clickType, SettingUser user) {
+    int nextPage = direction.calculatePage(menuItem.getPage());
+    SETTINGS_MENU_MANAGER.openMenu(user, nextPage);
   }
 }

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import me.limbo56.playersettings.PlayerSettingsProvider;
 import me.limbo56.playersettings.command.SubCommand;
-import me.limbo56.playersettings.menu.SettingsMenu;
 import me.limbo56.playersettings.user.SettingUser;
 import me.limbo56.playersettings.util.Text;
 import org.bukkit.command.CommandSender;
@@ -41,7 +40,7 @@ public class OpenSubCommand extends SubCommand {
       return;
     }
 
-    SettingsMenu.openMenu(user, 1);
+    PlayerSettingsProvider.getPlugin().getSettingsMenuManager().openMenu(user, 1);
   }
 
   @Override

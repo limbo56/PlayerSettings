@@ -2,6 +2,9 @@
 #
 # | A unique name to identify this item or the name of the setting that it's displaying
 # example-setting:
+#   * You can find all of the available properties for this section
+#   * here: https://github.com/CryptoMorin/XSeries/wiki/XItemStack
+#
 #   | The slot of the menu in which the item will be placed
 #   slot: 4
 #
@@ -11,24 +14,6 @@
 #   | The display name of the item
 #   name: "&aExample"
 #
-#   | The material of the item (https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html)
-#   | Format: [Material](:[Data])
-#   | Examples:
-#     - DIAMOND_SWORD
-#     - INK_SACK:10
-#   material: "LIME_WOOL"
-#
-#   | The id of the custom item model to use for this item
-#   | * Only works on versions 1.17+
-#   model-data: 1
-#
-#   | The texture URL to assign to the material if it's a player skull
-#   | * Accepts usernames, texture URLs, and base64 encoded texture URLs
-#   textures: "ewogICJ0aW1lc3RhbXAiIDogMTY2NjY1ODAwNzgxMiwKICAicHJvZmlsZUlkIiA6ICIwNjlhNzlmNDQ0ZTk0NzI2YTViZWZjYTkwZTM4YWFmNSIsCiAgInByb2ZpbGVOYW1lIiA6ICJOb3RjaCIsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS8yOTIwMDlhNDkyNWI1OGYwMmM3N2RhZGMzZWNlZjA3ZWE0Yzc0NzJmNjRlMGZkYzMyY2U1NTIyNDg5MzYyNjgwIgogICAgfQogIH0KfQ=="
-#
-#   | The amount of the item to show in the stack
-#   amount: 1
-#
 #   | A list of text that will be set as the lore of the item
 #   | Placeholders:
 #     - %current%  : Current value of the setting
@@ -37,6 +22,24 @@
 #     - %previous% : Previous value of the setting
 #   lore:
 #     - "&aExample lore"
+#
+#   | The material of the item (https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html)
+#   | Format: [Material](:[Data])
+#   | Examples:
+#     - DIAMOND_SWORD
+#     - INK_SACK:10
+#   material: "LIME_WOOL"
+#
+#   | The amount of the item to show in the stack
+#   amount: 1
+#
+#   | The id of the custom item model to use for this item
+#   | * Only works on versions 1.14+
+#   custom-model-data: 1
+#
+#   | The texture URL to assign to the material if it's a player skull
+#   | * Accepts usernames, texture URLs, and base64 encoded texture URLs
+#   skull: "ewogICJ0aW1lc3RhbXAiIDogMTY2NjY1ODAwNzgxMiwKICAicHJvZmlsZUlkIiA6ICIwNjlhNzlmNDQ0ZTk0NzI2YTViZWZjYTkwZTM4YWFmNSIsCiAgInByb2ZpbGVOYW1lIiA6ICJOb3RjaCIsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS8yOTIwMDlhNDkyNWI1OGYwMmM3N2RhZGMzZWNlZjA3ZWE0Yzc0NzJmNjRlMGZkYzMyY2U1NTIyNDg5MzYyNjgwIgogICAgfQogIH0KfQ=="
 #
 # Examples:
 #
@@ -79,6 +82,22 @@ disabled:
   lore:
     - ""
     - "&f&lClick &7to &aenable"
+
+# This section defines the display properties of the dismiss item
+dismiss:
+  slot: 49
+  name: "&cClose"
+  material: "BARRIER"
+  amount: 1
+  lore:
+    - ""
+    - "&f&lClick &7to go to the previous page"
+  # A list of commands that will be executed when this item is pressed
+  #
+  # Custom commands:
+  # - "playersettings close" : Closes the settings inventory
+  onPress:
+    - "playersettings close"
 
 next-page:
   slot: 53

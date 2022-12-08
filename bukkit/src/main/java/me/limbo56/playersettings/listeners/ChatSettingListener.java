@@ -1,9 +1,9 @@
 package me.limbo56.playersettings.listeners;
 
-import static me.limbo56.playersettings.settings.DefaultSetting.CHAT_SETTING;
+import static me.limbo56.playersettings.settings.DefaultSettings.CHAT_SETTING;
+import static me.limbo56.playersettings.settings.DefaultSettings.FLY_SETTING;
 
 import java.util.Collection;
-import java.util.stream.Collectors;
 import me.limbo56.playersettings.PlayerSettings;
 import me.limbo56.playersettings.PlayerSettingsProvider;
 import me.limbo56.playersettings.user.SettingUser;
@@ -14,20 +14,26 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 public class ChatSettingListener implements Listener {
-  private static final PlayerSettings plugin = PlayerSettingsProvider.getPlugin();
+  private static final PlayerSettings PLUGIN = PlayerSettingsProvider.getPlugin();
 
   @EventHandler
   public void onPlayerChat(AsyncPlayerChatEvent event) {
+    String chatSettingName = CHAT_SETTING.getName();
+    if (!PLUGIN.getSettingsManager().isSettingLoaded(chatSettingName)) {
+      return;
+    }
+
     Player player = event.getPlayer();
     if (!PlayerSettingsProvider.isAllowedWorld(player.getWorld().getName())) {
       return;
     }
 
     // Remove players with chat disabled from recipients list
-    SettingUser user = plugin.getUserManager().getUser(player.getUniqueId());
-    String chatSettingName = CHAT_SETTING.getSetting().getName();
+    SettingUser user = PLUGIN.getUserManager().getUser(player.getUniqueId());
     if (user.hasSettingEnabled(chatSettingName)) {
-      getPlayersWithChatDisabled().forEach(event.getRecipients()::remove);
+      for (SettingUser settingUser : getPlayersWithChatDisabled()) {
+        event.getRecipients().remove(settingUser.getPlayer());
+      }
       return;
     }
 
@@ -37,11 +43,7 @@ public class ChatSettingListener implements Listener {
         .sendMessage(player, PlayerSettingsProvider.getMessagePrefix());
   }
 
-  private Collection<Player> getPlayersWithChatDisabled() {
-    String chatSettingName = CHAT_SETTING.getSetting().getName();
-    return plugin.getUserManager().getUsers().stream()
-        .filter(user -> !user.hasSettingEnabled(chatSettingName))
-        .map(SettingUser::getPlayer)
-        .collect(Collectors.toList());
+  private Collection<SettingUser> getPlayersWithChatDisabled() {
+    return PLUGIN.getUserManager().getUsersWithSettingValue(CHAT_SETTING.getName(), false);
   }
 }

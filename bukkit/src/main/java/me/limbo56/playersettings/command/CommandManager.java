@@ -21,7 +21,7 @@ public class CommandManager {
     subCommands.put(command.getName(), command);
   }
 
-  public void unregisterAll() {
+  public void unloadAll() {
     subCommands.clear();
   }
 

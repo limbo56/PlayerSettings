@@ -1,14 +1,14 @@
 package me.limbo56.playersettings;
 
-import static me.limbo56.playersettings.settings.SettingValue.SETTING_VALUE;
-
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import me.limbo56.playersettings.api.setting.Setting;
-import me.limbo56.playersettings.util.PermissionUtil;
+import me.limbo56.playersettings.configuration.ItemsConfiguration;
+import me.limbo56.playersettings.configuration.SettingsConfiguration;
+import me.limbo56.playersettings.util.Permissions;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
@@ -23,22 +23,44 @@ public final class PlayerSettingsProvider {
     PlayerSettingsProvider.plugin = plugin;
   }
 
-  public static Setting getConfiguredSetting(Setting setting) {
-    return plugin.getSettingsConfiguration().getConfiguredSetting(setting);
+  public static Integer parseSettingValue(String value) {
+    if ("on".equalsIgnoreCase(value)) {
+      return 1;
+    } else if ("off".equalsIgnoreCase(value)) {
+      return 0;
+    }
+    try {
+      return Integer.parseInt(value);
+    } catch (NumberFormatException e) {
+      return null;
+    }
   }
 
-  public static Setting getSettingByName(String name) {
-    return plugin.getSettingsConfiguration().getSettingByName(name);
+  public static String formatSettingValue(int value) {
+    return value == 1 ? "on" : value < 1 ? "off" : String.valueOf(value);
+  }
+
+  public static void configureCustomSetting(Setting setting) {
+    String name = setting.getName();
+    SettingsConfiguration settingsConfiguration = plugin.getSettingsConfiguration();
+    ItemsConfiguration itemsConfiguration = plugin.getItemsConfiguration();
+    if (settingsConfiguration.isSettingConfigured(name)
+        && itemsConfiguration.isItemConfigured(name)) {
+      return;
+    }
+
+    if (!settingsConfiguration.isSettingConfigured(name)) {
+      settingsConfiguration.configureSetting(setting);
+    }
+
+    if (!itemsConfiguration.isItemConfigured(name)) {
+      itemsConfiguration.configureItem(name, setting.getItem());
+    }
   }
 
   public static boolean isAllowedWorld(String name) {
     List<String> worldList = plugin.getPluginConfiguration().getStringList("general.worlds");
     return worldList.contains(name) || worldList.contains("*");
-  }
-
-  public static boolean isSettingConfigured(String settingName) {
-    return plugin.getSettingsConfiguration().hasSetting(settingName)
-        && plugin.getItemsConfiguration().contains(settingName);
   }
 
   public static boolean hasMetricsEnabled() {
@@ -68,12 +90,12 @@ public final class PlayerSettingsProvider {
   public static int getSettingPermissionLevel(CommandSender sender, Setting setting) {
     String permission = "playersettings." + setting.getName().toLowerCase();
     int defaultValue = sender.hasPermission(permission) ? 1 : setting.getDefaultValue();
-    return PermissionUtil.getPermissionLevel(sender, permission, defaultValue);
+    return Permissions.getPermissionLevel(sender, permission, defaultValue);
   }
 
   @NotNull
   public static Set<String> getAllowedSettings(UUID uuid) {
-    return getPlugin().getSettingsContainer().getSettingMap().keySet().stream()
+    return getPlugin().getSettingsManager().getSettingMap().keySet().stream()
         .filter(getPlugin().getUserManager().getUser(uuid)::hasSettingPermissions)
         .collect(Collectors.toSet());
   }
@@ -82,7 +104,7 @@ public final class PlayerSettingsProvider {
   public static Set<String> getAllowedLevels(Setting setting, int level) {
     return IntStream.range(0, setting.getMaxValue() + 1)
         .filter(value -> value <= level)
-        .mapToObj(SETTING_VALUE::format)
+        .mapToObj(PlayerSettingsProvider::formatSettingValue)
         .collect(Collectors.toSet());
   }
 }

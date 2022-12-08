@@ -3,6 +3,7 @@ version: ${revision}
 main: me.limbo56.playersettings.PlayerSettings
 authors: [ limbo56, Maxetto, BullCheat ]
 api-version: 1.13
+softdepend: [ PlaceholderAPI ]
 prefix: "PlayerSettings"
 commands:
   settings:

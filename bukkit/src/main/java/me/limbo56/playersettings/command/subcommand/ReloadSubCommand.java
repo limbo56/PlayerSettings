@@ -1,22 +1,21 @@
 package me.limbo56.playersettings.command.subcommand;
 
-import java.util.ArrayList;
-import java.util.List;
 import me.limbo56.playersettings.PlayerSettings;
 import me.limbo56.playersettings.PlayerSettingsProvider;
 import me.limbo56.playersettings.command.SubCommand;
-import me.limbo56.playersettings.menu.SettingsInventory;
+import me.limbo56.playersettings.menu.SettingsMenuHolder;
 import me.limbo56.playersettings.util.PluginLogHandler;
 import me.limbo56.playersettings.util.Text;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ReloadSubCommand extends SubCommand {
-  private final PlayerSettings plugin = PlayerSettingsProvider.getPlugin();
+  private static final PlayerSettings PLUGIN = PlayerSettingsProvider.getPlugin();
 
   public ReloadSubCommand() {
     super(
@@ -35,32 +34,39 @@ public class ReloadSubCommand extends SubCommand {
             "&cThis command could potentially break the plugin or lag your server. "
                 + "Please refrain from using it on a live server and only while configuring the plugin.")
         .sendMessage(player, PlayerSettingsProvider.getMessagePrefix());
-    plugin.setReloading(true);
-
-    // Close all settings inventories
-    Bukkit.getOnlinePlayers().stream()
-        .filter(online -> online.getInventory().getHolder() instanceof SettingsInventory)
-        .forEach(HumanEntity::closeInventory);
+    PLUGIN.setReloading(true);
 
     // Unload users
-    plugin.getUserManager().unloadAllUsers();
+    PLUGIN
+        .getUserManager()
+        .getUsers()
+        .forEach(
+            user -> {
+              Player userPlayer = user.getPlayer();
+              user.clearSettingEffects();
+              if (userPlayer.getInventory().getHolder() instanceof SettingsMenuHolder) {
+                userPlayer.closeInventory();
+              }
+            });
+    PLUGIN.getSettingsMenuManager().unloadAll();
+    PLUGIN.getUserManager().unloadAll();
 
     // Disconnect data manager
-    plugin.getDataManager().disconnect();
+    PLUGIN.getSettingsDatabase().disconnect();
 
-    // Clear data
-    plugin.getConfigurationManager().reloadConfigurations();
-    plugin.getSettingsContainer().reloadSettings();
+    // Reload configurations and settings
+    PLUGIN.getConfigurationManager().reloadConfigurations();
+    PLUGIN.getSettingsManager().reloadSettings();
 
     // Connect data manager
-    plugin.initializeDataManager();
-    plugin.getDataManager().connect();
+    PLUGIN.initializeDataManager();
+    PLUGIN.getSettingsDatabase().connect();
 
     // Load users
-    plugin.getUserManager().loadOnlineUsers();
+    PLUGIN.getUserManager().loadOnlineUsers();
 
     // Send successfully reloaded message
-    plugin.setReloading(false);
+    PLUGIN.setReloading(false);
     PluginLogHandler.log(ChatColor.GREEN + "Plugin reloaded successfully!");
     Text.from("&aThe settings configuration has been reloaded")
         .sendMessage(player, PlayerSettingsProvider.getMessagePrefix());

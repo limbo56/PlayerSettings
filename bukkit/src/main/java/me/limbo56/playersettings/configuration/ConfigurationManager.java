@@ -2,26 +2,28 @@ package me.limbo56.playersettings.configuration;
 
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.LoadingCache;
-
-import java.util.Map;
-import java.util.concurrent.ExecutionException;
-
 import org.bukkit.configuration.file.YamlConfiguration;
+
+import java.util.concurrent.ExecutionException;
 
 public class ConfigurationManager {
   private final LoadingCache<String, YamlConfiguration> configurations =
-    CacheBuilder.newBuilder().build(new ConfigurationLoader());
+      CacheBuilder.newBuilder().build(new ConfigurationLoader());
 
-  /**
-   * Invalidates all the cached configurations and reloads them.
-   */
+  public <T extends BaseConfiguration> T loadConfiguration(T configuration)
+          throws ExecutionException {
+    configurations.get(configuration.getFileName());
+    return configuration;
+  }
+
+  /** Invalidates all the cached configurations and reloads them. */
   public void reloadConfigurations() {
-    for (String configuration : getConfigurations().keySet()) {
+    for (String configuration : configurations.asMap().keySet()) {
       configurations.refresh(configuration);
     }
   }
 
-  public void invalidateAll() {
+  public void unloadAll() {
     configurations.invalidateAll();
   }
 
@@ -36,19 +38,5 @@ public class ConfigurationManager {
    */
   public YamlConfiguration getConfiguration(String fileName) throws ExecutionException {
     return configurations.get(fileName);
-  }
-
-  public <T extends PluginConfiguration> T getConfiguration(T configuration) {
-    configurations.refresh(configuration.getFileName());
-    return configuration;
-  }
-
-  /**
-   * Gets an immutable copy of the map of configurations.
-   *
-   * @return Map of configurations
-   */
-  public Map<String, YamlConfiguration> getConfigurations() {
-    return configurations.asMap();
   }
 }

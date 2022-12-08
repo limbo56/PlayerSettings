@@ -12,8 +12,14 @@
 #   | * This property is optional, by default all settings will have a max value of 1
 #   max: 1
 #
-#   | Toggle of whether the setting effects/commands should be executed when the player joins
-#   executeOnJoin: false
+#   | List of events/actions that should trigger the side effects for the current value of the setting
+#   |
+#   | Available triggers:
+#   | - join: Trigger when the player joins
+#   | - respawn: Triggers when a player respawns
+#   triggers:
+#   - join
+#   - respawn
 #
 #   | Toggleable settings:
 #   | A list of commands that will be executed when the setting is enabled and disabled
@@ -39,13 +45,33 @@
 #     default:
 #       - "me %player% %value%"
 #
+#   | Section to define overrides for this specific setting
+#   overrides:
+#     | Override properties of the enabled/disabled items
+#     |
+#     | * Use the same properties that you pass when configuring an item in the 'items.yml' file
+#     | * No need to re-define every property for the item, just the ones you want to override
+#     enabled-item: Item
+#       name: "&aEnabled"
+#       material: LIME_STAINED_GLASS
+#     disabled-item:
+#       name: "&cDisabled"
+#       material: RED_STAINED_GLASS
+#
+#     | Override the sounds played when a player interacts with a setting
+#     |
+#     | * Format: [Sound], [Volume], [Pitch]
+#     sounds:
+#       setting-toggle-on: "BLOCK_NOTE_BLOCK_HARP, 1, 1"
+#       setting-toggle-off: "BLOCK_NOTE_BLOCK_HARP, 1, -99"
+#
 # Examples:
 #
 # | AuthMeReloaded https://www.spigotmc.org/resources/authmereloaded.6269/
 # premium-setting:
 #   enabled: true
 #   default: 0
-#   executeOnJoin: false
+#   triggers: []
 #   onEnable:
 #     - "SUDO premium %player%"
 #   onDisable:
@@ -55,7 +81,7 @@
 # radio-setting:
 #   enabled: true
 #   default: 0
-#   executeOnJoin: false
+#   triggers: []
 #   onEnable:
 #     - "music resume"
 #   onDisable:

@@ -21,7 +21,7 @@ import org.jetbrains.annotations.Nullable;
  * <p>This class is responsible for executing the sub commands of the main command.
  */
 public class SubCommandExecutor implements org.bukkit.command.CommandExecutor, TabCompleter {
-  private static final PlayerSettings plugin = PlayerSettingsProvider.getPlugin();
+  private static final PlayerSettings PLUGIN = PlayerSettingsProvider.getPlugin();
 
   @Override
   public boolean onCommand(
@@ -29,11 +29,11 @@ public class SubCommandExecutor implements org.bukkit.command.CommandExecutor, T
       @NotNull Command command,
       @NotNull String label,
       String[] args) {
-    if (plugin.isReloading()) {
+    if (PLUGIN.isReloading()) {
       return false;
     }
 
-    CommandManager commandManager = plugin.getCommandManager();
+    CommandManager commandManager = PLUGIN.getCommandManager();
     if (args.length < 1) {
       commandManager.getCommand("help").execute(sender, args);
       return false;
@@ -69,7 +69,7 @@ public class SubCommandExecutor implements org.bukkit.command.CommandExecutor, T
       @NotNull Command command,
       @NotNull String label,
       @NotNull String[] args) {
-    CommandManager commandManager = plugin.getCommandManager();
+    CommandManager commandManager = PLUGIN.getCommandManager();
     List<String> accessibleCommands = commandManager.getAccessibleCommands(sender);
     if (args.length < 2) {
       final List<String> completions = new ArrayList<>();
