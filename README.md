@@ -30,8 +30,9 @@ section and API to define custom settings.
 
 ## Requirements
 
-The plugin supports API versions **1.8-1.19 of Spigot/Bukkit/Paper** and requires at minimum **Java
-11** to be used.
+* **Java** 8 or newer
+
+* **Bukkit/Spigot/Paper** 1.8 - 1.19
 
 ## Wiki
 
