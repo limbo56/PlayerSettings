@@ -10,7 +10,7 @@
 
 [discord-link]: https://discord.gg/6gkkJ6y
 
-[build-status]: https://img.shields.io/github/workflow/status/limbo56/PlayerSettings/Java%20CI
+[build-status]: https://img.shields.io/github/actions/workflow/status/limbo56/PlayerSettings/maven.yml?branch=master
 
 [feature-report-template]: https://github.com/limbo56/PlayerSettings/issues/new?assignees=&labels=enhancement&template=feature_request.md&title=%5BFEATURE%5D
 
