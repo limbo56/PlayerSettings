@@ -1,15 +1,20 @@
 package me.limbo56.playersettings.util;
 
-import static me.limbo56.playersettings.PlayerSettingsProvider.getPlugin;
-
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
-import me.limbo56.playersettings.PlayerSettingsProvider;
+import me.limbo56.playersettings.api.setting.Setting;
 import org.bukkit.command.CommandSender;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static me.limbo56.playersettings.PlayerSettingsProvider.getPlugin;
+
 public class Permissions {
+  public static int getSettingPermissionLevel(CommandSender sender, Setting setting) {
+    String permission = "playersettings." + setting.getName().toLowerCase();
+    return getPermissionLevel(sender, permission, setting.getDefaultValue());
+  }
+
   public static int getPermissionLevel(CommandSender sender, String permission, int defaultLevel) {
     // Give max level if sender is operator or has the 'settings.*' permission
     String permissionPath = permission + ".";
@@ -45,10 +50,6 @@ public class Permissions {
 
   private static int getMaxPermissionLevel(List<String> levels, int defaultLevel)
       throws NumberFormatException {
-    return levels.stream()
-        .map(PlayerSettingsProvider::parseSettingValue)
-        .filter(Objects::nonNull)
-        .max(Integer::compareTo)
-        .orElse(defaultLevel);
+    return levels.stream().map(Integer::parseInt).max(Integer::compareTo).orElse(defaultLevel);
   }
 }

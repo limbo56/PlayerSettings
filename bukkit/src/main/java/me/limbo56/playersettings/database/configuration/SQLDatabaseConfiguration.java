@@ -5,8 +5,8 @@ import me.limbo56.playersettings.PlayerSettingsProvider;
 import me.limbo56.playersettings.util.Version;
 import org.bukkit.configuration.ConfigurationSection;
 
-public class SqlDatabaseConfiguration extends BaseDatabaseConfiguration {
-  public SqlDatabaseConfiguration(ConfigurationSection section) {
+public class SQLDatabaseConfiguration extends DatabaseConfiguration {
+  public SQLDatabaseConfiguration(ConfigurationSection section) {
     super(section);
   }
 

@@ -16,21 +16,21 @@ settings:
   wait-loading: "&cPlease wait until your settings load before doing any changes"
 
 commands:
-  no-access: "&cYou don't have permissions to use this command"
+  no-access: "&cYou don't have permissions to execute this command"
   # %setting% - The name of the setting the user tried to change
-  setting-not-found: "&cThe setting &6%setting% &cwasn't found!"
-  # %max% - The maximum value this user can change the level of this setting to
-  setting-invalid-level: "&cIncorrect value! &cThe only accepted values are: &aon&c, &coff&c, &e0-%max%"
+  setting-not-found: "&cUnknown setting '&6%setting%&c'!"
+  # %values% - The list of accepted values for the setting that the player has permissions for
+  setting-invalid-level: "&cInvalid setting level! &cThe accepted levels are: &a%values%"
   # %setting% - The name of the setting that was changed
   # %value% - The value the setting was changed to
-  setting-changed: "Setting &6%setting% &fhas been set to &e%value%"
+  setting-changed: "Setting '&6%setting%&f' has been set to &e%value%"
   setting-show: "&6%setting% &f- &e%value%"
-  setting-unchanged: "&cThe setting &6%setting% &cis already set to &e%value%"
+  setting-unchanged: "&cSetting '&6%setting%&c' is already set to &e%value%"
 
 stacker:
-  self-disabled: "&cYou have the &6stacker &csetting disabled!"
-  target-disabled: "&cThat player has the &6stacker &csetting disabled!"
+  self-disabled: "&cYou have the '&6Stacker&c' setting disabled!"
+  target-disabled: "&cThat player has the '&6Stacker&c' setting disabled!"
   target-invalid-entity: "&cYou can't stack that entity!"
 
 chat:
-  self-disabled: "&cYou have the &6chat &csetting disabled!"
+  self-disabled: "&cYou have the '&6Chat&c' setting disabled!"

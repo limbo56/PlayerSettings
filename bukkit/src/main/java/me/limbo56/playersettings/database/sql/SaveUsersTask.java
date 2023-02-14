@@ -1,4 +1,4 @@
-package me.limbo56.playersettings.database.process;
+package me.limbo56.playersettings.database.sql;
 
 import com.google.common.collect.ImmutableMap;
 import me.limbo56.playersettings.api.setting.SettingWatcher;
@@ -9,7 +9,7 @@ import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Map;
 
-public class SaveUsersTask implements DatabaseTask {
+public class SaveUsersTask implements SqlDatabaseTask {
   private static final Map<String, String> STATEMENT_MAP =
       ImmutableMap.of(
           "sql",

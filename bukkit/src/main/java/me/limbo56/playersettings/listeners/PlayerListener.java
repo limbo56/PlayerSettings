@@ -6,7 +6,7 @@ import me.limbo56.playersettings.api.setting.Setting;
 import me.limbo56.playersettings.api.setting.SettingWatcher;
 import me.limbo56.playersettings.user.SettingUser;
 import me.limbo56.playersettings.util.PluginUpdater;
-import org.bukkit.Bukkit;
+import me.limbo56.playersettings.util.TaskChain;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -15,7 +15,6 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
-import java.util.Arrays;
 import java.util.UUID;
 
 public class PlayerListener implements Listener {
@@ -24,11 +23,11 @@ public class PlayerListener implements Listener {
   @EventHandler
   public void onPlayerJoin(PlayerJoinEvent event) {
     Player player = event.getPlayer();
-    if (!PlayerSettingsProvider.isAllowedWorld(player.getWorld().getName())) {
+    if (!PLUGIN.getPluginConfiguration().isAllowedWorld(player.getWorld().getName())) {
       return;
     }
 
-    if (player.isOp() && PlayerSettingsProvider.isUpdateMessageEnabled()) {
+    if (player.isOp() && PLUGIN.getPluginConfiguration().hasUpdateAlertsEnabled()) {
       PluginUpdater.sendUpdateMessage(player);
     }
 
@@ -39,7 +38,7 @@ public class PlayerListener implements Listener {
   @EventHandler
   public void onPlayerQuit(PlayerQuitEvent event) {
     Player player = event.getPlayer();
-    if (!PlayerSettingsProvider.isAllowedWorld(player.getWorld().getName())) {
+    if (!PLUGIN.getPluginConfiguration().isAllowedWorld(player.getWorld().getName())) {
       return;
     }
 
@@ -52,7 +51,7 @@ public class PlayerListener implements Listener {
     UUID uniqueId = player.getUniqueId();
     String worldName = player.getWorld().getName();
     boolean userLoaded = PLUGIN.getUserManager().isUserLoaded(uniqueId);
-    boolean allowedWorld = PlayerSettingsProvider.isAllowedWorld(worldName);
+    boolean allowedWorld = PLUGIN.getPluginConfiguration().isAllowedWorld(worldName);
     if (allowedWorld && !userLoaded) {
       loadPlayer(player);
     } else if (!allowedWorld && userLoaded) {
@@ -63,27 +62,43 @@ public class PlayerListener implements Listener {
   @EventHandler
   public void onPlayerDeath(PlayerRespawnEvent event) {
     Player player = event.getPlayer();
-    if (!PlayerSettingsProvider.isAllowedWorld(player.getWorld().getName())) {
+    if (!PLUGIN.getPluginConfiguration().isAllowedWorld(player.getWorld().getName())) {
       return;
     }
 
-    SettingWatcher watcher = PLUGIN.getUserManager().getSettingWatcher(player.getUniqueId());
-    for (Setting setting : PLUGIN.getSettingsManager().getSettingMap().values()) {
-      if (Arrays.stream(setting.getTriggers()).noneMatch(trigger -> trigger.equals("respawn"))) {
-        continue;
-      }
+    new TaskChain()
+        .sync(
+            data -> {
+              SettingWatcher watcher =
+                  PLUGIN.getUserManager().getSettingWatcher(player.getUniqueId());
+              for (Setting setting : PLUGIN.getSettingsManager().getSettingMap().values()) {
+                boolean hasRespawnTrigger =
+                    PLUGIN.getSettingsManager().hasTriggers(setting, "respawn");
+                PLUGIN
+                    .getLogger()
+                    .config(
+                        "Reloading setting `"
+                            + setting.getName()
+                            + "` on death `"
+                            + hasRespawnTrigger
+                            + "`");
+                if (!hasRespawnTrigger) {
+                  continue;
+                }
 
-      String settingName = setting.getName();
-      int value = watcher.getValue(settingName);
-      watcher.setValue(settingName, value, false);
-    }
+                String settingName = setting.getName();
+                int value = watcher.getValue(settingName);
+                watcher.setValue(settingName, value, false);
+              }
+            })
+        .runSyncLater(0);
   }
 
   private void loadPlayer(Player player) {
     PLUGIN.getLogger().fine("Loading settings of player '" + player.getName() + "'");
-    Bukkit.getScheduler()
-        .runTaskAsynchronously(
-            PLUGIN, () -> PLUGIN.getUserManager().loadUser(player.getUniqueId()));
+    new TaskChain()
+        .async(data -> PLUGIN.getUserManager().loadUser(player.getUniqueId()))
+        .runAsync();
   }
 
   private void unloadPlayer(Player player) {
@@ -93,13 +108,13 @@ public class PlayerListener implements Listener {
 
     // Save and unload user
     PLUGIN.getLogger().fine("Saving settings of player '" + player.getName() + "'");
-    Bukkit.getScheduler()
-        .runTaskAsynchronously(
-            PLUGIN,
-            () -> {
+    new TaskChain()
+        .async(
+            data -> {
               PLUGIN.getSettingsMenuManager().unload(uuid);
               PLUGIN.getUserManager().saveUser(uuid);
               PLUGIN.getUserManager().unloadUser(uuid);
-            });
+            })
+        .runAsync();
   }
 }

@@ -2,9 +2,9 @@ package me.limbo56.playersettings.user;
 
 import me.limbo56.playersettings.PlayerSettings;
 import me.limbo56.playersettings.PlayerSettingsProvider;
+import me.limbo56.playersettings.api.event.SettingUpdateEvent;
 import me.limbo56.playersettings.api.setting.Setting;
 import me.limbo56.playersettings.api.setting.SettingWatcher;
-import me.limbo56.playersettings.settings.SettingUpdateTask;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -36,7 +36,9 @@ public class UserSettingsWatcher implements SettingWatcher {
     if (!silent) {
       Setting setting = PLUGIN.getSettingsManager().getSetting(settingName);
       Player player = Bukkit.getPlayer(getOwner());
-      new SettingUpdateTask(setting, player, previousValue, value).runTask(PLUGIN);
+      Bukkit.getPluginManager()
+          .callEvent(new SettingUpdateEvent(player, setting, previousValue, value));
+      setting.getCallbacks().forEach(callback -> callback.notifyChange(setting, player, value));
     }
   }
 

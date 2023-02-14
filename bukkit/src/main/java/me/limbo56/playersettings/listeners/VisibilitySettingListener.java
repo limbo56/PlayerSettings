@@ -18,11 +18,11 @@ public class VisibilitySettingListener implements Listener {
   @EventHandler
   public void onPlayerJoin(PlayerJoinEvent event) {
     Player player = event.getPlayer();
-    if (!PLUGIN.getSettingsManager().isSettingLoaded(VISIBILITY_SETTING.getName())) {
+    if (!PLUGIN.getSettingsManager().isSettingRegistered(VISIBILITY_SETTING.getName())) {
       return;
     }
 
-    if (!PlayerSettingsProvider.isAllowedWorld(player.getWorld().getName())) {
+    if (!PLUGIN.getPluginConfiguration().isAllowedWorld(player.getWorld().getName())) {
       return;
     }
 

@@ -1,13 +1,13 @@
 package me.limbo56.playersettings.api;
 
-import java.util.UUID;
 import me.limbo56.playersettings.api.setting.SettingWatcher;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.ServicesManager;
 
+import java.util.UUID;
+
 /**
- * An object that provides access to a registry of {@link SettingWatcher SettingWatchers} belonging
- * to {@link Player Players}.
+ * A registry of {@link SettingWatcher SettingWatchers}.
  *
  * <p>You can get an instance of this class by using the Bukkit {@link ServicesManager#load(Class)}
  * method. Below is an example that shows how to load the SettingsWatchlist, retrieve a setting

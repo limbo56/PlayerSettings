@@ -1,6 +1,5 @@
 package me.limbo56.playersettings.menu.renderers;
 
-import java.util.List;
 import me.limbo56.playersettings.PlayerSettings;
 import me.limbo56.playersettings.PlayerSettingsProvider;
 import me.limbo56.playersettings.api.ImmutableMenuItem;
@@ -10,7 +9,10 @@ import me.limbo56.playersettings.menu.SettingsMenuItem;
 import me.limbo56.playersettings.menu.actions.DismissAction;
 import me.limbo56.playersettings.util.ItemBuilder;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 public class DismissRenderer implements SettingsMenuItemRenderer {
   private static final PlayerSettings PLUGIN = PlayerSettingsProvider.getPlugin();
@@ -23,11 +25,13 @@ public class DismissRenderer implements SettingsMenuItemRenderer {
       return;
     }
 
-    List<String> commands = dismissItemSection.getStringList("onPress");
     MenuItem item = MenuItem.deserialize(dismissItemSection);
-    MenuItem translatedItem =
-        ImmutableMenuItem.copyOf(item)
-            .withItemStack(ItemBuilder.translateItemStack(item.getItemStack()));
-    menuHolder.renderItem(new SettingsMenuItem(translatedItem, new DismissAction(commands)));
+    ItemStack translateItemStack =
+        ItemBuilder.translateItemStack(item.getItemStack(), menuHolder.getOwner().getPlayer());
+    List<String> commands = dismissItemSection.getStringList("onPress");
+    menuHolder.renderItem(
+        new SettingsMenuItem(
+            ImmutableMenuItem.copyOf(item).withItemStack(translateItemStack),
+            new DismissAction(commands)));
   }
 }

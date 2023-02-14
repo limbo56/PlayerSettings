@@ -17,9 +17,7 @@
 #   | Available triggers:
 #   | - join: Trigger when the player joins
 #   | - respawn: Triggers when a player respawns
-#   triggers:
-#   - join
-#   - respawn
+#   triggers: ["join", "respawn"]
 #
 #   | Toggleable settings:
 #   | A list of commands that will be executed when the setting is enabled and disabled
@@ -44,6 +42,24 @@
 #       - "me %player% %value%"
 #     default:
 #       - "me %player% %value%"
+#
+#   | A map of aliases to use when displaying the value of a setting
+#   |
+#   | * Values can be mapped to an alias or a list of aliases
+#   | * The first alias in the list will be used to display the setting value
+#   | * The alias for value 0 will be used to display setting values less than 1
+#   value-aliases:
+#     0: ["off", "x0"]
+#     1: ["on", "x1"]
+#     2: "x2"
+#     3: "x3"
+#     4: "x4"
+#     5: "x5"
+#     6: "x6"
+#     7: "x7"
+#     8: "x8"
+#     9: "x9"
+#     10: "x10"
 #
 #   | Section to define overrides for this specific setting
 #   overrides:
@@ -86,3 +102,15 @@
 #     - "music resume"
 #   onDisable:
 #     - "music pause"
+
+fly-setting:
+  enabled: true
+  default: 0
+  max: 10
+  # Saves the flight state when a player leaves the game server
+  save-state: true
+  # Forces the player into flight mode when they join the game server
+  #
+  # * This property will respect if save-state is enabled, i.e., don't force flight mode if the player had flight disabled
+  force-on-join: false
+  triggers: [ "join", "respawn" ]

@@ -4,6 +4,7 @@ import me.limbo56.playersettings.PlayerSettings;
 import me.limbo56.playersettings.PlayerSettingsProvider;
 import me.limbo56.playersettings.command.SubCommand;
 import me.limbo56.playersettings.menu.SettingsMenuHolder;
+import me.limbo56.playersettings.user.SettingUser;
 import me.limbo56.playersettings.util.PluginLogHandler;
 import me.limbo56.playersettings.util.Text;
 import org.bukkit.ChatColor;
@@ -33,21 +34,17 @@ public class ReloadSubCommand extends SubCommand {
     Text.from(
             "&cThis command could potentially break the plugin or lag your server. "
                 + "Please refrain from using it on a live server and only while configuring the plugin.")
-        .sendMessage(player, PlayerSettingsProvider.getMessagePrefix());
+        .sendMessage(player, PLUGIN.getMessagesConfiguration().getMessagePrefix());
     PLUGIN.setReloading(true);
 
     // Unload users
-    PLUGIN
-        .getUserManager()
-        .getUsers()
-        .forEach(
-            user -> {
-              Player userPlayer = user.getPlayer();
-              user.clearSettingEffects();
-              if (userPlayer.getInventory().getHolder() instanceof SettingsMenuHolder) {
-                userPlayer.closeInventory();
-              }
-            });
+    for (SettingUser user : PLUGIN.getUserManager().getUsers()) {
+      Player userPlayer = user.getPlayer();
+      user.clearSettingEffects();
+      if (userPlayer.getInventory().getHolder() instanceof SettingsMenuHolder) {
+        userPlayer.closeInventory();
+      }
+    }
     PLUGIN.getSettingsMenuManager().unloadAll();
     PLUGIN.getUserManager().unloadAll();
 
@@ -59,8 +56,7 @@ public class ReloadSubCommand extends SubCommand {
     PLUGIN.getSettingsManager().reloadSettings();
 
     // Connect data manager
-    PLUGIN.initializeDataManager();
-    PLUGIN.getSettingsDatabase().connect();
+    PLUGIN.registerSettingsDatabase();
 
     // Load users
     PLUGIN.getUserManager().loadOnlineUsers();
@@ -69,7 +65,7 @@ public class ReloadSubCommand extends SubCommand {
     PLUGIN.setReloading(false);
     PluginLogHandler.log(ChatColor.GREEN + "Plugin reloaded successfully!");
     Text.from("&aThe settings configuration has been reloaded")
-        .sendMessage(player, PlayerSettingsProvider.getMessagePrefix());
+        .sendMessage(player, PLUGIN.getMessagesConfiguration().getMessagePrefix());
   }
 
   @Override

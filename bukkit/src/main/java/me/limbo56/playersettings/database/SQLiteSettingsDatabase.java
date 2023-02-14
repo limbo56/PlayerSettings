@@ -2,12 +2,10 @@ package me.limbo56.playersettings.database;
 
 import me.limbo56.playersettings.PlayerSettings;
 import me.limbo56.playersettings.PlayerSettingsProvider;
+import me.limbo56.playersettings.api.setting.Setting;
 import me.limbo56.playersettings.api.setting.SettingWatcher;
-import me.limbo56.playersettings.database.configuration.BaseDatabaseConfiguration;
 import me.limbo56.playersettings.database.configuration.DatabaseConfiguration;
-import me.limbo56.playersettings.database.process.CreateTableTask;
-import me.limbo56.playersettings.database.process.LoadUsersQuery;
-import me.limbo56.playersettings.database.process.SaveUsersTask;
+import me.limbo56.playersettings.database.sql.*;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.io.File;
@@ -20,17 +18,18 @@ import java.util.Collections;
 import java.util.UUID;
 import java.util.logging.Level;
 
-public class SQLiteDatabase extends SettingsDatabase<DatabaseConfiguration> {
+public class SQLiteSettingsDatabase implements SettingsDatabase<DatabaseConfiguration> {
   private static final PlayerSettings PLUGIN = PlayerSettingsProvider.getPlugin();
+  private final DatabaseConfiguration databaseConfiguration;
   private File databaseFile;
 
-  public SQLiteDatabase(ConfigurationSection section) {
-    super(new BaseDatabaseConfiguration(section));
+  public SQLiteSettingsDatabase(ConfigurationSection section) {
+    this.databaseConfiguration = new DatabaseConfiguration(section);
   }
 
   @Override
   public void connect() {
-    String databaseName = databaseConfiguration.getDatabaseName();
+    String databaseName = getDatabaseConfiguration().getDatabaseName();
     File databaseFile = new File(PLUGIN.getDataFolder(), databaseName + ".db");
     if (!databaseFile.exists()) {
       try {
@@ -49,7 +48,7 @@ public class SQLiteDatabase extends SettingsDatabase<DatabaseConfiguration> {
   }
 
   @Override
-  public Collection<SettingWatcher> loadUserSettings(Collection<UUID> users) {
+  public Collection<SettingWatcher> loadSettingWatchers(Collection<UUID> users) {
     try (Connection connection = this.getConnection()) {
       return new LoadUsersQuery(connection, users).query();
     } catch (SQLException e) {
@@ -60,13 +59,39 @@ public class SQLiteDatabase extends SettingsDatabase<DatabaseConfiguration> {
   }
 
   @Override
-  public void saveUserSettings(Collection<SettingWatcher> settings) {
+  public void saveSettingWatchers(Collection<SettingWatcher> settingWatchers) {
     try (Connection connection = this.getConnection()) {
-      new SaveUsersTask(connection, settings, "sqlite").execute();
+      new SaveUsersTask(connection, settingWatchers, "sqlite").execute();
     } catch (SQLException e) {
       PLUGIN.getLogger().severe("An exception occurred while saving user settings");
       e.printStackTrace();
     }
+  }
+
+  @Override
+  public void putExtra(UUID uuid, Setting setting, String key, String value) {
+    try (Connection connection = this.getConnection()) {
+      new SaveExtraTask(connection, uuid, setting, key, value, "sqlite").execute();
+    } catch (SQLException e) {
+      PLUGIN.getLogger().severe("An exception occurred while saving extra data");
+      e.printStackTrace();
+    }
+  }
+
+  @Override
+  public String getExtra(UUID uuid, Setting setting, String key) {
+    try (Connection connection = this.getConnection()) {
+      return new GetExtraQuery(connection, uuid, setting, key).query();
+    } catch (SQLException e) {
+      PLUGIN.getLogger().severe("An exception occurred while loading user settings");
+      e.printStackTrace();
+      return null;
+    }
+  }
+
+  @Override
+  public DatabaseConfiguration getDatabaseConfiguration() {
+    return databaseConfiguration;
   }
 
   public void createDefaultTable() {

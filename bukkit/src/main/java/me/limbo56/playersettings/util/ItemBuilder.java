@@ -1,18 +1,15 @@
 package me.limbo56.playersettings.util;
 
 import com.cryptomorin.xseries.SkullUtils;
-import com.cryptomorin.xseries.XItemStack;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.function.Consumer;
 import org.bukkit.Material;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.MemoryConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 public class ItemBuilder {
   private ItemStack item;
@@ -28,24 +25,15 @@ public class ItemBuilder {
     return new ItemBuilder();
   }
 
-  public static ItemStack translateItemStack(ItemStack itemStack) {
-    MemoryConfiguration memoryConfiguration = new MemoryConfiguration();
+  public static ItemStack translateItemStack(ItemStack itemStack, Player player) {
     ItemMeta itemMeta = itemStack.getItemMeta();
     if (itemMeta != null) {
-      memoryConfiguration.set("name", itemMeta.getDisplayName());
-      memoryConfiguration.set("lore", itemMeta.getLore());
+      itemMeta.setDisplayName(
+          Text.from(itemMeta.getDisplayName()).usePlaceholderApi(player).first());
+      itemMeta.setLore(Text.from(itemMeta.getLore()).usePlaceholderApi(player).build());
     }
-    return translateItemStack(itemStack, memoryConfiguration);
-  }
-
-  public static ItemStack translateItemStack(ItemStack itemStack, ConfigurationSection section) {
-    return translateItemStack(itemStack, section, null);
-  }
-
-  @NotNull
-  public static ItemStack translateItemStack(
-      ItemStack itemStack, ConfigurationSection section, @Nullable Consumer<Exception> consumer) {
-    return XItemStack.edit(itemStack, section, Colors::translateColorCodes, consumer);
+    itemStack.setItemMeta(itemMeta);
+    return itemStack;
   }
 
   public ItemBuilder item(@NotNull ItemStack item) {

@@ -46,24 +46,24 @@
 # premium-setting:
 #   page: 1
 #   slot: 34
-#   name: '&dPremium'
+#   name: '&dPremium &f%current%'
 #   material: JUKEBOX
 #   amount: 1
 #   lore:
 #     - '&7Toggle your account as authenticated and skip the login step!'
 #     - ''
-#     - '&f&lClick &7to toggle'
+#     - '&6Click &7to toggle'
 #
 # radio-setting:
 #   page: 1
 #   slot: 34
-#   name: '&dRadio'
+#   name: '&dRadio &f%current%'
 #   material: JUKEBOX
 #   amount: 1
 #   lore:
 #     - '&7Resume and pause the active radio song!'
 #     - ''
-#     - '&f&lClick &7to toggle'
+#     - '&6Click &7to toggle'
 
 # This section defines the display properties of the toggle on item
 enabled:
@@ -72,7 +72,7 @@ enabled:
   amount: 1
   lore:
     - ""
-    - "&f&lClick &7to &cdisable"
+    - "&6Click &7to &cdisable"
 
 # This section defines the display properties of the toggle off item
 disabled:
@@ -81,7 +81,7 @@ disabled:
   amount: 1
   lore:
     - ""
-    - "&f&lClick &7to &aenable"
+    - "&6Click &7to &aenable"
 
 # This section defines the display properties of the dismiss item
 dismiss:
@@ -91,7 +91,7 @@ dismiss:
   amount: 1
   lore:
     - ""
-    - "&f&lClick &7to go to the previous page"
+    - "&6Click &7to close the menu"
   # A list of commands that will be executed when this item is pressed
   #
   # Custom commands:
@@ -106,7 +106,7 @@ next-page:
   amount: 1
   lore:
     - ""
-    - "&f&lClick &7to go to the next page"
+    - "&6Click &7to go to the next page"
 
 previous-page:
   slot: 45
@@ -115,4 +115,30 @@ previous-page:
   amount: 1
   lore:
     - ""
-    - "&f&lClick &7to go to the previous page"
+    - "&6Click &7to go to the previous page"
+
+vanish-setting:
+  page: 1
+  slot: 29
+  base-effect: 'INVISIBILITY, false, false'
+  flags: [ 'HIDE_ATTRIBUTES', 'HIDE_POTION_EFFECTS' ]
+  name: '&6&lVanish &f%current%'
+  material:
+    0: GLASS_BOTTLE
+    1: POTION
+  lore:
+    - '&7Make yourself invisible to other players!'
+    - ''
+    - '&6Click &7to toggle'
+
+visibility-setting:
+  page: 1
+  slot: 33
+  name: '&6&lVisibility &f%current%'
+  material:
+    0: ENDER_PEARL
+    1: ENDER_EYE
+  lore:
+    - '&7Shows and hides other players from your sight!'
+    - ''
+    - '&6Click &7to toggle'

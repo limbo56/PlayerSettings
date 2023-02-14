@@ -6,7 +6,7 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
 /**
- * An {@link Event} that is called whenever a {@link Setting}'s value is changed by a {@link Player}
+ * An {@link Event} that is fired whenever a {@link Setting}'s value is changed by a {@link Player}
  *
  * <p>The event provides information related to the setting, owner, and value. The code below is an
  * example that uses the event to send the player a message that says the setting changed and its
