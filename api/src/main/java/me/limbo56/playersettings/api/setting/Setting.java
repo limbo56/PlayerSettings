@@ -27,9 +27,10 @@ import java.util.Map;
  * ImmutableSetting.builder()
  *     .item(ImmutableMenuItem.of(itemStack, page, slot))
  *     .name("example-setting")
+ *     .displayName("&6Example")
  *     .defaultValue(0)
  *     .maxValue(1)
- *     .triggers("join", death")
+ *     .triggers("join", respawn")
  *     .addCallback(
  *         (setting, player, value) -> player.sendMessage(setting.getName() + " - " + value))
  *     .build();
