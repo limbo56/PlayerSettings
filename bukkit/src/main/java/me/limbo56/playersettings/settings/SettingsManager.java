@@ -57,26 +57,34 @@ public class SettingsManager implements SettingsContainer {
   }
 
   public void reloadSettings() {
-    Map<String, Setting> loadedSettings = new HashMap<>(settingMap);
-    ArrayList<String> loadedSettingNames = new ArrayList<>(loadedSettings.keySet());
-    loadedSettingNames.forEach(this::unregisterSetting);
+    // Unregister loaded settings
+    ArrayList<String> settingsToLoad = new ArrayList<>(settingMap.keySet());
+    settingsToLoad.forEach(this::unregisterSetting);
 
+    // Remove disabled/missing settings and load new settings
     SettingsConfiguration settingsConfiguration = PLUGIN.getSettingsConfiguration();
     Collection<String> enabledSettingsName =
         settingsConfiguration.getEnabledSettings(true).stream()
             .map(Setting::getName)
             .collect(Collectors.toList());
-    loadedSettingNames.removeIf(
+    settingsToLoad.removeIf(
         settingName -> {
-          if (enabledSettingsName.stream().anyMatch(settingName::equals)) return false;
+          if (enabledSettingsName.contains(settingName)) return false;
           PLUGIN.getLogger().info("Removed setting '" + settingName + "'");
           return true;
         });
+    enabledSettingsName.forEach(
+        settingName -> {
+          if (settingsToLoad.contains(settingName)) return;
+          PLUGIN.getLogger().info("New setting '" + settingName + "'");
+          settingsToLoad.add(settingName);
+        });
 
-    for (String settingName : loadedSettingNames) {
+    // Register the settings again
+    for (String settingName : settingsToLoad) {
       Setting setting =
           isCustomSetting(settingName)
-              ? settingsConfiguration.mergeSettingWithConfiguration(loadedSettings.get(settingName))
+              ? settingsConfiguration.mergeSettingWithConfiguration(customSettings.get(settingName))
               : settingsConfiguration.parseSetting(settingName);
       this.registerSetting(setting, isCustomSetting(settingName));
     }
