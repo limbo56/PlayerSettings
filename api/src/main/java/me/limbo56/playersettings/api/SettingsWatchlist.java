@@ -1,7 +1,6 @@
 package me.limbo56.playersettings.api;
 
 import me.limbo56.playersettings.api.setting.SettingWatcher;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.ServicesManager;
 
 import java.util.UUID;

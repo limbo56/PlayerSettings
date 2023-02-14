@@ -12,7 +12,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
 
 public class GetSubCommand extends SubCommand {
   private static final PlayerSettings PLUGIN = PlayerSettingsProvider.getPlugin();
@@ -53,7 +56,8 @@ public class GetSubCommand extends SubCommand {
     int value = user.getSettingWatcher().getValue(settingName);
     Text.fromMessages("commands.setting-show")
         .usePlaceholder("%setting%", setting.getDisplayName())
-        .usePlaceholder("%value%", PLUGIN.getSettingsConfiguration().formatSettingValue(setting, value))
+        .usePlaceholder(
+            "%value%", PLUGIN.getSettingsConfiguration().formatSettingValue(setting, value))
         .usePlaceholderApi(player)
         .sendMessage(player, PLUGIN.getMessagesConfiguration().getMessagePrefix());
   }

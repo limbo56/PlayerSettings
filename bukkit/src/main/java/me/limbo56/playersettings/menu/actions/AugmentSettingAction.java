@@ -1,6 +1,5 @@
 package me.limbo56.playersettings.menu.actions;
 
-import me.limbo56.playersettings.PlayerSettingsProvider;
 import me.limbo56.playersettings.api.setting.Setting;
 import me.limbo56.playersettings.menu.SettingsMenuHolder;
 import me.limbo56.playersettings.menu.SettingsMenuItem;

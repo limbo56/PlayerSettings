@@ -1,14 +1,15 @@
 package me.limbo56.playersettings.command.subcommand;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 import me.limbo56.playersettings.PlayerSettings;
 import me.limbo56.playersettings.PlayerSettingsProvider;
 import me.limbo56.playersettings.command.SubCommand;
 import me.limbo56.playersettings.util.Text;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class HelpSubCommand extends SubCommand {
   private static final PlayerSettings PLUGIN = PlayerSettingsProvider.getPlugin();

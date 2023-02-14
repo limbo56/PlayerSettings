@@ -278,7 +278,8 @@ public enum DefaultSettings {
             if (jumpEffect != null && jumpEffect.getAmplifier() >= amplifier) {
               clear(player);
             }
-            player.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, Integer.MAX_VALUE, amplifier));
+            player.addPotionEffect(
+                new PotionEffect(PotionEffectType.JUMP, Integer.MAX_VALUE, amplifier));
           }
 
           @Override
@@ -355,7 +356,8 @@ public enum DefaultSettings {
               this.clear(player);
               return;
             }
-            player.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 1));
+            player.addPotionEffect(
+                new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 1));
             getPlayersWithVisibilityEnabled().forEach(user -> user.getPlayer().hidePlayer(player));
           }
 

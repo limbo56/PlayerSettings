@@ -29,9 +29,7 @@ public class UserManager implements SettingsWatchlist {
     for (UUID uuid : uuids) {
       PLUGIN.getLogger().config("Loading user `" + uuid + "`");
       Optional<SettingWatcher> optionalSavedSettings = getSavedSettings(uuid);
-      PLUGIN
-              .getLogger()
-              .config("Has saved settings `" + optionalSavedSettings.isPresent() + "`");
+      PLUGIN.getLogger().config("Has saved settings `" + optionalSavedSettings.isPresent() + "`");
 
       new TaskChain()
           .sync(
