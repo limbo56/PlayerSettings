@@ -41,7 +41,8 @@ import java.util.Map;
     get = {"should*", "is*", "get*"})
 public interface Setting extends ConfigurationSerializable {
   static Setting deserialize(ConfigurationSection section) {
-    ListMultimap<String, Integer> valueAliases = deserializeValueAliases(section);
+    ListMultimap<String, Integer> valueAliases =
+        deserializeValueAliases(section.getConfigurationSection("overrides"));
     return ImmutableSetting.builder()
         .name(section.getName())
         .displayName(section.getString("name", section.getName()))
@@ -54,19 +55,24 @@ public interface Setting extends ConfigurationSerializable {
   }
 
   @NotNull
-  static ListMultimap<String, Integer> deserializeValueAliases(ConfigurationSection section) {
+  static ListMultimap<String, Integer> deserializeValueAliases(ConfigurationSection configuration) {
     ListMultimap<String, Integer> valueAliases = ArrayListMultimap.create();
-    ConfigurationSection valueAliasesSection = section.getConfigurationSection("value-aliases");
-    if (valueAliasesSection != null) {
-      for (String key : valueAliasesSection.getKeys(false)) {
-        int keyValue = Integer.parseInt(key);
-        if (valueAliasesSection.isList(key)) {
-          valueAliasesSection
-              .getStringList(key)
-              .forEach(alias -> valueAliases.put(alias, keyValue));
-        } else if (valueAliasesSection.isString(key)) {
-          valueAliases.put(valueAliasesSection.getString(key), keyValue);
-        }
+    if (configuration == null) {
+      return valueAliases;
+    }
+
+    ConfigurationSection valueAliasesSection =
+        configuration.getConfigurationSection("value-aliases");
+    if (valueAliasesSection == null) {
+      return valueAliases;
+    }
+
+    for (String key : valueAliasesSection.getKeys(false)) {
+      int keyValue = Integer.parseInt(key);
+      if (valueAliasesSection.isList(key)) {
+        valueAliasesSection.getStringList(key).forEach(alias -> valueAliases.put(alias, keyValue));
+      } else if (valueAliasesSection.isString(key)) {
+        valueAliases.put(valueAliasesSection.getString(key), keyValue);
       }
     }
     return valueAliases;
