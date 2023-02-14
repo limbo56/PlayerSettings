@@ -1,8 +1,9 @@
 package me.limbo56.playersettings.command;
 
-import java.util.List;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 /** A sub command of the <code>/settings</code> command. */
 public abstract class SubCommand {

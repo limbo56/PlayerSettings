@@ -1,26 +1,26 @@
 package me.limbo56.playersettings.command.subcommand;
 
 import com.cryptomorin.xseries.XSound;
+import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.Range;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
-import java.util.UUID;
 import me.limbo56.playersettings.PlayerSettings;
 import me.limbo56.playersettings.PlayerSettingsProvider;
 import me.limbo56.playersettings.api.setting.Setting;
 import me.limbo56.playersettings.api.setting.SettingWatcher;
 import me.limbo56.playersettings.command.SubCommand;
 import me.limbo56.playersettings.user.SettingUser;
+import me.limbo56.playersettings.util.Permissions;
 import me.limbo56.playersettings.util.Text;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 public class SetSubCommand extends SubCommand {
   private static final PlayerSettings PLUGIN = PlayerSettingsProvider.getPlugin();
@@ -37,18 +37,21 @@ public class SetSubCommand extends SubCommand {
     Setting setting = PLUGIN.getSettingsManager().getSetting(settingName);
     if (setting == null) {
       Text.fromMessages("commands.setting-not-found")
-          .placeholder("%setting%", settingName)
-          .sendMessage(player, PlayerSettingsProvider.getMessagePrefix());
+          .usePlaceholder("%setting%", settingName)
+          .usePlaceholderApi(player)
+          .sendMessage(player, PLUGIN.getMessagesConfiguration().getMessagePrefix());
       return;
     }
 
     // Check if the value provided is valid
     String value = args[2];
-    Integer parsedValue = PlayerSettingsProvider.parseSettingValue(value);
+    Integer parsedValue = PLUGIN.getSettingsConfiguration().parseSettingValue(setting, value);
     if (parsedValue == null) {
-      Text.fromMessages("commands.setting-invalid-value")
-          .placeholder("%max%", String.valueOf(setting.getMaxValue()))
-          .sendMessage(player, PlayerSettingsProvider.getMessagePrefix());
+      String acceptedValues = getAcceptedValues(sender, setting);
+      Text.fromMessages("commands.setting-invalid-level")
+          .usePlaceholder("%values%", acceptedValues)
+          .usePlaceholderApi(player)
+          .sendMessage(player, PLUGIN.getMessagesConfiguration().getMessagePrefix());
       return;
     }
 
@@ -56,7 +59,8 @@ public class SetSubCommand extends SubCommand {
     SettingUser user = PLUGIN.getUserManager().getUser(player.getUniqueId());
     if (user.isLoading()) {
       Text.fromMessages("settings.wait-loading")
-          .sendMessage(player, PlayerSettingsProvider.getMessagePrefix());
+          .usePlaceholderApi(player)
+          .sendMessage(player, PLUGIN.getMessagesConfiguration().getMessagePrefix());
       return;
     }
 
@@ -72,31 +76,33 @@ public class SetSubCommand extends SubCommand {
     playSettingToggleSound(setting, player, previousValue, parsedValue);
 
     // Send setting change message
-    String placeholderName =
-        ChatColor.stripColor(setting.getItem().getItemStack().getItemMeta().getDisplayName());
-    String placeholderValue = PlayerSettingsProvider.formatSettingValue(parsedValue);
     Text.fromMessages("commands.setting-changed")
-        .placeholder("%setting%", placeholderName)
-        .placeholder("%value%", placeholderValue)
-        .sendMessage(player, PlayerSettingsProvider.getMessagePrefix());
+        .usePlaceholder("%setting%", setting.getDisplayName())
+        .usePlaceholder(
+            "%value%", PLUGIN.getSettingsConfiguration().formatSettingValue(setting, parsedValue))
+        .usePlaceholderApi(player)
+        .sendMessage(player, PLUGIN.getMessagesConfiguration().getMessagePrefix());
   }
 
   @Override
   public List<String> onTabComplete(CommandSender sender, String[] args) {
-    final List<String> completions = new ArrayList<>();
+    List<String> completions = new ArrayList<>();
+
     // Show setting names in completions
     if (args.length < 3) {
       UUID uuid = ((Player) sender).getUniqueId();
-      Set<String> settingNames = PlayerSettingsProvider.getAllowedSettings(uuid);
+      Collection<String> settingNames = PLUGIN.getSettingsManager().getAllowedSettings(uuid);
       StringUtil.copyPartialMatches(args[1], settingNames, completions);
     }
 
     // Show allowed values in completions
-    if (args.length > 2 && PLUGIN.getSettingsManager().isSettingLoaded(args[1])) {
+    if (args.length > 2 && PLUGIN.getSettingsManager().isSettingRegistered(args[1])) {
       Setting setting = PLUGIN.getSettingsManager().getSetting(args[1]);
-      int permissionLevel = PlayerSettingsProvider.getSettingPermissionLevel(sender, setting);
-      Set<String> settingValues = PlayerSettingsProvider.getAllowedLevels(setting, permissionLevel);
-      StringUtil.copyPartialMatches(args[2], settingValues, completions);
+      int permissionLevel = Permissions.getSettingPermissionLevel(sender, setting);
+      Collection<String> settingLevels = getAllowedValues(setting, permissionLevel);
+      ImmutableListMultimap<Integer, String> valueAliases = setting.getValueAliases().inverse();
+      settingLevels.addAll(getSettingLevelAliases(settingLevels, valueAliases));
+      StringUtil.copyPartialMatches(args[2], settingLevels, completions);
     }
 
     Collections.sort(completions);
@@ -111,9 +117,11 @@ public class SetSubCommand extends SubCommand {
     String settingName = setting.getName();
     if (level == watcher.getValue(settingName)) {
       Text.fromMessages("commands.setting-unchanged")
-          .placeholder("%setting%", settingName)
-          .placeholder("%value%", PlayerSettingsProvider.formatSettingValue(level))
-          .sendMessage(player, PlayerSettingsProvider.getMessagePrefix());
+          .usePlaceholder("%setting%", setting.getDisplayName())
+          .usePlaceholder(
+              "%value%", PLUGIN.getSettingsConfiguration().formatSettingValue(setting, level))
+          .usePlaceholderApi(player)
+          .sendMessage(player, PLUGIN.getMessagesConfiguration().getMessagePrefix());
       return false;
     }
 
@@ -125,30 +133,61 @@ public class SetSubCommand extends SubCommand {
     // Ignore players who don't have permission to change the setting
     if (!user.hasSettingPermissions(settingName)) {
       Text.fromMessages("settings.no-access")
-          .sendMessage(player, PlayerSettingsProvider.getMessagePrefix());
+          .usePlaceholderApi(player)
+          .sendMessage(player, PLUGIN.getMessagesConfiguration().getMessagePrefix());
       return false;
     }
 
     // Ignore values higher than the player's max permission level
-    int playerMaxLevel = PlayerSettingsProvider.getSettingPermissionLevel(player, setting);
+    int playerMaxLevel = Permissions.getSettingPermissionLevel(player, setting);
     if (!Range.closed(-playerMaxLevel, playerMaxLevel).contains(level)) {
       Text.fromMessages("settings.low-access-level")
-          .placeholder("%setting%", settingName)
-          .placeholder("%max%", String.valueOf(playerMaxLevel))
-          .sendMessage(player, PlayerSettingsProvider.getMessagePrefix());
+          .usePlaceholder("%setting%", setting.getDisplayName())
+          .usePlaceholder("%max%", String.valueOf(playerMaxLevel))
+          .usePlaceholderApi(player)
+          .sendMessage(player, PLUGIN.getMessagesConfiguration().getMessagePrefix());
       return false;
     }
 
     // Ignore levels out of the setting's value range
     int settingMaxLevel = setting.getMaxValue();
     if (!Range.closed(-settingMaxLevel, settingMaxLevel).contains(level)) {
+      String acceptedValues = getAcceptedValues(player, setting);
       Text.fromMessages("commands.setting-invalid-level")
-          .placeholder("%max%", String.valueOf(settingMaxLevel))
-          .sendMessage(player, PlayerSettingsProvider.getMessagePrefix());
+          .usePlaceholder("%values%", acceptedValues)
+          .usePlaceholderApi(player)
+          .sendMessage(player, PLUGIN.getMessagesConfiguration().getMessagePrefix());
       return false;
     }
 
     return true;
+  }
+
+  @NotNull
+  private String getAcceptedValues(@NotNull CommandSender sender, Setting setting) {
+    Collection<String> settingLevels =
+        getAllowedValues(setting, Permissions.getSettingPermissionLevel(sender, setting));
+    List<String> settingLevelAliases =
+        getSettingLevelAliases(settingLevels, setting.getValueAliases().inverse());
+    return Stream.concat(settingLevelAliases.stream(), settingLevels.stream())
+        .collect(Collectors.joining(", "));
+  }
+
+  @NotNull
+  private List<String> getSettingLevelAliases(
+      Collection<String> settingLevels, ImmutableListMultimap<Integer, String> valueAliases) {
+    return settingLevels.stream()
+        .map(level -> valueAliases.get(Integer.parseInt(level)).stream().findFirst())
+        .filter(Optional::isPresent)
+        .map(Optional::get)
+        .collect(Collectors.toList());
+  }
+
+  private Collection<String> getAllowedValues(Setting setting, int value) {
+    return IntStream.range(0, setting.getMaxValue() + 1)
+        .filter(current -> current <= value)
+        .mapToObj(String::valueOf)
+        .collect(Collectors.toList());
   }
 
   private void playSettingToggleSound(
@@ -177,7 +216,7 @@ public class SetSubCommand extends SubCommand {
 
   private String getDefaultToggleSound(boolean enabled) {
     return enabled
-        ? PlayerSettingsProvider.getToggleOnSound()
-        : PlayerSettingsProvider.getToggleOffSound();
+        ? PLUGIN.getPluginConfiguration().getToggleOnSound()
+        : PLUGIN.getPluginConfiguration().getToggleOffSound();
   }
 }

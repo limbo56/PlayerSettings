@@ -1,9 +1,10 @@
 package me.limbo56.playersettings.api.setting;
 
-import java.util.UUID;
 import org.bukkit.entity.Player;
 
-/** An object that keeps track of the {@link Setting} values for a {@link Player}. */
+import java.util.UUID;
+
+/** A registry that keeps track of the {@link Setting} values for a {@link Player}. */
 public interface SettingWatcher {
   /**
    * Gets the value of the provided setting

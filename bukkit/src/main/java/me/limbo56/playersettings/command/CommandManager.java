@@ -1,12 +1,13 @@
 package me.limbo56.playersettings.command;
 
+import me.limbo56.playersettings.command.subcommand.HelpSubCommand;
+import org.bukkit.command.CommandSender;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import me.limbo56.playersettings.command.subcommand.HelpSubCommand;
-import org.bukkit.command.CommandSender;
 
 /** Class that manages all commands for the plugin. */
 public class CommandManager {

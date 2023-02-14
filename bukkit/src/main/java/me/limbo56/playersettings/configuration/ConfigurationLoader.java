@@ -1,13 +1,14 @@
 package me.limbo56.playersettings.configuration;
 
 import com.google.common.cache.CacheLoader;
-import java.io.File;
-import java.io.InputStream;
 import me.limbo56.playersettings.PlayerSettings;
 import me.limbo56.playersettings.PlayerSettingsProvider;
 import me.limbo56.playersettings.util.Configurations;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
+
+import java.io.File;
+import java.io.InputStream;
 
 public class ConfigurationLoader extends CacheLoader<String, YamlConfiguration> {
   private static final PlayerSettings PLUGIN = PlayerSettingsProvider.getPlugin();

@@ -11,7 +11,7 @@ public class ConfigurationManager {
       CacheBuilder.newBuilder().build(new ConfigurationLoader());
 
   public <T extends BaseConfiguration> T loadConfiguration(T configuration)
-          throws ExecutionException {
+      throws ExecutionException {
     configurations.get(configuration.getFileName());
     return configuration;
   }

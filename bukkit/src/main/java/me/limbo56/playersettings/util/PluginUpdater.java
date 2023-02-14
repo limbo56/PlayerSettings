@@ -1,5 +1,9 @@
 package me.limbo56.playersettings.util;
 
+import me.limbo56.playersettings.PlayerSettings;
+import me.limbo56.playersettings.PlayerSettingsProvider;
+import org.bukkit.entity.Player;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -9,18 +13,14 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
-import me.limbo56.playersettings.PlayerSettings;
-import me.limbo56.playersettings.PlayerSettingsProvider;
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 
 public class PluginUpdater {
   private static final PlayerSettings PLUGIN = PlayerSettingsProvider.getPlugin();
   private static final String PREFIX = "&f&l(&6PlayerSettings&f&l) &f";
   private static final String API_URL = "https://api.spigotmc.org/legacy/update.php?resource=%s";
   private static final String PLUGIN_ID = "14622";
-  private static final AtomicReference<String> latestVersion = new AtomicReference<>();
-  private static final AtomicReference<Instant> lastUpdated = new AtomicReference<>();
+  private static final AtomicReference<String> LATEST_VERSION = new AtomicReference<>();
+  private static final AtomicReference<Instant> LAST_UPDATED = new AtomicReference<>();
 
   public static void sendUpdateMessage(Player player) {
     getOrRefreshUpdateMessage(message -> Text.from(message).sendMessage(player, PREFIX));
@@ -31,15 +31,12 @@ public class PluginUpdater {
   }
 
   private static void getOrRefreshUpdateMessage(Consumer<String> consumer) {
-    Instant lastUpdated = PluginUpdater.lastUpdated.get();
+    Instant lastUpdated = PluginUpdater.LAST_UPDATED.get();
     if (lastUpdated == null || Instant.now().isAfter(lastUpdated.plus(15, ChronoUnit.MINUTES))) {
-      Bukkit.getScheduler()
-          .runTaskAsynchronously(
-              PLUGIN,
-              () -> {
-                refreshPluginVersion();
-                Bukkit.getScheduler().runTask(PLUGIN, () -> consumer.accept(getUpdateMessage()));
-              });
+      new TaskChain()
+          .async(data -> refreshPluginVersion())
+          .sync(data -> consumer.accept(getUpdateMessage()))
+          .runAsync();
       return;
     }
 
@@ -47,8 +44,8 @@ public class PluginUpdater {
   }
 
   private static String getUpdateMessage() {
-    String latestVersionNumber = PluginUpdater.latestVersion.get();
-    if (latestVersion.equals("ERROR")) {
+    String latestVersionNumber = PluginUpdater.LATEST_VERSION.get();
+    if (LATEST_VERSION.equals("ERROR")) {
       return "&cAn error occurred while checking for updates!";
     }
 
@@ -66,8 +63,8 @@ public class PluginUpdater {
 
   private static void refreshPluginVersion() {
     String version = fetchPluginVersion();
-    latestVersion.set(version);
-    lastUpdated.set(Instant.now());
+    LATEST_VERSION.set(version);
+    LAST_UPDATED.set(Instant.now());
   }
 
   private static String fetchPluginVersion() {

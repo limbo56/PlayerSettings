@@ -1,9 +1,5 @@
 package me.limbo56.playersettings.listeners;
 
-import static me.limbo56.playersettings.settings.DefaultSettings.CHAT_SETTING;
-import static me.limbo56.playersettings.settings.DefaultSettings.FLY_SETTING;
-
-import java.util.Collection;
 import me.limbo56.playersettings.PlayerSettings;
 import me.limbo56.playersettings.PlayerSettingsProvider;
 import me.limbo56.playersettings.user.SettingUser;
@@ -13,18 +9,22 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
+import java.util.Collection;
+
+import static me.limbo56.playersettings.settings.DefaultSettings.CHAT_SETTING;
+
 public class ChatSettingListener implements Listener {
   private static final PlayerSettings PLUGIN = PlayerSettingsProvider.getPlugin();
 
   @EventHandler
   public void onPlayerChat(AsyncPlayerChatEvent event) {
     String chatSettingName = CHAT_SETTING.getName();
-    if (!PLUGIN.getSettingsManager().isSettingLoaded(chatSettingName)) {
+    if (!PLUGIN.getSettingsManager().isSettingRegistered(chatSettingName)) {
       return;
     }
 
     Player player = event.getPlayer();
-    if (!PlayerSettingsProvider.isAllowedWorld(player.getWorld().getName())) {
+    if (!PLUGIN.getPluginConfiguration().isAllowedWorld(player.getWorld().getName())) {
       return;
     }
 
@@ -40,7 +40,8 @@ public class ChatSettingListener implements Listener {
     // Cancel chat event if player has chat disabled
     event.setCancelled(true);
     Text.fromMessages("chat.self-disabled")
-        .sendMessage(player, PlayerSettingsProvider.getMessagePrefix());
+        .usePlaceholderApi(player)
+        .sendMessage(player, PLUGIN.getMessagesConfiguration().getMessagePrefix());
   }
 
   private Collection<SettingUser> getPlayersWithChatDisabled() {

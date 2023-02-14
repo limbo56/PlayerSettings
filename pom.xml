@@ -13,7 +13,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
-    <revision>6.2.0</revision>
+    <revision>6.3.0</revision>
   </properties>
 
   <modules>
@@ -25,10 +25,6 @@
     <repository>
       <id>spigot-repo</id>
       <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
-    </repository>
-    <repository>
-      <id>jitpack.io</id>
-      <url>https://jitpack.io</url>
     </repository>
     <repository>
       <id>placeholderapi</id>
@@ -48,13 +44,13 @@
     <dependency>
       <groupId>org.jetbrains</groupId>
       <artifactId>annotations</artifactId>
-      <version>23.0.0</version>
+      <version>23.1.0</version>
     </dependency>
     <!-- Backward compatibility -->
     <dependency>
       <groupId>com.github.cryptomorin</groupId>
       <artifactId>XSeries</artifactId>
-      <version>9.1.0</version>
+      <version>9.2.0</version>
     </dependency>
   </dependencies>
 </project>

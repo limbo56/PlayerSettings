@@ -1,15 +1,15 @@
 package me.limbo56.playersettings.util;
 
 import com.google.common.base.Preconditions;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import me.clip.placeholderapi.PlaceholderAPI;
+import me.limbo56.playersettings.PlayerSettingsProvider;
+import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import me.limbo56.playersettings.PlayerSettingsProvider;
-import org.bukkit.command.CommandSender;
 
 /** Utility object to create, modify, and handle text */
 public class Text {
@@ -47,7 +47,8 @@ public class Text {
    * @return New Text object
    */
   public static Text fromMessages(String path) {
-    String message = PlayerSettingsProvider.getPlugin().getMessagesConfiguration().getString(path);
+    String message =
+        PlayerSettingsProvider.getPlugin().getMessagesConfiguration().getFile().getString(path);
     Preconditions.checkNotNull(message, "Message '" + path + "' is not a valid message");
     return new Text(Collections.singletonList(message));
   }
@@ -56,12 +57,36 @@ public class Text {
    * Creates and adds a new modifier to the Text object. The modifier will replace all instances of
    * the placeholder with the value.
    *
-   * @param placeholder Placeholder to be replaced
-   * @param value Value to replace the placeholder with
+   * @param placeholder Placeholder to replace
+   * @param value Value to replace the placeholder
    * @return Text object
    */
-  public Text placeholder(String placeholder, String value) {
-    modifiers.add(text -> text.replaceAll(placeholder, value));
+  public Text usePlaceholder(String placeholder, String value) {
+    return this.addModifier(text -> text.replaceAll(placeholder, value));
+  }
+
+  /**
+   * Adds a modifier that will replace any placeholders detected by the PlaceholderAPI plugin.
+   *
+   * @param player Player to load placeholders for
+   * @return Text object instance
+   */
+  public Text usePlaceholderApi(Player player) {
+    if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+      return this.addModifier(text -> PlaceholderAPI.setPlaceholders(player, text));
+    } else {
+      return this;
+    }
+  }
+
+  /**
+   * Adds a modifier that will be applied when rendering the Text object.
+   *
+   * @param modifier Modifier to add
+   * @return Text object instance
+   */
+  public Text addModifier(Function<String, String> modifier) {
+    modifiers.add(modifier);
     return this;
   }
 

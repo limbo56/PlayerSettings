@@ -4,7 +4,7 @@ import me.limbo56.playersettings.api.setting.Setting;
 import org.bukkit.plugin.ServicesManager;
 
 /**
- * An object that stores and provides access to a list of {@link Setting settings}.
+ * A registry of {@link Setting settings}.
  *
  * <p>You can get an instance of this class using the Bukkit service manager API {@link
  * ServicesManager#load(Class)}.
@@ -21,11 +21,18 @@ import org.bukkit.plugin.ServicesManager;
  */
 public interface SettingsContainer {
   /**
-   * Registers a {@link Setting} with the plugin
+   * Adds a {@link Setting} to the settings container
    *
    * @param setting Setting to register
    */
   void registerSetting(Setting setting);
+
+  /**
+   * Removes a {@link Setting} from the settings container
+   *
+   * @param settingName Setting to unregister
+   */
+  void unregisterSetting(String settingName);
 
   /**
    * Gets a registered {@link Setting} by its name

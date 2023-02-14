@@ -1,11 +1,12 @@
 package me.limbo56.playersettings.util;
 
-import java.util.logging.Handler;
-import java.util.logging.Level;
-import java.util.logging.LogRecord;
 import me.limbo56.playersettings.PlayerSettingsProvider;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.LogRecord;
 
 public class PluginLogHandler extends Handler {
   public static void log(String message) {

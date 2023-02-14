@@ -1,7 +1,5 @@
 package me.limbo56.playersettings.listeners;
 
-import static me.limbo56.playersettings.settings.DefaultSettings.STACKER_SETTING;
-
 import me.limbo56.playersettings.PlayerSettings;
 import me.limbo56.playersettings.PlayerSettingsProvider;
 import me.limbo56.playersettings.api.event.SettingUpdateEvent;
@@ -17,18 +15,20 @@ import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.util.Vector;
 
+import static me.limbo56.playersettings.settings.DefaultSettings.STACKER_SETTING;
+
 public class StackerSettingListener implements Listener {
   private static final PlayerSettings PLUGIN = PlayerSettingsProvider.getPlugin();
 
   @EventHandler
   public void onPlayerStack(PlayerInteractAtEntityEvent event) {
     String stackerSettingName = STACKER_SETTING.getName();
-    if (!PLUGIN.getSettingsManager().isSettingLoaded(stackerSettingName)) {
+    if (!PLUGIN.getSettingsManager().isSettingRegistered(stackerSettingName)) {
       return;
     }
 
     Player player = event.getPlayer();
-    if (!PlayerSettingsProvider.isAllowedWorld(player.getWorld().getName())) {
+    if (!PLUGIN.getPluginConfiguration().isAllowedWorld(player.getWorld().getName())) {
       return;
     }
 
@@ -50,13 +50,15 @@ public class StackerSettingListener implements Listener {
     // Notify user that they have stacker disabled
     if (hasStackerDisabled) {
       Text.fromMessages("stacker.self-disabled")
-          .sendMessage(player, PlayerSettingsProvider.getMessagePrefix());
+          .usePlaceholderApi(player)
+          .sendMessage(player, PLUGIN.getMessagesConfiguration().getMessagePrefix());
       return;
     }
     // Notify user that the target is not a player
     if (isTargetNotAPlayer || isTargetAnNPC) {
       Text.fromMessages("stacker.target-invalid-entity")
-          .sendMessage(player, PlayerSettingsProvider.getMessagePrefix());
+          .usePlaceholderApi(player)
+          .sendMessage(player, PLUGIN.getMessagesConfiguration().getMessagePrefix());
       return;
     }
 
@@ -64,7 +66,8 @@ public class StackerSettingListener implements Listener {
     SettingUser targetUser = PLUGIN.getUserManager().getUser(clicked.getUniqueId());
     if (!targetUser.hasSettingEnabled(stackerSettingName)) {
       Text.fromMessages("stacker.target-disabled")
-          .sendMessage(player, PlayerSettingsProvider.getMessagePrefix());
+          .usePlaceholderApi(player)
+          .sendMessage(player, PLUGIN.getMessagesConfiguration().getMessagePrefix());
       return;
     }
 
@@ -74,7 +77,7 @@ public class StackerSettingListener implements Listener {
   @EventHandler
   public void onPlayerLaunch(EntityDamageByEntityEvent event) {
     String stackerSettingName = STACKER_SETTING.getName();
-    if (!PLUGIN.getSettingsManager().isSettingLoaded(stackerSettingName)) {
+    if (!PLUGIN.getSettingsManager().isSettingRegistered(stackerSettingName)) {
       return;
     }
 
@@ -84,7 +87,7 @@ public class StackerSettingListener implements Listener {
       return;
     }
 
-    if (!PlayerSettingsProvider.isAllowedWorld(damager.getWorld().getName())) {
+    if (!PLUGIN.getPluginConfiguration().isAllowedWorld(damager.getWorld().getName())) {
       return;
     }
 
@@ -131,7 +134,7 @@ public class StackerSettingListener implements Listener {
   }
 
   private boolean isMarkedAsNPC(Entity entity) {
-    return PLUGIN.getPluginConfiguration().getStringList("general.npc-metadata").stream()
+    return PLUGIN.getPluginConfiguration().getFile().getStringList("general.npc-metadata").stream()
         .anyMatch(entity::hasMetadata);
   }
 }

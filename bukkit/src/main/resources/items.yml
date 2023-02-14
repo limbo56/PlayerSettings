@@ -12,6 +12,11 @@
 #   page: 1
 #
 #   | The display name of the item
+#   | Placeholders:
+#     - %current%  : Current value of the setting
+#     - %max%      : Maximum value allowed for the setting
+#     - %next%     : Next value of the setting
+#     - %previous% : Previous value of the setting
 #   name: "&aExample"
 #
 #   | A list of text that will be set as the lore of the item
@@ -24,10 +29,15 @@
 #     - "&aExample lore"
 #
 #   | The material of the item (https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html)
-#   | Format: [Material](:[Data])
-#   | Examples:
-#     - DIAMOND_SWORD
-#     - INK_SACK:10
+#   |
+#   | Static format example:
+#   |   material: "DIAMOND_SWORD"
+#   |   material: "INK_SACK:10"
+#   |
+#   | Dynamic format example:
+#   |   material:
+#   |     0: "WOODEN_SWORD"
+#   |     1: "DIAMOND_SWORD"
 #   material: "LIME_WOOL"
 #
 #   | The amount of the item to show in the stack
@@ -35,6 +45,11 @@
 #
 #   | The id of the custom item model to use for this item
 #   | * Only works on versions 1.14+
+#   |
+#   | Dynamic format example:
+#   |   custom-model-data:
+#   |     0: 8
+#   |     1: 9
 #   custom-model-data: 1
 #
 #   | The texture URL to assign to the material if it's a player skull
@@ -46,24 +61,24 @@
 # premium-setting:
 #   page: 1
 #   slot: 34
-#   name: '&dPremium'
+#   name: '&dPremium &f%current%'
 #   material: JUKEBOX
 #   amount: 1
 #   lore:
 #     - '&7Toggle your account as authenticated and skip the login step!'
 #     - ''
-#     - '&f&lClick &7to toggle'
+#     - '&6Click &7to toggle'
 #
 # radio-setting:
 #   page: 1
 #   slot: 34
-#   name: '&dRadio'
+#   name: '&dRadio &f%current%'
 #   material: JUKEBOX
 #   amount: 1
 #   lore:
 #     - '&7Resume and pause the active radio song!'
 #     - ''
-#     - '&f&lClick &7to toggle'
+#     - '&6Click &7to toggle'
 
 # This section defines the display properties of the toggle on item
 enabled:
@@ -72,7 +87,7 @@ enabled:
   amount: 1
   lore:
     - ""
-    - "&f&lClick &7to &cdisable"
+    - "&6Click &7to &cdisable"
 
 # This section defines the display properties of the toggle off item
 disabled:
@@ -81,7 +96,7 @@ disabled:
   amount: 1
   lore:
     - ""
-    - "&f&lClick &7to &aenable"
+    - "&6Click &7to &aenable"
 
 # This section defines the display properties of the dismiss item
 dismiss:
@@ -91,7 +106,7 @@ dismiss:
   amount: 1
   lore:
     - ""
-    - "&f&lClick &7to go to the previous page"
+    - "&6Click &7to close the menu"
   # A list of commands that will be executed when this item is pressed
   #
   # Custom commands:
@@ -106,7 +121,7 @@ next-page:
   amount: 1
   lore:
     - ""
-    - "&f&lClick &7to go to the next page"
+    - "&6Click &7to go to the next page"
 
 previous-page:
   slot: 45
@@ -115,4 +130,30 @@ previous-page:
   amount: 1
   lore:
     - ""
-    - "&f&lClick &7to go to the previous page"
+    - "&6Click &7to go to the previous page"
+
+vanish-setting:
+  page: 1
+  slot: 29
+  name: '&6&lVanish &f%current%'
+  material:
+    0: GLASS_BOTTLE
+    1: POTION
+  lore:
+    - '&7Make yourself invisible to other players!'
+    - ''
+    - '&6Click &7to toggle'
+  base-effect: 'INVISIBILITY, false, false'
+  flags: [ 'HIDE_ATTRIBUTES', 'HIDE_POTION_EFFECTS' ]
+
+visibility-setting:
+  page: 1
+  slot: 33
+  name: '&6&lVisibility &f%current%'
+  material:
+    0: ENDER_PEARL
+    1: ENDER_EYE
+  lore:
+    - '&7Shows and hides other players from your sight!'
+    - ''
+    - '&6Click &7to toggle'

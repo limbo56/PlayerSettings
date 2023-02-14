@@ -1,5 +1,8 @@
 package me.limbo56.playersettings.api.setting;
 
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.ImmutableListMultimap;
+import com.google.common.collect.ListMultimap;
 import me.limbo56.playersettings.api.ImmutableMenuItem;
 import me.limbo56.playersettings.api.MenuItem;
 import org.bukkit.Material;
@@ -8,6 +11,7 @@ import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.immutables.value.Value;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -37,23 +41,56 @@ import java.util.Map;
     get = {"should*", "is*", "get*"})
 public interface Setting extends ConfigurationSerializable {
   static Setting deserialize(ConfigurationSection section) {
-    String settingName = section.getName();
-    String[] triggers = section.getStringList("triggers").toArray(new String[0]);
+    ListMultimap<String, Integer> valueAliases =
+        deserializeValueAliases(section.getConfigurationSection("overrides"));
     return ImmutableSetting.builder()
-        .name(settingName)
+        .name(section.getName())
+        .displayName(section.getString("name", section.getName()))
         .enabled(section.getBoolean("enabled", true))
         .defaultValue(section.getInt("default", 0))
         .maxValue(section.getInt("max", 1))
-        .triggers(triggers)
+        .triggers(section.getStringList("triggers").toArray(new String[0]))
+        .valueAliases(valueAliases)
         .build();
   }
 
+  @NotNull
+  static ListMultimap<String, Integer> deserializeValueAliases(ConfigurationSection configuration) {
+    ListMultimap<String, Integer> valueAliases = ArrayListMultimap.create();
+    if (configuration == null) {
+      return valueAliases;
+    }
+
+    ConfigurationSection valueAliasesSection =
+        configuration.getConfigurationSection("value-aliases");
+    if (valueAliasesSection == null) {
+      return valueAliases;
+    }
+
+    for (String key : valueAliasesSection.getKeys(false)) {
+      int keyValue = Integer.parseInt(key);
+      if (valueAliasesSection.isList(key)) {
+        valueAliasesSection.getStringList(key).forEach(alias -> valueAliases.put(alias, keyValue));
+      } else if (valueAliasesSection.isString(key)) {
+        valueAliases.put(valueAliasesSection.getString(key), keyValue);
+      }
+    }
+    return valueAliases;
+  }
+
   /**
-   * Gets the name of the setting
+   * Gets the name that will be used as an identifier for this setting
    *
    * @return name of the setting
    */
   String getName();
+
+  /**
+   * Gets the name that will be displayed in messages for this setting
+   *
+   * @return display name of the setting
+   */
+  String getDisplayName();
 
   /**
    * Gets the {@link MenuItem} that will display this setting
@@ -97,7 +134,7 @@ public interface Setting extends ConfigurationSerializable {
    * An array of {@link String} triggers/events that should execute the side effects for the current
    * value of the setting
    *
-   * @return Array of triggers/events
+   * @return array of triggers/events
    */
   String[] getTriggers();
 
@@ -111,14 +148,26 @@ public interface Setting extends ConfigurationSerializable {
   /**
    * Gets the list of listeners that this setting requires to work
    *
-   * @return List of {@link Listener}s
+   * @return list of {@link Listener}s
    */
   List<Listener> getListeners();
+
+  /**
+   * A {@link Map} of aliases for setting values that will be used to associate a user inputted
+   * {@link String} to an {@link Integer} value for a setting
+   *
+   * @return {@link Map} of alias to value
+   */
+  @Value.Default
+  default ImmutableListMultimap<String, Integer> getValueAliases() {
+    return ImmutableListMultimap.<String, Integer>builder().build();
+  }
 
   @Override
   default Map<String, Object> serialize() {
     Map<String, Object> mappedObject = new LinkedHashMap<>();
     mappedObject.put("enabled", isEnabled());
+    mappedObject.put("name", getDisplayName());
     mappedObject.put("default", getDefaultValue());
     mappedObject.put("max", getMaxValue());
     mappedObject.put("triggers", getTriggers());

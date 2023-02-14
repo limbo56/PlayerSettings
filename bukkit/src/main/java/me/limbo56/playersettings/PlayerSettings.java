@@ -6,9 +6,9 @@ import me.limbo56.playersettings.command.CommandManager;
 import me.limbo56.playersettings.command.SubCommandExecutor;
 import me.limbo56.playersettings.command.subcommand.*;
 import me.limbo56.playersettings.configuration.*;
-import me.limbo56.playersettings.database.SQLiteDatabase;
 import me.limbo56.playersettings.database.SettingsDatabase;
-import me.limbo56.playersettings.database.SqlDatabase;
+import me.limbo56.playersettings.database.SettingsDatabaseProvider;
+import me.limbo56.playersettings.lib.Libraries;
 import me.limbo56.playersettings.listeners.InventoryListener;
 import me.limbo56.playersettings.listeners.ListenerManager;
 import me.limbo56.playersettings.listeners.PlayerListener;
@@ -18,16 +18,17 @@ import me.limbo56.playersettings.settings.SettingsManager;
 import me.limbo56.playersettings.user.UserManager;
 import me.limbo56.playersettings.util.PluginLogHandler;
 import me.limbo56.playersettings.util.PluginUpdater;
+import net.byteflux.libby.BukkitLibraryManager;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
@@ -51,9 +52,17 @@ public class PlayerSettings extends JavaPlugin {
 
   @Override
   public void onEnable() {
+    // Track load startup time
+    Instant loadStartInstant = Instant.now();
     PlayerSettingsProvider.setPlugin(this);
+    getLogger().addHandler(new PluginLogHandler());
 
-    Instant loadStart = Instant.now();
+    getLogger().info("Loading libraries...");
+    BukkitLibraryManager bukkitLibraryManager = new BukkitLibraryManager(this);
+    bukkitLibraryManager.addMavenCentral();
+    Arrays.stream(Libraries.values())
+        .forEach(libraries -> bukkitLibraryManager.loadLibrary(libraries.getLibrary()));
+
     getLogger().info("Loading configuration files...");
     try {
       configurationManager = new ConfigurationManager();
@@ -69,14 +78,29 @@ public class PlayerSettings extends JavaPlugin {
     }
 
     // Setup debug logger
-    getLogger().addHandler(new PluginLogHandler());
-    if (getPluginConfiguration().getBoolean("general.debug")) {
+    if (pluginConfiguration.hasDebugEnabled()) {
       getLogger().setLevel(Level.FINE);
     }
 
     getLogger().info("Connecting data manager...");
-    initializeDataManager();
-    settingsDatabase.connect();
+    registerSettingsDatabase();
+
+    getLogger().info("Loading internal managers...");
+    commandManager = new CommandManager();
+    listenerManager = new ListenerManager();
+    settingsMenuManager = new SettingsMenuManager();
+    listenerManager.registerListener(new PlayerListener());
+    listenerManager.registerListener(new InventoryListener());
+
+    PluginCommand pluginCommand = Objects.requireNonNull(Bukkit.getPluginCommand("settings"));
+    SubCommandExecutor executor = new SubCommandExecutor();
+    pluginCommand.setExecutor(executor);
+    pluginCommand.setTabCompleter(executor);
+    commandManager.registerSubCommand(new HelpSubCommand());
+    commandManager.registerSubCommand(new OpenSubCommand());
+    commandManager.registerSubCommand(new ReloadSubCommand());
+    commandManager.registerSubCommand(new SetSubCommand());
+    commandManager.registerSubCommand(new GetSubCommand());
 
     getLogger().info("Registering service managers...");
     userManager = new UserManager();
@@ -86,26 +110,24 @@ public class PlayerSettings extends JavaPlugin {
     Bukkit.getServicesManager()
         .register(SettingsContainer.class, settingsManager, this, ServicePriority.Normal);
 
-    getLogger().info("Loading internal managers...");
-    commandManager = new CommandManager();
-    listenerManager = new ListenerManager();
-    settingsMenuManager = new SettingsMenuManager();
-    registerDefaultSettings();
-    registerDefaultListeners();
-    registerSettingsCommand();
+    // Register default settings
+    DefaultSettings.getSettings().forEach(settingsManager::registerSetting);
+    getSettingsConfiguration().getEnabledSettings(false).stream()
+        .filter(setting -> !settingsManager.isSettingRegistered(setting.getName()))
+        .forEach(setting -> settingsManager.registerSetting(setting, false));
     userManager.loadOnlineUsers();
 
     // Log startup time and update message
-    long startupTime = Duration.between(loadStart, Instant.now()).toMillis();
-    getLogger().info("Successfully loaded (took " + startupTime + "ms)");
+    long startupDuration = Duration.between(loadStartInstant, Instant.now()).toMillis();
+    getLogger().info("Successfully loaded (took " + startupDuration + "ms)");
     PluginUpdater.logUpdateMessage();
 
     // Start bStats metrics
-    if (PlayerSettingsProvider.hasMetricsEnabled()) {
+    if (pluginConfiguration.hasMetricsEnabled()) {
       new Metrics(this, 16730);
     }
 
-    // Register PlaceholderAPI expansion
+    // Register placeholders
     if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
       new PlayerSettingsPlaceholders(this).register();
     }
@@ -128,35 +150,16 @@ public class PlayerSettings extends JavaPlugin {
     configurationManager.unloadAll();
   }
 
-  public void initializeDataManager() {
-    ConfigurationSection storage = getPluginConfiguration().getConfigurationSection("storage");
-    boolean hasStorageEnabled = storage != null && storage.getBoolean("enabled");
-    settingsDatabase = hasStorageEnabled ? new SqlDatabase(storage) : new SQLiteDatabase(storage);
-  }
-
-  private void registerDefaultSettings() {
-    DefaultSettings.getSettings().forEach(settingsManager::registerSetting);
-    getSettingsConfiguration().getEnabledSettings().stream()
-        .filter(setting -> !settingsManager.isSettingLoaded(setting.getName()))
-        .forEach(settingsManager::loadSetting);
-  }
-
-  private void registerDefaultListeners() {
-    listenerManager.registerListener(new PlayerListener());
-    listenerManager.registerListener(new InventoryListener());
-  }
-
-  private void registerSettingsCommand() {
-    commandManager.registerSubCommand(new HelpSubCommand());
-    commandManager.registerSubCommand(new OpenSubCommand());
-    commandManager.registerSubCommand(new ReloadSubCommand());
-    commandManager.registerSubCommand(new SetSubCommand());
-    commandManager.registerSubCommand(new GetSubCommand());
-
-    SubCommandExecutor executor = new SubCommandExecutor();
-    PluginCommand pluginCommand = Objects.requireNonNull(Bukkit.getPluginCommand("settings"));
-    pluginCommand.setExecutor(executor);
-    pluginCommand.setTabCompleter(executor);
+  public void registerSettingsDatabase() {
+    ConfigurationSection storageSection =
+        pluginConfiguration.getFile().getConfigurationSection("storage");
+    if (storageSection == null) {
+      setEnabled(false);
+      throw new NullPointerException(
+          "Empty or missing properties in the 'storage' section inside 'config.yml'");
+    }
+    settingsDatabase = SettingsDatabaseProvider.getSettingsDatabase(storageSection);
+    settingsDatabase.connect();
   }
 
   public boolean isReloading() {
@@ -195,8 +198,8 @@ public class PlayerSettings extends JavaPlugin {
     return settingsMenuManager;
   }
 
-  public YamlConfiguration getPluginConfiguration() {
-    return pluginConfiguration.getFile();
+  public PluginConfiguration getPluginConfiguration() {
+    return pluginConfiguration;
   }
 
   public SettingsConfiguration getSettingsConfiguration() {
@@ -207,7 +210,7 @@ public class PlayerSettings extends JavaPlugin {
     return itemsConfiguration;
   }
 
-  public YamlConfiguration getMessagesConfiguration() {
-    return messagesConfiguration.getFile();
+  public MessagesConfiguration getMessagesConfiguration() {
+    return messagesConfiguration;
   }
 }

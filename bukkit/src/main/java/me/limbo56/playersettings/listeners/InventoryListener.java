@@ -1,6 +1,7 @@
 package me.limbo56.playersettings.listeners;
 
 import com.cryptomorin.xseries.XMaterial;
+import me.limbo56.playersettings.PlayerSettings;
 import me.limbo56.playersettings.PlayerSettingsProvider;
 import me.limbo56.playersettings.menu.SettingsMenuHolder;
 import me.limbo56.playersettings.menu.SettingsMenuItem;
@@ -13,10 +14,12 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 public class InventoryListener implements Listener {
+  private static final PlayerSettings PLUGIN = PlayerSettingsProvider.getPlugin();
+
   @EventHandler
   public void onInventoryClick(InventoryClickEvent event) {
     HumanEntity whoClicked = event.getWhoClicked();
-    if (!PlayerSettingsProvider.isAllowedWorld(whoClicked.getWorld().getName())
+    if (!PLUGIN.getPluginConfiguration().isAllowedWorld(whoClicked.getWorld().getName())
         || !(whoClicked instanceof Player)) {
       return;
     }

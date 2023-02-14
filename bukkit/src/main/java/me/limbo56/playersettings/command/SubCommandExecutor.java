@@ -1,8 +1,5 @@
 package me.limbo56.playersettings.command;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import me.limbo56.playersettings.PlayerSettings;
 import me.limbo56.playersettings.PlayerSettingsProvider;
 import me.limbo56.playersettings.command.subcommand.HelpSubCommand;
@@ -14,6 +11,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Command executor for the <code>/settings</code> command.
@@ -42,23 +43,25 @@ public class SubCommandExecutor implements org.bukkit.command.CommandExecutor, T
     SubCommand subCommand = commandManager.getCommand(args[0]);
     if (!(sender instanceof Player)) {
       Text.from("&cYou must be a player to execute this command")
-          .sendMessage(sender, PlayerSettingsProvider.getMessagePrefix());
+          .sendMessage(sender, PLUGIN.getMessagesConfiguration().getMessagePrefix());
       return false;
     }
 
+    Player player = (Player) sender;
     if (args.length < subCommand.getArguments()) {
-      new HelpSubCommand().execute(sender, new String[0]);
+      new HelpSubCommand().execute(player, new String[0]);
       return false;
     }
 
     String permission = subCommand.getPermission();
-    if (permission != null && !sender.hasPermission(permission)) {
+    if (permission != null && !player.hasPermission(permission)) {
       Text.fromMessages("commands.no-access")
-          .sendMessage(sender, PlayerSettingsProvider.getMessagePrefix());
+          .usePlaceholderApi(player)
+          .sendMessage(player, PLUGIN.getMessagesConfiguration().getMessagePrefix());
       return false;
     }
 
-    subCommand.execute(sender, args);
+    subCommand.execute(player, args);
     return true;
   }
 

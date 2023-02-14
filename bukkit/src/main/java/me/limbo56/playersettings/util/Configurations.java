@@ -1,8 +1,9 @@
 package me.limbo56.playersettings.util;
 
-import java.io.File;
 import me.limbo56.playersettings.PlayerSettingsProvider;
 import org.jetbrains.annotations.NotNull;
+
+import java.io.File;
 
 public final class Configurations {
   /**

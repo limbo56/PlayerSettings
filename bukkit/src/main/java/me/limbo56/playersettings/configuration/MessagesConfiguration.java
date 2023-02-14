@@ -8,4 +8,8 @@ public class MessagesConfiguration extends BaseConfiguration {
   String getFileName() {
     return "messages.yml";
   }
+
+  public String getMessagePrefix() {
+    return getFile().getString("prefix", "");
+  }
 }
