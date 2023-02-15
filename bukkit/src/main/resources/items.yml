@@ -43,6 +43,9 @@
 #   | The amount of the item to show in the stack
 #   amount: 1
 #
+#   | Toggles the glow applied to the item when the setting is enabled
+#   glow: true
+#
 #   | The id of the custom item model to use for this item
 #   | * Only works on versions 1.14+
 #   |
