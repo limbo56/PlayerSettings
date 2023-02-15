@@ -43,7 +43,9 @@ public class PluginConfiguration extends BaseConfiguration {
   @Nullable
   public ListMultimap<String, Integer> getValueAliases() {
     ConfigurationSection generalSection = getFile().getConfigurationSection("general");
-    return generalSection == null ? null : Setting.deserializeValueAliases(generalSection);
+    if (generalSection == null || generalSection.getConfigurationSection("value-aliases") == null)
+      return null;
+    return Setting.deserializeValueAliases(generalSection);
   }
 
   public String getToggleOffSound() {

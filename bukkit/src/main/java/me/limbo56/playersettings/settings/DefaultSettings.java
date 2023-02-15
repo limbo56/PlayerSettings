@@ -1,9 +1,8 @@
 package me.limbo56.playersettings.settings;
 
 import com.cryptomorin.xseries.XMaterial;
-import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.ListMultimap;
-import com.google.common.collect.Multimap;
 import me.limbo56.playersettings.PlayerSettings;
 import me.limbo56.playersettings.PlayerSettingsProvider;
 import me.limbo56.playersettings.api.ImmutableMenuItem;
@@ -56,7 +55,7 @@ public enum DefaultSettings {
       Stacker.ITEM,
       0,
       1,
-      ArrayListMultimap.create(),
+      Constants.DEFAULT_VALUE_ALIASES,
       new StackerSettingListener()),
   FLY_SETTING(
       "fly-setting",
@@ -75,14 +74,14 @@ public enum DefaultSettings {
       1,
       Vanish.CALLBACK,
       new VanishSettingListener(),
-      ArrayListMultimap.create()),
+      Constants.DEFAULT_VALUE_ALIASES),
   CHAT_SETTING(
       "chat-setting",
       "&6Vanish",
       Chat.ITEM,
       1,
       1,
-      ArrayListMultimap.create(),
+      Constants.DEFAULT_VALUE_ALIASES,
       new ChatSettingListener()),
   VISIBILITY_SETTING(
       "visibility-setting",
@@ -92,7 +91,7 @@ public enum DefaultSettings {
       1,
       Visibility.CALLBACK,
       new VisibilitySettingListener(),
-      ArrayListMultimap.create());
+      Constants.DEFAULT_VALUE_ALIASES);
   private static final PlayerSettings PLUGIN = PlayerSettingsProvider.getPlugin();
   private final Setting setting;
 
@@ -197,14 +196,13 @@ public enum DefaultSettings {
   }
 
   public static class Constants {
-    public static final ArrayListMultimap<String, Integer> DEFAULT_VALUE_ALIASES =
-        IntStream.range(2, 11)
-            .boxed()
-            .collect(ArrayListMultimap::create, (m, i) -> m.put("x" + i, i), Multimap::putAll);
+    public static final ListMultimap<String, Integer> DEFAULT_VALUE_ALIASES =
+        LinkedListMultimap.create();
 
     static {
-      DEFAULT_VALUE_ALIASES.put("off", -1);
+      DEFAULT_VALUE_ALIASES.put("off", 0);
       DEFAULT_VALUE_ALIASES.put("on", 1);
+      IntStream.range(0, 11).boxed().forEach((i) -> DEFAULT_VALUE_ALIASES.put("x" + i, i));
     }
 
     private static MenuItem createSettingItem(
