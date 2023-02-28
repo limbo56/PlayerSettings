@@ -120,7 +120,7 @@ dismiss:
 next-page:
   slot: 53
   name: "&aNext page &7(%current%/%max%)"
-  material: "ARROW:1"
+  material: "ARROW"
   amount: 1
   lore:
     - ""
@@ -129,7 +129,7 @@ next-page:
 previous-page:
   slot: 45
   name: "&cPrevious page &7(%current%/%max%)"
-  material: "ARROW:0"
+  material: "ARROW"
   amount: 1
   lore:
     - ""
