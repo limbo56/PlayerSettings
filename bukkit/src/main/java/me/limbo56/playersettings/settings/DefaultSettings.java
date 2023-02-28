@@ -366,10 +366,7 @@ public enum DefaultSettings {
           }
 
           private Collection<SettingUser> getPlayersWithVisibilityEnabled() {
-            return Constants.filterOnline(
-                PLUGIN
-                    .getUserManager()
-                    .getUsersWithSettingValue(VISIBILITY_SETTING.getName(), true));
+            return PLUGIN.getUserManager().getUsers();
           }
         };
   }
@@ -415,8 +412,13 @@ public enum DefaultSettings {
 
           @NotNull
           private Collection<SettingUser> getVisiblePlayers() {
-            return Constants.filterOnline(
-                PLUGIN.getUserManager().getUsersWithSettingValue(VANISH_SETTING.getName(), false));
+            if (PLUGIN.getSettingsManager().isSettingRegistered(VANISH_SETTING.getName())) {
+              return Constants.filterOnline(
+                  PLUGIN
+                      .getUserManager()
+                      .getUsersWithSettingValue(VANISH_SETTING.getName(), false));
+            }
+            return PLUGIN.getUserManager().getUsers();
           }
         };
   }
