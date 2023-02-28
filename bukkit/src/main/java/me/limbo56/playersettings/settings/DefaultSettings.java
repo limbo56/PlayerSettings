@@ -25,6 +25,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -272,8 +273,8 @@ public enum DefaultSettings {
             }
 
             int amplifier = value * 3;
-            PotionEffect jumpEffect = player.getPotionEffect(PotionEffectType.JUMP);
-            if (jumpEffect != null && jumpEffect.getAmplifier() >= amplifier) {
+            Optional<PotionEffect> jumpEffect = getActiveJumpEffect(player);
+            if (jumpEffect.isPresent() && jumpEffect.get().getAmplifier() >= amplifier) {
               clear(player);
             }
             player.addPotionEffect(
@@ -283,6 +284,13 @@ public enum DefaultSettings {
           @Override
           public void clear(Player player) {
             player.removePotionEffect(PotionEffectType.JUMP);
+          }
+
+          @NotNull
+          private Optional<PotionEffect> getActiveJumpEffect(Player player) {
+            return player.getActivePotionEffects().stream()
+                .filter(effect -> effect.getType().equals(PotionEffectType.JUMP))
+                .findFirst();
           }
         };
   }
