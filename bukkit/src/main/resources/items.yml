@@ -85,12 +85,12 @@
 
 # This section defines the display properties of the toggle on item
 enabled:
-  name: "&aOn"
+  name: "&a&lOn"
   material: "INK_SACK:10"
   amount: 1
   lore:
     - ""
-    - "&6Click &7to &cdisable"
+    - "&7Click to &cdisable"
 
 # This section defines the display properties of the toggle off item
 disabled:
@@ -99,7 +99,7 @@ disabled:
   amount: 1
   lore:
     - ""
-    - "&6Click &7to &aenable"
+    - "&7Click to &aenable"
 
 # This section defines the display properties of the dismiss item
 dismiss:
@@ -138,7 +138,7 @@ previous-page:
 vanish-setting:
   page: 1
   slot: 29
-  name: '&6&lVanish &f%current%'
+  name: '&6&lVanish &f(%current%)'
   material:
     0: GLASS_BOTTLE
     1: POTION
@@ -152,7 +152,7 @@ vanish-setting:
 visibility-setting:
   page: 1
   slot: 33
-  name: '&6&lVisibility &f%current%'
+  name: '&6&lVisibility &f(%current%)'
   material:
     0: ENDER_PEARL
     1: ENDER_EYE
