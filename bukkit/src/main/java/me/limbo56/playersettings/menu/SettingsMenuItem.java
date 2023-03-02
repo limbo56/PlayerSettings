@@ -40,7 +40,7 @@ public class SettingsMenuItem implements MenuItem {
     Set<String> sections = section.getKeys(false);
     if (sections.size() > 0) {
       String valueKey = String.valueOf(sections.contains(String.valueOf(value)) ? value : 0);
-      menuItem.put(section.getName(), section.getString(valueKey));
+      menuItem.put(section.getName(), section.get(valueKey));
     }
   }
 
