@@ -95,7 +95,7 @@ public class SettingsConfiguration extends BaseConfiguration {
           .config(
               String.format(
                   "Parsing value '%s' for setting '%s', Parsed '%d'",
-                  setting.getName(), value, settingValue));
+                  value, setting.getName(), settingValue));
       return settingValue;
     } catch (NumberFormatException exception) {
       PLUGIN

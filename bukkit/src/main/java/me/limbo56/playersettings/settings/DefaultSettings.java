@@ -25,6 +25,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -225,7 +226,7 @@ public enum DefaultSettings {
             1,
             1,
             XMaterial.SUGAR.parseMaterial(),
-            "&6&lSpeed Boost &f%current%",
+            "&6&lSpeed Boost &f(%current%)",
             "&7Boost your speed!",
             "",
             "&6Left click &7to cycle next",
@@ -257,7 +258,7 @@ public enum DefaultSettings {
             1,
             3,
             XMaterial.SLIME_BLOCK.parseMaterial(),
-            "&6&lJump Boost &f%current%",
+            "&6&lJump Boost &f(%current%)",
             "&7Boost your jump height!",
             "",
             "&6Left click &7to cycle next",
@@ -272,8 +273,8 @@ public enum DefaultSettings {
             }
 
             int amplifier = value * 3;
-            PotionEffect jumpEffect = player.getPotionEffect(PotionEffectType.JUMP);
-            if (jumpEffect != null && jumpEffect.getAmplifier() >= amplifier) {
+            Optional<PotionEffect> jumpEffect = getActiveJumpEffect(player);
+            if (jumpEffect.isPresent() && jumpEffect.get().getAmplifier() >= amplifier) {
               clear(player);
             }
             player.addPotionEffect(
@@ -284,6 +285,13 @@ public enum DefaultSettings {
           public void clear(Player player) {
             player.removePotionEffect(PotionEffectType.JUMP);
           }
+
+          @NotNull
+          private Optional<PotionEffect> getActiveJumpEffect(Player player) {
+            return player.getActivePotionEffects().stream()
+                .filter(effect -> effect.getType().equals(PotionEffectType.JUMP))
+                .findFirst();
+          }
         };
   }
 
@@ -293,7 +301,7 @@ public enum DefaultSettings {
             1,
             5,
             XMaterial.SADDLE.parseMaterial(),
-            "&6&lStacker &f%current%",
+            "&6&lStacker &f(%current%)",
             "&7Stack players on top of your head!",
             "",
             "&6Click &7to toggle");
@@ -305,7 +313,7 @@ public enum DefaultSettings {
             1,
             7,
             XMaterial.FEATHER.parseMaterial(),
-            "&6&lFly &r&f%current%",
+            "&6&lFly &f(%current%)",
             "&7Toggle your ability to fly and boost your flight speed!",
             "",
             "&6Left click &7to cycle next",
@@ -342,7 +350,7 @@ public enum DefaultSettings {
             1,
             29,
             XMaterial.ENDER_PEARL.parseMaterial(),
-            "&6&lVanish &f%current%",
+            "&6&lVanish &f(%current%)",
             "&7Make yourself invisible to other players!",
             "",
             "&6Click &7to toggle");
@@ -366,10 +374,7 @@ public enum DefaultSettings {
           }
 
           private Collection<SettingUser> getPlayersWithVisibilityEnabled() {
-            return Constants.filterOnline(
-                PLUGIN
-                    .getUserManager()
-                    .getUsersWithSettingValue(VISIBILITY_SETTING.getName(), true));
+            return PLUGIN.getUserManager().getUsers();
           }
         };
   }
@@ -380,7 +385,7 @@ public enum DefaultSettings {
             1,
             31,
             XMaterial.PAPER.parseMaterial(),
-            "&6&lChat &f%current%",
+            "&6&lChat &f(%current%)",
             "&7Toggle your ability to see or send chat messages!",
             "",
             "&6Click &7to toggle");
@@ -415,8 +420,13 @@ public enum DefaultSettings {
 
           @NotNull
           private Collection<SettingUser> getVisiblePlayers() {
-            return Constants.filterOnline(
-                PLUGIN.getUserManager().getUsersWithSettingValue(VANISH_SETTING.getName(), false));
+            if (PLUGIN.getSettingsManager().isSettingRegistered(VANISH_SETTING.getName())) {
+              return Constants.filterOnline(
+                  PLUGIN
+                      .getUserManager()
+                      .getUsersWithSettingValue(VANISH_SETTING.getName(), false));
+            }
+            return PLUGIN.getUserManager().getUsers();
           }
         };
   }
