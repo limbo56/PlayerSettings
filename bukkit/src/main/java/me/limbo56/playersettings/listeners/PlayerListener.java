@@ -97,7 +97,7 @@ public class PlayerListener implements Listener {
   private void loadPlayer(Player player) {
     PLUGIN.getLogger().fine("Loading settings of player '" + player.getName() + "'");
     new TaskChain()
-        .async(data -> PLUGIN.getUserManager().loadUser(player.getUniqueId()))
+        .async(data -> PLUGIN.getUserManager().loadUser(player))
         .runAsync();
   }
 
