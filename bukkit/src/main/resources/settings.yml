@@ -52,7 +52,7 @@
 #     |
 #     | * Use the same properties that you pass when configuring an item in the 'items.yml' file
 #     | * No need to re-define every property for the item, just the ones you want to override
-#     enabled-item: Item
+#     enabled-item:
 #       name: "&aEnabled"
 #       material: LIME_STAINED_GLASS
 #     disabled-item:

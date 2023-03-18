@@ -2,8 +2,8 @@
 #
 # | A unique name to identify this item or the name of the setting that it's displaying
 # example-setting:
-#   * You can find all of the available properties for this section
-#   * here: https://github.com/CryptoMorin/XSeries/wiki/XItemStack
+#   * You can find all of the available properties for this section here:
+#   * https://github.com/CryptoMorin/XSeries/wiki/XItemStack
 #
 #   | The slot of the menu in which the item will be placed
 #   slot: 4
