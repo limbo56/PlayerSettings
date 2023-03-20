@@ -94,9 +94,8 @@ public class PlayerListener implements Listener {
   }
 
   private void loadPlayer(Player player) {
-    UUID uniqueId = player.getUniqueId();
-    PLUGIN.getLogger().fine("Loading settings of player '" + uniqueId + "'");
-    new TaskChain().async(data -> PLUGIN.getUserManager().loadUser(uniqueId)).runAsync();
+    UUID uuid = player.getUniqueId();
+    new TaskChain().async(data -> PLUGIN.getUserManager().loadUser(uuid)).runAsync();
   }
 
   private void unloadPlayer(Player player) {
@@ -105,7 +104,6 @@ public class PlayerListener implements Listener {
     user.clearSettingEffects();
 
     // Save and unload user
-    PLUGIN.getLogger().fine("Saving settings of player '" + player.getName() + "'");
     new TaskChain()
         .async(
             data -> {
