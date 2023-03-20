@@ -11,6 +11,7 @@ import me.limbo56.playersettings.api.setting.SettingWatcher;
 import me.limbo56.playersettings.util.Permissions;
 import me.limbo56.playersettings.util.TaskChain;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -18,14 +19,13 @@ public class UserManager implements SettingsWatchlist {
   private static final PlayerSettings PLUGIN = PlayerSettingsProvider.getPlugin();
   private final Map<UUID, SettingUser> userMap = new ConcurrentHashMap<>();
 
-  public void loadUser(Player player) {
-    this.loadUsers(Collections.singleton(player));
+  public void loadUser(UUID uuid) {
+    this.loadUsers(Collections.singleton(uuid));
   }
 
-  public void loadUsers(Collection<Player> players) {
+  public void loadUsers(Collection<UUID> uuids) {
     Collection<Setting> registeredSettings = PLUGIN.getSettingsManager().getSettingMap().values();
-    for (Player player : players) {
-      UUID uuid = player.getUniqueId();
+    for (UUID uuid : uuids) {
       PLUGIN.getLogger().config("Loading user `" + uuid + "`");
 
       // Load saved settings
@@ -40,7 +40,7 @@ public class UserManager implements SettingsWatchlist {
                 // Apply saved and new settings
                 SettingWatcher settingWatcher = user.getSettingWatcher();
                 optionalSavedSettings.ifPresent(
-                    savedSettings -> loadSavedSettings(player, savedSettings, settingWatcher));
+                    savedSettings -> loadSavedSettings(savedSettings, settingWatcher));
                 loadNewSettings(registeredSettings, settingWatcher);
                 user.setLoading(false);
 
@@ -71,10 +71,10 @@ public class UserManager implements SettingsWatchlist {
   }
 
   private void loadSavedSettings(
-      Player player, SettingWatcher savedSettings, SettingWatcher targetSettingWatcher) {
+      SettingWatcher savedSettings, SettingWatcher targetSettingWatcher) {
     for (String settingName : savedSettings.getWatched()) {
       Setting setting = PLUGIN.getSettingsManager().getSetting(settingName);
-      int safeValue = getSafeValue(player, savedSettings, settingName);
+      int safeValue = getSafeValue(savedSettings, settingName);
       boolean isMissingJoinTrigger = !PLUGIN.getSettingsManager().hasTriggers(setting, "join");
       targetSettingWatcher.setValue(settingName, safeValue, isMissingJoinTrigger);
       PLUGIN
@@ -86,19 +86,21 @@ public class UserManager implements SettingsWatchlist {
     }
   }
 
-  private int getSafeValue(Player player, SettingWatcher settingWatcher, String settingName) {
+  private int getSafeValue(SettingWatcher settingWatcher, String settingName) {
     Setting setting = PLUGIN.getSettingsManager().getSetting(settingName);
+    Player player = Bukkit.getPlayer(settingWatcher.getOwner());
     int value = settingWatcher.getValue(settingName);
     int maxValue = Permissions.getSettingPermissionLevel(player, setting);
     return Math.abs(value) > maxValue ? setting.getDefaultValue() : value;
   }
 
   public void loadOnlineUsers() {
-    Collection<Player> onlineUsers =
+    Collection<UUID> onlineUsers =
         Bukkit.getOnlinePlayers().stream()
             .filter(
                 player ->
                     PLUGIN.getPluginConfiguration().isAllowedWorld(player.getWorld().getName()))
+            .map(Entity::getUniqueId)
             .collect(Collectors.toList());
     this.loadUsers(onlineUsers);
   }

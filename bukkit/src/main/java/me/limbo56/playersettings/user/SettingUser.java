@@ -1,5 +1,9 @@
 package me.limbo56.playersettings.user;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+import java.util.function.Consumer;
 import me.limbo56.playersettings.PlayerSettings;
 import me.limbo56.playersettings.PlayerSettingsProvider;
 import me.limbo56.playersettings.api.setting.Setting;
@@ -7,11 +11,6 @@ import me.limbo56.playersettings.api.setting.SettingWatcher;
 import me.limbo56.playersettings.util.Permissions;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-import java.util.function.Consumer;
 
 public class SettingUser {
   private static final List<Consumer<SettingUser>> loadCallbacks = new ArrayList<>();
