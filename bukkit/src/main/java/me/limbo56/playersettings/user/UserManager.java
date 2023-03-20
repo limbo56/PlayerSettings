@@ -26,7 +26,7 @@ public class UserManager implements SettingsWatchlist {
   public void loadUsers(Collection<UUID> uuids) {
     Collection<Setting> registeredSettings = PLUGIN.getSettingsManager().getSettingMap().values();
     for (UUID uuid : uuids) {
-      PLUGIN.getLogger().config("Loading user `" + uuid + "`");
+      PLUGIN.getLogger().fine("Loading settings of player '" + uuid + "'");
 
       // Load saved settings
       Optional<SettingWatcher> optionalSavedSettings = getSavedSettings(uuid);
@@ -35,6 +35,19 @@ public class UserManager implements SettingsWatchlist {
       new TaskChain()
           .sync(
               data -> {
+                if (Bukkit.getPlayer(uuid) == null) {
+                  if (PLUGIN.getPluginConfiguration().hasProxyWarningEnabled()
+                      || PLUGIN.getPluginConfiguration().hasDebugEnabled()) {
+                    PLUGIN
+                        .getLogger()
+                        .warning("Failed to load settings for offline user `" + uuid + "`");
+                    PLUGIN
+                        .getLogger()
+                        .warning(
+                            "This warning may be caused by a security/authentication plugin! You can turn off this warning in the `config.yml` file by setting the `general.offline-warning` option to `false`.");
+                  }
+                  return;
+                }
                 SettingUser user = getUser(uuid);
 
                 // Apply saved and new settings
@@ -115,6 +128,7 @@ public class UserManager implements SettingsWatchlist {
   }
 
   public void saveUser(UUID uuid) {
+    PLUGIN.getLogger().fine("Saving settings of player '" + uuid + "'");
     this.saveUsers(Collections.singleton(this.getUser(uuid).getSettingWatcher()));
   }
 
