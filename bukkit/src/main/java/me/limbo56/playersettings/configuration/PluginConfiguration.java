@@ -22,8 +22,8 @@ public class PluginConfiguration extends BaseConfiguration {
     return getFile().getBoolean("general.debug");
   }
 
-  public boolean hasProxyWarningEnabled() {
-    return getFile().getBoolean("general.proxy-warning");
+  public boolean hasOfflineWarningEnabled() {
+    return getFile().getBoolean("general.offline-warning");
   }
 
   public boolean hasUpdateAlertsEnabled() {

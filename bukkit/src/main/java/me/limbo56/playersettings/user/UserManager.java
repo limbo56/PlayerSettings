@@ -36,7 +36,7 @@ public class UserManager implements SettingsWatchlist {
           .sync(
               data -> {
                 if (Bukkit.getPlayer(uuid) == null) {
-                  if (PLUGIN.getPluginConfiguration().hasProxyWarningEnabled()
+                  if (PLUGIN.getPluginConfiguration().hasOfflineWarningEnabled()
                       || PLUGIN.getPluginConfiguration().hasDebugEnabled()) {
                     PLUGIN
                         .getLogger()
