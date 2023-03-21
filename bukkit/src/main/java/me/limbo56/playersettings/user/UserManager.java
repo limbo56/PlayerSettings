@@ -2,6 +2,7 @@ package me.limbo56.playersettings.user;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import me.limbo56.playersettings.PlayerSettings;
 import me.limbo56.playersettings.PlayerSettingsProvider;
@@ -27,40 +28,46 @@ public class UserManager implements SettingsWatchlist {
     Collection<Setting> registeredSettings = PLUGIN.getSettingsManager().getSettingMap().values();
     for (UUID uuid : uuids) {
       PLUGIN.getLogger().fine("Loading settings of player '" + uuid + "'");
-
-      // Load saved settings
-      Optional<SettingWatcher> optionalSavedSettings = getSavedSettings(uuid);
-      PLUGIN.getLogger().config("Has saved settings `" + optionalSavedSettings.isPresent() + "`");
-
-      new TaskChain()
-          .sync(
-              data -> {
-                if (Bukkit.getPlayer(uuid) == null) {
-                  if (PLUGIN.getPluginConfiguration().hasOfflineWarningEnabled()
-                      || PLUGIN.getPluginConfiguration().hasDebugEnabled()) {
-                    PLUGIN
-                        .getLogger()
-                        .warning("Failed to load settings for offline user `" + uuid + "`");
-                    PLUGIN
-                        .getLogger()
-                        .warning(
-                            "This warning may be caused by a security/authentication plugin! You can turn off this warning in the `config.yml` file by setting the `general.offline-warning` option to `false`.");
-                  }
-                  return;
-                }
-                SettingUser user = getUser(uuid);
-
-                // Apply saved and new settings
-                SettingWatcher settingWatcher = user.getSettingWatcher();
-                optionalSavedSettings.ifPresent(
-                    savedSettings -> loadSavedSettings(savedSettings, settingWatcher));
-                loadNewSettings(registeredSettings, settingWatcher);
-                user.setLoading(false);
-
-                userMap.put(user.getUniqueId(), user);
-              })
-          .runSync();
+      new TaskChain().sync(createLoadTask(uuid, registeredSettings)).runSync();
     }
+  }
+
+  @NotNull
+  private Consumer<Map<String, Object>> createLoadTask(
+      UUID uuid, Collection<Setting> registeredSettings) {
+    Optional<SettingWatcher> optionalSavedSettings = getSavedSettings(uuid);
+    PLUGIN.getLogger().config("Has saved settings `" + optionalSavedSettings.isPresent() + "`");
+
+    return data -> {
+      // Load saved and new settings
+      SettingUser user = getUser(uuid);
+      SettingWatcher settingWatcher = user.getSettingWatcher();
+      try {
+        optionalSavedSettings.ifPresent(watcher -> loadSavedSettings(watcher, settingWatcher));
+        loadNewSettings(registeredSettings, settingWatcher);
+      } catch (NullPointerException exception) {
+        // Add warning to prevent exception when player disconnects and their settings are loading
+        if (Bukkit.getPlayer(uuid) == null) {
+          if (PLUGIN.getPluginConfiguration().hasOfflineWarningEnabled()
+              || PLUGIN.getPluginConfiguration().hasDebugEnabled()) {
+            PLUGIN.getLogger().warning("Failed to load settings for offline user `" + uuid + "`");
+            PLUGIN
+                .getLogger()
+                .warning(
+                    "This warning may be caused by a security/authentication plugin! You can turn off this warning in the `config.yml` file by setting the `general.offline-warning` option to `false`.");
+          }
+          if (PLUGIN.getPluginConfiguration().hasDebugEnabled()) {
+            exception.printStackTrace();
+          }
+          return;
+        }
+
+        exception.printStackTrace();
+      }
+
+      user.setLoading(false);
+      userMap.put(user.getUniqueId(), user);
+    };
   }
 
   private void loadNewSettings(
