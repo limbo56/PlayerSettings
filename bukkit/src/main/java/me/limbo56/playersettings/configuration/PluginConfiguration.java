@@ -23,7 +23,7 @@ public class PluginConfiguration extends BaseConfiguration {
   }
 
   public boolean hasOfflineWarningEnabled() {
-    return getFile().getBoolean("general.offline-warning");
+    return getFile().getBoolean("general.offline-warning", true);
   }
 
   public boolean hasUpdateAlertsEnabled() {
