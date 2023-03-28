@@ -2,6 +2,7 @@ package me.limbo56.playersettings.user;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import me.limbo56.playersettings.PlayerSettings;
 import me.limbo56.playersettings.PlayerSettingsProvider;
@@ -11,6 +12,7 @@ import me.limbo56.playersettings.api.setting.SettingWatcher;
 import me.limbo56.playersettings.util.Permissions;
 import me.limbo56.playersettings.util.TaskChain;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -18,36 +20,54 @@ public class UserManager implements SettingsWatchlist {
   private static final PlayerSettings PLUGIN = PlayerSettingsProvider.getPlugin();
   private final Map<UUID, SettingUser> userMap = new ConcurrentHashMap<>();
 
-  public void loadUser(Player player) {
-    this.loadUsers(Collections.singleton(player));
+  public void loadUser(UUID uuid) {
+    this.loadUsers(Collections.singleton(uuid));
   }
 
-  public void loadUsers(Collection<Player> players) {
+  public void loadUsers(Collection<UUID> uuids) {
     Collection<Setting> registeredSettings = PLUGIN.getSettingsManager().getSettingMap().values();
-    for (Player player : players) {
-      UUID uuid = player.getUniqueId();
-      PLUGIN.getLogger().config("Loading user `" + uuid + "`");
-
-      // Load saved settings
-      Optional<SettingWatcher> optionalSavedSettings = getSavedSettings(uuid);
-      PLUGIN.getLogger().config("Has saved settings `" + optionalSavedSettings.isPresent() + "`");
-
-      new TaskChain()
-          .sync(
-              data -> {
-                SettingUser user = getUser(uuid);
-
-                // Apply saved and new settings
-                SettingWatcher settingWatcher = user.getSettingWatcher();
-                optionalSavedSettings.ifPresent(
-                    savedSettings -> loadSavedSettings(player, savedSettings, settingWatcher));
-                loadNewSettings(registeredSettings, settingWatcher);
-                user.setLoading(false);
-
-                userMap.put(user.getUniqueId(), user);
-              })
-          .runSync();
+    for (UUID uuid : uuids) {
+      PLUGIN.getLogger().fine("Loading settings of player '" + uuid + "'");
+      new TaskChain().sync(createLoadTask(uuid, registeredSettings)).runSync();
     }
+  }
+
+  @NotNull
+  private Consumer<Map<String, Object>> createLoadTask(
+      UUID uuid, Collection<Setting> registeredSettings) {
+    Optional<SettingWatcher> optionalSavedSettings = getSavedSettings(uuid);
+    PLUGIN.getLogger().config("Has saved settings `" + optionalSavedSettings.isPresent() + "`");
+
+    return data -> {
+      // Load saved and new settings
+      SettingUser user = getUser(uuid);
+      SettingWatcher settingWatcher = user.getSettingWatcher();
+      try {
+        optionalSavedSettings.ifPresent(watcher -> loadSavedSettings(watcher, settingWatcher));
+        loadNewSettings(registeredSettings, settingWatcher);
+      } catch (NullPointerException exception) {
+        // Add warning to prevent exception when player disconnects and their settings are loading
+        if (Bukkit.getPlayer(uuid) == null) {
+          if (PLUGIN.getPluginConfiguration().hasOfflineWarningEnabled()
+              || PLUGIN.getPluginConfiguration().hasDebugEnabled()) {
+            PLUGIN.getLogger().warning("Failed to load settings for offline user `" + uuid + "`");
+            PLUGIN
+                .getLogger()
+                .warning(
+                    "This warning may be caused by a security/authentication plugin! You can turn off this warning in the `config.yml` file by setting the `general.offline-warning` option to `false`.");
+          }
+          if (PLUGIN.getPluginConfiguration().hasDebugEnabled()) {
+            exception.printStackTrace();
+          }
+          return;
+        }
+
+        exception.printStackTrace();
+      }
+
+      user.setLoading(false);
+      userMap.put(user.getUniqueId(), user);
+    };
   }
 
   private void loadNewSettings(
@@ -71,10 +91,10 @@ public class UserManager implements SettingsWatchlist {
   }
 
   private void loadSavedSettings(
-      Player player, SettingWatcher savedSettings, SettingWatcher targetSettingWatcher) {
+      SettingWatcher savedSettings, SettingWatcher targetSettingWatcher) {
     for (String settingName : savedSettings.getWatched()) {
       Setting setting = PLUGIN.getSettingsManager().getSetting(settingName);
-      int safeValue = getSafeValue(player, savedSettings, settingName);
+      int safeValue = getSafeValue(savedSettings, settingName);
       boolean isMissingJoinTrigger = !PLUGIN.getSettingsManager().hasTriggers(setting, "join");
       targetSettingWatcher.setValue(settingName, safeValue, isMissingJoinTrigger);
       PLUGIN
@@ -86,19 +106,21 @@ public class UserManager implements SettingsWatchlist {
     }
   }
 
-  private int getSafeValue(Player player, SettingWatcher settingWatcher, String settingName) {
+  private int getSafeValue(SettingWatcher settingWatcher, String settingName) {
     Setting setting = PLUGIN.getSettingsManager().getSetting(settingName);
+    Player player = Bukkit.getPlayer(settingWatcher.getOwner());
     int value = settingWatcher.getValue(settingName);
     int maxValue = Permissions.getSettingPermissionLevel(player, setting);
     return Math.abs(value) > maxValue ? setting.getDefaultValue() : value;
   }
 
   public void loadOnlineUsers() {
-    Collection<Player> onlineUsers =
+    Collection<UUID> onlineUsers =
         Bukkit.getOnlinePlayers().stream()
             .filter(
                 player ->
                     PLUGIN.getPluginConfiguration().isAllowedWorld(player.getWorld().getName()))
+            .map(Entity::getUniqueId)
             .collect(Collectors.toList());
     this.loadUsers(onlineUsers);
   }
@@ -113,6 +135,7 @@ public class UserManager implements SettingsWatchlist {
   }
 
   public void saveUser(UUID uuid) {
+    PLUGIN.getLogger().fine("Saving settings of player '" + uuid + "'");
     this.saveUsers(Collections.singleton(this.getUser(uuid).getSettingWatcher()));
   }
 

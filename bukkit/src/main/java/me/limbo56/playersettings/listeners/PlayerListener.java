@@ -1,5 +1,6 @@
 package me.limbo56.playersettings.listeners;
 
+import java.util.UUID;
 import me.limbo56.playersettings.PlayerSettings;
 import me.limbo56.playersettings.PlayerSettingsProvider;
 import me.limbo56.playersettings.api.setting.Setting;
@@ -14,8 +15,6 @@ import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
-
-import java.util.UUID;
 
 public class PlayerListener implements Listener {
   private static final PlayerSettings PLUGIN = PlayerSettingsProvider.getPlugin();
@@ -48,9 +47,9 @@ public class PlayerListener implements Listener {
   @EventHandler
   public void onChangeWorld(PlayerChangedWorldEvent event) {
     Player player = event.getPlayer();
-    UUID uniqueId = player.getUniqueId();
+    UUID uuid = player.getUniqueId();
     String worldName = player.getWorld().getName();
-    boolean userLoaded = PLUGIN.getUserManager().isUserLoaded(uniqueId);
+    boolean userLoaded = PLUGIN.getUserManager().isUserLoaded(uuid);
     boolean allowedWorld = PLUGIN.getPluginConfiguration().isAllowedWorld(worldName);
     if (allowedWorld && !userLoaded) {
       loadPlayer(player);
@@ -95,10 +94,8 @@ public class PlayerListener implements Listener {
   }
 
   private void loadPlayer(Player player) {
-    PLUGIN.getLogger().fine("Loading settings of player '" + player.getName() + "'");
-    new TaskChain()
-        .async(data -> PLUGIN.getUserManager().loadUser(player))
-        .runAsync();
+    UUID uuid = player.getUniqueId();
+    new TaskChain().async(data -> PLUGIN.getUserManager().loadUser(uuid)).runAsync();
   }
 
   private void unloadPlayer(Player player) {
@@ -107,7 +104,6 @@ public class PlayerListener implements Listener {
     user.clearSettingEffects();
 
     // Save and unload user
-    PLUGIN.getLogger().fine("Saving settings of player '" + player.getName() + "'");
     new TaskChain()
         .async(
             data -> {

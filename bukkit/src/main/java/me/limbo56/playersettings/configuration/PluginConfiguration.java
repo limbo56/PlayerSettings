@@ -1,12 +1,11 @@
 package me.limbo56.playersettings.configuration;
 
 import com.google.common.collect.ListMultimap;
+import java.util.List;
 import me.limbo56.playersettings.api.setting.Setting;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.List;
 
 public class PluginConfiguration extends BaseConfiguration {
   @Override
@@ -21,6 +20,10 @@ public class PluginConfiguration extends BaseConfiguration {
 
   public boolean hasDebugEnabled() {
     return getFile().getBoolean("general.debug");
+  }
+
+  public boolean hasOfflineWarningEnabled() {
+    return getFile().getBoolean("general.offline-warning", true);
   }
 
   public boolean hasUpdateAlertsEnabled() {

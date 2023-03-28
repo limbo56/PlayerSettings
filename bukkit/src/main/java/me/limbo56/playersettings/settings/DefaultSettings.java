@@ -1,8 +1,16 @@
 package me.limbo56.playersettings.settings;
 
+import static java.util.Collections.singletonList;
+
 import com.cryptomorin.xseries.XMaterial;
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.ListMultimap;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import me.limbo56.playersettings.PlayerSettings;
 import me.limbo56.playersettings.PlayerSettingsProvider;
 import me.limbo56.playersettings.api.ImmutableMenuItem;
@@ -21,15 +29,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-
-import static java.util.Collections.singletonList;
 
 public enum DefaultSettings {
   SPEED_SETTING(
@@ -364,17 +363,17 @@ public enum DefaultSettings {
             }
             player.addPotionEffect(
                 new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 1));
-            getPlayersWithVisibilityEnabled().forEach(user -> user.getPlayer().hidePlayer(player));
+            getSettingUsers().forEach(user -> user.getPlayer().hidePlayer(player));
           }
 
           @Override
           public void clear(Player player) {
             player.removePotionEffect(PotionEffectType.INVISIBILITY);
-            getPlayersWithVisibilityEnabled().forEach(user -> user.getPlayer().showPlayer(player));
+            getSettingUsers().forEach(user -> user.getPlayer().showPlayer(player));
           }
 
-          private Collection<SettingUser> getPlayersWithVisibilityEnabled() {
-            return PLUGIN.getUserManager().getUsers();
+          private Collection<SettingUser> getSettingUsers() {
+            return Constants.filterOnline(PLUGIN.getUserManager().getUsers());
           }
         };
   }
@@ -420,13 +419,14 @@ public enum DefaultSettings {
 
           @NotNull
           private Collection<SettingUser> getVisiblePlayers() {
+            Collection<SettingUser> users;
             if (PLUGIN.getSettingsManager().isSettingRegistered(VANISH_SETTING.getName())) {
-              return Constants.filterOnline(
-                  PLUGIN
-                      .getUserManager()
-                      .getUsersWithSettingValue(VANISH_SETTING.getName(), false));
+              users =
+                  PLUGIN.getUserManager().getUsersWithSettingValue(VANISH_SETTING.getName(), false);
+            } else {
+              users = PLUGIN.getUserManager().getUsers();
             }
-            return PLUGIN.getUserManager().getUsers();
+            return Constants.filterOnline(users);
           }
         };
   }

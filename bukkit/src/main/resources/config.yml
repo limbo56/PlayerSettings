@@ -35,6 +35,9 @@ general:
   metrics: true
   # This property toggles the update message that is sent to server operators when they join
   update-alert: true
+  # Controls whether a warning message is displayed when a security/authentication plugin is causing issues
+  # * Setting this to false will disable the warning message
+  offline-warning: true
   # List of worlds where the plugin will be enabled
   #
   # * You can place the '*' symbol in the list to enable the plugin in all the worlds
