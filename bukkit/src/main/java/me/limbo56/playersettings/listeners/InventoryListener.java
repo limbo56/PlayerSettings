@@ -29,6 +29,7 @@ public class InventoryListener implements Listener {
     if (!(topInventory.getHolder() instanceof SettingsMenuHolder)) {
       return;
     }
+    event.setCancelled(true);
 
     // Check if item clicked is not null
     ItemStack itemStack = event.getCurrentItem();
@@ -43,7 +44,6 @@ public class InventoryListener implements Listener {
       return;
     }
 
-    event.setCancelled(true);
     item.executeClickAction(event.getClick(), holder.getOwner());
   }
 }
