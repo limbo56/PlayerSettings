@@ -1,5 +1,7 @@
 package me.limbo56.playersettings.listeners;
 
+import static me.limbo56.playersettings.settings.DefaultSettings.STACKER_SETTING;
+
 import me.limbo56.playersettings.PlayerSettings;
 import me.limbo56.playersettings.PlayerSettingsProvider;
 import me.limbo56.playersettings.api.event.SettingUpdateEvent;
@@ -7,6 +9,7 @@ import me.limbo56.playersettings.user.SettingUser;
 import me.limbo56.playersettings.util.Text;
 import me.limbo56.playersettings.util.Version;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -14,8 +17,6 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.util.Vector;
-
-import static me.limbo56.playersettings.settings.DefaultSettings.STACKER_SETTING;
 
 public class StackerSettingListener implements Listener {
   private static final PlayerSettings PLUGIN = PlayerSettingsProvider.getPlugin();
@@ -38,15 +39,17 @@ public class StackerSettingListener implements Listener {
       return;
     }
 
+    // Don't send message if stacker is disabled and the target is not a player
     SettingUser user = PLUGIN.getUserManager().getUser(player.getUniqueId());
     Entity clicked = event.getRightClicked();
     boolean hasStackerDisabled = !user.hasSettingEnabled(stackerSettingName);
+    boolean isTargetNotAnEntity = !(clicked instanceof LivingEntity);
     boolean isTargetNotAPlayer = !(clicked instanceof Player);
     boolean isTargetAnNPC = isMarkedAsNPC(clicked);
-    // Don't send message if stacker is disabled and the target is not a player
-    if (hasStackerDisabled && (isTargetNotAPlayer || isTargetAnNPC)) {
+    if (isTargetNotAnEntity || hasStackerDisabled && (isTargetNotAPlayer || isTargetAnNPC)) {
       return;
     }
+
     // Notify user that they have stacker disabled
     if (hasStackerDisabled) {
       Text.fromMessages("stacker.self-disabled")
@@ -54,6 +57,7 @@ public class StackerSettingListener implements Listener {
           .sendMessage(player, PLUGIN.getMessagesConfiguration().getMessagePrefix());
       return;
     }
+
     // Notify user that the target is not a player
     if (isTargetNotAPlayer || isTargetAnNPC) {
       Text.fromMessages("stacker.target-invalid-entity")

@@ -77,7 +77,7 @@ public enum DefaultSettings {
       Constants.DEFAULT_VALUE_ALIASES),
   CHAT_SETTING(
       "chat-setting",
-      "&6Vanish",
+      "&6Chat",
       Chat.ITEM,
       1,
       1,

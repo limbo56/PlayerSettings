@@ -1,9 +1,5 @@
 package me.limbo56.playersettings.util;
 
-import me.limbo56.playersettings.PlayerSettings;
-import me.limbo56.playersettings.PlayerSettingsProvider;
-import org.bukkit.entity.Player;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,6 +9,9 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
+import me.limbo56.playersettings.PlayerSettings;
+import me.limbo56.playersettings.PlayerSettingsProvider;
+import org.bukkit.entity.Player;
 
 public class PluginUpdater {
   private static final PlayerSettings PLUGIN = PlayerSettingsProvider.getPlugin();
@@ -45,7 +44,7 @@ public class PluginUpdater {
 
   private static String getUpdateMessage() {
     String latestVersionNumber = PluginUpdater.LATEST_VERSION.get();
-    if (LATEST_VERSION.equals("ERROR")) {
+    if (latestVersionNumber.equals("ERROR")) {
       return "&cAn error occurred while checking for updates!";
     }
 
