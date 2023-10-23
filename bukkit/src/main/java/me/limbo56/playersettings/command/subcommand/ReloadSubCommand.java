@@ -1,19 +1,18 @@
 package me.limbo56.playersettings.command.subcommand;
 
+import java.util.ArrayList;
+import java.util.List;
 import me.limbo56.playersettings.PlayerSettings;
 import me.limbo56.playersettings.PlayerSettingsProvider;
 import me.limbo56.playersettings.command.SubCommand;
 import me.limbo56.playersettings.menu.SettingsMenuHolder;
 import me.limbo56.playersettings.user.SettingUser;
-import me.limbo56.playersettings.util.PluginLogHandler;
+import me.limbo56.playersettings.util.PluginLogger;
 import me.limbo56.playersettings.util.Text;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class ReloadSubCommand extends SubCommand {
   private static final PlayerSettings PLUGIN = PlayerSettingsProvider.getPlugin();
@@ -30,7 +29,7 @@ public class ReloadSubCommand extends SubCommand {
   @Override
   public void execute(@NotNull CommandSender sender, @NotNull String @NotNull [] args) {
     Player player = (Player) sender;
-    PluginLogHandler.log(ChatColor.YELLOW + "Reloading plugin...");
+    PluginLogger.log(ChatColor.YELLOW + "Reloading plugin...");
     Text.from(
             "&cThis command could potentially break the plugin or lag your server. "
                 + "Please refrain from using it on a live server and only while configuring the plugin.")
@@ -63,7 +62,7 @@ public class ReloadSubCommand extends SubCommand {
 
     // Send successfully reloaded message
     PLUGIN.setReloading(false);
-    PluginLogHandler.log(ChatColor.GREEN + "Plugin reloaded successfully!");
+    PluginLogger.log(ChatColor.GREEN + "Plugin reloaded successfully!");
     Text.from("&aThe settings configuration has been reloaded")
         .sendMessage(player, PLUGIN.getMessagesConfiguration().getMessagePrefix());
   }

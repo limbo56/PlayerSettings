@@ -1,13 +1,5 @@
 package me.limbo56.playersettings.database;
 
-import me.limbo56.playersettings.PlayerSettings;
-import me.limbo56.playersettings.PlayerSettingsProvider;
-import me.limbo56.playersettings.api.setting.Setting;
-import me.limbo56.playersettings.api.setting.SettingWatcher;
-import me.limbo56.playersettings.database.configuration.DatabaseConfiguration;
-import me.limbo56.playersettings.database.sql.*;
-import org.bukkit.configuration.ConfigurationSection;
-
 import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
@@ -17,6 +9,14 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.UUID;
 import java.util.logging.Level;
+import me.limbo56.playersettings.PlayerSettings;
+import me.limbo56.playersettings.PlayerSettingsProvider;
+import me.limbo56.playersettings.api.setting.Setting;
+import me.limbo56.playersettings.api.setting.SettingWatcher;
+import me.limbo56.playersettings.database.configuration.DatabaseConfiguration;
+import me.limbo56.playersettings.database.sql.*;
+import me.limbo56.playersettings.util.PluginLogger;
+import org.bukkit.configuration.ConfigurationSection;
 
 public class SQLiteSettingsDatabase implements SettingsDatabase<DatabaseConfiguration> {
   private static final PlayerSettings PLUGIN = PlayerSettingsProvider.getPlugin();
@@ -34,8 +34,8 @@ public class SQLiteSettingsDatabase implements SettingsDatabase<DatabaseConfigur
     if (!databaseFile.exists()) {
       try {
         databaseFile.createNewFile();
-      } catch (IOException e) {
-        PLUGIN.getLogger().severe("Error while creating file: " + databaseName + ".db");
+      } catch (IOException exception) {
+        PluginLogger.severe("Error while creating file: " + databaseName + ".db");
       }
     }
     this.databaseFile = databaseFile;
@@ -51,9 +51,9 @@ public class SQLiteSettingsDatabase implements SettingsDatabase<DatabaseConfigur
   public Collection<SettingWatcher> loadSettingWatchers(Collection<UUID> users) {
     try (Connection connection = this.getConnection()) {
       return new LoadUsersQuery(connection, users).query();
-    } catch (SQLException e) {
-      PLUGIN.getLogger().severe("An exception occurred while loading user settings");
-      e.printStackTrace();
+    } catch (SQLException exception) {
+      PluginLogger.severe("An exception occurred while loading user settings");
+      exception.printStackTrace();
       return Collections.emptyList();
     }
   }
@@ -62,9 +62,9 @@ public class SQLiteSettingsDatabase implements SettingsDatabase<DatabaseConfigur
   public void saveSettingWatchers(Collection<SettingWatcher> settingWatchers) {
     try (Connection connection = this.getConnection()) {
       new SaveUsersTask(connection, settingWatchers, "sqlite").execute();
-    } catch (SQLException e) {
-      PLUGIN.getLogger().severe("An exception occurred while saving user settings");
-      e.printStackTrace();
+    } catch (SQLException exception) {
+      PluginLogger.severe("An exception occurred while saving user settings");
+      exception.printStackTrace();
     }
   }
 
@@ -72,9 +72,9 @@ public class SQLiteSettingsDatabase implements SettingsDatabase<DatabaseConfigur
   public void putExtra(UUID uuid, Setting setting, String key, String value) {
     try (Connection connection = this.getConnection()) {
       new SaveExtraTask(connection, uuid, setting, key, value, "sqlite").execute();
-    } catch (SQLException e) {
-      PLUGIN.getLogger().severe("An exception occurred while saving extra data");
-      e.printStackTrace();
+    } catch (SQLException exception) {
+      PluginLogger.severe("An exception occurred while saving extra data");
+      exception.printStackTrace();
     }
   }
 
@@ -82,9 +82,9 @@ public class SQLiteSettingsDatabase implements SettingsDatabase<DatabaseConfigur
   public String getExtra(UUID uuid, Setting setting, String key) {
     try (Connection connection = this.getConnection()) {
       return new GetExtraQuery(connection, uuid, setting, key).query();
-    } catch (SQLException e) {
-      PLUGIN.getLogger().severe("An exception occurred while loading user settings");
-      e.printStackTrace();
+    } catch (SQLException exception) {
+      PluginLogger.severe("An exception occurred while loading user settings");
+      exception.printStackTrace();
       return null;
     }
   }
@@ -109,12 +109,12 @@ public class SQLiteSettingsDatabase implements SettingsDatabase<DatabaseConfigur
     try {
       Class.forName("org.sqlite.JDBC");
       return DriverManager.getConnection("jdbc:sqlite:" + databaseFile);
-    } catch (SQLException ex) {
+    } catch (SQLException exception) {
       PLUGIN
           .getLogger()
-          .log(Level.SEVERE, "An exception occurred while pooling an SQLite connection", ex);
+          .log(Level.SEVERE, "An exception occurred while pooling an SQLite connection", exception);
     } catch (ClassNotFoundException ex) {
-      PLUGIN.getLogger().severe("Could not load SQLite JBDC library at runtime!");
+      PluginLogger.severe("Could not load SQLite JBDC library at runtime!");
     }
     return null;
   }

@@ -1,7 +1,7 @@
 package me.limbo56.playersettings.database.configuration;
 
 import com.zaxxer.hikari.HikariConfig;
-import me.limbo56.playersettings.PlayerSettingsProvider;
+import me.limbo56.playersettings.util.PluginLogger;
 import me.limbo56.playersettings.util.Version;
 import org.bukkit.configuration.ConfigurationSection;
 
@@ -16,7 +16,7 @@ public class SQLDatabaseConfiguration extends DatabaseConfiguration {
     HikariConfig config = new HikariConfig();
 
     // Configure driver and credentials
-    if (Version.getCurrentVersion().isOlderThan("1.12.2")) {
+    if (Version.getServerVersion().isOlderThan("1.12.2")) {
       config.setDriverClassName("com.mysql.jdbc.Driver");
     } else {
       config.setDriverClassName("com.mysql.cj.jdbc.Driver");
@@ -36,9 +36,8 @@ public class SQLDatabaseConfiguration extends DatabaseConfiguration {
       config.setConnectionTimeout(poolSection.getInt("connection-timeout"));
       config.setInitializationFailTimeout(-1);
     } else {
-      PlayerSettingsProvider.getPlugin()
-          .getLogger()
-          .warning("Missing database pool configuration section! Functionality might be affected");
+      PluginLogger.warning(
+          "Missing database pool configuration section! Functionality might be affected");
     }
 
     // Add MySQL recommended properties

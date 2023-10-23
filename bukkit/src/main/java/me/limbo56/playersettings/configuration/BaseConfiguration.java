@@ -34,11 +34,11 @@ public abstract class BaseConfiguration {
       return PlayerSettingsProvider.getPlugin()
           .getConfigurationManager()
           .getConfiguration(this.getFileName());
-    } catch (ExecutionException e) {
+    } catch (ExecutionException exception) {
       PlayerSettingsProvider.getPlugin()
           .getLogger()
           .severe("An exception occurred wile reading configuration '" + this.getFileName() + "':");
-      e.printStackTrace();
+      exception.printStackTrace();
       return null;
     }
   }

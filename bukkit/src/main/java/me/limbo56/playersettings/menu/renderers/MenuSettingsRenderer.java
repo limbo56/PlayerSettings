@@ -2,6 +2,9 @@ package me.limbo56.playersettings.menu.renderers;
 
 import com.cryptomorin.xseries.XItemStack;
 import com.google.common.base.Preconditions;
+import java.util.Collection;
+import java.util.Objects;
+import java.util.function.Function;
 import me.limbo56.playersettings.PlayerSettings;
 import me.limbo56.playersettings.PlayerSettingsProvider;
 import me.limbo56.playersettings.api.ImmutableMenuItem;
@@ -13,6 +16,7 @@ import me.limbo56.playersettings.menu.SettingsMenuItem;
 import me.limbo56.playersettings.menu.actions.AugmentSettingAction;
 import me.limbo56.playersettings.menu.actions.ToggleSettingAction;
 import me.limbo56.playersettings.user.SettingUser;
+import me.limbo56.playersettings.util.PluginLogger;
 import me.limbo56.playersettings.util.Text;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.enchantments.Enchantment;
@@ -21,10 +25,6 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.Collection;
-import java.util.Objects;
-import java.util.function.Function;
 
 public class MenuSettingsRenderer implements SettingsMenuItemRenderer {
   private static final PlayerSettings PLUGIN = PlayerSettingsProvider.getPlugin();
@@ -46,7 +46,7 @@ public class MenuSettingsRenderer implements SettingsMenuItemRenderer {
               + "' is not between the bounds of the menu (0-"
               + menuHolder.getSize()
               + ")";
-      PLUGIN.getLogger().warning(settingWarning);
+      PluginLogger.warning(settingWarning);
       return;
     }
 

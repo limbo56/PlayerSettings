@@ -1,17 +1,17 @@
 package me.limbo56.playersettings.settings;
 
 import com.google.common.base.Preconditions;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import me.limbo56.playersettings.PlayerSettings;
 import me.limbo56.playersettings.PlayerSettingsProvider;
 import me.limbo56.playersettings.api.SettingsContainer;
 import me.limbo56.playersettings.api.setting.Setting;
 import me.limbo56.playersettings.configuration.SettingsConfiguration;
+import me.limbo56.playersettings.util.PluginLogger;
+import org.bukkit.event.Listener;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-import java.util.stream.Collectors;
 
 public class SettingsManager implements SettingsContainer {
   private static final PlayerSettings PLUGIN = PlayerSettingsProvider.getPlugin();
@@ -20,7 +20,7 @@ public class SettingsManager implements SettingsContainer {
 
   @Override
   public void registerSetting(Setting setting) {
-    this.registerSetting(setting, true);
+    registerSetting(setting, true);
   }
 
   public void registerSetting(Setting setting, boolean isCustomSetting) {
@@ -34,59 +34,71 @@ public class SettingsManager implements SettingsContainer {
 
     Setting configuredSetting = PLUGIN.getSettingsConfiguration().parseSetting(setting);
     if (configuredSetting == null || !configuredSetting.isEnabled()) {
-      PLUGIN
-          .getLogger()
-          .config(
-              "Skipping registration of setting '"
-                  + settingName
-                  + "'. Missing or not enabled in configuration.");
+      PluginLogger.debug(
+          "Skipping registration of setting '"
+              + settingName
+              + "'. Missing or not enabled in configuration.");
       return;
     }
 
-    configuredSetting.getListeners().forEach(PLUGIN.getListenerManager()::registerListener);
+    // Register setting
     settingMap.putIfAbsent(settingName, configuredSetting);
-    if (isCustomSetting) customSettings.put(settingName, setting);
-    PLUGIN.getLogger().config("Registered setting '" + settingName + "'");
+    if (isCustomSetting) {
+      customSettings.putIfAbsent(settingName, setting);
+    }
+
+    // Register setting listeners
+    for (Listener listener : configuredSetting.getListeners()) {
+      PLUGIN.getListenerManager().registerListener(listener);
+    }
+
+    PluginLogger.debug("Registered setting '" + settingName + "'");
   }
 
   @Override
   public void unregisterSetting(String settingName) {
-    Optional.ofNullable(settingMap.remove(settingName))
-        .map(Setting::getListeners)
-        .ifPresent(listeners -> listeners.forEach(PLUGIN.getListenerManager()::unregisterListener));
+    settingMap.computeIfPresent(
+        settingName,
+        (name, setting) -> {
+          setting.getListeners().forEach(PLUGIN.getListenerManager()::unregisterListener);
+          return null;
+        });
   }
 
   public void reloadSettings() {
-    // Unregister loaded settings
-    ArrayList<String> settingsToLoad = new ArrayList<>(settingMap.keySet());
-    settingsToLoad.forEach(this::unregisterSetting);
-
-    // Remove disabled/missing settings and load new settings
+    List<String> loadList = new ArrayList<>(settingMap.keySet());
     SettingsConfiguration settingsConfiguration = PLUGIN.getSettingsConfiguration();
-    Collection<String> enabledSettingsName =
-        settingsConfiguration.getEnabledSettings(true).stream()
-            .map(Setting::getName)
-            .collect(Collectors.toList());
-    settingsToLoad.removeIf(
+
+    // Unregister loaded settings
+    loadList.forEach(this::unregisterSetting);
+
+    // Remove disabled/missing settings from the load list
+    loadList.removeIf(
         settingName -> {
-          if (enabledSettingsName.contains(settingName)) return false;
-          PLUGIN.getLogger().info("Removed setting '" + settingName + "'");
+          if (settingsConfiguration.isSettingEnabled(settingName)) {
+            return false;
+          }
+          PluginLogger.log("Removed setting '" + settingName + "'");
           return true;
         });
-    enabledSettingsName.forEach(
-        settingName -> {
-          if (settingsToLoad.contains(settingName)) return;
-          PLUGIN.getLogger().info("New setting '" + settingName + "'");
-          settingsToLoad.add(settingName);
-        });
 
-    // Register the settings again
-    for (String settingName : settingsToLoad) {
+    // Add new settings to the load list
+    for (Setting setting1 : settingsConfiguration.getEnabledSettings(true)) {
+      String name = setting1.getName();
+      if (!loadList.contains(name)) {
+        PluginLogger.log("New setting '" + name + "'");
+        loadList.add(name);
+      }
+    }
+
+    // Load the new settings
+    for (String settingName : loadList) {
+      boolean customSetting = isCustomSetting(settingName);
       Setting setting =
-          isCustomSetting(settingName)
+          customSetting
               ? settingsConfiguration.mergeSettingWithConfiguration(customSettings.get(settingName))
               : settingsConfiguration.parseSetting(settingName);
-      this.registerSetting(setting, isCustomSetting(settingName));
+      registerSetting(setting, customSetting);
     }
   }
 
@@ -109,9 +121,13 @@ public class SettingsManager implements SettingsContainer {
 
   @NotNull
   public Collection<String> getAllowedSettings(UUID uuid) {
-    return getSettingMap().keySet().stream()
-        .filter(PLUGIN.getUserManager().getUser(uuid)::hasSettingPermissions)
-        .collect(Collectors.toList());
+    List<String> allowedSettings = new ArrayList<>();
+    for (Setting setting : settingMap.values()) {
+      String settingName = setting.getName();
+      if (PLUGIN.getUserManager().getUser(uuid).hasSettingPermissions(settingName))
+        allowedSettings.add(settingName);
+    }
+    return allowedSettings;
   }
 
   @Override
@@ -120,7 +136,12 @@ public class SettingsManager implements SettingsContainer {
   }
 
   public Collection<String> getSettingNames() {
-    return getSettingMap().values().stream().map(Setting::getName).collect(Collectors.toList());
+    List<String> settingNames = new ArrayList<>();
+    for (Setting setting : settingMap.values()) {
+      String name = setting.getName();
+      settingNames.add(name);
+    }
+    return settingNames;
   }
 
   public Map<String, Setting> getSettingMap() {

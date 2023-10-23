@@ -34,7 +34,7 @@ public class StackerSettingListener implements Listener {
     }
 
     // Fix bug in 1.9+ where this event is fired twice due to OFF_HAND
-    if (!Version.getCurrentVersion().isOlderThan("1.9")
+    if (!Version.getServerVersion().isOlderThan("1.9")
         && event.getHand() == EquipmentSlot.OFF_HAND) {
       return;
     }

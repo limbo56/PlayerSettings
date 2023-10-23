@@ -1,20 +1,20 @@
 package me.limbo56.playersettings.database;
 
 import com.zaxxer.hikari.HikariDataSource;
-import me.limbo56.playersettings.PlayerSettings;
-import me.limbo56.playersettings.PlayerSettingsProvider;
-import me.limbo56.playersettings.api.setting.Setting;
-import me.limbo56.playersettings.api.setting.SettingWatcher;
-import me.limbo56.playersettings.database.configuration.SQLDatabaseConfiguration;
-import me.limbo56.playersettings.database.sql.*;
-import org.bukkit.configuration.ConfigurationSection;
-
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.UUID;
 import java.util.logging.Level;
+import me.limbo56.playersettings.PlayerSettings;
+import me.limbo56.playersettings.PlayerSettingsProvider;
+import me.limbo56.playersettings.api.setting.Setting;
+import me.limbo56.playersettings.api.setting.SettingWatcher;
+import me.limbo56.playersettings.database.configuration.SQLDatabaseConfiguration;
+import me.limbo56.playersettings.database.sql.*;
+import me.limbo56.playersettings.util.PluginLogger;
+import org.bukkit.configuration.ConfigurationSection;
 
 public class SQLSettingsDatabase implements SettingsDatabase<SQLDatabaseConfiguration> {
   private static final PlayerSettings PLUGIN = PlayerSettingsProvider.getPlugin();
@@ -44,7 +44,7 @@ public class SQLSettingsDatabase implements SettingsDatabase<SQLDatabaseConfigur
     try (Connection connection = this.getConnection()) {
       return new LoadUsersQuery(connection, users).query();
     } catch (SQLException exception) {
-      PLUGIN.getLogger().severe("An exception occurred while loading user settings");
+      PluginLogger.severe("An exception occurred while loading user settings");
       exception.printStackTrace();
       return Collections.emptyList();
     }
@@ -55,7 +55,7 @@ public class SQLSettingsDatabase implements SettingsDatabase<SQLDatabaseConfigur
     try (Connection connection = this.getConnection()) {
       new SaveUsersTask(connection, settingWatchers, "sql").execute();
     } catch (SQLException exception) {
-      PLUGIN.getLogger().severe("An exception occurred while saving user settings");
+      PluginLogger.severe("An exception occurred while saving user settings");
       exception.printStackTrace();
     }
   }
@@ -64,9 +64,9 @@ public class SQLSettingsDatabase implements SettingsDatabase<SQLDatabaseConfigur
   public void putExtra(UUID uuid, Setting setting, String key, String value) {
     try (Connection connection = this.getConnection()) {
       new SaveExtraTask(connection, uuid, setting, key, value, "sql").execute();
-    } catch (SQLException e) {
-      PLUGIN.getLogger().severe("An exception occurred while saving user settings");
-      e.printStackTrace();
+    } catch (SQLException exception) {
+      PluginLogger.severe("An exception occurred while saving user settings");
+      exception.printStackTrace();
     }
   }
 
@@ -74,9 +74,9 @@ public class SQLSettingsDatabase implements SettingsDatabase<SQLDatabaseConfigur
   public String getExtra(UUID uuid, Setting setting, String key) {
     try (Connection connection = this.getConnection()) {
       return new GetExtraQuery(connection, uuid, setting, key).query();
-    } catch (SQLException e) {
-      PLUGIN.getLogger().severe("An exception occurred while loading user settings");
-      e.printStackTrace();
+    } catch (SQLException exception) {
+      PluginLogger.severe("An exception occurred while loading user settings");
+      exception.printStackTrace();
       return null;
     }
   }

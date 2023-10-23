@@ -1,13 +1,10 @@
 package me.limbo56.playersettings.util;
 
+import java.util.ArrayList;
+import java.util.List;
 import me.limbo56.playersettings.api.setting.Setting;
 import org.bukkit.command.CommandSender;
 import org.bukkit.permissions.PermissionAttachmentInfo;
-
-import java.util.List;
-import java.util.stream.Collectors;
-
-import static me.limbo56.playersettings.PlayerSettingsProvider.getPlugin;
 
 public class Permissions {
   public static int getSettingPermissionLevel(CommandSender sender, Setting setting) {
@@ -17,39 +14,50 @@ public class Permissions {
 
   public static int getPermissionLevel(CommandSender sender, String permission, int defaultLevel) {
     // Give max level if sender is operator or has the 'settings.*' permission
-    String permissionPath = permission + ".";
-    if (sender.isOp() || sender.hasPermission(permissionPath + "*")) {
+    if (sender.isOp() || sender.hasPermission(permission + ".*")) {
       return Integer.MAX_VALUE;
     }
 
     try {
-      List<String> permissions = getSenderPermissions(sender);
-      List<String> levels = getPermissionLevels(permissionPath, permissions);
+      List<Integer> levels = getPermissionLevels(sender, permission);
       return getMaxPermissionLevel(levels, defaultLevel);
-    } catch (NumberFormatException | NullPointerException e) {
-      getPlugin()
-          .getLogger()
-          .warning("Invalid permission '" + permissionPath + "' for " + sender.getName());
-      e.printStackTrace();
+    } catch (NumberFormatException exception) {
+      PluginLogger.warning("Invalid permission '" + permission + "' for " + sender.getName());
+      exception.printStackTrace();
       return defaultLevel;
     }
   }
 
+  private static List<Integer> getPermissionLevels(CommandSender sender, String permission) {
+    List<String> permissions = getSenderPermissions(sender);
+    List<Integer> levels = new ArrayList<>();
+    for (String p : permissions) {
+      if (p.startsWith(permission + ".")) {
+        Integer parseInt = Integer.parseInt(p.substring(permission.length() + 1));
+        levels.add(parseInt);
+      }
+    }
+    return levels;
+  }
+
   private static List<String> getSenderPermissions(CommandSender sender) {
-    return sender.getEffectivePermissions().stream()
-        .map(PermissionAttachmentInfo::getPermission)
-        .collect(Collectors.toList());
+    List<String> permissions = new ArrayList<>();
+    for (PermissionAttachmentInfo permissionAttachmentInfo : sender.getEffectivePermissions()) {
+      String permission = permissionAttachmentInfo.getPermission();
+      permissions.add(permission);
+    }
+    return permissions;
   }
 
-  private static List<String> getPermissionLevels(String permission, List<String> permissions) {
-    return permissions.stream()
-        .filter(listPermission -> listPermission.startsWith(permission))
-        .map(listPermission -> listPermission.substring(permission.length()))
-        .collect(Collectors.toList());
-  }
-
-  private static int getMaxPermissionLevel(List<String> levels, int defaultLevel)
-      throws NumberFormatException {
-    return levels.stream().map(Integer::parseInt).max(Integer::compareTo).orElse(defaultLevel);
+  private static int getMaxPermissionLevel(List<Integer> levels, int defaultLevel) {
+    boolean seen = false;
+    Integer best = null;
+    for (Integer level : levels) {
+      if (!seen || level.compareTo(best) > 0) {
+        seen = true;
+        best = level;
+      }
+    }
+    return seen ? best : defaultLevel;
   }
 }
