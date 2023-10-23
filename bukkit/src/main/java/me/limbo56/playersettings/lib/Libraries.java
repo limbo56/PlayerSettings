@@ -1,9 +1,8 @@
 package me.limbo56.playersettings.lib;
 
 import com.google.common.collect.ImmutableMap;
-import net.byteflux.libby.Library;
-
 import java.util.Map;
+import net.byteflux.libby.Library;
 
 public enum Libraries implements LibraryObject {
   HIKARI(
@@ -16,22 +15,22 @@ public enum Libraries implements LibraryObject {
   MYSQL(
       "com{}mysql",
       "mysql-connector-j",
-      "8.0.31",
+      "8.1.0",
       "mysql_driver",
       "com{}mysql",
       "me{}limbo56{}playersettings{}lib{}mysql"),
   SQLITE(
       "org{}xerial",
       "sqlite-jdbc",
-      "3.40.0.0",
+      "3.42.0.0",
       "sqlite_driver",
       "org{}sqlite",
       "me{}limbo56{}playersettings{}lib{}sqlite"),
   MONGODB(
       "org{}mongodb",
       "mongo-java-driver",
-      "3.12.11",
-      "mongo_driver",
+      "3.12.14",
+      "mongodb_driver",
       ImmutableMap.of(
           "org{}mongodb",
           "me{}limbo56{}playersettings{}lib{}mongo",
@@ -40,7 +39,7 @@ public enum Libraries implements LibraryObject {
   SNAPPY(
       "org{}xerial{}snappy",
       "snappy-java",
-      "1.1.8.4",
+      "1.1.10.4",
       "snappy_compression",
       "org{}xerial{}snappy",
       "me{}limbo56{}playersettings{}lib{}snappy");
