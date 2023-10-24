@@ -98,10 +98,16 @@ public enum Libraries implements LibraryObject {
     return relocations;
   }
 
-  public Library getLibrary() {
+  public Library get() {
     Library.Builder library =
         Library.builder().groupId(groupId).artifactId(artifactId).version(version).id(id);
-    getRelocations().forEach(library::relocate);
+
+    for (Map.Entry<String, String> entry : getRelocations().entrySet()) {
+      String key = entry.getKey();
+      String value = entry.getValue();
+      library.relocate(key, value);
+    }
+
     return library.build();
   }
 }

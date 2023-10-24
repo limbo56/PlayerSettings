@@ -2,7 +2,6 @@ package me.limbo56.playersettings;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.Arrays;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import me.limbo56.playersettings.api.SettingsContainer;
@@ -57,9 +56,9 @@ public class PlayerSettings extends JavaPlugin {
     PluginLogger.log("Loading libraries...");
     BukkitLibraryManager bukkitLibraryManager = new BukkitLibraryManager(this);
     bukkitLibraryManager.addMavenCentral();
-    Arrays.stream(Libraries.values())
-        .map(Libraries::getLibrary)
-        .forEach(bukkitLibraryManager::loadLibrary);
+    for (Libraries library : Libraries.values()) {
+      bukkitLibraryManager.loadLibrary(library.get());
+    }
 
     PluginLogger.log("Loading configuration files...");
     try {
