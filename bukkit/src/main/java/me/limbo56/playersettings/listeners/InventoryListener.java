@@ -3,8 +3,8 @@ package me.limbo56.playersettings.listeners;
 import com.cryptomorin.xseries.XMaterial;
 import me.limbo56.playersettings.PlayerSettings;
 import me.limbo56.playersettings.PlayerSettingsProvider;
-import me.limbo56.playersettings.menu.SettingsMenuHolder;
-import me.limbo56.playersettings.menu.SettingsMenuItem;
+import me.limbo56.playersettings.menu.holder.MenuHolder;
+import me.limbo56.playersettings.menu.item.SettingsMenuItem;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -26,7 +26,7 @@ public class InventoryListener implements Listener {
 
     // Check if the inventory is the settings menu
     Inventory topInventory = event.getView().getTopInventory();
-    if (!(topInventory.getHolder() instanceof SettingsMenuHolder)) {
+    if (!(topInventory.getHolder() instanceof MenuHolder)) {
       return;
     }
     event.setCancelled(true);
@@ -38,7 +38,7 @@ public class InventoryListener implements Listener {
     }
 
     // Check if item is not null
-    SettingsMenuHolder holder = (SettingsMenuHolder) topInventory.getHolder();
+    MenuHolder holder = (MenuHolder) topInventory.getHolder();
     SettingsMenuItem item = holder.getMenuItem(event.getRawSlot());
     if (item == null) {
       return;

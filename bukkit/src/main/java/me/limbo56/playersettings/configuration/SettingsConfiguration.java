@@ -15,7 +15,7 @@ import me.limbo56.playersettings.PlayerSettingsProvider;
 import me.limbo56.playersettings.api.setting.ImmutableSetting;
 import me.limbo56.playersettings.api.setting.Setting;
 import me.limbo56.playersettings.api.setting.SettingCallback;
-import me.limbo56.playersettings.menu.SettingsMenuItem;
+import me.limbo56.playersettings.menu.item.SettingsMenuItem;
 import me.limbo56.playersettings.settings.CustomSettingCallback;
 import me.limbo56.playersettings.settings.DefaultSettings;
 import me.limbo56.playersettings.util.PluginLogger;

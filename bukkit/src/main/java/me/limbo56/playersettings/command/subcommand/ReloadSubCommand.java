@@ -5,7 +5,7 @@ import java.util.List;
 import me.limbo56.playersettings.PlayerSettings;
 import me.limbo56.playersettings.PlayerSettingsProvider;
 import me.limbo56.playersettings.command.SubCommand;
-import me.limbo56.playersettings.menu.SettingsMenuHolder;
+import me.limbo56.playersettings.menu.holder.MenuHolder;
 import me.limbo56.playersettings.user.SettingUser;
 import me.limbo56.playersettings.util.PluginLogger;
 import me.limbo56.playersettings.util.Text;
@@ -40,7 +40,7 @@ public class ReloadSubCommand extends SubCommand {
     for (SettingUser user : PLUGIN.getUserManager().getUsers()) {
       Player userPlayer = user.getPlayer();
       user.clearSettingEffects();
-      if (userPlayer.getInventory().getHolder() instanceof SettingsMenuHolder) {
+      if (userPlayer.getInventory().getHolder() instanceof MenuHolder) {
         userPlayer.closeInventory();
       }
     }

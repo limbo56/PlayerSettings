@@ -1,7 +1,11 @@
-package me.limbo56.playersettings.menu;
+package me.limbo56.playersettings.menu.holder;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 import me.limbo56.playersettings.PlayerSettings;
 import me.limbo56.playersettings.PlayerSettingsProvider;
+import me.limbo56.playersettings.menu.item.SettingsMenuItem;
 import me.limbo56.playersettings.user.SettingUser;
 import org.bukkit.Bukkit;
 import org.bukkit.inventory.Inventory;
@@ -9,11 +13,7 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-
-public class SettingsMenuHolder implements InventoryHolder {
+public class MenuHolder implements InventoryHolder {
   private static final PlayerSettings PLUGIN = PlayerSettingsProvider.getPlugin();
   private final UUID owner;
   private final String title;
@@ -21,7 +21,7 @@ public class SettingsMenuHolder implements InventoryHolder {
   private final Map<Integer, SettingsMenuItem> menuItemMap = new HashMap<>();
   private final Inventory inventory;
 
-  public SettingsMenuHolder(UUID owner, String title, int size) {
+  public MenuHolder(UUID owner, String title, int size) {
     this.owner = owner;
     this.title = title;
     this.size = size;

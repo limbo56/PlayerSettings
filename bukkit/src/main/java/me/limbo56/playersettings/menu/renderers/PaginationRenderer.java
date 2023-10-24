@@ -1,13 +1,15 @@
 package me.limbo56.playersettings.menu.renderers;
 
 import com.google.common.base.Preconditions;
+import java.util.List;
+import java.util.function.Function;
 import me.limbo56.playersettings.PlayerSettings;
 import me.limbo56.playersettings.PlayerSettingsProvider;
 import me.limbo56.playersettings.api.ImmutableMenuItem;
 import me.limbo56.playersettings.api.MenuItem;
-import me.limbo56.playersettings.menu.SettingsMenuHolder;
-import me.limbo56.playersettings.menu.SettingsMenuItem;
 import me.limbo56.playersettings.menu.actions.PaginationAction;
+import me.limbo56.playersettings.menu.holder.MenuHolder;
+import me.limbo56.playersettings.menu.item.SettingsMenuItem;
 import me.limbo56.playersettings.util.ItemBuilder;
 import me.limbo56.playersettings.util.Text;
 import org.bukkit.configuration.ConfigurationSection;
@@ -16,14 +18,11 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
-import java.util.function.Function;
-
-public class MenuPaginationRenderer implements SettingsMenuItemRenderer {
+public class PaginationRenderer implements MenuItemRenderer {
   private static final PlayerSettings PLUGIN = PlayerSettingsProvider.getPlugin();
 
   @Override
-  public void render(@NotNull SettingsMenuHolder menuHolder, int page) {
+  public void render(@NotNull MenuHolder menuHolder, int page) {
     if (page > 1) renderNavigationItem(PaginationItem.PREVIOUS, menuHolder, page);
 
     int highestPage = getHighestPage();
@@ -32,7 +31,7 @@ public class MenuPaginationRenderer implements SettingsMenuItemRenderer {
   }
 
   private void renderNavigationItem(
-      PaginationItem paginationItem, SettingsMenuHolder menuHolder, int page) {
+      PaginationItem paginationItem, MenuHolder menuHolder, int page) {
     MenuItem defaultPaginationItem =
         ImmutableMenuItem.copyOf(paginationItem.getItem()).withPage(page);
     Player player = menuHolder.getOwner().getPlayer();

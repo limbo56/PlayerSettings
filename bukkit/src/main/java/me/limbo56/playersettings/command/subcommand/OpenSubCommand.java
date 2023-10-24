@@ -1,16 +1,16 @@
 package me.limbo56.playersettings.command.subcommand;
 
+import java.util.ArrayList;
+import java.util.List;
 import me.limbo56.playersettings.PlayerSettings;
 import me.limbo56.playersettings.PlayerSettingsProvider;
 import me.limbo56.playersettings.command.SubCommand;
+import me.limbo56.playersettings.menu.SettingsMenu;
 import me.limbo56.playersettings.user.SettingUser;
 import me.limbo56.playersettings.util.Text;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class OpenSubCommand extends SubCommand {
   private static final PlayerSettings PLUGIN = PlayerSettingsProvider.getPlugin();
@@ -43,7 +43,7 @@ public class OpenSubCommand extends SubCommand {
       return;
     }
 
-    PlayerSettingsProvider.getPlugin().getSettingsMenuManager().openMenu(user, 1);
+    SettingsMenu.open(user.getPlayer(), 1);
   }
 
   @Override
