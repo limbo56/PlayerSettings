@@ -1,18 +1,24 @@
 package me.limbo56.playersettings.util;
 
 import com.google.common.base.Preconditions;
-import me.clip.placeholderapi.PlaceholderAPI;
-import me.limbo56.playersettings.PlayerSettingsProvider;
-import org.bukkit.Bukkit;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import me.clip.placeholderapi.PlaceholderAPI;
+import me.limbo56.playersettings.PlayerSettingsProvider;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 /** Utility object to create, modify, and handle text */
 public class Text {
+  private static final @NotNull LegacyComponentSerializer LEGACY_COMPONENT_SERIALIZER =
+      LegacyComponentSerializer.legacySection();
   private final Set<Function<String, String>> modifiers = new HashSet<>();
   private final Collection<String> text;
 
@@ -51,6 +57,22 @@ public class Text {
         PlayerSettingsProvider.getPlugin().getMessagesConfiguration().getFile().getString(path);
     Preconditions.checkNotNull(message, "Message '" + path + "' is not a valid message");
     return new Text(Collections.singletonList(message));
+  }
+
+  public static Text fromMessages(String path, String defaultMessage) {
+    String message =
+        PlayerSettingsProvider.getPlugin().getMessagesConfiguration().getFile().getString(path);
+    return new Text(Collections.singletonList(message == null ? defaultMessage : message));
+  }
+
+  public static Text fromMessages(String path, List<String> defaultMessage) {
+    YamlConfiguration messagesConfiguration =
+        PlayerSettingsProvider.getPlugin().getMessagesConfiguration().getFile();
+    List<String> message =
+        messagesConfiguration.contains(path)
+            ? messagesConfiguration.getStringList(path)
+            : defaultMessage;
+    return from(String.join("\n", message));
   }
 
   /**
@@ -106,6 +128,14 @@ public class Text {
    */
   public String first() {
     return this.apply(this.text).get(0);
+  }
+
+  public TextComponent text() {
+    TextComponent.Builder textBuilder = Component.text();
+    for (String modifiedText : this.apply(this.text)) {
+      textBuilder.append(LEGACY_COMPONENT_SERIALIZER.deserialize(modifiedText));
+    }
+    return textBuilder.build();
   }
 
   /**

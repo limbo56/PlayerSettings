@@ -1,6 +1,6 @@
 package me.limbo56.playersettings.user;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Consumer;
@@ -8,12 +8,14 @@ import me.limbo56.playersettings.PlayerSettings;
 import me.limbo56.playersettings.PlayerSettingsProvider;
 import me.limbo56.playersettings.api.setting.Setting;
 import me.limbo56.playersettings.api.setting.SettingWatcher;
+import me.limbo56.playersettings.listeners.FlySettingListener;
 import me.limbo56.playersettings.util.Permissions;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 public class SettingUser {
-  private static final List<Consumer<SettingUser>> loadCallbacks = new ArrayList<>();
+  private static final List<Consumer<SettingUser>> LOAD_CALLBACKS =
+      Collections.singletonList(new FlySettingListener.FlightStateLoader());
   private static final PlayerSettings PLUGIN = PlayerSettingsProvider.getPlugin();
   private final UUID uuid;
   private final SettingWatcher settingWatcher;
@@ -28,10 +30,6 @@ public class SettingUser {
     this.uuid = uuid;
     this.loading = true;
     this.settingWatcher = settingWatcher;
-  }
-
-  public static void addLoadCallback(Consumer<SettingUser> loadCallback) {
-    loadCallbacks.add(loadCallback);
   }
 
   public void clearSettingEffects() {
@@ -57,7 +55,9 @@ public class SettingUser {
 
   public void setLoading(boolean loading) {
     this.loading = loading;
-    if (!loading) loadCallbacks.forEach(loadCallback -> loadCallback.accept(this));
+    if (!loading) {
+      LOAD_CALLBACKS.forEach(loadCallback -> loadCallback.accept(this));
+    }
   }
 
   public boolean isFlying() {

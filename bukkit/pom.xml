@@ -73,6 +73,10 @@
                                     <shadedPattern>me.limbo56.playersettings.lib.xseries</shadedPattern>
                                 </relocation>
                                 <relocation>
+                                    <pattern>net.kyori</pattern>
+                                    <shadedPattern>me.limbo56.playersettings.lib.kyori</shadedPattern>
+                                </relocation>
+                                <relocation>
                                     <pattern>org.bstats</pattern>
                                     <shadedPattern>me.limbo56.playersettings.lib.bsstats</shadedPattern>
                                 </relocation>
@@ -172,6 +176,13 @@
             <artifactId>bstats-bukkit</artifactId>
             <version>3.0.2</version>
             <scope>compile</scope>
+        </dependency>
+        <!-- Messages -->
+        <dependency>
+            <groupId>net.kyori</groupId>
+            <artifactId>adventure-platform-bukkit</artifactId>
+            <version>4.3.1</version>
+            <scope>provided</scope>
         </dependency>
         <!-- Tests -->
         <dependency>

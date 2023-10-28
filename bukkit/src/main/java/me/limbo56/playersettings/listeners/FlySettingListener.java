@@ -1,5 +1,9 @@
 package me.limbo56.playersettings.listeners;
 
+import static me.limbo56.playersettings.settings.DefaultSettings.FLY_SETTING;
+
+import java.util.Optional;
+import java.util.function.Consumer;
 import me.limbo56.playersettings.PlayerSettings;
 import me.limbo56.playersettings.PlayerSettingsProvider;
 import me.limbo56.playersettings.api.setting.Setting;
@@ -14,18 +18,9 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerToggleFlightEvent;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Optional;
-import java.util.function.Consumer;
-
-import static me.limbo56.playersettings.settings.DefaultSettings.FLY_SETTING;
-
 public class FlySettingListener implements Listener {
   private static final PlayerSettings PLUGIN = PlayerSettingsProvider.getPlugin();
   private static final String FLIGHT_STATE_KEY = "flight-state";
-
-  static {
-    SettingUser.addLoadCallback(new FlightStateLoader());
-  }
 
   private static boolean isSaveFlightStateEnabled() {
     return PLUGIN
@@ -116,7 +111,7 @@ public class FlySettingListener implements Listener {
         .runAsync();
   }
 
-  private static final class FlightStateLoader implements Consumer<SettingUser> {
+  public static final class FlightStateLoader implements Consumer<SettingUser> {
     @Override
     public void accept(SettingUser user) {
       String flySettingName = FLY_SETTING.getName();

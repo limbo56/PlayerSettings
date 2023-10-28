@@ -117,6 +117,6 @@ fly-setting:
   save-state: true
   # Forces the player into flight mode when they join the game server
   #
-  # * This property will respect if save-state is enabled, i.e., don't force flight mode if the player had flight disabled
+  # * This property will respect if save-state is enabled i.e. it won't force flight mode if the player had flight disabled
   force-on-join: false
   triggers: [ "join", "respawn" ]

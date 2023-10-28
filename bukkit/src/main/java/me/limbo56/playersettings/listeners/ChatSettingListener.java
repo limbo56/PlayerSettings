@@ -1,17 +1,23 @@
 package me.limbo56.playersettings.listeners;
 
+import static me.limbo56.playersettings.settings.DefaultSettings.CHAT_SETTING;
+
+import java.util.Arrays;
+import java.util.Collection;
 import me.limbo56.playersettings.PlayerSettings;
 import me.limbo56.playersettings.PlayerSettingsProvider;
 import me.limbo56.playersettings.user.SettingUser;
 import me.limbo56.playersettings.util.Text;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
-
-import java.util.Collection;
-
-import static me.limbo56.playersettings.settings.DefaultSettings.CHAT_SETTING;
+import org.jetbrains.annotations.NotNull;
 
 public class ChatSettingListener implements Listener {
   private static final PlayerSettings PLUGIN = PlayerSettingsProvider.getPlugin();
@@ -39,9 +45,33 @@ public class ChatSettingListener implements Listener {
 
     // Cancel chat event if player has chat disabled
     event.setCancelled(true);
-    Text.fromMessages("chat.self-disabled")
-        .usePlaceholderApi(player)
-        .sendMessage(player, PLUGIN.getMessagesConfiguration().getMessagePrefix());
+    PlayerSettingsProvider.adventure().player(player).sendMessage(getDisabledMessage(player));
+  }
+
+  @NotNull
+  private static Component getDisabledMessage(Player player) {
+    TextComponent enableActionTooltip =
+        Text.fromMessages(
+                "settings.enable-action-tooltip",
+                Arrays.asList("&6%setting%", "&7Click to &aenable"))
+            .usePlaceholder("%setting%", CHAT_SETTING.getSetting().getDisplayName())
+            .usePlaceholderApi(player)
+            .text();
+    ClickEvent clickEvent =
+        ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/settings set chat-setting 1");
+    HoverEvent<Component> hoverEvent =
+        HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, enableActionTooltip);
+    TextComponent enableAction =
+        Text.fromMessages("settings.enable-action", "&e(Click to enable)")
+            .text()
+            .clickEvent(clickEvent)
+            .hoverEvent(hoverEvent);
+
+    return LegacyComponentSerializer.legacyAmpersand()
+        .deserialize(PLUGIN.getMessagesConfiguration().getMessagePrefix())
+        .append(Text.fromMessages("chat.self-disabled").usePlaceholderApi(player).text())
+        .appendSpace()
+        .append(enableAction);
   }
 
   private Collection<SettingUser> getPlayersWithChatDisabled() {

@@ -59,6 +59,7 @@ public class PlayerSettings extends JavaPlugin {
     for (Libraries library : Libraries.values()) {
       bukkitLibraryManager.loadLibrary(library.toLibrary());
     }
+    PlayerSettingsProvider.registerAdventure(this);
 
     PluginLogger.log("Loading configuration files...");
     try {
@@ -140,6 +141,7 @@ public class PlayerSettings extends JavaPlugin {
     commandManager.unloadAll();
     settingsManager.unloadAll();
     configurationManager.unloadAll();
+    PlayerSettingsProvider.unregisterAdventure();
   }
 
   public void registerSettingsDatabase() {
