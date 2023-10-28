@@ -53,6 +53,22 @@
                                     <shadedPattern>me.limbo56.playersettings.lib.libby</shadedPattern>
                                 </relocation>
                                 <relocation>
+                                    <pattern>com.zaxxer.hikari</pattern>
+                                    <shadedPattern>me.limbo56.playersettings.lib.hikari</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>com.mysql</pattern>
+                                    <shadedPattern>me.limbo56.playersettings.lib.mysql</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>org.mongodb</pattern>
+                                    <shadedPattern>me.limbo56.playersettings.lib.mongodb</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>org.xerial.snappy</pattern>
+                                    <shadedPattern>me.limbo56.playersettings.lib.snappy</shadedPattern>
+                                </relocation>
+                                <relocation>
                                     <pattern>com.cryptomorin.xseries</pattern>
                                     <shadedPattern>me.limbo56.playersettings.lib.xseries</shadedPattern>
                                 </relocation>
@@ -61,27 +77,11 @@
                                     <shadedPattern>me.limbo56.playersettings.lib.bsstats</shadedPattern>
                                 </relocation>
                                 <relocation>
-                                    <pattern>org.slf4j</pattern>
-                                    <shadedPattern>me.limbo56.playersettings.lib.slf4j</shadedPattern>
-                                </relocation>
-                                <relocation>
                                     <pattern>org.jetbrains.annotations</pattern>
                                     <shadedPattern>me.limbo56.playersettings.lib.annotations</shadedPattern>
                                 </relocation>
                             </relocations>
                             <filters>
-                                <filter>
-                                    <artifact>log4j:log4j</artifact>
-                                    <includes>
-                                        <include>**</include>
-                                    </includes>
-                                </filter>
-                                <filter>
-                                    <artifact>commons-logging:commons-logging</artifact>
-                                    <includes>
-                                        <include>**</include>
-                                    </includes>
-                                </filter>
                                 <filter>
                                     <artifact>*:*</artifact>
                                     <excludes>
@@ -172,19 +172,6 @@
             <artifactId>bstats-bukkit</artifactId>
             <version>3.0.2</version>
             <scope>compile</scope>
-        </dependency>
-        <!-- Logging -->
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>2.0.5</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-simple</artifactId>
-            <version>1.7.30</version>
-            <scope>provided</scope>
         </dependency>
         <!-- Tests -->
         <dependency>

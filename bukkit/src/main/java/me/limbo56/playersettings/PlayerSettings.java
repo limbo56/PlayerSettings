@@ -57,7 +57,7 @@ public class PlayerSettings extends JavaPlugin {
     BukkitLibraryManager bukkitLibraryManager = new BukkitLibraryManager(this);
     bukkitLibraryManager.addMavenCentral();
     for (Libraries library : Libraries.values()) {
-      bukkitLibraryManager.loadLibrary(library.get());
+      bukkitLibraryManager.loadLibrary(library.toLibrary());
     }
 
     PluginLogger.log("Loading configuration files...");
