@@ -17,7 +17,7 @@ import me.limbo56.playersettings.util.PluginLogger;
 import org.bukkit.configuration.ConfigurationSection;
 
 public class SQLSettingsDatabase implements SettingsDatabase<SQLDatabaseConfiguration> {
-  private static final PlayerSettings PLUGIN = PlayerSettingsProvider.getPlugin();
+  protected static final PlayerSettings PLUGIN = PlayerSettingsProvider.getPlugin();
   private final SQLDatabaseConfiguration databaseConfiguration;
   private HikariDataSource hikariDataSource;
 
@@ -86,7 +86,7 @@ public class SQLSettingsDatabase implements SettingsDatabase<SQLDatabaseConfigur
     return databaseConfiguration;
   }
 
-  public void createDefaultTable() {
+  protected void createDefaultTable() {
     try (Connection connection = this.getConnection()) {
       new CreateTableTask(connection).execute();
     } catch (SQLException exception) {
@@ -97,7 +97,7 @@ public class SQLSettingsDatabase implements SettingsDatabase<SQLDatabaseConfigur
     }
   }
 
-  private Connection getConnection() {
+  protected Connection getConnection() {
     try {
       return hikariDataSource.getConnection();
     } catch (SQLException ex) {

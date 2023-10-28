@@ -76,7 +76,7 @@ public class PlayerSettings extends JavaPlugin {
     }
 
     PluginLogger.log("Connecting data manager...");
-    registerSettingsDatabase();
+    connectSettingsDatabase();
 
     PluginLogger.log("Loading internal managers...");
     commandManager = new CommandManager();
@@ -144,7 +144,7 @@ public class PlayerSettings extends JavaPlugin {
     PlayerSettingsProvider.unregisterAdventure();
   }
 
-  public void registerSettingsDatabase() {
+  public void connectSettingsDatabase() {
     ConfigurationSection storageSection =
         pluginConfiguration.getFile().getConfigurationSection("storage");
     if (storageSection == null) {
@@ -152,6 +152,7 @@ public class PlayerSettings extends JavaPlugin {
       throw new NullPointerException(
           "Empty or missing properties in the 'storage' section inside 'config.yml'");
     }
+
     settingsDatabase = SettingsDatabaseProvider.getSettingsDatabase(storageSection);
     settingsDatabase.connect();
   }

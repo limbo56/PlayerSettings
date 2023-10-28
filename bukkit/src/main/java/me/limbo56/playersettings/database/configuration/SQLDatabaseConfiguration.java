@@ -11,23 +11,43 @@ public class SQLDatabaseConfiguration extends DatabaseConfiguration {
   }
 
   public HikariConfig getPoolConfiguration() {
-    String host = section.getString("host");
-    String database = section.getString("database");
     HikariConfig config = new HikariConfig();
 
-    // Configure driver and credentials
-    if (Version.getServerVersion().isOlderThan("1.12.2")) {
-      config.setDriverClassName("com.mysql.jdbc.Driver");
-    } else {
-      config.setDriverClassName("com.mysql.cj.jdbc.Driver");
-    }
-    config.setJdbcUrl(String.format("jdbc:mysql://%s/%s", host, database));
+    configureCredentials(config);
+    configureDriver(config);
+    configurePool(config);
+    configureRecommendedProperties(config);
+    configureExtraProperties(config);
+
+    return config;
+  }
+
+  private void configureCredentials(HikariConfig config) {
     config.setUsername(section.getString("username"));
     config.setPassword(section.getString("password"));
+  }
 
-    // Configure connection pool
-    config.setPoolName("playersettings-Hikari");
+  private void configureDriver(HikariConfig config) {
+    String host = section.getString("host");
+    String database = section.getString("database");
+    String type = section.getString("type", "sqlite");
+
+    if (type.equalsIgnoreCase("sql")) {
+      boolean useNewDriver = Version.getServerVersion().isOlderThan("1.12.2");
+      config.setDriverClassName(
+          useNewDriver ? "com.mysql.jdbc.Driver" : "com.mysql.cj.jdbc.Driver");
+      config.setJdbcUrl(String.format("jdbc:mysql://%s/%s", host, database));
+    } else {
+      config.setDriverClassName("org.sqlite.JDBC");
+      config.setConnectionTestQuery("SELECT 1");
+      config.setJdbcUrl(String.format("jdbc:sqlite:plugins/PlayerSettings/%s.db", database));
+    }
+  }
+
+  private void configurePool(HikariConfig config) {
     ConfigurationSection poolSection = section.getConfigurationSection("pool");
+    config.setPoolName("PlayerSettings-Hikari");
+
     if (poolSection != null) {
       config.setMaximumPoolSize(poolSection.getInt("maximum-pool-size"));
       config.setMinimumIdle(poolSection.getInt("minimum-idle"));
@@ -39,8 +59,9 @@ public class SQLDatabaseConfiguration extends DatabaseConfiguration {
       PluginLogger.warning(
           "Missing database pool configuration section! Functionality might be affected");
     }
+  }
 
-    // Add MySQL recommended properties
+  private static void configureRecommendedProperties(HikariConfig config) {
     // https://github.com/brettwooldridge/HikariCP/wiki/MySQL-Configuration
     config.addDataSourceProperty("cachePrepStmts", "true");
     config.addDataSourceProperty("prepStmtCacheSize", "250");
@@ -52,15 +73,15 @@ public class SQLDatabaseConfiguration extends DatabaseConfiguration {
     config.addDataSourceProperty("cacheServerConfiguration", "true");
     config.addDataSourceProperty("elideSetAutoCommits", "true");
     config.addDataSourceProperty("maintainTimeStats", "false");
+  }
 
-    // Extra properties
+  private void configureExtraProperties(HikariConfig config) {
     ConfigurationSection properties = section.getConfigurationSection("properties");
+
     config.addDataSourceProperty("useUnicode", properties.getBoolean("use-unicode"));
     config.addDataSourceProperty("characterEncoding", properties.getString("character-encoding"));
     config.addDataSourceProperty("useSSL", properties.getBoolean("use-ssl"));
     config.addDataSourceProperty(
         "verifyServerCertificate", properties.getBoolean("verify-server-certificate"));
-
-    return config;
   }
 }

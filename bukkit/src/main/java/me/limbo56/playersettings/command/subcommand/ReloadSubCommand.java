@@ -55,7 +55,7 @@ public class ReloadSubCommand extends SubCommand {
     PLUGIN.getSettingsManager().reloadSettings();
 
     // Connect data manager
-    PLUGIN.registerSettingsDatabase();
+    PLUGIN.connectSettingsDatabase();
 
     // Load users
     PLUGIN.getUserManager().loadOnlineUsers();
