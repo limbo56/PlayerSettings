@@ -2,7 +2,6 @@ package me.limbo56.playersettings.database.configuration;
 
 import com.zaxxer.hikari.HikariConfig;
 import me.limbo56.playersettings.util.PluginLogger;
-import me.limbo56.playersettings.util.Version;
 import org.bukkit.configuration.ConfigurationSection;
 
 public class SQLDatabaseConfiguration extends DatabaseConfiguration {
@@ -33,9 +32,15 @@ public class SQLDatabaseConfiguration extends DatabaseConfiguration {
     String type = section.getString("type", "sqlite");
 
     if (type.equalsIgnoreCase("sql")) {
-      boolean useNewDriver = Version.getServerVersion().isOlderThan("1.12.2");
-      config.setDriverClassName(
-          useNewDriver ? "com.mysql.jdbc.Driver" : "com.mysql.cj.jdbc.Driver");
+      String driverClassName;
+      try {
+        Class.forName("com.mysql.cj.jdbc.Driver");
+        driverClassName = "com.mysql.cj.jdbc.Driver";
+      } catch (ClassNotFoundException e) {
+        driverClassName = "com.mysql.jdbc.Driver";
+      }
+
+      config.setDriverClassName(driverClassName);
       config.setJdbcUrl(String.format("jdbc:mysql://%s/%s", host, database));
     } else {
       config.setDriverClassName("org.sqlite.JDBC");
