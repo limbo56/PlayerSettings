@@ -15,9 +15,9 @@ public class CreateTableTask implements SqlDatabaseTask {
       "CREATE TABLE IF NOT EXISTS playersettings_extra("
           + "owner VARCHAR(255) NOT NULL, "
           + "settingName VARCHAR(255) NOT NULL, "
-          + "key VARCHAR(255) NOT NULL, "
+          + "`key` VARCHAR(255) NOT NULL, "
           + "value INTEGER NOT NULL, "
-          + "PRIMARY KEY (owner, settingName, key))";
+          + "PRIMARY KEY (owner, settingName, `key`))";
   private final Connection connection;
 
   public CreateTableTask(Connection connection) {

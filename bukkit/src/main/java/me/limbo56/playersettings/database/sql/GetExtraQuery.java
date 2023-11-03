@@ -1,16 +1,15 @@
 package me.limbo56.playersettings.database.sql;
 
-import me.limbo56.playersettings.api.setting.Setting;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.UUID;
+import me.limbo56.playersettings.api.setting.Setting;
 
 public class GetExtraQuery implements SqlDatabaseQuery<String> {
   private static final String LOAD_QUERY =
-      "SELECT * FROM playersettings_extra WHERE owner=? AND settingName=? AND key=?";
+      "SELECT * FROM playersettings_extra WHERE owner=? AND settingName=? AND `key`=?";
   private final Connection connection;
   private final UUID uuid;
   private final Setting setting;

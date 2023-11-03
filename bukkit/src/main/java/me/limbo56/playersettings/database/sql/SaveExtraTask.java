@@ -1,21 +1,20 @@
 package me.limbo56.playersettings.database.sql;
 
 import com.google.common.collect.ImmutableMap;
-import me.limbo56.playersettings.api.setting.Setting;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Map;
 import java.util.UUID;
+import me.limbo56.playersettings.api.setting.Setting;
 
 public class SaveExtraTask implements SqlDatabaseTask {
   private static final Map<String, String> STATEMENT_MAP =
       ImmutableMap.of(
           "sql",
-          "INSERT INTO playersettings_extra (owner, settingName, key, value) VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE value = VALUES(value)",
+          "INSERT INTO playersettings_extra (owner, settingName, `key`, value) VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE value = VALUES(value)",
           "sqlite",
-          "INSERT OR REPLACE INTO playersettings_extra (owner, settingName, key, value) VALUES (?, ?, ?, ?)");
+          "INSERT OR REPLACE INTO playersettings_extra (owner, settingName, `key`, value) VALUES (?, ?, ?, ?)");
   private final Connection connection;
   private final UUID uuid;
   private final Setting setting;
