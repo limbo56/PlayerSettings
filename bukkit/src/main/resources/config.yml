@@ -24,23 +24,21 @@
 # https://github.com/limbo56/PlayerSettings/wiki/Configurations
 #
 
-# This section has the general configuration properties for the plugin
+# General Configuration Section
 general:
   debug: false
   # This property toggles the plugin usage metrics
-  # * This can be safely disabled without affecting plugin functionality
-  # * Most of the collected data is information about the plugin's server like player count, online
-  #   mode, Minecraft version, Java version, and more. All data gets sent and stored completely
-  #   anonymously.
+  # * Disabling this option does not affect plugin functionality
+  # * Collected data is anonymous, providing server-related information.
   metrics: true
-  # This property toggles the update message that is sent to server operators when they join
+  # This property controls the update message sent to server operators upon joining
   update-alert: true
   # Controls whether a warning message is displayed when a security/authentication plugin is causing issues
   # * Setting this to false will disable the warning message
   offline-warning: true
   # List of worlds where the plugin will be enabled
   #
-  # * You can place the '*' symbol in the list to enable the plugin in all the worlds
+  # * Use '*' to enable the plugin in all worlds
   worlds:
     - "world"
   # List of metadata tags to treat as NPCs. This is used to ignore targets of the stacker setting
@@ -66,13 +64,13 @@ general:
     9: "x9"
     10: "x10"
 
-# This section has the configuration properties for the settings menu
+# Menu Configuration Section
 menu:
   name: "&6&lSettings"
   size: 54
-  # This property toggles the toggle button displayed below all settings
+  # Enable or disable the toggle button below settings
   toggle-button: true
-  # This section defines sounds that are played when a player interacts with a setting
+  # This section defines sounds played when a player interacts with a setting
   #
   # Format: [Sound], [Volume], [Pitch]
   # Examples:
@@ -83,7 +81,7 @@ menu:
     setting-toggle-on: "BLOCK_NOTE_BLOCK_HARP, 1, 1"
     setting-toggle-off: "BLOCK_NOTE_BLOCK_HARP, 1, -99"
 
-# This section has the configuration properties of the data storage manager
+# Data Storage Configuration Section
 storage:
   # The storage type to use when storing player settings
   #
@@ -113,34 +111,32 @@ storage:
   # * IGNORED BY STORAGE TYPE "mongodb". Instead, specify your database credentials inside the "host" connection uri.
   username: "root"
   password: "root"
-  # This section defines properties that control how connections are managed by the plugin
+  # Connection Pool Configuration
   #
   # * IGNORED BY STORAGE TYPE "mongodb". Instead, specify your pool properties inside the "host" connection uri.
   pool:
-    # This value controls the maximum number of connections to the database
+    # Maximum number of connections to the database
     # https://github.com/brettwooldridge/HikariCP/wiki/About-Pool-Sizing
     maximum-pool-size: 10
-    # This property controls the minimum number of idle connections to maintain in the pool
+    # Minimum number of idle connections to maintain in the pool
     #
     # * For maximum performance and responsiveness to spike demands, we recommend not setting this
     #   value and instead allowing the pool to act as a fixed size connection pool
     #   (set this value to the same as 'maximum-pool-size')
     minimum-idle: 10
-    # This property controls the maximum lifetime in milliseconds of a connection in the pool
+    # Maximum lifetime in milliseconds of a connection in the pool
     #
     # * We strongly recommend setting this value to at least 30 seconds shorter than any database
     #   or infrastructure imposed connection time limit
     max-lifetime: 1800000 # 30 minutes
-    # This property controls how frequently the pool will attempt to keep a connection alive, in
-    # order to prevent it from being timed out by the database or network infrastructure
+    # Frequency of keepalive attempts to prevent connection timeouts
     #
     # * This value must be less than the 'max-lifetime' value
     # * Setting the value to zero will disable the keepalive functionality
     keepalive-time: 0
-    # This property controls the maximum number of milliseconds that the plugin will wait for a
-    # connection from the pool before timing out
+    # Maximum time to wait for a connection from the pool before timing out
     connection-timeout: 5000 # 5 seconds
-  # This section contains extra properties for the connection
+  # Connection Properties
   #
   # * IGNORED BY STORAGE TYPE "mongodb". Instead, specify your database properties inside the "host" connection uri.
   properties:

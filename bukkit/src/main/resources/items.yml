@@ -1,6 +1,12 @@
-# Format:
+# Display properties for items in the settings menu
 #
-# | A unique name to identify this item or the name of the setting that it's displaying
+# Each item in the menu is defined by a unique name or the name of the setting it represents.
+# Below, you'll find the properties that describe how the item is displayed in the menu.
+# You can also specify non-setting-related items using a similar pattern.
+#
+# Item configuration format:
+#
+# | A unique name to identify the setting that it's displaying
 # example-setting:
 #   * You can find all of the available properties for this section here:
 #   * https://github.com/CryptoMorin/XSeries/wiki/XItemStack
@@ -34,7 +40,7 @@
 #   |   material: "DIAMOND_SWORD"
 #   |   material: "INK_SACK:10"
 #   |
-#   | Dynamic format example:
+#   | Dynamic format example (not applicable for non-setting items):
 #   |   material:
 #   |     0: "WOODEN_SWORD"
 #   |     1: "DIAMOND_SWORD"
@@ -49,7 +55,7 @@
 #   | The id of the custom item model to use for this item
 #   | * Only works on versions 1.14+
 #   |
-#   | Dynamic format example:
+#   | Dynamic format example (not applicable for non-setting items):
 #   |   custom-model-data:
 #   |     0: 8
 #   |     1: 9
@@ -82,6 +88,16 @@
 #     - '&7Resume and pause the active radio song!'
 #     - ''
 #     - '&6Click &7to toggle'
+#
+# custom-item-example:
+#   slot: 45
+#   name: '&eCustom Item'
+#   material: DIAMOND
+#   amount: 1
+#   lore:
+#     - '&7An example of a non-setting item'
+#     - ''
+#     - '&6Click &7to interact'
 
 # This section defines the display properties of the toggle on item
 enabled:

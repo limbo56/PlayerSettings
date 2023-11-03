@@ -8,13 +8,16 @@ import me.limbo56.playersettings.PlayerSettings;
 import me.limbo56.playersettings.PlayerSettingsProvider;
 import me.limbo56.playersettings.api.event.SettingUpdateEvent;
 import me.limbo56.playersettings.user.SettingUser;
+import me.limbo56.playersettings.util.Colors;
 import me.limbo56.playersettings.util.Text;
 import me.limbo56.playersettings.util.Version;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.TextReplacementConfig;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -137,11 +140,14 @@ public class StackerSettingListener implements Listener {
 
   @NotNull
   private static Component getDisabledMessage(Player player) {
+    String settingDisplayName =
+        ChatColor.stripColor(
+            Colors.translateColorCodes(CHAT_SETTING.getSetting().getDisplayName()));
     TextComponent enableActionTooltip =
         Text.fromMessages(
                 "settings.enable-action-tooltip",
                 Arrays.asList("&6%setting%", "&7Click to &aenable"))
-            .usePlaceholder("%setting%", CHAT_SETTING.getSetting().getDisplayName())
+            .usePlaceholder("%setting%", settingDisplayName)
             .usePlaceholderApi(player)
             .text();
     ClickEvent clickEvent =
@@ -156,9 +162,18 @@ public class StackerSettingListener implements Listener {
 
     return LegacyComponentSerializer.legacyAmpersand()
         .deserialize(PLUGIN.getMessagesConfiguration().getMessagePrefix())
-        .append(Text.fromMessages("stacker.self-disabled").usePlaceholderApi(player).text())
-        .appendSpace()
-        .append(enableAction);
+        .append(
+            Text.fromMessages(
+                    "settings.self-disabled",
+                    "&cYou have the '&6%setting%&c' setting disabled! %enableAction%")
+                .usePlaceholder("%setting%", settingDisplayName)
+                .usePlaceholderApi(player)
+                .text())
+        .replaceText(
+            TextReplacementConfig.builder()
+                .match("%enableAction%")
+                .replacement(enableAction)
+                .build());
   }
 
   private boolean eitherHasStackerDisabled(Entity player, Entity target) {
