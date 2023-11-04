@@ -1,12 +1,12 @@
-[logo]: https://i.imgur.com/d2mkPIL.png
+[logo]: https://i.imgur.com/UoFZpYs.png
 
 [logo-link]: https://www.spigotmc.org/resources/player-settings.14622/
 
-[license]:https://img.shields.io/github/license/limbo56/PlayerSettings?color=F3722B
+[license]:https://img.shields.io/github/license/limbo56/PlayerSettings?color=FE5F06
 
 [license-link]: https://github.com/limbo56/PlayerSettings/blob/master/LICENSE
 
-[discord]: https://img.shields.io/discord/222447071163056129?color=F3722B&label=discord
+[discord]: https://img.shields.io/discord/222447071163056129?color=FE5F06&label=discord
 
 [discord-link]: https://discord.gg/6gkkJ6y
 
