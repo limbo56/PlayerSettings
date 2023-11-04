@@ -34,18 +34,21 @@ public class CustomItemsRenderer implements MenuItemRenderer {
 
       ConfigurationSection customItemSection = itemsConfiguration.getConfigurationSection(key);
       if (customItemSection == null) {
-        return;
+        continue;
       }
 
-      ImmutableMenuItem menuItem = getDismissItem(menuHolder, customItemSection);
-      ExecuteCommandsAction onPressAction = getOnPressAction(customItemSection);
+      ImmutableMenuItem menuItem = getCustomItem(menuHolder, customItemSection);
+      if (menuItem.getPage() != 0 && menuItem.getPage() != page) {
+        continue;
+      }
 
+      ExecuteCommandsAction onPressAction = getOnPressAction(customItemSection);
       menuHolder.renderItem(new SettingsMenuItem(menuItem, onPressAction));
     }
   }
 
   @NotNull
-  private static ImmutableMenuItem getDismissItem(
+  private static ImmutableMenuItem getCustomItem(
       MenuHolder holder, ConfigurationSection itemSection) {
     MenuItem item = MenuItem.deserialize(itemSection);
     Player player = holder.getOwner().getPlayer();
