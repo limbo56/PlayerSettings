@@ -1,108 +1,165 @@
 package me.limbo56.playersettings.lib;
 
-import com.google.common.collect.ImmutableMap;
 import net.byteflux.libby.Library;
 
-import java.util.Map;
-
-public enum Libraries implements LibraryObject {
+public enum Libraries {
   HIKARI(
-      "com{}zaxxer",
-      "HikariCP",
-      "4.0.3",
-      "hikari_pool",
-      "com{}zaxxer{}hikari",
-      "me{}limbo56{}playersettings{}lib{}hikari"),
+      Library.builder()
+          .id("hikari_pool")
+          .groupId("com{}zaxxer")
+          .artifactId("HikariCP")
+          .version("4.0.3")
+          .relocate("com{}zaxxer{}hikari", "me{}limbo56{}playersettings{}lib{}hikari")
+          .relocate("org{}slf4j", "me{}limbo56{}playersettings{}lib{}slf4j")),
   MYSQL(
-      "com{}mysql",
-      "mysql-connector-j",
-      "8.0.31",
-      "mysql_driver",
-      "com{}mysql",
-      "me{}limbo56{}playersettings{}lib{}mysql"),
+      Library.builder()
+          .id("mysql_driver")
+          .groupId("com{}mysql")
+          .artifactId("mysql-connector-j")
+          .version("8.1.0")
+          .relocate("com{}mysql", "me{}limbo56{}playersettings{}lib{}mysql")),
   SQLITE(
-      "org{}xerial",
-      "sqlite-jdbc",
-      "3.40.0.0",
-      "sqlite_driver",
-      "org{}sqlite",
-      "me{}limbo56{}playersettings{}lib{}sqlite"),
+      Library.builder()
+          .id("sqlite_driver")
+          .groupId("org{}xerial")
+          .artifactId("sqlite-jdbc")
+          .version("3.42.0.0")
+          .relocate("org{}sqlite", "me{}limbo56{}playersettings{}lib{}sqlite")),
   MONGODB(
-      "org{}mongodb",
-      "mongo-java-driver",
-      "3.12.11",
-      "mongo_driver",
-      ImmutableMap.of(
-          "org{}mongodb",
-          "me{}limbo56{}playersettings{}lib{}mongo",
-          "org{}xerial{}snappy",
-          "me{}limbo56{}playersettings{}lib{}snappy")),
+      Library.builder()
+          .id("mongodb_driver")
+          .groupId("org{}mongodb")
+          .artifactId("mongo-java-driver")
+          .version("3.12.14")
+          .relocate("org{}mongodb", "me{}limbo56{}playersettings{}lib{}mongodb")
+          .relocate("org{}xerial{}snappy", "me{}limbo56{}playersettings{}lib{}snappy")),
   SNAPPY(
-      "org{}xerial{}snappy",
-      "snappy-java",
-      "1.1.8.4",
-      "snappy_compression",
-      "org{}xerial{}snappy",
-      "me{}limbo56{}playersettings{}lib{}snappy");
+      Library.builder()
+          .id("snappy_compression")
+          .groupId("org{}xerial{}snappy")
+          .artifactId("snappy-java")
+          .version("1.1.10.4")
+          .relocate("org{}xerial{}snappy", "me{}limbo56{}playersettings{}lib{}snappy")),
+  SLF4J_API(
+      Library.builder()
+          .id("slf4j_api")
+          .groupId("org{}slf4j")
+          .artifactId("slf4j-api")
+          .version("2.0.5")
+          .relocate("org{}slf4j", "me{}limbo56{}playersettings{}lib{}slf4j")),
+  SLF4J_SIMPLE(
+      Library.builder()
+          .id("slf4j_api")
+          .groupId("org{}slf4j")
+          .artifactId("slf4j-simple")
+          .version("2.0.5")
+          .relocate("org{}slf4j", "me{}limbo56{}playersettings{}lib{}slf4j")),
+  ADVENTURE(
+      Library.builder()
+          .id("adventure")
+          .groupId("net{}kyori")
+          .artifactId("adventure-platform-bukkit")
+          .version("4.3.1")
+          .relocate("net{}kyori", "me{}limbo56{}playersettings{}lib{}kyori")),
+  ADVENTURE_API(
+      Library.builder()
+          .id("adventure_api")
+          .groupId("net{}kyori")
+          .artifactId("adventure-api")
+          .version("4.13.1")
+          .relocate("net{}kyori", "me{}limbo56{}playersettings{}lib{}kyori")),
+  ADVENTURE_KEY(
+      Library.builder()
+          .id("adventure_key")
+          .groupId("net{}kyori")
+          .artifactId("adventure-key")
+          .version("4.13.1")
+          .relocate("net{}kyori", "me{}limbo56{}playersettings{}lib{}kyori")),
+  ADVENTURE_NBT(
+      Library.builder()
+          .id("adventure_nbt")
+          .groupId("net{}kyori")
+          .artifactId("adventure-nbt")
+          .version("4.13.1")
+          .relocate("net{}kyori", "me{}limbo56{}playersettings{}lib{}kyori")),
+  ADVENTURE_PLATFORM_API(
+      Library.builder()
+          .id("adventure_platform_api")
+          .groupId("net{}kyori")
+          .artifactId("adventure-platform-api")
+          .version("4.3.1")
+          .relocate("net{}kyori", "me{}limbo56{}playersettings{}lib{}kyori")),
+  ADVENTURE_PLATFORM_BUKKIT(
+      Library.builder()
+          .id("adventure_platform_bukkit")
+          .groupId("net{}kyori")
+          .artifactId("adventure-platform-bukkit")
+          .version("4.3.1")
+          .relocate("net{}kyori", "me{}limbo56{}playersettings{}lib{}kyori")),
+  ADVENTURE_PLATFORM_FACET(
+      Library.builder()
+          .id("adventure_platform_facet")
+          .groupId("net{}kyori")
+          .artifactId("adventure-platform-facet")
+          .version("4.3.1")
+          .relocate("net{}kyori", "me{}limbo56{}playersettings{}lib{}kyori")),
+  ADVENTURE_PLATFORM_VIAVERSION(
+      Library.builder()
+          .id("adventure_platform_viaversion")
+          .groupId("net{}kyori")
+          .artifactId("adventure-platform-viaversion")
+          .version("4.3.1")
+          .relocate("net{}kyori", "me{}limbo56{}playersettings{}lib{}kyori")),
+  ADVENTURE_TEXT_SERIALIZER_BUNGEECORD(
+      Library.builder()
+          .id("adventure_text_serializer_bungeecord")
+          .groupId("net{}kyori")
+          .artifactId("adventure-text-serializer-bungeecord")
+          .version("4.3.1")
+          .relocate("net{}kyori", "me{}limbo56{}playersettings{}lib{}kyori")),
+  ADVENTURE_TEXT_SERIALIZER_LEGACY(
+      Library.builder()
+          .id("adventure_text_serializer_legacy")
+          .groupId("net{}kyori")
+          .artifactId("adventure-text-serializer-legacy")
+          .version("4.13.1")
+          .relocate("net{}kyori", "me{}limbo56{}playersettings{}lib{}kyori")),
+  ADVENTURE_TEXT_SERIALIZER_GSON_LEGACY_IMPL(
+      Library.builder()
+          .id("adventure_text_serializer_legacy_gson_impl")
+          .groupId("net{}kyori")
+          .artifactId("adventure-text-serializer-gson-legacy-impl")
+          .version("4.13.1")
+          .relocate("net{}kyori", "me{}limbo56{}playersettings{}lib{}kyori")),
+  ADVENTURE_TEXT_SERIALIZER_GSON(
+      Library.builder()
+          .id("adventure_text_serializer_gson")
+          .groupId("net{}kyori")
+          .artifactId("adventure-text-serializer-gson")
+          .version("4.13.1")
+          .relocate("net{}kyori", "me{}limbo56{}playersettings{}lib{}kyori")),
+  ADVENTURE_EXAMINATION_API(
+      Library.builder()
+          .id("adventure_examination_api")
+          .groupId("net{}kyori")
+          .artifactId("examination-api")
+          .version("1.3.0")
+          .relocate("net{}kyori", "me{}limbo56{}playersettings{}lib{}kyori")),
+  ADVENTURE_EXAMINATION_STRING(
+      Library.builder()
+          .id("adventure_examination_api")
+          .groupId("net{}kyori")
+          .artifactId("examination-string")
+          .version("1.3.0")
+          .relocate("net{}kyori", "me{}limbo56{}playersettings{}lib{}kyori"));
 
-  private final String groupId;
-  private final String artifactId;
-  private final String version;
-  private final String id;
-  private final Map<String, String> relocations;
+  private final Library.Builder libraryBuilder;
 
-  Libraries(
-      String groupId,
-      String artifactId,
-      String version,
-      String id,
-      String oldRelocation,
-      String newRelocation) {
-    this(groupId, artifactId, version, id, ImmutableMap.of(oldRelocation, newRelocation));
+  Libraries(Library.Builder libraryBuilder) {
+    this.libraryBuilder = libraryBuilder;
   }
 
-  Libraries(
-      String groupId,
-      String artifactId,
-      String version,
-      String id,
-      Map<String, String> relocations) {
-    this.groupId = groupId;
-    this.artifactId = artifactId;
-    this.version = version;
-    this.id = id;
-    this.relocations = relocations;
-  }
-
-  @Override
-  public String getGroupId() {
-    return groupId;
-  }
-
-  @Override
-  public String getArtifactId() {
-    return artifactId;
-  }
-
-  @Override
-  public String getVersion() {
-    return version;
-  }
-
-  @Override
-  public String getId() {
-    return id;
-  }
-
-  @Override
-  public Map<String, String> getRelocations() {
-    return relocations;
-  }
-
-  public Library getLibrary() {
-    Library.Builder library =
-        Library.builder().groupId(groupId).artifactId(artifactId).version(version).id(id);
-    getRelocations().forEach(library::relocate);
-    return library.build();
+  public Library toLibrary() {
+    return libraryBuilder.build();
   }
 }

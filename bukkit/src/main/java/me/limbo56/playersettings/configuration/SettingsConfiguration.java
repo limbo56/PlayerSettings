@@ -4,23 +4,23 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
-import me.limbo56.playersettings.PlayerSettings;
-import me.limbo56.playersettings.PlayerSettingsProvider;
-import me.limbo56.playersettings.api.setting.ImmutableSetting;
-import me.limbo56.playersettings.api.setting.Setting;
-import me.limbo56.playersettings.api.setting.SettingCallback;
-import me.limbo56.playersettings.menu.SettingsMenuItem;
-import me.limbo56.playersettings.settings.CustomSettingCallback;
-import me.limbo56.playersettings.settings.DefaultSettings;
-import org.bukkit.configuration.ConfigurationSection;
-import org.jetbrains.annotations.NotNull;
-
 import java.io.IOException;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import me.limbo56.playersettings.PlayerSettings;
+import me.limbo56.playersettings.PlayerSettingsProvider;
+import me.limbo56.playersettings.api.setting.ImmutableSetting;
+import me.limbo56.playersettings.api.setting.Setting;
+import me.limbo56.playersettings.api.setting.SettingCallback;
+import me.limbo56.playersettings.menu.item.SettingsMenuItem;
+import me.limbo56.playersettings.settings.CustomSettingCallback;
+import me.limbo56.playersettings.settings.DefaultSettings;
+import me.limbo56.playersettings.util.PluginLogger;
+import org.bukkit.configuration.ConfigurationSection;
+import org.jetbrains.annotations.NotNull;
 
 public class SettingsConfiguration extends BaseConfiguration {
   private static final PlayerSettings PLUGIN = PlayerSettingsProvider.getPlugin();
@@ -38,10 +38,13 @@ public class SettingsConfiguration extends BaseConfiguration {
         Preconditions.checkNotNull(
             PLUGIN.getItemsConfiguration().getFile().getConfigurationSection(settingName),
             "Failed to find setting item '" + settingName + "'");
-    HashSet<SettingCallback> callbacks =
-        Optional.ofNullable(CustomSettingCallback.deserialize(settingSection))
-            .map(Sets::newHashSet)
-            .orElse(Sets.newHashSet());
+
+    HashSet<SettingCallback> callbacks = Sets.newHashSet();
+    SettingCallback deserialize = CustomSettingCallback.deserialize(settingSection);
+    if (deserialize != null) {
+      callbacks = Sets.newHashSet(deserialize);
+    }
+
     return ImmutableSetting.copyOf(Setting.deserialize(settingSection))
         .withItem(SettingsMenuItem.deserialize(itemSection, 0))
         .withCallbacks(callbacks);
@@ -65,9 +68,9 @@ public class SettingsConfiguration extends BaseConfiguration {
     try {
       this.writeSerializable(settingName, setting);
       this.save();
-    } catch (IOException e) {
-      PLUGIN.getLogger().severe("Failed to save setting '" + settingName + "' to configuration");
-      e.printStackTrace();
+    } catch (IOException exception) {
+      PluginLogger.severe("Failed to save setting '" + settingName + "' to configuration");
+      exception.printStackTrace();
     }
   }
 
@@ -90,17 +93,17 @@ public class SettingsConfiguration extends BaseConfiguration {
           getSettingValueAliases(setting).get(value).stream()
               .findFirst()
               .orElseGet(() -> Integer.parseInt(value));
-      PLUGIN
-          .getLogger()
-          .config(
-              String.format(
-                  "Parsing value '%s' for setting '%s', Parsed '%d'",
-                  value, setting.getName(), settingValue));
+      PluginLogger.debug(
+          "Parsing value '"
+              + value
+              + "' for setting '"
+              + setting.getName()
+              + "', Parsed '"
+              + settingValue
+              + "'");
       return settingValue;
     } catch (NumberFormatException exception) {
-      PLUGIN
-          .getLogger()
-          .config("Unknown value '" + value + "' for setting '" + setting.getName() + "'");
+      PluginLogger.debug("Unknown value '" + value + "' for setting '" + setting.getName() + "'");
       return null;
     }
   }
@@ -142,6 +145,10 @@ public class SettingsConfiguration extends BaseConfiguration {
       }
       return isEnabled && hasItemConfigured;
     };
+  }
+
+  public boolean isSettingEnabled(String settingName) {
+    return getFile().getBoolean(settingName + ".enabled");
   }
 
   public boolean isSettingConfigured(String settingName) {

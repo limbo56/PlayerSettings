@@ -1,10 +1,9 @@
-# If you want to disable a message, you can leave empty quotes as the message
-#
-# Examples:
+# Empty quotes disable the message.
+# Example:
 # - prefix: ""
 # - setting-changed: ""
 
-# This property is the prefix that will be appended to every message sent by the plugin
+# Prefix appended to every plugin message.
 prefix: "&f&l(&6Settings&f&l) &f"
 
 settings:
@@ -14,6 +13,13 @@ settings:
   low-access-level: "&cNot enough permissions. You can only set setting &6%setting% &cto &e%max%!"
   no-settings-data: "&cNo settings data found for your account"
   wait-loading: "&cPlease wait until your settings load before doing any changes"
+  # %enableAction% - The clickable text to enable the setting
+  self-disabled: "&cYou have the '&%setting%&c' setting disabled! %enableAction%"
+  enable-action: "&e(Click to enable)"
+  # %setting% - The name of the setting the user tried to change
+  enable-action-tooltip:
+    - "&6%setting%"
+    - "&7Click to &aenable"
 
 commands:
   no-access: "&cYou don't have permissions to execute this command"
@@ -28,9 +34,5 @@ commands:
   setting-unchanged: "&cSetting '&6%setting%&c' is already set to &e%value%"
 
 stacker:
-  self-disabled: "&cYou have the '&6Stacker&c' setting disabled!"
   target-disabled: "&cThat player has the '&6Stacker&c' setting disabled!"
   target-invalid-entity: "&cYou can't stack that entity!"
-
-chat:
-  self-disabled: "&cYou have the '&6Chat&c' setting disabled!"

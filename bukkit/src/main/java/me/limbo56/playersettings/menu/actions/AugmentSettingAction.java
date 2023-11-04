@@ -1,17 +1,16 @@
 package me.limbo56.playersettings.menu.actions;
 
 import me.limbo56.playersettings.api.setting.Setting;
-import me.limbo56.playersettings.menu.SettingsMenuHolder;
-import me.limbo56.playersettings.menu.SettingsMenuItem;
-import me.limbo56.playersettings.menu.renderers.MenuSettingsRenderer;
+import me.limbo56.playersettings.menu.holder.MenuHolder;
+import me.limbo56.playersettings.menu.item.SettingsMenuItem;
+import me.limbo56.playersettings.menu.renderers.SettingsRenderer;
 import me.limbo56.playersettings.user.SettingUser;
 import me.limbo56.playersettings.util.Permissions;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 
 public class AugmentSettingAction extends SettingItemAction {
-  public AugmentSettingAction(
-      MenuSettingsRenderer renderer, SettingsMenuHolder inventory, Setting setting) {
+  public AugmentSettingAction(SettingsRenderer renderer, MenuHolder inventory, Setting setting) {
     super(renderer, inventory, setting);
   }
 

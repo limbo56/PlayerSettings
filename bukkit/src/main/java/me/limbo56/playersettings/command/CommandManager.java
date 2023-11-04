@@ -1,13 +1,8 @@
 package me.limbo56.playersettings.command;
 
+import java.util.*;
 import me.limbo56.playersettings.command.subcommand.HelpSubCommand;
 import org.bukkit.command.CommandSender;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 /** Class that manages all commands for the plugin. */
 public class CommandManager {
@@ -27,14 +22,18 @@ public class CommandManager {
   }
 
   public List<String> getAccessibleCommands(CommandSender sender) {
-    return subCommands.values().stream()
-        .filter(
-            subCommand -> {
-              String permission = subCommand.getPermission();
-              return permission == null || sender.hasPermission(permission);
-            })
-        .map(SubCommand::getName)
-        .collect(Collectors.toList());
+    List<String> accessibleCommands = new ArrayList<>();
+
+    for (SubCommand command : subCommands.values()) {
+      String permission = command.getPermission();
+
+      if (permission == null || sender.hasPermission(permission)) {
+        String name = command.getName();
+        accessibleCommands.add(name);
+      }
+    }
+
+    return accessibleCommands;
   }
 
   /**

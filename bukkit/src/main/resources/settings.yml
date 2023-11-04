@@ -1,4 +1,4 @@
-# Format:
+# Settings Configuration Format:
 #
 # | A unique name to identify this setting
 # example-setting:
@@ -8,11 +8,10 @@
 #   | The display name of the setting
 #   name: "&aExample"
 #
-#   | The default value that players will have for this setting
+#   | The default value players have for this setting
 #   default: 0
 #
-#   | The max value that this setting can be set to
-#   | * This property is optional, by default all settings will have a max value of 1
+#   | Maximum value allowed (optional, default is 1)
 #   max: 1
 #
 #   | List of events/actions that should trigger the side effects for the current value of the setting
@@ -117,6 +116,6 @@ fly-setting:
   save-state: true
   # Forces the player into flight mode when they join the game server
   #
-  # * This property will respect if save-state is enabled, i.e., don't force flight mode if the player had flight disabled
+  # * This property will respect if save-state is enabled i.e. it won't force flight mode if the player had flight disabled
   force-on-join: false
   triggers: [ "join", "respawn" ]

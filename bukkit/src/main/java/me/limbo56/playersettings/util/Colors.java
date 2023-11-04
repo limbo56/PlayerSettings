@@ -1,16 +1,15 @@
 package me.limbo56.playersettings.util;
 
-import net.md_5.bungee.api.ChatColor;
-
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import net.md_5.bungee.api.ChatColor;
 
 public class Colors {
   private static final Pattern HEX_COLOR = Pattern.compile("&x#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})");
 
   public static String translateColorCodes(String input) {
     String textToTranslate =
-        Version.getCurrentVersion().isOlderThan("1.16") ? input : translateHexColors(input);
+        Version.getServerVersion().isOlderThan("1.16") ? input : translateHexColors(input);
     return ChatColor.translateAlternateColorCodes('&', textToTranslate);
   }
 

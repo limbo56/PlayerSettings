@@ -1,9 +1,11 @@
 package me.limbo56.playersettings.api.setting;
 
-import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.ListMultimap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import me.limbo56.playersettings.api.ImmutableMenuItem;
 import me.limbo56.playersettings.api.MenuItem;
 import org.bukkit.Material;
@@ -13,12 +15,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.immutables.value.Value;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.Comparator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * An object that represents a {@code Setting}.
@@ -168,7 +164,7 @@ public interface Setting extends ConfigurationSerializable {
   }
 
   @Override
-  default Map<String, Object> serialize() {
+  default @NotNull Map<String, Object> serialize() {
     Map<String, Object> mappedObject = new LinkedHashMap<>();
     mappedObject.put("enabled", isEnabled());
     mappedObject.put("name", getDisplayName());

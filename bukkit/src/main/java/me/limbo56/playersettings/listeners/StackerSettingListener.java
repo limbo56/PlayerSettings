@@ -1,13 +1,23 @@
 package me.limbo56.playersettings.listeners;
 
+import static me.limbo56.playersettings.settings.DefaultSettings.CHAT_SETTING;
 import static me.limbo56.playersettings.settings.DefaultSettings.STACKER_SETTING;
 
+import java.util.Arrays;
 import me.limbo56.playersettings.PlayerSettings;
 import me.limbo56.playersettings.PlayerSettingsProvider;
 import me.limbo56.playersettings.api.event.SettingUpdateEvent;
 import me.limbo56.playersettings.user.SettingUser;
+import me.limbo56.playersettings.util.Colors;
 import me.limbo56.playersettings.util.Text;
 import me.limbo56.playersettings.util.Version;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.TextReplacementConfig;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -17,6 +27,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 
 public class StackerSettingListener implements Listener {
   private static final PlayerSettings PLUGIN = PlayerSettingsProvider.getPlugin();
@@ -34,7 +45,7 @@ public class StackerSettingListener implements Listener {
     }
 
     // Fix bug in 1.9+ where this event is fired twice due to OFF_HAND
-    if (!Version.getCurrentVersion().isOlderThan("1.9")
+    if (!Version.getServerVersion().isOlderThan("1.9")
         && event.getHand() == EquipmentSlot.OFF_HAND) {
       return;
     }
@@ -52,9 +63,7 @@ public class StackerSettingListener implements Listener {
 
     // Notify user that they have stacker disabled
     if (hasStackerDisabled) {
-      Text.fromMessages("stacker.self-disabled")
-          .usePlaceholderApi(player)
-          .sendMessage(player, PLUGIN.getMessagesConfiguration().getMessagePrefix());
+      PlayerSettingsProvider.adventure().player(player).sendMessage(getDisabledMessage(player));
       return;
     }
 
@@ -127,6 +136,44 @@ public class StackerSettingListener implements Listener {
     if (passenger != null) {
       player.eject();
     }
+  }
+
+  @NotNull
+  private static Component getDisabledMessage(Player player) {
+    String settingDisplayName =
+        ChatColor.stripColor(
+            Colors.translateColorCodes(CHAT_SETTING.getSetting().getDisplayName()));
+    TextComponent enableActionTooltip =
+        Text.fromMessages(
+                "settings.enable-action-tooltip",
+                Arrays.asList("&6%setting%", "&7Click to &aenable"))
+            .usePlaceholder("%setting%", settingDisplayName)
+            .usePlaceholderApi(player)
+            .text();
+    ClickEvent clickEvent =
+        ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/settings set stacker-setting 1");
+    HoverEvent<Component> hoverEvent =
+        HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, enableActionTooltip);
+    TextComponent enableAction =
+        Text.fromMessages("settings.enable-action", "&e(Click to enable)")
+            .text()
+            .clickEvent(clickEvent)
+            .hoverEvent(hoverEvent);
+
+    return LegacyComponentSerializer.legacyAmpersand()
+        .deserialize(PLUGIN.getMessagesConfiguration().getMessagePrefix())
+        .append(
+            Text.fromMessages(
+                    "settings.self-disabled",
+                    "&cYou have the '&6%setting%&c' setting disabled! %enableAction%")
+                .usePlaceholder("%setting%", settingDisplayName)
+                .usePlaceholderApi(player)
+                .text())
+        .replaceText(
+            TextReplacementConfig.builder()
+                .match("%enableAction%")
+                .replacement(enableAction)
+                .build());
   }
 
   private boolean eitherHasStackerDisabled(Entity player, Entity target) {

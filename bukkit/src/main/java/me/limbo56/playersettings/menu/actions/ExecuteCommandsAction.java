@@ -1,19 +1,18 @@
 package me.limbo56.playersettings.menu.actions;
 
+import java.util.List;
 import me.clip.placeholderapi.PlaceholderAPI;
-import me.limbo56.playersettings.menu.SettingsMenuItem;
+import me.limbo56.playersettings.menu.item.SettingsMenuItem;
 import me.limbo56.playersettings.user.SettingUser;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 
-import java.util.List;
-
-public class DismissAction implements MenuItemAction {
+public class ExecuteCommandsAction implements MenuItemAction {
   private static final String CLOSE_COMMAND = "playersettings close";
   private final List<String> commands;
 
-  public DismissAction(List<String> commands) {
+  public ExecuteCommandsAction(List<String> commands) {
     this.commands = commands;
   }
 

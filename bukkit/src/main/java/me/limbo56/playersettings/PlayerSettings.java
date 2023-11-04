@@ -1,5 +1,9 @@
 package me.limbo56.playersettings;
 
+import java.time.Duration;
+import java.time.Instant;
+import java.util.Objects;
+import java.util.concurrent.ExecutionException;
 import me.limbo56.playersettings.api.SettingsContainer;
 import me.limbo56.playersettings.api.SettingsWatchlist;
 import me.limbo56.playersettings.command.CommandManager;
@@ -16,7 +20,7 @@ import me.limbo56.playersettings.menu.SettingsMenuManager;
 import me.limbo56.playersettings.settings.DefaultSettings;
 import me.limbo56.playersettings.settings.SettingsManager;
 import me.limbo56.playersettings.user.UserManager;
-import me.limbo56.playersettings.util.PluginLogHandler;
+import me.limbo56.playersettings.util.PluginLogger;
 import me.limbo56.playersettings.util.PluginUpdater;
 import net.byteflux.libby.BukkitLibraryManager;
 import org.bstats.bukkit.Metrics;
@@ -25,13 +29,6 @@ import org.bukkit.command.PluginCommand;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import java.time.Duration;
-import java.time.Instant;
-import java.util.Arrays;
-import java.util.Objects;
-import java.util.concurrent.ExecutionException;
-import java.util.logging.Level;
 
 public class PlayerSettings extends JavaPlugin {
   // Managers
@@ -55,37 +52,33 @@ public class PlayerSettings extends JavaPlugin {
     // Track load startup time
     Instant loadStartInstant = Instant.now();
     PlayerSettingsProvider.setPlugin(this);
-    getLogger().addHandler(new PluginLogHandler());
 
-    getLogger().info("Loading libraries...");
+    PluginLogger.log("Loading libraries...");
     BukkitLibraryManager bukkitLibraryManager = new BukkitLibraryManager(this);
     bukkitLibraryManager.addMavenCentral();
-    Arrays.stream(Libraries.values())
-        .forEach(libraries -> bukkitLibraryManager.loadLibrary(libraries.getLibrary()));
+    for (Libraries library : Libraries.values()) {
+      bukkitLibraryManager.loadLibrary(library.toLibrary());
+    }
+    PlayerSettingsProvider.registerAdventure(this);
 
-    getLogger().info("Loading configuration files...");
+    PluginLogger.log("Loading configuration files...");
     try {
       configurationManager = new ConfigurationManager();
       pluginConfiguration = configurationManager.loadConfiguration(new PluginConfiguration());
       settingsConfiguration = configurationManager.loadConfiguration(new SettingsConfiguration());
       itemsConfiguration = configurationManager.loadConfiguration(new ItemsConfiguration());
       messagesConfiguration = configurationManager.loadConfiguration(new MessagesConfiguration());
-    } catch (ExecutionException e) {
-      getLogger().severe("An exception occurred while loading the default configuration files:");
-      e.printStackTrace();
+    } catch (ExecutionException exception) {
+      PluginLogger.severe("An exception occurred while loading the default configuration files:");
+      exception.printStackTrace();
       setEnabled(false);
       return;
     }
 
-    // Setup debug logger
-    if (pluginConfiguration.hasDebugEnabled()) {
-      getLogger().setLevel(Level.FINE);
-    }
+    PluginLogger.log("Connecting data manager...");
+    connectSettingsDatabase();
 
-    getLogger().info("Connecting data manager...");
-    registerSettingsDatabase();
-
-    getLogger().info("Loading internal managers...");
+    PluginLogger.log("Loading internal managers...");
     commandManager = new CommandManager();
     listenerManager = new ListenerManager();
     settingsMenuManager = new SettingsMenuManager();
@@ -102,7 +95,7 @@ public class PlayerSettings extends JavaPlugin {
     commandManager.registerSubCommand(new SetSubCommand());
     commandManager.registerSubCommand(new GetSubCommand());
 
-    getLogger().info("Registering service managers...");
+    PluginLogger.log("Registering service managers...");
     userManager = new UserManager();
     settingsManager = new SettingsManager();
     Bukkit.getServicesManager()
@@ -119,7 +112,7 @@ public class PlayerSettings extends JavaPlugin {
 
     // Log startup time and update message
     long startupDuration = Duration.between(loadStartInstant, Instant.now()).toMillis();
-    getLogger().info("Successfully loaded (took " + startupDuration + "ms)");
+    PluginLogger.log("Successfully loaded (took " + startupDuration + "ms)");
     PluginUpdater.logUpdateMessage();
 
     // Start bStats metrics
@@ -135,22 +128,23 @@ public class PlayerSettings extends JavaPlugin {
 
   @Override
   public void onDisable() {
-    getLogger().info("Save all users...");
+    PluginLogger.log("Save all users...");
     userManager.saveAll();
 
-    getLogger().info("Disconnecting data manager...");
+    PluginLogger.log("Disconnecting data manager...");
     settingsDatabase.disconnect();
 
-    getLogger().info("Unloading internal managers...");
+    PluginLogger.log("Unloading internal managers...");
     userManager.unloadAll();
     settingsMenuManager.unloadAll();
     listenerManager.unloadAll();
     commandManager.unloadAll();
     settingsManager.unloadAll();
     configurationManager.unloadAll();
+    PlayerSettingsProvider.unregisterAdventure();
   }
 
-  public void registerSettingsDatabase() {
+  public void connectSettingsDatabase() {
     ConfigurationSection storageSection =
         pluginConfiguration.getFile().getConfigurationSection("storage");
     if (storageSection == null) {
@@ -158,6 +152,7 @@ public class PlayerSettings extends JavaPlugin {
       throw new NullPointerException(
           "Empty or missing properties in the 'storage' section inside 'config.yml'");
     }
+
     settingsDatabase = SettingsDatabaseProvider.getSettingsDatabase(storageSection);
     settingsDatabase.connect();
   }

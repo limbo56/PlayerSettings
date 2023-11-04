@@ -26,7 +26,7 @@ public class PluginUpdater {
   }
 
   public static void logUpdateMessage() {
-    getOrRefreshUpdateMessage(message -> PluginLogHandler.log(Colors.translateColorCodes(message)));
+    getOrRefreshUpdateMessage(message -> PluginLogger.log(Colors.translateColorCodes(message)));
   }
 
   private static void getOrRefreshUpdateMessage(Consumer<String> consumer) {
