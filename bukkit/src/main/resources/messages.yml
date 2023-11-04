@@ -13,10 +13,11 @@ settings:
   low-access-level: "&cNot enough permissions. You can only set setting &6%setting% &cto &e%max%!"
   no-settings-data: "&cNo settings data found for your account"
   wait-loading: "&cPlease wait until your settings load before doing any changes"
+  # %setting% - The name of the setting that is disabled
   # %enableAction% - The clickable text to enable the setting
   self-disabled: "&cYou have the '&%setting%&c' setting disabled! %enableAction%"
   enable-action: "&e(Click to enable)"
-  # %setting% - The name of the setting the user tried to change
+  # %setting% - The name of the setting that is disabled
   enable-action-tooltip:
     - "&6%setting%"
     - "&7Click to &aenable"
