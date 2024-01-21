@@ -24,7 +24,6 @@ public class SettingsMenuItem implements MenuItem {
       @NotNull ConfigurationSection configurationSection, int value) {
     Map<String, Object> menuItem = new HashMap<>();
     String name = configurationSection.getString("name", null);
-
     for (String key : configurationSection.getKeys(false)) {
       if (configurationSection.contains(key)
           && menuItem.put(key, configurationSection.get(key)) != null) {

@@ -2,14 +2,12 @@ package me.limbo56.playersettings.configuration;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableListMultimap;
+import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
 import java.io.IOException;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 import me.limbo56.playersettings.PlayerSettings;
 import me.limbo56.playersettings.PlayerSettingsProvider;
 import me.limbo56.playersettings.api.setting.ImmutableSetting;
@@ -20,6 +18,7 @@ import me.limbo56.playersettings.settings.CustomSettingCallback;
 import me.limbo56.playersettings.settings.DefaultSettings;
 import me.limbo56.playersettings.util.PluginLogger;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
 
 public class SettingsConfiguration extends BaseConfiguration {
@@ -36,7 +35,7 @@ public class SettingsConfiguration extends BaseConfiguration {
             "Failed to find setting '" + settingName + "'");
     ConfigurationSection itemSection =
         Preconditions.checkNotNull(
-            PLUGIN.getItemsConfiguration().getFile().getConfigurationSection(settingName),
+            getItemsConfiguration().getFile().getConfigurationSection(settingName),
             "Failed to find setting item '" + settingName + "'");
 
     HashSet<SettingCallback> callbacks = Sets.newHashSet();
@@ -44,7 +43,6 @@ public class SettingsConfiguration extends BaseConfiguration {
     if (deserialize != null) {
       callbacks = Sets.newHashSet(deserialize);
     }
-
     return ImmutableSetting.copyOf(Setting.deserialize(settingSection))
         .withItem(SettingsMenuItem.deserialize(itemSection, 0))
         .withCallbacks(callbacks);
@@ -56,10 +54,15 @@ public class SettingsConfiguration extends BaseConfiguration {
 
   private Setting configureSetting(Setting setting) {
     String settingName = setting.getName();
+    if (!isSettingConfigured(settingName)) {
+      writeSetting(setting);
+    }
+
     ItemsConfiguration itemsConfiguration = getItemsConfiguration();
-    if (!isSettingConfigured(settingName)) writeSetting(setting);
-    if (!itemsConfiguration.isItemConfigured(settingName))
+    if (!itemsConfiguration.isItemConfigured(settingName)) {
       itemsConfiguration.writeMenuItem(settingName, setting.getItem());
+    }
+
     return setting;
   }
 
@@ -76,11 +79,10 @@ public class SettingsConfiguration extends BaseConfiguration {
 
   public Setting mergeSettingWithConfiguration(Setting setting) {
     Setting parsedSetting = parseSetting(setting.getName());
-    Multimap<String, Integer> valueAliases = getSettingValueAliases(parsedSetting);
     return ImmutableSetting.copyOf(parsedSetting)
         .withCallbacks(setting.getCallbacks())
         .withListeners(setting.getListeners())
-        .withValueAliases(valueAliases);
+        .withValueAliases(getSettingValueAliases(parsedSetting));
   }
 
   public ConfigurationSection getSettingOverridesSection(String settingName) {
@@ -116,25 +118,40 @@ public class SettingsConfiguration extends BaseConfiguration {
   }
 
   private Multimap<String, Integer> getSettingValueAliases(Setting parsedSetting) {
-    return Optional.<Multimap<String, Integer>>ofNullable(parsedSetting.getValueAliases())
-        .filter(stringIntegerMultimap -> !stringIntegerMultimap.isEmpty())
-        .orElse(
-            Optional.ofNullable(PLUGIN.getPluginConfiguration().getValueAliases())
-                .orElse(DefaultSettings.Constants.DEFAULT_VALUE_ALIASES));
+    Multimap<String, Integer> settingAliasMap = parsedSetting.getValueAliases();
+    if (settingAliasMap != null && !settingAliasMap.isEmpty()) {
+      return settingAliasMap;
+    }
+
+    ListMultimap<String, Integer> pluginAliasMap =
+        PLUGIN.getPluginConfiguration().getValueAliases();
+    if (pluginAliasMap != null) {
+      return pluginAliasMap;
+    }
+
+    return DefaultSettings.Constants.DEFAULT_VALUE_ALIASES;
   }
 
   public Collection<Setting> getEnabledSettings(boolean verbose) {
-    return getFile().getKeys(false).stream()
-        .filter(filterAndLogEnabledSettings(verbose))
-        .map(this::parseSetting)
-        .collect(Collectors.toList());
+    Predicate<String> predicate = filterAndLogEnabledSettings(verbose);
+    List<Setting> list = new ArrayList<>();
+
+    for (String settingName : getFile().getKeys(false)) {
+      if (predicate.test(settingName)) {
+        Setting setting = parseSetting(settingName);
+        list.add(setting);
+      }
+    }
+
+    return list;
   }
 
   @NotNull
   private Predicate<String> filterAndLogEnabledSettings(boolean verbose) {
+    YamlConfiguration file = getFile();
+    ItemsConfiguration itemsConfiguration = getItemsConfiguration();
     return settingName -> {
-      boolean isEnabled = getFile().getBoolean(settingName + ".enabled");
-      boolean hasItemConfigured = getItemsConfiguration().isItemConfigured(settingName);
+      boolean hasItemConfigured = itemsConfiguration.isItemConfigured(settingName);
       if (!hasItemConfigured && verbose) {
         PLUGIN
             .getLogger()
@@ -143,8 +160,12 @@ public class SettingsConfiguration extends BaseConfiguration {
                     + settingName
                     + "'! Skipping registration...");
       }
-      return isEnabled && hasItemConfigured;
+      return file.getBoolean(settingName + ".enabled") && hasItemConfigured;
     };
+  }
+
+  public Set<String> getSettingNames() {
+    return getFile().getKeys(false);
   }
 
   public boolean isSettingEnabled(String settingName) {

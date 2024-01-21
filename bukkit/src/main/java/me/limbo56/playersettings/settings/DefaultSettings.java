@@ -5,11 +5,7 @@ import static java.util.Collections.singletonList;
 import com.cryptomorin.xseries.XMaterial;
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.ListMultimap;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Optional;
-import java.util.stream.Collectors;
+import java.util.*;
 import java.util.stream.IntStream;
 import me.limbo56.playersettings.PlayerSettings;
 import me.limbo56.playersettings.PlayerSettingsProvider;
@@ -182,9 +178,11 @@ public enum DefaultSettings {
   }
 
   public static Collection<Setting> getSettings() {
-    return Arrays.stream(DefaultSettings.values())
-        .map(DefaultSettings::getSetting)
-        .collect(Collectors.toList());
+    List<Setting> list = new ArrayList<>();
+    for (DefaultSettings defaultSettings : DefaultSettings.values()) {
+      list.add(defaultSettings.getSetting());
+    }
+    return list;
   }
 
   public String getName() {
@@ -213,9 +211,13 @@ public enum DefaultSettings {
     }
 
     private static Collection<SettingUser> filterOnline(Collection<SettingUser> users) {
-      return users.stream()
-          .filter(user -> user.getPlayer() != null && user.getPlayer().isOnline())
-          .collect(Collectors.toList());
+      List<SettingUser> online = new ArrayList<>();
+      for (SettingUser user : users) {
+        if (user.getPlayer() != null && user.getPlayer().isOnline()) {
+          online.add(user);
+        }
+      }
+      return online;
     }
   }
 

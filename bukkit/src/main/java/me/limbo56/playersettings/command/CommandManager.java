@@ -17,25 +17,6 @@ public class CommandManager {
     subCommands.put(command.getName(), command);
   }
 
-  public void unloadAll() {
-    subCommands.clear();
-  }
-
-  public List<String> getAccessibleCommands(CommandSender sender) {
-    List<String> accessibleCommands = new ArrayList<>();
-
-    for (SubCommand command : subCommands.values()) {
-      String permission = command.getPermission();
-
-      if (permission == null || sender.hasPermission(permission)) {
-        String name = command.getName();
-        accessibleCommands.add(name);
-      }
-    }
-
-    return accessibleCommands;
-  }
-
   /**
    * Gets a subcommand from the command manager.
    *
@@ -46,12 +27,21 @@ public class CommandManager {
     return Optional.ofNullable(subCommands.get(name)).orElse(new HelpSubCommand());
   }
 
-  /**
-   * Gets all registered subcommands.
-   *
-   * @return All registered subcommands.
-   */
-  public Map<String, SubCommand> getSubCommandsMap() {
-    return subCommands;
+  public void unloadAll() {
+    subCommands.clear();
+  }
+
+  public List<String> getAccessibleCommands(CommandSender sender) {
+    List<String> accessibleCommands = new ArrayList<>();
+
+    for (SubCommand command : subCommands.values()) {
+      String permission = command.getPermission();
+      if (permission == null || sender.hasPermission(permission)) {
+        String name = command.getName();
+        accessibleCommands.add(name);
+      }
+    }
+
+    return accessibleCommands;
   }
 }

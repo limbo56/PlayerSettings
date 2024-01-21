@@ -4,6 +4,7 @@ import me.limbo56.playersettings.api.setting.Setting;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * An {@link Event} that is fired whenever a {@link Setting}'s value is changed by a {@link Player}
@@ -67,7 +68,7 @@ public class SettingUpdateEvent extends Event {
   }
 
   @Override
-  public HandlerList getHandlers() {
+  public @NotNull HandlerList getHandlers() {
     return HANDLERS;
   }
 }

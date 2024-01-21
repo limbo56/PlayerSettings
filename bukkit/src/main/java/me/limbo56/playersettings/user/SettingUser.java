@@ -7,6 +7,7 @@ import java.util.function.Consumer;
 import me.limbo56.playersettings.PlayerSettings;
 import me.limbo56.playersettings.PlayerSettingsProvider;
 import me.limbo56.playersettings.api.setting.Setting;
+import me.limbo56.playersettings.api.setting.SettingCallback;
 import me.limbo56.playersettings.api.setting.SettingWatcher;
 import me.limbo56.playersettings.listeners.FlySettingListener;
 import me.limbo56.playersettings.util.Permissions;
@@ -33,11 +34,15 @@ public class SettingUser {
   }
 
   public void clearSettingEffects() {
-    PLUGIN.getSettingsManager().getSettingMap().values().forEach(this::clearSettingEffects);
+    for (Setting setting : PLUGIN.getSettingsManager().getSettings()) {
+      clearSettingEffects(setting);
+    }
   }
 
   private void clearSettingEffects(Setting setting) {
-    setting.getCallbacks().forEach(callback -> callback.clear(getPlayer()));
+    for (SettingCallback callback : setting.getCallbacks()) {
+      callback.clear(getPlayer());
+    }
   }
 
   public boolean hasSettingEnabled(String settingName) {

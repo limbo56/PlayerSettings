@@ -1,15 +1,14 @@
 package me.limbo56.playersettings.api;
 
 import com.cryptomorin.xseries.XItemStack;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.inventory.ItemStack;
 import org.immutables.value.Value;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * A {@link ConfigurationSerializable} that contains the display properties of an item which will be
@@ -28,9 +27,13 @@ public interface MenuItem extends ConfigurationSerializable {
   }
 
   static MenuItem deserialize(ConfigurationSection configurationSection) {
-    Map<String, Object> menuItem =
-        configurationSection.getKeys(true).stream()
-            .collect(Collectors.toMap(key -> key, configurationSection::get));
+    Map<String, Object> menuItem = new HashMap<>();
+    for (String key : configurationSection.getKeys(true)) {
+      if (menuItem.put(key, configurationSection.get(key)) != null) {
+        throw new IllegalStateException(
+            "Duplicate key " + key + " in " + configurationSection.getName());
+      }
+    }
     return deserialize(menuItem);
   }
 

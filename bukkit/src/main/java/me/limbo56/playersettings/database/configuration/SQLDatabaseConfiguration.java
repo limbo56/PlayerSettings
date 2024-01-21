@@ -66,7 +66,7 @@ public class SQLDatabaseConfiguration extends DatabaseConfiguration {
     }
   }
 
-  private static void configureRecommendedProperties(HikariConfig config) {
+  private void configureRecommendedProperties(HikariConfig config) {
     // https://github.com/brettwooldridge/HikariCP/wiki/MySQL-Configuration
     config.addDataSourceProperty("cachePrepStmts", "true");
     config.addDataSourceProperty("prepStmtCacheSize", "250");
@@ -82,6 +82,10 @@ public class SQLDatabaseConfiguration extends DatabaseConfiguration {
 
   private void configureExtraProperties(HikariConfig config) {
     ConfigurationSection properties = section.getConfigurationSection("properties");
+    if (properties == null) {
+      PluginLogger.warning("Missing 'properties' section from sql database configuration");
+      return;
+    }
 
     config.addDataSourceProperty("useUnicode", properties.getBoolean("use-unicode"));
     config.addDataSourceProperty("characterEncoding", properties.getString("character-encoding"));

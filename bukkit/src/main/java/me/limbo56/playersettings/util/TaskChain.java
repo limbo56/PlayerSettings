@@ -1,17 +1,16 @@
 package me.limbo56.playersettings.util;
 
-import me.limbo56.playersettings.PlayerSettings;
-import me.limbo56.playersettings.PlayerSettingsProvider;
-import org.bukkit.Bukkit;
-import org.jetbrains.annotations.NotNull;
-
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
+import me.limbo56.playersettings.PlayerSettings;
+import me.limbo56.playersettings.PlayerSettingsProvider;
+import org.bukkit.Bukkit;
+import org.jetbrains.annotations.NotNull;
 
 public class TaskChain {
   private static final PlayerSettings PLUGIN = PlayerSettingsProvider.getPlugin();
@@ -40,7 +39,9 @@ public class TaskChain {
 
   private void runAsyncChain() {
     Map<String, Object> data = loadData();
-    asyncCallbacks.forEach(dataConsumer -> dataConsumer.accept(data));
+    for (Consumer<Map<String, Object>> asyncCallback : asyncCallbacks) {
+      asyncCallback.accept(data);
+    }
     Bukkit.getScheduler()
         .runTask(PLUGIN, () -> syncCallbacks.forEach(dataConsumer -> dataConsumer.accept(data)));
   }
@@ -61,9 +62,12 @@ public class TaskChain {
 
   @NotNull
   private Map<String, Object> loadData() {
-    return loaderMap.entrySet().stream()
-        .collect(
-            Collectors.toMap(
-                Map.Entry::getKey, stringSupplierEntry -> stringSupplierEntry.getValue().get()));
+    Map<String, Object> dataMap = new HashMap<>();
+    for (Map.Entry<String, Supplier<Object>> entry : loaderMap.entrySet()) {
+      if (dataMap.put(entry.getKey(), entry.getValue().get()) != null) {
+        throw new IllegalStateException("Duplicate key");
+      }
+    }
+    return dataMap;
   }
 }

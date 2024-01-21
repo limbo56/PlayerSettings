@@ -3,8 +3,8 @@ package me.limbo56.playersettings.util;
 import com.google.common.base.Preconditions;
 import java.util.*;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 import me.clip.placeholderapi.PlaceholderAPI;
+import me.limbo56.playersettings.PlayerSettings;
 import me.limbo56.playersettings.PlayerSettingsProvider;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
@@ -17,6 +17,7 @@ import org.jetbrains.annotations.NotNull;
 
 /** Utility object to create, modify, and handle text */
 public class Text {
+  private static final PlayerSettings PLUGIN = PlayerSettingsProvider.getPlugin();
   private static final @NotNull LegacyComponentSerializer LEGACY_COMPONENT_SERIALIZER =
       LegacyComponentSerializer.legacySection();
   private final Set<Function<String, String>> modifiers = new HashSet<>();
@@ -53,21 +54,18 @@ public class Text {
    * @return New Text object
    */
   public static Text fromMessages(String path) {
-    String message =
-        PlayerSettingsProvider.getPlugin().getMessagesConfiguration().getFile().getString(path);
+    String message = PLUGIN.getMessagesConfiguration().getFile().getString(path);
     Preconditions.checkNotNull(message, "Message '" + path + "' is not a valid message");
     return new Text(Collections.singletonList(message));
   }
 
   public static Text fromMessages(String path, String defaultMessage) {
-    String message =
-        PlayerSettingsProvider.getPlugin().getMessagesConfiguration().getFile().getString(path);
+    String message = PLUGIN.getMessagesConfiguration().getFile().getString(path);
     return new Text(Collections.singletonList(message == null ? defaultMessage : message));
   }
 
   public static Text fromMessages(String path, List<String> defaultMessage) {
-    YamlConfiguration messagesConfiguration =
-        PlayerSettingsProvider.getPlugin().getMessagesConfiguration().getFile();
+    YamlConfiguration messagesConfiguration = PLUGIN.getMessagesConfiguration().getFile();
     List<String> message =
         messagesConfiguration.contains(path)
             ? messagesConfiguration.getStringList(path)
@@ -162,9 +160,14 @@ public class Text {
    * @return Modified text
    */
   private List<String> apply(Collection<String> text) {
-    return text.stream()
-        .map(modifiers.stream().reduce(Function::andThen).orElse(Function.identity()))
-        .map(Colors::translateColorCodes)
-        .collect(Collectors.toList());
+    List<String> list = new ArrayList<>();
+    Function<String, String> mapper =
+        modifiers.stream().reduce(Function::andThen).orElse(Function.identity());
+    for (String line : text) {
+      String string = mapper.apply(line);
+      String translateColorCodes = Colors.translateColorCodes(string);
+      list.add(translateColorCodes);
+    }
+    return list;
   }
 }

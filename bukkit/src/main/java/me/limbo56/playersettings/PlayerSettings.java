@@ -6,6 +6,7 @@ import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import me.limbo56.playersettings.api.SettingsContainer;
 import me.limbo56.playersettings.api.SettingsWatchlist;
+import me.limbo56.playersettings.api.setting.Setting;
 import me.limbo56.playersettings.command.CommandManager;
 import me.limbo56.playersettings.command.SubCommandExecutor;
 import me.limbo56.playersettings.command.subcommand.*;
@@ -104,10 +105,14 @@ public class PlayerSettings extends JavaPlugin {
         .register(SettingsContainer.class, settingsManager, this, ServicePriority.Normal);
 
     // Register default settings
-    DefaultSettings.getSettings().forEach(settingsManager::registerSetting);
-    getSettingsConfiguration().getEnabledSettings(false).stream()
-        .filter(setting -> !settingsManager.isSettingRegistered(setting.getName()))
-        .forEach(setting -> settingsManager.registerSetting(setting, false));
+    for (Setting setting : DefaultSettings.getSettings()) {
+      settingsManager.registerSetting(setting);
+    }
+    for (Setting setting : getSettingsConfiguration().getEnabledSettings(false)) {
+      if (!settingsManager.isSettingRegistered(setting.getName())) {
+        settingsManager.registerSetting(setting, false);
+      }
+    }
     userManager.loadOnlineUsers();
 
     // Log startup time and update message
@@ -128,7 +133,7 @@ public class PlayerSettings extends JavaPlugin {
 
   @Override
   public void onDisable() {
-    PluginLogger.log("Save all users...");
+    PluginLogger.log("Saving user settings...");
     userManager.saveAll();
 
     PluginLogger.log("Disconnecting data manager...");

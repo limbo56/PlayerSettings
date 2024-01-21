@@ -41,7 +41,6 @@ public final class SettingItemFormatter {
   public static Text applySettingPlaceholders(
       Text text, Player player, Setting setting, int value) {
     SettingsConfiguration settingsConfiguration = PLUGIN.getSettingsConfiguration();
-
     int maxValueInteger = setting.getMaxValue();
     String currentValue = settingsConfiguration.formatSettingValue(setting, value);
     String maxValue = settingsConfiguration.formatSettingValue(setting, maxValueInteger);

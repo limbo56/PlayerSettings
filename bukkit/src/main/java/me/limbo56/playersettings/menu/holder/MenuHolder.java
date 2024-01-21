@@ -36,10 +36,12 @@ public class MenuHolder implements InventoryHolder {
   }
 
   public SettingsMenuItem getMenuItem(int slot) {
-    return menuItemMap.values().stream()
-        .filter(menuItem -> menuItem.getSlot() == slot)
-        .findFirst()
-        .orElse(null);
+    for (SettingsMenuItem menuItem : menuItemMap.values()) {
+      if (menuItem.getSlot() == slot) {
+        return menuItem;
+      }
+    }
+    return null;
   }
 
   @NotNull
@@ -51,13 +53,8 @@ public class MenuHolder implements InventoryHolder {
     return size;
   }
 
-  @NotNull
-  public UUID getOwnerUniqueId() {
-    return owner;
-  }
-
   public SettingUser getOwner() {
-    return PLUGIN.getUserManager().getUser(getOwnerUniqueId());
+    return PLUGIN.getUserManager().getUser(owner);
   }
 
   @Override

@@ -22,7 +22,6 @@ public class MenuHolderLoader extends CacheLoader<UUID, MenuHolder> {
 
     String menuName = Colors.translateColorCodes(menuSection.getString("name"));
     int menuSize = menuSection.getInt("size");
-
     return new MenuHolder(uuid, menuName, menuSize);
   }
 }

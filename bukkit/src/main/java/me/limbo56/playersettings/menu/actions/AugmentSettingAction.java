@@ -17,10 +17,10 @@ public class AugmentSettingAction extends SettingItemAction {
   @Override
   public void execute(SettingsMenuItem menuItem, ClickType type, SettingUser settingsPlayer) {
     Player player = settingsPlayer.getPlayer();
-    int permissionLevel = Permissions.getSettingPermissionLevel(player, setting);
-    int maxValue = Math.max(1, Math.min(setting.getMaxValue(), permissionLevel));
+    int maxValue = getMaxValue(player, setting);
     int currentValue = settingsPlayer.getSettingWatcher().getValue(setting.getName());
     int newValue = calculateNewValue(type, maxValue, currentValue);
+
     player.performCommand("settings set " + setting.getName() + " " + newValue);
     super.execute(menuItem, type, settingsPlayer);
   }
@@ -34,5 +34,10 @@ public class AugmentSettingAction extends SettingItemAction {
     if (type.isRightClick()) return currentValue == 0 ? maxValue : currentValue - 1;
     // Cycle to next value or 0 if value is max
     return currentValue == maxValue ? 0 : currentValue + 1;
+  }
+
+  private int getMaxValue(Player player, Setting setting) {
+    int permissionLevel = Permissions.getSettingPermissionLevel(player, setting);
+    return Math.max(1, Math.min(setting.getMaxValue(), permissionLevel));
   }
 }

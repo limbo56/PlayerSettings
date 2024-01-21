@@ -1,8 +1,7 @@
 package me.limbo56.playersettings.menu.renderers;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import com.google.common.collect.Sets;
+import java.util.*;
 import me.limbo56.playersettings.PlayerSettings;
 import me.limbo56.playersettings.PlayerSettingsProvider;
 import me.limbo56.playersettings.api.ImmutableMenuItem;
@@ -14,18 +13,17 @@ import me.limbo56.playersettings.util.ItemBuilder;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 public class CustomItemsRenderer implements MenuItemRenderer {
   private static final PlayerSettings PLUGIN = PlayerSettingsProvider.getPlugin();
-  private static final List<String> IGNORE_LIST =
-      Arrays.asList("enabled", "disabled", "dismiss", "next-page", "previous-page");
+  private static final Set<String> IGNORE_LIST =
+      Sets.newHashSet("enabled", "disabled", "dismiss", "next-page", "previous-page");
 
   @Override
   public void render(@NotNull MenuHolder menuHolder, int page) {
     YamlConfiguration itemsConfiguration = PLUGIN.getItemsConfiguration().getFile();
-    List<String> ignoreList = getIgnoreList();
+    Set<String> ignoreList = getIgnoreList();
 
     for (String key : itemsConfiguration.getKeys(false)) {
       if (ignoreList.contains(key)) {
@@ -52,9 +50,8 @@ public class CustomItemsRenderer implements MenuItemRenderer {
       MenuHolder holder, ConfigurationSection itemSection) {
     MenuItem item = MenuItem.deserialize(itemSection);
     Player player = holder.getOwner().getPlayer();
-    ItemStack translatedItemStack = ItemBuilder.translateItemStack(item.getItemStack(), player);
-
-    return ImmutableMenuItem.copyOf(item).withItemStack(translatedItemStack);
+    return ImmutableMenuItem.copyOf(item)
+        .withItemStack(ItemBuilder.translateItemStack(item.getItemStack(), player));
   }
 
   @NotNull
@@ -62,10 +59,9 @@ public class CustomItemsRenderer implements MenuItemRenderer {
     return new ExecuteCommandsAction(dismissItemSection.getStringList("onPress"));
   }
 
-  private List<String> getIgnoreList() {
-    List<String> ignored = new ArrayList<>(IGNORE_LIST);
-    ignored.addAll(PLUGIN.getSettingsManager().getSettingMap().keySet());
-
+  private Set<String> getIgnoreList() {
+    Set<String> ignored = new HashSet<>(IGNORE_LIST);
+    ignored.addAll(PLUGIN.getSettingsConfiguration().getSettingNames());
     return ignored;
   }
 }
