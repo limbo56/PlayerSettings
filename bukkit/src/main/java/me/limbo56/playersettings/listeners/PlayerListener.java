@@ -77,7 +77,7 @@ public class PlayerListener implements Listener {
   private Consumer<Map<String, Object>> reapplySettingEffects(Player player) {
     return data -> {
       SettingWatcher watcher = PLUGIN.getUserManager().getSettingWatcher(player.getUniqueId());
-      for (Setting setting : PLUGIN.getSettingsManager().getSettingMap().values()) {
+      for (Setting setting : PLUGIN.getSettingsManager().getSettings()) {
         boolean hasRespawnTrigger = PLUGIN.getSettingsManager().hasTriggers(setting, "respawn");
         PluginLogger.debug(
             "Reloading setting `" + setting.getName() + "` on death `" + hasRespawnTrigger + "`");

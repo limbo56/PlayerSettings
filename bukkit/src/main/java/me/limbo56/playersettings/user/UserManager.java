@@ -24,10 +24,11 @@ public class UserManager implements SettingsWatchlist {
   }
 
   public void loadUsers(Collection<UUID> uuids) {
-    Collection<Setting> registeredSettings = PLUGIN.getSettingsManager().getSettingMap().values();
     for (UUID uuid : uuids) {
       PluginLogger.log("Loading settings of player '" + uuid + "'");
-      new TaskChain().sync(createLoadTask(uuid, registeredSettings)).runSync();
+      new TaskChain()
+          .sync(createLoadTask(uuid, PLUGIN.getSettingsManager().getSettings()))
+          .runSync();
     }
   }
 

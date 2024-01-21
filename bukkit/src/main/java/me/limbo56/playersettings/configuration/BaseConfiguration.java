@@ -1,16 +1,19 @@
 package me.limbo56.playersettings.configuration;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.concurrent.ExecutionException;
+import me.limbo56.playersettings.PlayerSettings;
 import me.limbo56.playersettings.PlayerSettingsProvider;
 import me.limbo56.playersettings.util.Configurations;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.concurrent.ExecutionException;
-
 public abstract class BaseConfiguration {
+
+  private final PlayerSettings PLUGIN = PlayerSettingsProvider.getPlugin();
+
   @NotNull
   abstract String getFileName();
 
@@ -31,11 +34,9 @@ public abstract class BaseConfiguration {
 
   public YamlConfiguration getFile() {
     try {
-      return PlayerSettingsProvider.getPlugin()
-          .getConfigurationManager()
-          .getConfiguration(this.getFileName());
+      return PLUGIN.getConfigurationManager().getConfiguration(this.getFileName());
     } catch (ExecutionException exception) {
-      PlayerSettingsProvider.getPlugin()
+      PLUGIN
           .getLogger()
           .severe("An exception occurred wile reading configuration '" + this.getFileName() + "':");
       exception.printStackTrace();

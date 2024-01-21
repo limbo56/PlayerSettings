@@ -3,6 +3,9 @@ package me.limbo56.playersettings.command.subcommand;
 import com.cryptomorin.xseries.XSound;
 import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.Range;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import me.limbo56.playersettings.PlayerSettings;
 import me.limbo56.playersettings.PlayerSettingsProvider;
 import me.limbo56.playersettings.api.setting.Setting;
@@ -16,11 +19,6 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 public class SetSubCommand extends SubCommand {
   private static final PlayerSettings PLUGIN = PlayerSettingsProvider.getPlugin();
@@ -176,18 +174,27 @@ public class SetSubCommand extends SubCommand {
   @NotNull
   private List<String> getSettingLevelAliases(
       Collection<String> settingLevels, ImmutableListMultimap<Integer, String> valueAliases) {
-    return settingLevels.stream()
-        .map(level -> valueAliases.get(Integer.parseInt(level)).stream().findFirst())
-        .filter(Optional::isPresent)
-        .map(Optional::get)
-        .collect(Collectors.toList());
+    List<String> list = new ArrayList<>();
+    for (String level : settingLevels) {
+      Optional<String> first = valueAliases.get(Integer.parseInt(level)).stream().findFirst();
+      if (first.isPresent()) {
+        String s = first.get();
+        list.add(s);
+      }
+    }
+    return list;
   }
 
   private Collection<String> getAllowedValues(Setting setting, int value) {
-    return IntStream.range(0, setting.getMaxValue() + 1)
-        .filter(current -> current <= value)
-        .mapToObj(String::valueOf)
-        .collect(Collectors.toList());
+    List<String> list = new ArrayList<>();
+    int bound = setting.getMaxValue() + 1;
+    for (int current = 0; current < bound; current++) {
+      if (current <= value) {
+        String s = String.valueOf(current);
+        list.add(s);
+      }
+    }
+    return list;
   }
 
   private void playSettingToggleSound(

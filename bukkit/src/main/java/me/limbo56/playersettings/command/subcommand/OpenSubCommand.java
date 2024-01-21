@@ -34,8 +34,7 @@ public class OpenSubCommand extends SubCommand {
       return;
     }
 
-    SettingUser user =
-        PlayerSettingsProvider.getPlugin().getUserManager().getUser(player.getUniqueId());
+    SettingUser user = PLUGIN.getUserManager().getUser(player.getUniqueId());
     if (user.isLoading()) {
       Text.fromMessages("settings.wait-loading")
           .usePlaceholderApi(player)
@@ -43,7 +42,7 @@ public class OpenSubCommand extends SubCommand {
       return;
     }
 
-    SettingsMenu.open(user.getPlayer(), 1);
+    SettingsMenu.open(player, 1);
   }
 
   @Override

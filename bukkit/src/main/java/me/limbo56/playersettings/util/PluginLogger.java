@@ -10,8 +10,7 @@ public class PluginLogger {
 
   public static void log(String... messages) {
     Bukkit.getConsoleSender()
-        .sendMessage(
-            "[" + PlayerSettingsProvider.getPlugin().getName() + "] " + String.join("", messages));
+        .sendMessage("[" + PLUGIN.getName() + "] " + String.join("", messages));
   }
 
   public static void warning(String message) {

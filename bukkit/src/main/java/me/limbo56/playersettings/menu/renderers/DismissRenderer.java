@@ -9,7 +9,6 @@ import me.limbo56.playersettings.menu.holder.MenuHolder;
 import me.limbo56.playersettings.menu.item.SettingsMenuItem;
 import me.limbo56.playersettings.util.ItemBuilder;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
@@ -24,24 +23,16 @@ public class DismissRenderer implements MenuItemRenderer {
       return;
     }
 
-    ImmutableMenuItem menuItem = getDismissItem(menuHolder, dismissItemSection);
-    ExecuteCommandsAction onPressAction = getOnPressAction(dismissItemSection);
-
-    menuHolder.renderItem(new SettingsMenuItem(menuItem, onPressAction));
+    menuHolder.renderItem(buildMenuItem(menuHolder, dismissItemSection));
   }
 
-  @NotNull
-  private static ImmutableMenuItem getDismissItem(
-      MenuHolder holder, ConfigurationSection itemSection) {
-    MenuItem item = MenuItem.deserialize(itemSection);
-    Player player = holder.getOwner().getPlayer();
-    ItemStack translatedItemStack = ItemBuilder.translateItemStack(item.getItemStack(), player);
-
-    return ImmutableMenuItem.copyOf(item).withItemStack(translatedItemStack);
-  }
-
-  @NotNull
-  private static ExecuteCommandsAction getOnPressAction(ConfigurationSection dismissItemSection) {
-    return new ExecuteCommandsAction(dismissItemSection.getStringList("onPress"));
+  private SettingsMenuItem buildMenuItem(MenuHolder holder, ConfigurationSection configuration) {
+    MenuItem item = MenuItem.deserialize(configuration);
+    ItemStack translatedItemStack =
+        ItemBuilder.translateItemStack(item.getItemStack(), holder.getOwner().getPlayer());
+    ImmutableMenuItem menuItem = ImmutableMenuItem.copyOf(item).withItemStack(translatedItemStack);
+    ExecuteCommandsAction onPressAction =
+        new ExecuteCommandsAction(configuration.getStringList("onPress"));
+    return new SettingsMenuItem(menuItem, onPressAction);
   }
 }

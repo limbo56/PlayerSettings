@@ -1,15 +1,14 @@
 package me.limbo56.playersettings.command.subcommand;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.StringJoiner;
 import me.limbo56.playersettings.PlayerSettings;
 import me.limbo56.playersettings.PlayerSettingsProvider;
 import me.limbo56.playersettings.command.SubCommand;
 import me.limbo56.playersettings.util.Text;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class HelpSubCommand extends SubCommand {
   private static final PlayerSettings PLUGIN = PlayerSettingsProvider.getPlugin();
@@ -29,17 +28,18 @@ public class HelpSubCommand extends SubCommand {
   }
 
   private String buildHelpMessage(CommandSender senders) {
-    return PLUGIN.getCommandManager().getAccessibleCommands(senders).stream()
-        .map(this::buildCommandHelpMessage)
-        .collect(Collectors.joining("\n", "&e------- &6Settings Help &e---------\n", ""));
+    StringJoiner message = new StringJoiner("\n", "&e------- &6Settings Help &e---------\n", "");
+    for (String command : PLUGIN.getCommandManager().getAccessibleCommands(senders)) {
+      message.add(buildCommandHelpMessage(command));
+    }
+    return message.toString();
   }
 
   private String buildCommandHelpMessage(String commandName) {
     SubCommand command = PLUGIN.getCommandManager().getCommand(commandName);
-    String helpFormat = "&f/settings %s%s &8: &7%s";
-    String name = command.getName();
-    String usage = command.getUsage().equals("") ? "" : " " + command.getUsage();
-    String description = command.getDescription();
-    return String.format(helpFormat, name, usage, description);
+    String usage = command.getUsage();
+    usage = usage.isEmpty() ? "" : " " + usage;
+    return String.format(
+        "&f/settings %s%s &8: &7%s", command.getName(), usage, command.getDescription());
   }
 }

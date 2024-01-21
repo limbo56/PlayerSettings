@@ -7,6 +7,7 @@ import me.limbo56.playersettings.PlayerSettings;
 import me.limbo56.playersettings.PlayerSettingsProvider;
 import me.limbo56.playersettings.api.ImmutableMenuItem;
 import me.limbo56.playersettings.api.MenuItem;
+import me.limbo56.playersettings.api.setting.Setting;
 import me.limbo56.playersettings.menu.actions.PaginationAction;
 import me.limbo56.playersettings.menu.holder.MenuHolder;
 import me.limbo56.playersettings.menu.item.SettingsMenuItem;
@@ -23,11 +24,14 @@ public class PaginationRenderer implements MenuItemRenderer {
 
   @Override
   public void render(@NotNull MenuHolder menuHolder, int page) {
-    if (page > 1) renderNavigationItem(PaginationItem.PREVIOUS, menuHolder, page);
+    if (page > 1) {
+      renderNavigationItem(PaginationItem.PREVIOUS, menuHolder, page);
+    }
 
     int highestPage = getHighestPage();
-    if (page != highestPage && highestPage > 1)
+    if (page != highestPage && highestPage > 1) {
       renderNavigationItem(PaginationItem.NEXT, menuHolder, page);
+    }
   }
 
   private void renderNavigationItem(
@@ -67,16 +71,21 @@ public class PaginationRenderer implements MenuItemRenderer {
   }
 
   private Text fillPaginationPlaceholders(Text text, int page) {
-    int highestPage = getHighestPage();
     return text.usePlaceholder("%current%", String.valueOf(page))
-        .usePlaceholder("%max%", String.valueOf(highestPage));
+        .usePlaceholder("%max%", String.valueOf(getHighestPage()));
   }
 
   private int getHighestPage() {
-    return PLUGIN.getSettingsManager().getSettingMap().values().stream()
-        .mapToInt(setting -> setting.getItem().getPage())
-        .max()
-        .orElse(1);
+    boolean seen = false;
+    int best = 0;
+    for (Setting setting : PLUGIN.getSettingsManager().getSettings()) {
+      int page = setting.getItem().getPage();
+      if (!seen || page > best) {
+        seen = true;
+        best = page;
+      }
+    }
+    return seen ? best : 1;
   }
 
   public enum PaginationItem {

@@ -1,6 +1,10 @@
 package me.limbo56.playersettings.command.subcommand;
 
-import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
 import me.limbo56.playersettings.PlayerSettings;
 import me.limbo56.playersettings.PlayerSettingsProvider;
 import me.limbo56.playersettings.api.setting.Setting;
@@ -11,11 +15,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
 
 public class GetSubCommand extends SubCommand {
   private static final PlayerSettings PLUGIN = PlayerSettingsProvider.getPlugin();
@@ -65,10 +64,12 @@ public class GetSubCommand extends SubCommand {
   @Override
   public List<String> onTabComplete(CommandSender sender, String[] args) {
     SettingUser user = PLUGIN.getUserManager().getUser(((Player) sender).getUniqueId());
+    Set<String> settingNames = Sets.newHashSet(user.getSettingWatcher().getWatched());
     final List<String> completions = new ArrayList<>();
-    Set<String> settingNames = ImmutableSet.copyOf(user.getSettingWatcher().getWatched());
+
     StringUtil.copyPartialMatches(args[1], settingNames, completions);
     Collections.sort(completions);
+
     return completions;
   }
 }

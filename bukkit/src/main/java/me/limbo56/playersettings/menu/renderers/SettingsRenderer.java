@@ -1,6 +1,5 @@
 package me.limbo56.playersettings.menu.renderers;
 
-import java.util.Collection;
 import me.limbo56.playersettings.PlayerSettings;
 import me.limbo56.playersettings.PlayerSettingsProvider;
 import me.limbo56.playersettings.api.setting.Setting;
@@ -15,10 +14,11 @@ public class SettingsRenderer implements MenuItemRenderer {
 
   @Override
   public void render(@NotNull MenuHolder menuHolder, int page) {
-    Collection<Setting> settings = PLUGIN.getSettingsManager().getSettingMap().values();
-    settings.stream()
-        .filter(setting -> setting.getItem().getPage() == page)
-        .forEach(setting -> renderSetting(menuHolder, setting));
+    for (Setting setting : PLUGIN.getSettingsManager().getSettings()) {
+      if (setting.getItem().getPage() == page) {
+        renderSetting(menuHolder, setting);
+      }
+    }
   }
 
   public void renderSetting(@NotNull MenuHolder menuHolder, @NotNull Setting setting) {
