@@ -30,9 +30,9 @@ section and API to define custom settings.
 
 ## Requirements
 
-* **Java** 8 or newer
+* **Java:** Version 8 or later
 
-* **Bukkit/Spigot/Paper** 1.8 - 1.19
+* **Minecraft Server:** Compatible with Bukkit, Spigot, or Paper version 1.8 to 1.20
 
 ## Wiki
 
