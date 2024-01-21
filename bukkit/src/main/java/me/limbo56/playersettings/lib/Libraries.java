@@ -16,50 +16,88 @@ public enum Libraries {
           .id("mysql_driver")
           .groupId("com{}mysql")
           .artifactId("mysql-connector-j")
-          .version("8.1.0")
+          .version("8.2.0")
           .relocate("com{}mysql", "me{}limbo56{}playersettings{}lib{}mysql")),
   SQLITE(
       Library.builder()
           .id("sqlite_driver")
           .groupId("org{}xerial")
           .artifactId("sqlite-jdbc")
-          .version("3.42.0.0")
+          .version("3.45.0.0")
           .relocate("org{}sqlite", "me{}limbo56{}playersettings{}lib{}sqlite")),
-  MONGODB(
+  BSON(
       Library.builder()
-          .id("mongodb_driver")
+          .id("bson")
           .groupId("org{}mongodb")
-          .artifactId("mongo-java-driver")
-          .version("3.12.14")
+          .artifactId("bson")
+          .version("4.10.2")
+          .relocate("org{}bson", "me{}limbo56{}playersettings{}lib{}bson")
           .relocate("org{}mongodb", "me{}limbo56{}playersettings{}lib{}mongodb")
-          .relocate("org{}xerial{}snappy", "me{}limbo56{}playersettings{}lib{}snappy")),
+          .relocate("org{}slf4j", "me{}limbo56{}playersettings{}lib{}slf4j")),
+  BSON_RECORD_CODEC(
+      Library.builder()
+          .id("bson_record_codec")
+          .groupId("org{}mongodb")
+          .artifactId("bson-record-codec")
+          .version("4.10.2")
+          .relocate("org{}bson", "me{}limbo56{}playersettings{}lib{}bson")
+          .relocate("org{}mongodb", "me{}limbo56{}playersettings{}lib{}mongodb")
+          .relocate("org{}slf4j", "me{}limbo56{}playersettings{}lib{}slf4j")),
+  MONGODB_DRIVER_LEGACY(
+      Library.builder()
+          .id("mongodb_driver_legacy")
+          .groupId("org{}mongodb")
+          .artifactId("mongodb-driver-legacy")
+          .version("4.10.2")
+          .relocate("org{}mongodb", "me{}limbo56{}playersettings{}lib{}mongodb")
+          .relocate("org{}bson", "me{}limbo56{}playersettings{}lib{}bson")
+          .relocate("org{}slf4j", "me{}limbo56{}playersettings{}lib{}slf4j")),
+  MONGODB_DRIVER_CORE(
+      Library.builder()
+          .id("mongodb_driver_core")
+          .groupId("org{}mongodb")
+          .artifactId("mongodb-driver-core")
+          .version("4.10.2")
+          .relocate("org{}mongodb", "me{}limbo56{}playersettings{}lib{}mongodb")
+          .relocate("org{}bson", "me{}limbo56{}playersettings{}lib{}bson")
+          .relocate("org{}xerial{}snappy", "me{}limbo56{}playersettings{}lib{}snappy")
+          .relocate("org{}slf4j", "me{}limbo56{}playersettings{}lib{}slf4j")),
+  MONGODB_DRIVER_SYNC(
+      Library.builder()
+          .id("mongodb_driver_core")
+          .groupId("org{}mongodb")
+          .artifactId("mongodb-driver-sync")
+          .version("4.10.2")
+          .relocate("org{}mongodb", "me{}limbo56{}playersettings{}lib{}mongodb")
+          .relocate("org{}bson", "me{}limbo56{}playersettings{}lib{}bson")
+          .relocate("org{}slf4j", "me{}limbo56{}playersettings{}lib{}slf4j")),
   SNAPPY(
       Library.builder()
           .id("snappy_compression")
           .groupId("org{}xerial{}snappy")
           .artifactId("snappy-java")
-          .version("1.1.10.4")
+          .version("1.1.10.5")
           .relocate("org{}xerial{}snappy", "me{}limbo56{}playersettings{}lib{}snappy")),
   SLF4J_API(
       Library.builder()
           .id("slf4j_api")
           .groupId("org{}slf4j")
           .artifactId("slf4j-api")
-          .version("2.0.5")
+          .version("1.7.6")
           .relocate("org{}slf4j", "me{}limbo56{}playersettings{}lib{}slf4j")),
   SLF4J_SIMPLE(
       Library.builder()
           .id("slf4j_api")
           .groupId("org{}slf4j")
           .artifactId("slf4j-simple")
-          .version("2.0.5")
+          .version("1.7.6")
           .relocate("org{}slf4j", "me{}limbo56{}playersettings{}lib{}slf4j")),
   ADVENTURE(
       Library.builder()
           .id("adventure")
           .groupId("net{}kyori")
           .artifactId("adventure-platform-bukkit")
-          .version("4.3.1")
+          .version("4.3.2")
           .relocate("net{}kyori", "me{}limbo56{}playersettings{}lib{}kyori")),
   ADVENTURE_API(
       Library.builder()
@@ -87,35 +125,35 @@ public enum Libraries {
           .id("adventure_platform_api")
           .groupId("net{}kyori")
           .artifactId("adventure-platform-api")
-          .version("4.3.1")
+          .version("4.3.2")
           .relocate("net{}kyori", "me{}limbo56{}playersettings{}lib{}kyori")),
   ADVENTURE_PLATFORM_BUKKIT(
       Library.builder()
           .id("adventure_platform_bukkit")
           .groupId("net{}kyori")
           .artifactId("adventure-platform-bukkit")
-          .version("4.3.1")
+          .version("4.3.2")
           .relocate("net{}kyori", "me{}limbo56{}playersettings{}lib{}kyori")),
   ADVENTURE_PLATFORM_FACET(
       Library.builder()
           .id("adventure_platform_facet")
           .groupId("net{}kyori")
           .artifactId("adventure-platform-facet")
-          .version("4.3.1")
+          .version("4.3.2")
           .relocate("net{}kyori", "me{}limbo56{}playersettings{}lib{}kyori")),
   ADVENTURE_PLATFORM_VIAVERSION(
       Library.builder()
           .id("adventure_platform_viaversion")
           .groupId("net{}kyori")
           .artifactId("adventure-platform-viaversion")
-          .version("4.3.1")
+          .version("4.3.2")
           .relocate("net{}kyori", "me{}limbo56{}playersettings{}lib{}kyori")),
   ADVENTURE_TEXT_SERIALIZER_BUNGEECORD(
       Library.builder()
           .id("adventure_text_serializer_bungeecord")
           .groupId("net{}kyori")
           .artifactId("adventure-text-serializer-bungeecord")
-          .version("4.3.1")
+          .version("4.3.2")
           .relocate("net{}kyori", "me{}limbo56{}playersettings{}lib{}kyori")),
   ADVENTURE_TEXT_SERIALIZER_LEGACY(
       Library.builder()
