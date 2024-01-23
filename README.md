@@ -24,9 +24,10 @@
 
 # Player Settings
 
-A Spigot/Bukkit plugin with an in-game settings menu for players in Minecraft servers. The plugin
-includes some predefined settings by default that can be disabled. It also provides a configuration
-section and API to define custom settings.
+PlayerSettings is a powerful plugin for Minecraft servers that offers a comprehensive settings system for players. The plugin features a user-friendly paginated menu, making it easy for players to navigate and modify settings according to their preferences. Additionally, the plugin allows server owners to create custom settings and add custom items to the menu to meet their unique needs and requirements. 
+
+The plugin
+includes some predefined settings by default that can be disabled and a configuration section and API to define custom settings.
 
 ## Requirements
 
@@ -52,6 +53,5 @@ If you are creating an issue, make sure to use the appropriate template from the
 ## License
 
 This repository is licensed under
-the [MIT License](https://github.com/limbo56/PlayerSettings/blob/master/LICENSE). Make sure to read
-it before cloning or using
-this resource.
+the [MIT License](https://github.com/limbo56/PlayerSettings/blob/master/LICENSE). 
+Please make sure to read it before cloning or using this resource.
