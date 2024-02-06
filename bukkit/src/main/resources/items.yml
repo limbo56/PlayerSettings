@@ -11,12 +11,6 @@
 #   * You can find all of the available properties for this section here:
 #   * https://github.com/CryptoMorin/XSeries/wiki/XItemStack
 #
-#   | The slot of the menu in which the item will be placed
-#   slot: 4
-#
-#   | The page of the menu where the item will appear
-#   page: 1
-#
 #   | The display name of the item
 #   | Placeholders:
 #     - %current%  : Current value of the setting
@@ -24,15 +18,6 @@
 #     - %next%     : Next value of the setting
 #     - %previous% : Previous value of the setting
 #   name: "&aExample"
-#
-#   | A list of text that will be set as the lore of the item
-#   | Placeholders:
-#     - %current%  : Current value of the setting
-#     - %max%      : Maximum value allowed for the setting
-#     - %next%     : Next value of the setting
-#     - %previous% : Previous value of the setting
-#   lore:
-#     - "&aExample lore"
 #
 #   | The material of the item (https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html)
 #   |
@@ -46,11 +31,21 @@
 #   |     1: "DIAMOND_SWORD"
 #   material: "LIME_WOOL"
 #
+#   | The page of the menu where the item will appear
+#   page: 1
+#
+#   | The slot of the menu in which the item will be placed
+#   slot: 4
+#
 #   | The amount of the item to show in the stack
 #   amount: 1
 #
 #   | Toggles the glow applied to the item when the setting is enabled
 #   glow: true
+#
+#   | The texture URL to assign to the material if it's a player skull
+#   | * Accepts usernames, texture URLs, and base64 encoded texture URLs
+#   skull: "ewogICJ0aW1lc3RhbXAiIDogMTY2NjY1ODAwNzgxMiwKICAicHJvZmlsZUlkIiA6ICIwNjlhNzlmNDQ0ZTk0NzI2YTViZWZjYTkwZTM4YWFmNSIsCiAgInByb2ZpbGVOYW1lIiA6ICJOb3RjaCIsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS8yOTIwMDlhNDkyNWI1OGYwMmM3N2RhZGMzZWNlZjA3ZWE0Yzc0NzJmNjRlMGZkYzMyY2U1NTIyNDg5MzYyNjgwIgogICAgfQogIH0KfQ=="
 #
 #   | The id of the custom item model to use for this item
 #   | * Only works on versions 1.14+
@@ -61,17 +56,22 @@
 #   |     1: 9
 #   custom-model-data: 1
 #
-#   | The texture URL to assign to the material if it's a player skull
-#   | * Accepts usernames, texture URLs, and base64 encoded texture URLs
-#   skull: "ewogICJ0aW1lc3RhbXAiIDogMTY2NjY1ODAwNzgxMiwKICAicHJvZmlsZUlkIiA6ICIwNjlhNzlmNDQ0ZTk0NzI2YTViZWZjYTkwZTM4YWFmNSIsCiAgInByb2ZpbGVOYW1lIiA6ICJOb3RjaCIsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS8yOTIwMDlhNDkyNWI1OGYwMmM3N2RhZGMzZWNlZjA3ZWE0Yzc0NzJmNjRlMGZkYzMyY2U1NTIyNDg5MzYyNjgwIgogICAgfQogIH0KfQ=="
+#   | A list of text that will be set as the lore of the item
+#   | Placeholders:
+#     - %current%  : Current value of the setting
+#     - %max%      : Maximum value allowed for the setting
+#     - %next%     : Next value of the setting
+#     - %previous% : Previous value of the setting
+#   lore:
+#     - "&aExample lore"
 #
 # Examples:
 #
 # premium-setting:
-#   page: 1
-#   slot: 34
 #   name: '&dPremium &f%current%'
 #   material: JUKEBOX
+#   page: 1
+#   slot: 34
 #   amount: 1
 #   lore:
 #     - '&7Toggle your account as authenticated and skip the login step!'
@@ -79,10 +79,10 @@
 #     - '&6Click &7to toggle'
 #
 # radio-setting:
-#   page: 1
-#   slot: 34
 #   name: '&dRadio &f%current%'
 #   material: JUKEBOX
+#   page: 1
+#   slot: 34
 #   amount: 1
 #   lore:
 #     - '&7Resume and pause the active radio song!'
@@ -90,9 +90,9 @@
 #     - '&6Click &7to toggle'
 #
 # custom-item-example:
-#   slot: 45
 #   name: '&eCustom Item'
 #   material: DIAMOND
+#   slot: 45
 #   amount: 1
 #   lore:
 #     - '&7An example of a non-setting item'
@@ -119,9 +119,9 @@ disabled:
 
 # This section defines the display properties of the dismiss item
 dismiss:
-  slot: 49
   name: "&cClose"
   material: "BARRIER"
+  slot: 49
   amount: 1
   lore:
     - ""
@@ -134,30 +134,30 @@ dismiss:
     - "playersettings close"
 
 next-page:
-  slot: 53
   name: "&aNext page &7(%current%/%max%)"
   material: "ARROW"
+  slot: 53
   amount: 1
   lore:
     - ""
     - "&6Click &7to go to the next page"
 
 previous-page:
-  slot: 45
   name: "&cPrevious page &7(%current%/%max%)"
   material: "ARROW"
+  slot: 45
   amount: 1
   lore:
     - ""
     - "&6Click &7to go to the previous page"
 
 vanish-setting:
-  page: 1
-  slot: 29
   name: '&6&lVanish &f(%current%)'
   material:
     0: GLASS_BOTTLE
     1: POTION
+  page: 1
+  slot: 29
   lore:
     - '&7Make yourself invisible to other players!'
     - ''
@@ -166,12 +166,12 @@ vanish-setting:
   flags: [ 'HIDE_ATTRIBUTES', 'HIDE_POTION_EFFECTS' ]
 
 visibility-setting:
-  page: 1
-  slot: 33
   name: '&6&lVisibility &f(%current%)'
   material:
     0: ENDER_PEARL
     1: ENDER_EYE
+  page: 1
+  slot: 33
   lore:
     - '&7Shows and hides other players from your sight!'
     - ''
