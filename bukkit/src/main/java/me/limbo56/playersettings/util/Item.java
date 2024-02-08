@@ -34,8 +34,10 @@ public class Item {
     List<String> lore = templateMeta.getLore();
 
     targetMeta.setDisplayName(builder.from(displayName).getFirstTextLine());
-    if (lore != null) {
+    if (lore != null && !lore.isEmpty()) {
       targetMeta.setLore(builder.from(lore).getTextLines());
+    } else {
+      targetMeta.setLore(null);
     }
 
     original.setItemMeta(targetMeta);
