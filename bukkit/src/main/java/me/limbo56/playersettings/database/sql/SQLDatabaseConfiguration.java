@@ -55,11 +55,11 @@ public class SQLDatabaseConfiguration extends DatabaseConfiguration {
     config.setPoolName("PlayerSettings-Hikari");
 
     if (poolSection != null) {
-      config.setMaximumPoolSize(poolSection.getInt("maximum-pool-size"));
-      config.setMinimumIdle(poolSection.getInt("minimum-idle"));
-      config.setMaxLifetime(poolSection.getInt("max-lifetime"));
-      config.setKeepaliveTime(poolSection.getInt("keepalive-time"));
-      config.setConnectionTimeout(poolSection.getInt("connection-timeout"));
+      config.setMaximumPoolSize(poolSection.getInt("maximum-pool-size", 10));
+      config.setMinimumIdle(poolSection.getInt("minimum-idle", 10));
+      config.setMaxLifetime(poolSection.getInt("max-lifetime", 1800000));
+      config.setKeepaliveTime(poolSection.getInt("keepalive-time", 0));
+      config.setConnectionTimeout(poolSection.getInt("connection-timeout", 5000));
       config.setInitializationFailTimeout(-1);
     } else {
       PluginLogger.warning(
@@ -82,16 +82,17 @@ public class SQLDatabaseConfiguration extends DatabaseConfiguration {
   }
 
   private void configureExtraProperties(HikariConfig config) {
-    ConfigurationSection properties = section.getConfigurationSection("properties");
+    ConfigurationSection properties = configuration.getConfigurationSection("properties");
     if (properties == null) {
       PluginLogger.warning("Missing 'properties' section from sql database configuration");
       return;
     }
 
-    config.addDataSourceProperty("useUnicode", properties.getBoolean("use-unicode"));
-    config.addDataSourceProperty("characterEncoding", properties.getString("character-encoding"));
-    config.addDataSourceProperty("useSSL", properties.getBoolean("use-ssl"));
+    config.addDataSourceProperty("useUnicode", properties.getBoolean("use-unicode", true));
     config.addDataSourceProperty(
-        "verifyServerCertificate", properties.getBoolean("verify-server-certificate"));
+        "characterEncoding", properties.getString("character-encoding", "utf8"));
+    config.addDataSourceProperty("useSSL", properties.getBoolean("use-ssl", false));
+    config.addDataSourceProperty(
+        "verifyServerCertificate", properties.getBoolean("verify-server-certificate", false));
   }
 }
