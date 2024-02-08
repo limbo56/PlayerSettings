@@ -1,11 +1,9 @@
 package me.limbo56.playersettings.database;
 
-import me.limbo56.playersettings.api.setting.Setting;
-import me.limbo56.playersettings.api.setting.SettingWatcher;
-import me.limbo56.playersettings.database.configuration.DatabaseConfiguration;
-
 import java.util.Collection;
 import java.util.UUID;
+import me.limbo56.playersettings.api.Setting;
+import me.limbo56.playersettings.api.SettingWatcher;
 
 public interface SettingsDatabase<T extends DatabaseConfiguration> {
   void connect();
@@ -20,5 +18,7 @@ public interface SettingsDatabase<T extends DatabaseConfiguration> {
 
   String getExtra(UUID uuid, Setting setting, String key);
 
-  T getDatabaseConfiguration();
+  T getConfiguration();
+
+  boolean isConnected();
 }

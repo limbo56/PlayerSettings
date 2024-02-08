@@ -3,23 +3,19 @@ package me.limbo56.playersettings.util;
 import java.util.regex.Pattern;
 import org.bukkit.Bukkit;
 
-public final class Version {
+public class Version {
   private static final Pattern VERSION_PATTERN = Pattern.compile("\\b\\d+\\.\\d+\\.\\d+\\b");
   private static Version CURRENT_SERVER_VERSION;
   private final String version;
   private final String separator;
 
-  public Version(String version) {
-    this(version, "-");
-  }
-
-  public Version(String version, String separator) {
+  private Version(String version, String separator) {
     this.separator = separator;
     this.version = parseVersion(version);
   }
 
   public static Version from(String version) {
-    return new Version(version);
+    return from(version, "-");
   }
 
   public static Version from(String version, String separator) {

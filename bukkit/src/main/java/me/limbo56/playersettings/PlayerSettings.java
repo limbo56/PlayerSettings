@@ -1,173 +1,90 @@
 package me.limbo56.playersettings;
 
-import java.time.Duration;
-import java.time.Instant;
-import java.util.Objects;
-import java.util.concurrent.ExecutionException;
-import me.limbo56.playersettings.api.SettingsContainer;
-import me.limbo56.playersettings.api.SettingsWatchlist;
-import me.limbo56.playersettings.api.setting.Setting;
 import me.limbo56.playersettings.command.CommandManager;
-import me.limbo56.playersettings.command.SubCommandExecutor;
-import me.limbo56.playersettings.command.subcommand.*;
 import me.limbo56.playersettings.configuration.*;
-import me.limbo56.playersettings.database.SettingsDatabase;
-import me.limbo56.playersettings.database.SettingsDatabaseProvider;
-import me.limbo56.playersettings.lib.Libraries;
-import me.limbo56.playersettings.listeners.InventoryListener;
-import me.limbo56.playersettings.listeners.ListenerManager;
-import me.limbo56.playersettings.listeners.PlayerListener;
+import me.limbo56.playersettings.database.DataManager;
+import me.limbo56.playersettings.hook.AdventureHook;
+import me.limbo56.playersettings.hook.HookManager;
+import me.limbo56.playersettings.lib.LibraryManager;
+import me.limbo56.playersettings.listener.ListenerManager;
 import me.limbo56.playersettings.menu.SettingsMenuManager;
-import me.limbo56.playersettings.settings.DefaultSettings;
-import me.limbo56.playersettings.settings.SettingsManager;
+import me.limbo56.playersettings.setting.SettingsManager;
 import me.limbo56.playersettings.user.UserManager;
+import me.limbo56.playersettings.util.Messenger;
 import me.limbo56.playersettings.util.PluginLogger;
-import me.limbo56.playersettings.util.PluginUpdater;
-import net.byteflux.libby.BukkitLibraryManager;
-import org.bstats.bukkit.Metrics;
-import org.bukkit.Bukkit;
-import org.bukkit.command.PluginCommand;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.plugin.ServicePriority;
+import me.limbo56.playersettings.util.Timer;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class PlayerSettings extends JavaPlugin {
+  private static PlayerSettings INSTANCE;
   // Managers
-  private ConfigurationManager configurationManager;
-  private SettingsDatabase<?> settingsDatabase;
-  private SettingsManager settingsManager;
-  private SettingsMenuManager settingsMenuManager;
-  private UserManager userManager;
-  private CommandManager commandManager;
-  private ListenerManager listenerManager;
-  // Configuration
-  private PluginConfiguration pluginConfiguration;
-  private SettingsConfiguration settingsConfiguration;
-  private ItemsConfiguration itemsConfiguration;
-  private MessagesConfiguration messagesConfiguration;
+  private final LibraryManager libraryManager = new LibraryManager(this);
+  private final HookManager hookManager = new HookManager(this);
+  private final ConfigurationManager configurationManager = new ConfigurationManager(this);
+  private final DataManager dataManager = new DataManager(this);
+  private final UserManager userManager = new UserManager(this);
+  private final SettingsManager settingsManager = new SettingsManager(this);
+  private final SettingsMenuManager settingsMenuManager = new SettingsMenuManager(this);
+  private final CommandManager commandManager = new CommandManager(this);
+  private final ListenerManager listenerManager = new ListenerManager(this);
+  private final Messenger messenger = new Messenger(this);
   // State
   private boolean reloading = false;
 
+  public static PlayerSettings getInstance() {
+    return INSTANCE;
+  }
+
   @Override
   public void onEnable() {
-    // Track load startup time
-    Instant loadStartInstant = Instant.now();
-    PlayerSettingsProvider.setPlugin(this);
+    Timer timer = Timer.start();
 
-    PluginLogger.log("Loading libraries...");
-    BukkitLibraryManager bukkitLibraryManager = new BukkitLibraryManager(this);
-    bukkitLibraryManager.addMavenCentral();
-    for (Libraries library : Libraries.values()) {
-      bukkitLibraryManager.loadLibrary(library.toLibrary());
-    }
-    PlayerSettingsProvider.registerAdventure(this);
+    // Load essential components
+    INSTANCE = this;
+    libraryManager.loadLibraries();
+    configurationManager.loadConfigurations();
+    dataManager.connect();
 
-    PluginLogger.log("Loading configuration files...");
-    try {
-      configurationManager = new ConfigurationManager();
-      pluginConfiguration = configurationManager.loadConfiguration(new PluginConfiguration());
-      settingsConfiguration = configurationManager.loadConfiguration(new SettingsConfiguration());
-      itemsConfiguration = configurationManager.loadConfiguration(new ItemsConfiguration());
-      messagesConfiguration = configurationManager.loadConfiguration(new MessagesConfiguration());
-    } catch (ExecutionException exception) {
-      PluginLogger.severe("An exception occurred while loading the default configuration files:");
-      exception.printStackTrace();
-      setEnabled(false);
-      return;
-    }
+    // Register defaults
+    settingsManager.registerDefaultSettings();
+    commandManager.registerDefaultCommands();
+    listenerManager.registerDefaultListeners();
+    hookManager.registerDefaultHooks();
 
-    PluginLogger.log("Connecting data manager...");
-    connectSettingsDatabase();
-
-    PluginLogger.log("Loading internal managers...");
-    commandManager = new CommandManager();
-    listenerManager = new ListenerManager();
-    settingsMenuManager = new SettingsMenuManager();
-    listenerManager.registerListener(new PlayerListener());
-    listenerManager.registerListener(new InventoryListener());
-
-    PluginCommand pluginCommand = Objects.requireNonNull(Bukkit.getPluginCommand("settings"));
-    SubCommandExecutor executor = new SubCommandExecutor();
-    pluginCommand.setExecutor(executor);
-    pluginCommand.setTabCompleter(executor);
-    commandManager.registerSubCommand(new HelpSubCommand());
-    commandManager.registerSubCommand(new OpenSubCommand());
-    commandManager.registerSubCommand(new ReloadSubCommand());
-    commandManager.registerSubCommand(new SetSubCommand());
-    commandManager.registerSubCommand(new GetSubCommand());
-
-    PluginLogger.log("Registering service managers...");
-    userManager = new UserManager();
-    settingsManager = new SettingsManager();
-    Bukkit.getServicesManager()
-        .register(SettingsWatchlist.class, userManager, this, ServicePriority.Normal);
-    Bukkit.getServicesManager()
-        .register(SettingsContainer.class, settingsManager, this, ServicePriority.Normal);
-
-    // Register default settings
-    for (Setting setting : DefaultSettings.getSettings()) {
-      settingsManager.registerSetting(setting);
-    }
-    for (Setting setting : getSettingsConfiguration().getEnabledSettings(false)) {
-      if (!settingsManager.isSettingRegistered(setting.getName())) {
-        settingsManager.registerSetting(setting, false);
-      }
-    }
+    // Load settings
     userManager.loadOnlineUsers();
 
     // Log startup time and update message
-    long startupDuration = Duration.between(loadStartInstant, Instant.now()).toMillis();
-    PluginLogger.log("Successfully loaded (took " + startupDuration + "ms)");
-    PluginUpdater.logUpdateMessage();
-
-    // Start bStats metrics
-    if (pluginConfiguration.hasMetricsEnabled()) {
-      new Metrics(this, 16730);
-    }
-
-    // Register placeholders
-    if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
-      new PlayerSettingsPlaceholders(this).register();
-    }
+    PluginLogger.logVersionMessage();
+    timer.stop();
+    PluginLogger.logElapsedMillis("Successfully enabled", timer);
   }
 
   @Override
   public void onDisable() {
-    PluginLogger.log("Saving user settings...");
-    userManager.saveAll();
+    userManager.saveUsers();
+    dataManager.disconnect();
 
-    PluginLogger.log("Disconnecting data manager...");
-    settingsDatabase.disconnect();
-
-    PluginLogger.log("Unloading internal managers...");
+    PluginLogger.info("Unloading internal managers...");
     userManager.unloadAll();
     settingsMenuManager.unloadAll();
     listenerManager.unloadAll();
     commandManager.unloadAll();
     settingsManager.unloadAll();
     configurationManager.unloadAll();
-    PlayerSettingsProvider.unregisterAdventure();
+    AdventureHook.unloadAdventure();
   }
 
-  public void connectSettingsDatabase() {
-    ConfigurationSection storageSection =
-        pluginConfiguration.getFile().getConfigurationSection("storage");
-    if (storageSection == null) {
-      setEnabled(false);
-      throw new NullPointerException(
-          "Empty or missing properties in the 'storage' section inside 'config.yml'");
-    }
-
-    settingsDatabase = SettingsDatabaseProvider.getSettingsDatabase(storageSection);
-    settingsDatabase.connect();
+  public void setReloading(boolean reloading) {
+    this.reloading = reloading;
   }
 
   public boolean isReloading() {
     return reloading;
   }
 
-  public void setReloading(boolean reloading) {
-    this.reloading = reloading;
+  public PluginConfiguration getConfiguration() {
+    return configurationManager.getConfiguration(PluginConfiguration.class);
   }
 
   public ConfigurationManager getConfigurationManager() {
@@ -190,27 +107,15 @@ public class PlayerSettings extends JavaPlugin {
     return listenerManager;
   }
 
-  public SettingsDatabase<?> getSettingsDatabase() {
-    return settingsDatabase;
-  }
-
   public SettingsMenuManager getSettingsMenuManager() {
     return settingsMenuManager;
   }
 
-  public PluginConfiguration getPluginConfiguration() {
-    return pluginConfiguration;
+  public DataManager getDataManager() {
+    return dataManager;
   }
 
-  public SettingsConfiguration getSettingsConfiguration() {
-    return settingsConfiguration;
-  }
-
-  public ItemsConfiguration getItemsConfiguration() {
-    return itemsConfiguration;
-  }
-
-  public MessagesConfiguration getMessagesConfiguration() {
-    return messagesConfiguration;
+  public Messenger getMessenger() {
+    return messenger;
   }
 }

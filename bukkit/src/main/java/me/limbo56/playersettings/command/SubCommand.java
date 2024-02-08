@@ -1,12 +1,14 @@
 package me.limbo56.playersettings.command;
 
+import java.util.ArrayList;
+import java.util.List;
+import me.limbo56.playersettings.PlayerSettings;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
-
 /** A sub command of the <code>/settings</code> command. */
 public abstract class SubCommand {
+  protected final PlayerSettings plugin;
   private final String name;
   private final String description;
   private final String usage;
@@ -14,7 +16,13 @@ public abstract class SubCommand {
   private final String permission;
 
   protected SubCommand(
-      String name, String description, String usage, int arguments, String permission) {
+      PlayerSettings plugin,
+      String name,
+      String description,
+      String usage,
+      int arguments,
+      String permission) {
+    this.plugin = plugin;
     this.name = name;
     this.description = description;
     this.usage = usage;
@@ -30,7 +38,9 @@ public abstract class SubCommand {
    */
   protected abstract void execute(@NotNull CommandSender sender, @NotNull String[] args);
 
-  public abstract List<String> onTabComplete(CommandSender sender, String[] args);
+  public List<String> onTabComplete(CommandSender sender, String[] args) {
+    return new ArrayList<>();
+  }
 
   /**
    * Gets the name of the command.

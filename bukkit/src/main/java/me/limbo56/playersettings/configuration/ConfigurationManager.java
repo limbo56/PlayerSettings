@@ -2,24 +2,29 @@ package me.limbo56.playersettings.configuration;
 
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.LoadingCache;
-import org.bukkit.configuration.file.YamlConfiguration;
-
 import java.util.concurrent.ExecutionException;
+import me.limbo56.playersettings.PlayerSettings;
+import me.limbo56.playersettings.util.PluginLogger;
 
 public class ConfigurationManager {
-  private final LoadingCache<String, YamlConfiguration> configurations =
-      CacheBuilder.newBuilder().build(new ConfigurationLoader());
+  private final LoadingCache<Class<? extends BaseConfiguration>, BaseConfiguration> configurations;
 
-  public <T extends BaseConfiguration> T loadConfiguration(T configuration)
-      throws ExecutionException {
-    configurations.get(configuration.getFileName());
-    return configuration;
+  public ConfigurationManager(PlayerSettings plugin) {
+    configurations = CacheBuilder.newBuilder().build(new ConfigurationLoader(plugin));
+  }
+
+  public void loadConfigurations() {
+    PluginLogger.info("Loading configuration files...");
+    getConfiguration(PluginConfiguration.class).load();
+    getConfiguration(SettingsConfiguration.class).load();
+    getConfiguration(ItemsConfiguration.class).load();
+    getConfiguration(MessagesConfiguration.class).load();
   }
 
   /** Invalidates all the cached configurations and reloads them. */
   public void reloadConfigurations() {
-    for (String configuration : configurations.asMap().keySet()) {
-      configurations.refresh(configuration);
+    for (BaseConfiguration configuration : configurations.asMap().values()) {
+      configuration.reload();
     }
   }
 
@@ -28,15 +33,25 @@ public class ConfigurationManager {
   }
 
   /**
-   * Loads the configuration file with the given name from the plugin's data folder.
+   * Gets a {@link BaseConfiguration} instance that is cached by its class.
    *
-   * <p>If the configuration file does not exist, it will be created and the default template will
-   * be written to it.
+   * <p>If the configuration class has not been cached, an instance will be created and load the
+   * contents existing configuration.
    *
-   * @param fileName Name of the configuration.
+   * <p>If the configuration does not exist, it will be created and the default template will be
+   * written to it.
+   *
+   * @param clazz Class of the configuration.
    * @return The loaded configuration.
    */
-  public YamlConfiguration getConfiguration(String fileName) throws ExecutionException {
-    return configurations.get(fileName);
+  public <T extends BaseConfiguration> T getConfiguration(Class<T> clazz) {
+    try {
+      return (T) configurations.get(clazz);
+    } catch (ExecutionException exception) {
+      PluginLogger.severe(
+          "An exception occurred while loading configuration '" + clazz.getSimpleName() + "'",
+          exception);
+      return null;
+    }
   }
 }

@@ -1,27 +1,22 @@
 package me.limbo56.playersettings.user;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
-import java.util.function.Consumer;
+import java.util.*;
 import me.limbo56.playersettings.PlayerSettings;
-import me.limbo56.playersettings.PlayerSettingsProvider;
-import me.limbo56.playersettings.api.setting.Setting;
-import me.limbo56.playersettings.api.setting.SettingCallback;
-import me.limbo56.playersettings.api.setting.SettingWatcher;
-import me.limbo56.playersettings.listeners.FlySettingListener;
+import me.limbo56.playersettings.api.Setting;
+import me.limbo56.playersettings.api.SettingCallback;
+import me.limbo56.playersettings.api.SettingWatcher;
+import me.limbo56.playersettings.setting.SettingsManager;
 import me.limbo56.playersettings.util.Permissions;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 public class SettingUser {
-  private static final List<Consumer<SettingUser>> LOAD_CALLBACKS =
-      Collections.singletonList(new FlySettingListener.FlightStateLoader());
-  private static final PlayerSettings PLUGIN = PlayerSettingsProvider.getPlugin();
+
   private final UUID uuid;
   private final SettingWatcher settingWatcher;
   private boolean loading;
   private boolean flying;
+  private final SettingsManager settingsManager;
 
   public SettingUser(UUID uuid) {
     this(uuid, new UserSettingsWatcher(uuid));
@@ -31,11 +26,15 @@ public class SettingUser {
     this.uuid = uuid;
     this.loading = true;
     this.settingWatcher = settingWatcher;
+    this.settingsManager = PlayerSettings.getInstance().getSettingsManager();
   }
 
   public void clearSettingEffects() {
-    for (Setting setting : PLUGIN.getSettingsManager().getSettings()) {
-      clearSettingEffects(setting);
+    for (String settingName : settingWatcher.getWatched()) {
+      Setting setting = settingsManager.getSetting(settingName);
+      if (setting != null) {
+        clearSettingEffects(setting);
+      }
     }
   }
 
@@ -45,24 +44,12 @@ public class SettingUser {
     }
   }
 
-  public boolean hasSettingEnabled(String settingName) {
-    return settingWatcher.getValue(settingName) > 0;
-  }
-
-  public boolean hasSettingPermissions(String settingName) {
-    Setting setting = PLUGIN.getSettingsManager().getSetting(settingName);
-    return Permissions.getSettingPermissionLevel(this.getPlayer(), setting) > 0;
-  }
-
   public boolean isLoading() {
     return loading;
   }
 
   public void setLoading(boolean loading) {
     this.loading = loading;
-    if (!loading) {
-      LOAD_CALLBACKS.forEach(loadCallback -> loadCallback.accept(this));
-    }
   }
 
   public boolean isFlying() {
@@ -73,8 +60,13 @@ public class SettingUser {
     this.flying = flying;
   }
 
-  public UUID getUniqueId() {
-    return uuid;
+  public boolean hasSettingEnabled(String settingName) {
+    return settingWatcher.getValue(settingName) > 0;
+  }
+
+  public boolean hasSettingPermissions(String settingName) {
+    Setting setting = settingsManager.getSetting(settingName);
+    return Permissions.getSettingPermissionLevel(this.getPlayer(), setting) > 0;
   }
 
   public Player getPlayer() {
@@ -83,5 +75,15 @@ public class SettingUser {
 
   public SettingWatcher getSettingWatcher() {
     return settingWatcher;
+  }
+
+  public Collection<String> getAllowedSettings() {
+    List<String> allowedSettings = new ArrayList<>();
+    for (String settingName : settingsManager.getSettingNames()) {
+      if (hasSettingPermissions(settingName)) {
+        allowedSettings.add(settingName);
+      }
+    }
+    return allowedSettings;
   }
 }

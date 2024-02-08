@@ -92,6 +92,10 @@
                                     <pattern>org.jetbrains.annotations</pattern>
                                     <shadedPattern>me.limbo56.playersettings.lib.annotations</shadedPattern>
                                 </relocation>
+                                <relocation>
+                                    <pattern>org.intellij.lang.annotations</pattern>
+                                    <shadedPattern>me.limbo56.playersettings.lib.annotations</shadedPattern>
+                                </relocation>
                             </relocations>
                             <filters>
                                 <filter>

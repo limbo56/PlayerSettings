@@ -2,17 +2,20 @@ package me.limbo56.playersettings.configuration;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.concurrent.ExecutionException;
+import java.io.InputStream;
 import me.limbo56.playersettings.PlayerSettings;
-import me.limbo56.playersettings.PlayerSettingsProvider;
 import me.limbo56.playersettings.util.Configurations;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class BaseConfiguration {
+  protected final PlayerSettings plugin;
+  protected YamlConfiguration configuration;
 
-  private final PlayerSettings PLUGIN = PlayerSettingsProvider.getPlugin();
+  public BaseConfiguration(PlayerSettings plugin) {
+    this.plugin = plugin;
+  }
 
   @NotNull
   abstract String getFileName();
@@ -23,24 +26,45 @@ public abstract class BaseConfiguration {
    * @param path Path to write object
    * @param serializable {@link ConfigurationSerializable} to write
    */
-  public void writeSerializable(String path, ConfigurationSerializable serializable) {
-    serializable.serialize().forEach((key, value) -> getFile().set(path + "." + key, value));
+  protected void writeSerializable(String path, ConfigurationSerializable serializable) {
+    serializable.serialize().forEach((key, value) -> configuration.set(path + "." + key, value));
   }
 
   public void save() throws IOException {
-    File pluginFile = Configurations.getPluginFile(getFileName());
-    getFile().save(pluginFile);
+    getFile().save(Configurations.getPluginFile(getFileName()));
+  }
+
+  public void load() {
+    if (!isLoaded()) {
+      // Create plugin data folder
+      if (!plugin.getDataFolder().exists()) {
+        plugin.getDataFolder().mkdirs();
+      }
+
+      // Load template if configuration file doesn't exist
+      String fileName = getFileName();
+      File configurationFile = Configurations.getPluginFile(fileName);
+      if (!configurationFile.exists()) {
+        InputStream templateResource = plugin.getResource(fileName);
+        if (templateResource != null) {
+          plugin.saveResource(fileName, false);
+        }
+      }
+
+      configuration = YamlConfiguration.loadConfiguration(configurationFile);
+    }
+  }
+
+  public void reload() {
+    configuration = null;
+    load();
+  }
+
+  public boolean isLoaded() {
+    return configuration != null;
   }
 
   public YamlConfiguration getFile() {
-    try {
-      return PLUGIN.getConfigurationManager().getConfiguration(this.getFileName());
-    } catch (ExecutionException exception) {
-      PLUGIN
-          .getLogger()
-          .severe("An exception occurred wile reading configuration '" + this.getFileName() + "':");
-      exception.printStackTrace();
-      return null;
-    }
+    return configuration;
   }
 }
