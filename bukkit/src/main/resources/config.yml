@@ -129,12 +129,12 @@ storage:
     # * We strongly recommend setting this value to at least 30 seconds shorter than any database
     #   or infrastructure imposed connection time limit
     max-lifetime: 1800000 # 30 minutes
-    # Frequency of keepalive attempts to prevent connection timeouts
+    # Frequency of keep alive attempts to prevent connection timeouts
     #
     # * This value must be less than the 'max-lifetime' value
-    # * Setting the value to zero will disable the keepalive functionality
-    keepalive-time: 0
-    # Maximum time to wait for a connection from the pool before timing out
+    # * Setting the value to zero will disable the keep alive functionality
+    keep-alive-time: 0
+    # Maximum time to wait for a connection from the pool before timing out in milliseconds
     connection-timeout: 5000 # 5 seconds
   # Connection Properties
   #

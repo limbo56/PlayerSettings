@@ -58,7 +58,7 @@ public class SQLDatabaseConfiguration extends DatabaseConfiguration {
       config.setMaximumPoolSize(poolSection.getInt("maximum-pool-size", 10));
       config.setMinimumIdle(poolSection.getInt("minimum-idle", 10));
       config.setMaxLifetime(poolSection.getInt("max-lifetime", 1800000));
-      config.setKeepaliveTime(poolSection.getInt("keepalive-time", 0));
+      config.setKeepaliveTime(poolSection.getInt("keep-alive-time", 0));
       config.setConnectionTimeout(poolSection.getInt("connection-timeout", 5000));
       config.setInitializationFailTimeout(-1);
     } else {
