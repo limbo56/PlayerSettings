@@ -24,9 +24,9 @@ public class Messages {
 
   private Messages() {}
 
-  public static CompletableFuture<List<String>> getUpdateMessage() {
+  public static CompletableFuture<List<String>> getVersionMessage() {
     return PluginUpdater.getLatestVersion()
-        .thenApplyAsync(Messages::composeUpdateMessage)
+        .thenApplyAsync(Messages::composeVersionMessage)
         .exceptionally(
             exception -> {
               PluginLogger.severe("An error occurred while checking for updates", exception);
@@ -53,7 +53,7 @@ public class Messages {
         .replaceText(createReplacement("%enableAction%", enableActionMessage));
   }
 
-  private static List<String> composeUpdateMessage(String version) {
+  private static List<String> composeVersionMessage(String version) {
     String currentVersionNumber = PLUGIN.getDescription().getVersion();
     Version latestVersion = Version.from(version);
     Version currentVersion = Version.from(currentVersionNumber);

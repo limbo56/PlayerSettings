@@ -41,8 +41,8 @@ public class Players {
     }
   }
 
-  public static void sendUpdateMessage(Player player) {
-    Messages.getUpdateMessage()
+  public static void sendVersionMessage(Player player) {
+    Messages.getVersionMessage()
         .thenAcceptAsync(
             message ->
                 Players.sendMessage(player, Messages.INTERNAL_PREFIX + String.join("\n", message)))

@@ -53,7 +53,7 @@ public class PluginLogger {
   }
 
   public static void logVersionMessage() {
-    Messages.getUpdateMessage()
+    Messages.getVersionMessage()
         .thenAcceptAsync(
             message -> message.forEach(text -> logColored(Colors.translateColorCodes(text))))
         .exceptionally(

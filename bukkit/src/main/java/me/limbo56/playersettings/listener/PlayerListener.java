@@ -39,7 +39,7 @@ public class PlayerListener implements Listener {
 
     // Send update alert
     if (player.isOp() && pluginConfiguration.hasUpdateAlertsEnabled()) {
-      Players.sendUpdateMessage(player);
+      Players.sendVersionMessage(player);
     }
 
     userManager.loadUser(player.getUniqueId());
