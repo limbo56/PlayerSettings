@@ -1,5 +1,6 @@
 package me.limbo56.playersettings.user.task;
 
+import com.google.common.collect.ImmutableList;
 import java.util.*;
 import me.limbo56.playersettings.PlayerSettings;
 import me.limbo56.playersettings.api.Setting;
@@ -18,7 +19,7 @@ import org.bukkit.entity.Player;
 
 public class UserLoadTask implements TaskChain.Task {
   private static final List<UserAction> POST_LOAD_ACTIONS =
-      Collections.singletonList(new FlightStateLoadAction());
+      ImmutableList.of(new FlightStateLoadAction());
   private final UUID uuid;
   private final UserManager userManager;
   private final SettingsManager settingsManager;
