@@ -3,6 +3,8 @@ package me.limbo56.playersettings.command;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Stream;
 import me.limbo56.playersettings.PlayerSettings;
 import me.limbo56.playersettings.configuration.MessagesConfiguration;
 import me.limbo56.playersettings.message.Messenger;
@@ -22,14 +24,16 @@ import org.jetbrains.annotations.Nullable;
  */
 public class SubCommandExecutor implements org.bukkit.command.CommandExecutor, TabCompleter {
   private final PlayerSettings plugin;
-  private final MessagesConfiguration messagesConfiguration;
+  private final CommandManager commandManager;
   private final Messenger messenger;
+  private final MessagesConfiguration messagesConfiguration;
 
   public SubCommandExecutor(PlayerSettings plugin) {
     this.plugin = plugin;
+    this.commandManager = plugin.getCommandManager();
+    this.messenger = plugin.getMessenger();
     this.messagesConfiguration =
         plugin.getConfigurationManager().getConfiguration(MessagesConfiguration.class);
-    this.messenger = plugin.getMessenger();
   }
 
   @Override
@@ -42,22 +46,32 @@ public class SubCommandExecutor implements org.bukkit.command.CommandExecutor, T
       return false;
     }
 
-    CommandManager commandManager = plugin.getCommandManager();
-    SubCommand help = commandManager.getSubCommand("help");
-    if (args.length < 1) {
-      help.execute(sender, args);
-      return false;
-    }
-
-    SubCommand subCommand = commandManager.getSubCommand(args[0]);
     if (!(sender instanceof Player)) {
       messenger.sendMessage(sender, "&cYou must be a player to execute this command");
       return false;
     }
 
     Player player = (Player) sender;
+    Optional<SubCommand> defaultCommand = commandManager.getDefaultCommand();
+    if (args.length < 1) {
+      defaultCommand.ifPresent(fallback -> fallback.execute(player, args));
+      return false;
+    }
+
+    Optional<SubCommand> optionalSubCommand = commandManager.getSubCommand(args[0]);
+    if (!optionalSubCommand.isPresent()) {
+      Stream.of(commandManager.getSubCommand("help"), defaultCommand)
+          .filter(Optional::isPresent)
+          .map(Optional::get)
+          .findFirst()
+          .ifPresent(subCommand -> subCommand.execute(player, new String[0]));
+      return false;
+    }
+
+    SubCommand subCommand = optionalSubCommand.get();
     if (args.length < subCommand.getArguments()) {
-      help.execute(player, new String[0]);
+      Players.sendMessage(
+          player, messenger.getMessageProvider().getCommandHelpMessage(player, subCommand));
       return false;
     }
 
@@ -78,8 +92,7 @@ public class SubCommandExecutor implements org.bukkit.command.CommandExecutor, T
       @NotNull Command command,
       @NotNull String label,
       @NotNull String[] args) {
-    CommandManager commandManager = plugin.getCommandManager();
-    List<String> accessibleCommands = commandManager.getAllowedSubCommands(sender);
+    List<String> accessibleCommands = commandManager.getAllowedSubCommandNames(sender);
     if (args.length < 2) {
       final List<String> completions = new ArrayList<>();
       StringUtil.copyPartialMatches(args[0], accessibleCommands, completions);
@@ -87,10 +100,11 @@ public class SubCommandExecutor implements org.bukkit.command.CommandExecutor, T
       return completions;
     }
 
-    if (!accessibleCommands.contains(args[0])) {
+    Optional<SubCommand> optionalSubCommand = commandManager.getSubCommand(args[0]);
+    if (!accessibleCommands.contains(args[0]) || !optionalSubCommand.isPresent()) {
       return new ArrayList<>();
     }
 
-    return commandManager.getSubCommand(args[0]).onTabComplete(sender, args);
+    return optionalSubCommand.get().onTabComplete(sender, args);
   }
 }

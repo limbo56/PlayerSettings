@@ -23,6 +23,8 @@ settings:
     - "&7Click to &aenable"
 
 commands:
+  help-header: "&e------- &6Settings Help &e---------"
+  help-command-format: "&f/settings %command% &8: &7%description%"
   no-access: "&cYou don't have permissions to execute this command"
   # %setting% - The name of the setting the user tried to change
   setting-not-found: "&cUnknown setting '&6%setting%&c'!"

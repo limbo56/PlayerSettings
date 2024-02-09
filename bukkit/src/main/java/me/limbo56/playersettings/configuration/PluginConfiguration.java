@@ -30,6 +30,10 @@ public class PluginConfiguration extends BaseConfiguration {
     return configuration.getBoolean("menu.toggle-button", true);
   }
 
+  public boolean isCommandEnabled(String command) {
+    return configuration.getBoolean("commands." + command + ".enabled", true);
+  }
+
   public boolean hasMetricsEnabled() {
     return configuration.getBoolean("general.metrics", true);
   }
@@ -63,6 +67,10 @@ public class PluginConfiguration extends BaseConfiguration {
             Parsers.VALUE_ALIASES_PARSER.parse(
                 configuration.getConfigurationSection("general.value-aliases")))
         .orElse(Settings.Constants.DEFAULT_VALUE_ALIASES);
+  }
+
+  public String getDefaultCommand() {
+    return configuration.getString("commands.default", "OPEN");
   }
 
   public SettingsDatabase<?> getSettingsDatabase() {

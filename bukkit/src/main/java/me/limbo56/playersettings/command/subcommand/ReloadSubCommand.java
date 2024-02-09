@@ -48,9 +48,10 @@ public class ReloadSubCommand extends SubCommand {
     // Disconnect data manager
     plugin.getDataManager().disconnect();
 
-    // Reload configurations and settings
+    // Reload configurable components
     plugin.getConfigurationManager().reloadConfigurations();
     plugin.getSettingsManager().reloadSettings();
+    plugin.getCommandManager().reloadCommands();
 
     // Connect data manager
     plugin.getDataManager().connect();

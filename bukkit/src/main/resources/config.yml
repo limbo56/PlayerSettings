@@ -81,6 +81,25 @@ menu:
     setting-toggle-on: "BLOCK_NOTE_BLOCK_HARP, 1, 1"
     setting-toggle-off: "BLOCK_NOTE_BLOCK_HARP, 1, -99"
 
+# Commands configuration section
+commands:
+  # The default command that '/settings' will perform.
+  #
+  # * By default, the command will execute the '/settings open' command
+  #
+  # Available Options:
+  # * help - Send the settings help message
+  # * open - Opens the settings menu
+  default: "open"
+  help:
+    enabled: true
+  reload:
+    enabled: true
+  set:
+    enabled: true
+  get:
+    enabled: true
+
 # Data Storage Configuration Section
 storage:
   # The storage type to use when storing player settings
