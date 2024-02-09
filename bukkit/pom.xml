@@ -125,7 +125,7 @@
     </repositories>
 
     <dependencies>
-        <!-- PlayerSettingsApi Api -->
+        <!-- PlayerSettings API -->
         <dependency>
             <groupId>me.limbo56.playersettings</groupId>
             <artifactId>playersettings-api</artifactId>
