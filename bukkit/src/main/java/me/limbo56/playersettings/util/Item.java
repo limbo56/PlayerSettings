@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
-import me.limbo56.playersettings.util.text.TextMessage;
+import me.limbo56.playersettings.message.text.Text;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -17,30 +17,28 @@ public class Item {
   }
 
   @SafeVarargs
-  public static void format(ItemStack original, Function<String, String>... modifiers) {
-    format(original, original.getItemMeta(), modifiers);
+  public static void format(ItemStack item, Function<String, String>... modifiers) {
+    format(item, item.getItemMeta(), modifiers);
   }
 
   @SafeVarargs
   public static void format(
       ItemStack original, ItemMeta templateMeta, Function<String, String>... modifiers) {
-    ItemMeta targetMeta = original.getItemMeta();
-    if (targetMeta == null || templateMeta == null) {
+    ItemMeta originalMeta = original.getItemMeta();
+    if (originalMeta == null || templateMeta == null) {
       return;
     }
 
-    TextMessage.Builder builder = TextMessage.builder().addModifiers(modifiers);
-    String displayName = templateMeta.getDisplayName();
     List<String> lore = templateMeta.getLore();
-
-    targetMeta.setDisplayName(builder.from(displayName).getFirstTextLine());
+    originalMeta.setDisplayName(
+        Text.create(templateMeta.getDisplayName(), modifiers).getFirstTextLine());
     if (lore != null && !lore.isEmpty()) {
-      targetMeta.setLore(builder.from(lore).getTextLines());
+      originalMeta.setLore(Text.create(lore, modifiers).getTextLines());
     } else {
-      targetMeta.setLore(null);
+      originalMeta.setLore(null);
     }
 
-    original.setItemMeta(targetMeta);
+    original.setItemMeta(originalMeta);
   }
 
   public static class Builder {

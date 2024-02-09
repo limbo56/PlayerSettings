@@ -16,14 +16,6 @@ public class MessagesConfiguration extends BaseConfiguration {
     return "messages.yml";
   }
 
-  public boolean hasMessage(String path) {
-    return configuration.contains(path);
-  }
-
-  public String getMessagePrefix() {
-    return getMessage("prefix");
-  }
-
   public String getMessage(String path) {
     return getMessage(path, "");
   }
@@ -42,5 +34,9 @@ public class MessagesConfiguration extends BaseConfiguration {
     } else {
       return defaultMessage;
     }
+  }
+
+  public boolean hasMessage(String path) {
+    return configuration.contains(path);
   }
 }

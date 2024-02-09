@@ -1,25 +1,25 @@
-package me.limbo56.playersettings.util.text;
+package me.limbo56.playersettings.message.text;
 
 import com.google.common.collect.Lists;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import me.limbo56.playersettings.util.Adventure;
 import me.limbo56.playersettings.util.Colors;
-import me.limbo56.playersettings.util.Text;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 
-/** Utility class for creating and manipulating text messages. */
-public class TextMessage {
+/** Utility class for creating and manipulating text. */
+public class Text {
   private final List<String> textLines;
 
-  private TextMessage(List<String> textLines) {
+  private Text(List<String> textLines) {
     this.textLines = Collections.unmodifiableList(textLines);
   }
 
   /**
-   * Creates a new {@link Builder} for constructing TextMessage instances.
+   * Creates a new {@link Builder} for constructing Text instances.
    *
    * @return A new instance of Builder.
    */
@@ -28,13 +28,37 @@ public class TextMessage {
   }
 
   /**
-   * Appends the contents of another {@link TextMessage} instance to the current one.
+   * Creates a new {@link Text} instance.
    *
-   * @param other The {@link TextMessage} instance whose contents to append.
-   * @return A new {@link TextMessage} instance containing the combined contents of both instances.
+   * @param text The text line to construct the Text instance.
+   * @param modifiers The modifier functions to apply.
+   * @return The constructed {@link Text} instance.
    */
-  public TextMessage append(TextMessage other) {
-    return new TextMessage(
+  @SafeVarargs
+  public static Text create(String text, Function<String, String>... modifiers) {
+    return Text.builder().addModifiers(modifiers).from(text);
+  }
+
+  /**
+   * Creates a new {@link Text} instance.
+   *
+   * @param text The list of text lines to construct the Text instance.
+   * @param modifiers The modifier functions to apply.
+   * @return The constructed {@link Text} instance.
+   */
+  @SafeVarargs
+  public static Text create(List<String> text, Function<String, String>... modifiers) {
+    return Text.builder().addModifiers(modifiers).from(text);
+  }
+
+  /**
+   * Appends the contents of another {@link Text} instance to the current one.
+   *
+   * @param other The {@link Text} instance whose contents to append.
+   * @return A new {@link Text} instance containing the combined contents of both instances.
+   */
+  public Text append(Text other) {
+    return new Text(
         Stream.concat(textLines.stream(), other.textLines.stream()).collect(Collectors.toList()));
   }
 
@@ -66,7 +90,7 @@ public class TextMessage {
 
     for (int i = 0; i < textLines.size(); i++) {
       String modifiedText = textLines.get(i);
-      textBuilder.append(Text.fromLegacySection(modifiedText));
+      textBuilder.append(Adventure.fromLegacySection(modifiedText));
       if (i < textLines.size() - 1) {
         textBuilder.appendNewline();
       }
@@ -75,7 +99,7 @@ public class TextMessage {
     return textBuilder.build();
   }
 
-  /** Builder class for constructing TextMessage instances with modifiers. */
+  /** Builder class for constructing {@link Text} instances with modifiers. */
   public static class Builder {
     private final List<Function<String, String>> modifiers = new LinkedList<>();
 
@@ -133,23 +157,23 @@ public class TextMessage {
     }
 
     /**
-     * Constructs a TextMessage instance from a single text line.
+     * Constructs a {@link Text} instance from a single text line.
      *
-     * @param text The text line to construct the TextMessage instance.
-     * @return The constructed TextMessage instance.
+     * @param text The text line to construct the Text instance.
+     * @return The constructed {@link Text} instance.
      */
-    public TextMessage from(String text) {
+    public Text from(String text) {
       return from(Collections.singletonList(text));
     }
 
     /**
-     * Constructs a TextMessage instance from a list of text lines.
+     * Constructs a {@link Text} instance from a list of text lines.
      *
-     * @param textList The list of text lines to construct the TextMessage instance.
-     * @return The constructed TextMessage instance.
+     * @param textList The list of text lines to construct the Text instance.
+     * @return The constructed {@link Text} instance.
      */
-    public TextMessage from(List<String> textList) {
-      return new TextMessage(applyModifiers(textList));
+    public Text from(List<String> textList) {
+      return new Text(applyModifiers(textList));
     }
 
     private List<String> applyModifiers(List<String> textList) {

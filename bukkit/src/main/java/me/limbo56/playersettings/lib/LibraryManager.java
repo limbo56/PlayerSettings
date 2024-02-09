@@ -5,20 +5,17 @@ import me.limbo56.playersettings.util.PluginLogger;
 import net.byteflux.libby.BukkitLibraryManager;
 
 public class LibraryManager {
-  private final PlayerSettings plugin;
+  private final BukkitLibraryManager libraryManager;
 
   public LibraryManager(PlayerSettings plugin) {
-    this.plugin = plugin;
+    this.libraryManager = new BukkitLibraryManager(plugin);
   }
 
   public void loadLibraries() {
     PluginLogger.info("Loading libraries...");
-
-    // Load dependency libraries
-    BukkitLibraryManager bukkitLibraryManager = new BukkitLibraryManager(plugin);
-    bukkitLibraryManager.addMavenCentral();
+    libraryManager.addMavenCentral();
     for (Libraries library : Libraries.values()) {
-      bukkitLibraryManager.loadLibrary(library.toLibrary());
+      libraryManager.loadLibrary(library.toLibrary());
     }
   }
 }

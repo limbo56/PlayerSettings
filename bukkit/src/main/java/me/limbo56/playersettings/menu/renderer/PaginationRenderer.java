@@ -12,9 +12,10 @@ import me.limbo56.playersettings.configuration.parser.Parsers;
 import me.limbo56.playersettings.menu.SettingsMenu;
 import me.limbo56.playersettings.menu.action.PaginationAction;
 import me.limbo56.playersettings.menu.item.SettingsMenuItem;
+import me.limbo56.playersettings.message.text.PlaceholderAPIModifier;
+import me.limbo56.playersettings.message.text.ReplaceModifier;
+import me.limbo56.playersettings.message.text.Text;
 import me.limbo56.playersettings.setting.SettingsManager;
-import me.limbo56.playersettings.util.text.PlaceholderAPIModifier;
-import me.limbo56.playersettings.util.text.TextMessage;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -65,16 +66,15 @@ public class PaginationRenderer implements MenuItemRenderer {
       return;
     }
 
-    TextMessage.Builder builder =
-        TextMessage.builder()
-            .replacePlaceholder("%current%", String.valueOf(page))
-            .replacePlaceholder("%max%", String.valueOf(getHighestPage()))
-            .addModifier(new PlaceholderAPIModifier(player));
+    Function[] modifiers = {
+      ReplaceModifier.of("%current%", String.valueOf(page)),
+      ReplaceModifier.of("%max%", String.valueOf(getHighestPage())),
+      new PlaceholderAPIModifier(player)
+    };
     List<String> lore = meta.getLore();
-
-    meta.setDisplayName(builder.from(meta.getDisplayName()).getFirstTextLine());
+    meta.setDisplayName(Text.create(meta.getDisplayName(), modifiers).getFirstTextLine());
     if (lore != null) {
-      meta.setLore(builder.from(lore).getTextLines());
+      meta.setLore(Text.create(lore, modifiers).getTextLines());
     }
 
     itemStack.setItemMeta(meta);

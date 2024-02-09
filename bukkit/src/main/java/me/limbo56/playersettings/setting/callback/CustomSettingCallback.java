@@ -4,9 +4,10 @@ import java.util.List;
 import java.util.Map;
 import me.limbo56.playersettings.api.Setting;
 import me.limbo56.playersettings.api.SettingCallback;
+import me.limbo56.playersettings.message.text.PlaceholderAPIModifier;
+import me.limbo56.playersettings.message.text.ReplaceModifier;
+import me.limbo56.playersettings.message.text.Text;
 import me.limbo56.playersettings.util.PluginLogger;
-import me.limbo56.playersettings.util.text.PlaceholderAPIModifier;
-import me.limbo56.playersettings.util.text.TextMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
@@ -61,11 +62,11 @@ public class CustomSettingCallback implements SettingCallback {
     }
 
     private List<String> getActionCommands(Player player, String action) {
-      return TextMessage.builder()
-          .addModifier(new PlaceholderAPIModifier(player))
-          .replacePlaceholder("%player%", player.getName())
-          .replacePlaceholder("%value%", action)
-          .from(commandsMap.get(action))
+      return Text.create(
+              commandsMap.get(action),
+              new PlaceholderAPIModifier(player),
+              ReplaceModifier.of("%player%", player.getName()),
+              ReplaceModifier.of("%value%", action))
           .getTextLines();
     }
   }

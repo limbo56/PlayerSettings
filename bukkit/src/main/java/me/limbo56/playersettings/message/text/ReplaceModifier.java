@@ -1,4 +1,4 @@
-package me.limbo56.playersettings.util.text;
+package me.limbo56.playersettings.message.text;
 
 import java.util.function.Function;
 

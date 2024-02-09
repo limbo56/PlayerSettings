@@ -4,12 +4,11 @@ import java.util.Collection;
 import me.limbo56.playersettings.PlayerSettings;
 import me.limbo56.playersettings.api.Setting;
 import me.limbo56.playersettings.configuration.PluginConfiguration;
+import me.limbo56.playersettings.message.Messenger;
 import me.limbo56.playersettings.setting.Settings;
 import me.limbo56.playersettings.setting.SettingsManager;
 import me.limbo56.playersettings.user.SettingUser;
 import me.limbo56.playersettings.user.UserManager;
-import me.limbo56.playersettings.util.Messages;
-import me.limbo56.playersettings.util.Players;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -18,12 +17,14 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 public class ChatSettingListener implements Listener {
   private final UserManager userManager;
   private final SettingsManager settingsManager;
+  private final Messenger messenger;
   private final PluginConfiguration pluginConfiguration;
 
   public ChatSettingListener() {
     PlayerSettings plugin = PlayerSettings.getInstance();
     this.userManager = plugin.getUserManager();
     this.settingsManager = plugin.getSettingsManager();
+    this.messenger = plugin.getMessenger();
     this.pluginConfiguration = plugin.getConfiguration();
   }
 
@@ -51,7 +52,8 @@ public class ChatSettingListener implements Listener {
     // Cancel chat event if player has chat disabled
     Setting setting = settingsManager.getSetting(chatSettingName);
     event.setCancelled(true);
-    Players.sendMessage(player, Messages.getSettingDisabledMessage(player, setting));
+    messenger.sendMessage(
+        player, messenger.getMessageProvider().getSettingDisabledMessage(player, setting));
   }
 
   private Collection<SettingUser> getDisabledRecipients() {

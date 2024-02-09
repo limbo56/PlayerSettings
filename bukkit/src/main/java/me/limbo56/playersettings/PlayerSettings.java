@@ -8,9 +8,9 @@ import me.limbo56.playersettings.hook.HookManager;
 import me.limbo56.playersettings.lib.LibraryManager;
 import me.limbo56.playersettings.listener.ListenerManager;
 import me.limbo56.playersettings.menu.SettingsMenuManager;
+import me.limbo56.playersettings.message.Messenger;
 import me.limbo56.playersettings.setting.SettingsManager;
 import me.limbo56.playersettings.user.UserManager;
-import me.limbo56.playersettings.util.Messenger;
 import me.limbo56.playersettings.util.PluginLogger;
 import me.limbo56.playersettings.util.Timer;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -27,7 +27,7 @@ public class PlayerSettings extends JavaPlugin {
   private final SettingsMenuManager settingsMenuManager = new SettingsMenuManager(this);
   private final CommandManager commandManager = new CommandManager(this);
   private final ListenerManager listenerManager = new ListenerManager(this);
-  private final Messenger messenger = new Messenger(this);
+  private Messenger messenger;
   // State
   private boolean reloading = false;
 
@@ -116,6 +116,9 @@ public class PlayerSettings extends JavaPlugin {
   }
 
   public Messenger getMessenger() {
+    if (messenger == null) {
+      this.messenger = new Messenger(this);
+    }
     return messenger;
   }
 }

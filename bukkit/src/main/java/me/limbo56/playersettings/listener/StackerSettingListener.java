@@ -5,12 +5,11 @@ import me.limbo56.playersettings.api.Setting;
 import me.limbo56.playersettings.api.event.SettingUpdateEvent;
 import me.limbo56.playersettings.configuration.MessagesConfiguration;
 import me.limbo56.playersettings.configuration.PluginConfiguration;
+import me.limbo56.playersettings.message.Messenger;
 import me.limbo56.playersettings.setting.Settings;
 import me.limbo56.playersettings.setting.SettingsManager;
 import me.limbo56.playersettings.user.SettingUser;
 import me.limbo56.playersettings.user.UserManager;
-import me.limbo56.playersettings.util.Messages;
-import me.limbo56.playersettings.util.Messenger;
 import me.limbo56.playersettings.util.Version;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -25,18 +24,18 @@ import org.bukkit.util.Vector;
 public class StackerSettingListener implements Listener {
   private final SettingsManager settingsManager;
   private final UserManager userManager;
+  private final Messenger messenger;
   private final PluginConfiguration pluginConfiguration;
   private final MessagesConfiguration messagesConfiguration;
-  private final Messenger messenger;
 
   public StackerSettingListener() {
     PlayerSettings plugin = PlayerSettings.getInstance();
     this.settingsManager = plugin.getSettingsManager();
     this.userManager = plugin.getUserManager();
+    this.messenger = plugin.getMessenger();
     this.pluginConfiguration = plugin.getConfiguration();
     this.messagesConfiguration =
         plugin.getConfigurationManager().getConfiguration(MessagesConfiguration.class);
-    this.messenger = plugin.getMessenger();
   }
 
   @EventHandler
@@ -71,7 +70,8 @@ public class StackerSettingListener implements Listener {
     // Notify user that they have stacker disabled
     if (hasStackerDisabled) {
       Setting setting = settingsManager.getSetting(stackerSettingName);
-      messenger.sendMessage(player, Messages.getSettingDisabledMessage(player, setting));
+      messenger.sendMessage(
+          player, messenger.getMessageProvider().getSettingDisabledMessage(player, setting));
       return;
     }
 
