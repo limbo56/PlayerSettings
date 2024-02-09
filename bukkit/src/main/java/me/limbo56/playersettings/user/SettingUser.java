@@ -11,22 +11,21 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 public class SettingUser {
-
+  private final SettingsManager settingsManager;
   private final UUID uuid;
   private final SettingWatcher settingWatcher;
   private boolean loading;
   private boolean flying;
-  private final SettingsManager settingsManager;
 
   public SettingUser(UUID uuid) {
     this(uuid, new UserSettingsWatcher(uuid));
   }
 
   public SettingUser(UUID uuid, SettingWatcher settingWatcher) {
+    this.settingsManager = PlayerSettings.getInstance().getSettingsManager();
     this.uuid = uuid;
     this.loading = true;
     this.settingWatcher = settingWatcher;
-    this.settingsManager = PlayerSettings.getInstance().getSettingsManager();
   }
 
   public void clearSettingEffects() {
