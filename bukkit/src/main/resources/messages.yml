@@ -7,12 +7,13 @@
 prefix: "&f&l(&6Settings&f&l) &f"
 
 settings:
-  no-access: "&cYou don't have permissions to toggle this setting"
+  no-access: "&cYou don't have permissions to change this setting"
   # %setting% - The name of the setting the user tried to change
   # %max% - The maximum value this user can change the level of this setting to
-  low-access-level: "&cNot enough permissions. You can only set setting &6%setting% &cto &e%max%!"
+  low-access-level: "&cPermission denied. You're limited to setting '%setting%&c' to a maximum of &e%max%&c."
   no-settings-data: "&cNo settings data found for your account"
   wait-loading: "&cPlease wait until your settings load before doing any changes"
+  # NOTE: This message requires the '/settings set' command to be enabled
   # %setting% - The name of the setting that is disabled
   # %enableAction% - The clickable text to enable the setting
   self-disabled: "&cYou have the '%setting%&c' setting disabled! %enableAction%"
@@ -29,7 +30,7 @@ commands:
   # %setting% - The name of the setting the user tried to change
   setting-not-found: "&cUnknown setting '&6%setting%&c'!"
   # %values% - The list of accepted values for the setting that the player has permissions for
-  setting-invalid-level: "&cInvalid setting level! &cThe accepted levels are: &a%values%"
+  setting-invalid-level: "&cInvalid setting level! The accepted levels are: &e%values%"
   # %setting% - The name of the setting that was changed
   # %value% - The value the setting was changed to
   setting-changed: "Setting '&6%setting%&f' has been set to &e%value%"
