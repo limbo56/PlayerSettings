@@ -8,7 +8,6 @@ import me.limbo56.playersettings.setting.InternalSetting;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -61,10 +60,7 @@ public class PlayerSettingsPlaceholders extends PlaceholderExpansion {
     Setting setting = findTargetSetting(identifier).orElse(null);
 
     if (setting != null) {
-      Optional<ItemMeta> itemMeta =
-          Optional.ofNullable(setting.getItem().getItemStack().getItemMeta());
-      Optional<String> settingName =
-          Optional.of(itemMeta.map(ItemMeta::getDisplayName).orElse(setting.getName()));
+      Optional<@NotNull String> settingName = Optional.of(setting.getDisplayName());
 
       if (identifier.endsWith("_name")) {
         return settingName;
