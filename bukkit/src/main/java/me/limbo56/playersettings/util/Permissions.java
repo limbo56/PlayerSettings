@@ -2,6 +2,7 @@ package me.limbo56.playersettings.util;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import me.limbo56.playersettings.api.Setting;
 import org.bukkit.command.CommandSender;
 import org.bukkit.permissions.PermissionAttachmentInfo;
@@ -52,14 +53,12 @@ public class Permissions {
   }
 
   private static int getMaxPermissionLevel(List<Integer> levels, int defaultLevel) {
-    boolean seen = false;
     Integer best = null;
     for (Integer level : levels) {
-      if (!seen || level.compareTo(best) > 0) {
-        seen = true;
+      if (best == null || level.compareTo(best) > 0) {
         best = level;
       }
     }
-    return seen ? best : defaultLevel;
+    return Optional.ofNullable(best).orElse(defaultLevel);
   }
 }

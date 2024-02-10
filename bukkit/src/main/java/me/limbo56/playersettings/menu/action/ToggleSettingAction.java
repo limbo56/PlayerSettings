@@ -1,21 +1,26 @@
 package me.limbo56.playersettings.menu.action;
 
+import java.util.UUID;
+import me.limbo56.playersettings.PlayerSettings;
 import me.limbo56.playersettings.menu.item.SettingsMenuItem;
 import me.limbo56.playersettings.setting.InternalSetting;
 import me.limbo56.playersettings.user.SettingUser;
-import org.bukkit.entity.Player;
+import me.limbo56.playersettings.user.UserManager;
 import org.bukkit.event.inventory.ClickType;
 
 public class ToggleSettingAction extends SettingItemAction {
+  private final UserManager userManager;
+
   public ToggleSettingAction(SettingsMenuItem.Context context, InternalSetting setting) {
     super(context, setting);
+    this.userManager = PlayerSettings.getInstance().getUserManager();
   }
 
   @Override
   public void onExecute(SettingUser user, ClickType type) {
-    Player player = user.getPlayer();
+    UUID uuid = user.getPlayer().getUniqueId();
     int value = user.getSettingWatcher().getValue(setting.getName());
     int newValue = value == 0 ? 1 : -value;
-    player.performCommand("settings set " + setting.getName() + " " + newValue);
+    userManager.getUser(uuid).changeSetting(setting.getName(), newValue);
   }
 }

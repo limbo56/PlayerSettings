@@ -1,7 +1,7 @@
 package me.limbo56.playersettings.setting;
 
 import com.google.common.collect.ImmutableListMultimap;
-import java.util.Optional;
+import java.util.*;
 import me.limbo56.playersettings.PlayerSettings;
 import me.limbo56.playersettings.api.ImmutableSetting;
 import me.limbo56.playersettings.api.Setting;
@@ -11,7 +11,9 @@ import me.limbo56.playersettings.configuration.PluginConfiguration;
 import me.limbo56.playersettings.configuration.SettingsConfiguration;
 import me.limbo56.playersettings.configuration.parser.Parsers;
 import me.limbo56.playersettings.listener.ListenerManager;
+import me.limbo56.playersettings.util.Permissions;
 import me.limbo56.playersettings.util.PluginLogger;
+import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.Listener;
 
@@ -99,13 +101,32 @@ public class InternalSetting extends ForwardingSetting {
         .orElse(pluginConfiguration.getDefaultValueAliases());
   }
 
-  public String getValueAlias(int value) {
-    ImmutableListMultimap<Integer, String> aliases = getValueAliases().inverse();
-    int rangeValue = value < 1 ? 0 : value;
-    String stringValue = String.valueOf(rangeValue);
-    if (aliases.containsKey(rangeValue)) {
-      return aliases.get(rangeValue).stream().findFirst().orElse(stringValue);
+  public Collection<Integer> getAllowedValues(CommandSender sender) {
+    List<Integer> allowedValues = new ArrayList<>();
+    int maxLevel = Permissions.getSettingPermissionLevel(sender, setting);
+    for (int level = 0; level <= setting.getMaxValue(); level++) {
+      if (level <= maxLevel) {
+        allowedValues.add(level);
+      }
     }
-    return stringValue;
+    return Collections.unmodifiableCollection(allowedValues);
+  }
+
+  public Collection<String> getAliases(Collection<Integer> values) {
+    List<String> aliases = new ArrayList<>();
+    for (int level : values) {
+      aliases.add(getValueAlias(level));
+    }
+    return Collections.unmodifiableCollection(aliases);
+  }
+
+  public String getValueAlias(int level) {
+    ImmutableListMultimap<Integer, String> aliases = getValueAliases().inverse();
+    int levelRange = level < 1 ? 0 : level;
+    String levelString = String.valueOf(levelRange);
+    if (aliases.containsKey(levelRange)) {
+      return aliases.get(levelRange).stream().findFirst().orElse(levelString);
+    }
+    return levelString;
   }
 }

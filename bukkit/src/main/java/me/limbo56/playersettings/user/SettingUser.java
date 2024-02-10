@@ -15,6 +15,7 @@ public class SettingUser {
   private final SettingsManager settingsManager;
   private final UUID uuid;
   private final SettingWatcher settingWatcher;
+  private final UserSettingsModifier settingModifier;
   private boolean loading;
   private boolean flying;
 
@@ -25,8 +26,20 @@ public class SettingUser {
   public SettingUser(UUID uuid, SettingWatcher settingWatcher) {
     this.settingsManager = PlayerSettings.getInstance().getSettingsManager();
     this.uuid = uuid;
-    this.loading = true;
     this.settingWatcher = settingWatcher;
+    this.settingModifier = new UserSettingsModifier(this);
+    this.loading = true;
+  }
+
+  public void changeSetting(String settingName, int value) {
+    changeSetting(settingName, value, false);
+  }
+
+  public void changeSetting(String settingName, int value, boolean silent) {
+    Player player = getPlayer();
+    if (player != null && player.isOnline()) {
+      settingModifier.setValue(settingName, value, silent);
+    }
   }
 
   public void clearSettingEffects() {
@@ -67,6 +80,10 @@ public class SettingUser {
   public boolean hasSettingPermissions(String settingName) {
     Setting setting = settingsManager.getSetting(settingName);
     return Permissions.getSettingPermissionLevel(this.getPlayer(), setting) > 0;
+  }
+
+  public UUID getUniqueId() {
+    return uuid;
   }
 
   public Player getPlayer() {

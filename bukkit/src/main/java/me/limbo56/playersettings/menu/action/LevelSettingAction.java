@@ -1,16 +1,21 @@
 package me.limbo56.playersettings.menu.action;
 
+import me.limbo56.playersettings.PlayerSettings;
 import me.limbo56.playersettings.api.Setting;
 import me.limbo56.playersettings.menu.item.SettingsMenuItem;
 import me.limbo56.playersettings.setting.InternalSetting;
 import me.limbo56.playersettings.user.SettingUser;
+import me.limbo56.playersettings.user.UserManager;
 import me.limbo56.playersettings.util.Permissions;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 
 public class LevelSettingAction extends SettingItemAction {
+  private final UserManager userManager;
+
   public LevelSettingAction(SettingsMenuItem.Context context, InternalSetting setting) {
     super(context, setting);
+    this.userManager = PlayerSettings.getInstance().getUserManager();
   }
 
   @Override
@@ -19,7 +24,7 @@ public class LevelSettingAction extends SettingItemAction {
     int maxValue = getMaxValue(player, setting);
     int currentValue = user.getSettingWatcher().getValue(setting.getName());
     int newValue = calculateNewValue(type, maxValue, currentValue);
-    player.performCommand("settings set " + setting.getName() + " " + newValue);
+    userManager.getUser(player.getUniqueId()).changeSetting(setting.getName(), newValue);
   }
 
   private int calculateNewValue(ClickType type, int maxValue, int currentValue) {

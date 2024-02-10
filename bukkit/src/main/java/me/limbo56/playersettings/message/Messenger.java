@@ -3,7 +3,6 @@ package me.limbo56.playersettings.message;
 import com.google.common.collect.ObjectArrays;
 import java.util.function.Function;
 import me.limbo56.playersettings.PlayerSettings;
-import me.limbo56.playersettings.configuration.MessagesConfiguration;
 import me.limbo56.playersettings.message.text.PlaceholderAPIModifier;
 import me.limbo56.playersettings.message.text.Text;
 import me.limbo56.playersettings.util.Players;
@@ -15,9 +14,7 @@ public class Messenger {
   private final MessageProvider messageProvider;
 
   public Messenger(PlayerSettings plugin) {
-    this.messageProvider =
-        new MessageProvider(
-            plugin.getConfigurationManager().getConfiguration(MessagesConfiguration.class));
+    this.messageProvider = new MessageProvider(plugin);
   }
 
   public void sendMessage(Player player, String text) {
@@ -25,7 +22,9 @@ public class Messenger {
   }
 
   public void sendMessage(Player player, Component message) {
-    Players.sendMessage(player, formatMessage(message));
+    if (Component.IS_NOT_EMPTY.test(message)) {
+      Players.sendMessage(player, formatMessage(message));
+    }
   }
 
   @SafeVarargs
@@ -39,6 +38,12 @@ public class Messenger {
 
   public void sendMessage(CommandSender sender, String text) {
     if (!text.isEmpty()) {
+      Players.sendMessage(sender, formatMessage(text));
+    }
+  }
+
+  public void sendMessage(CommandSender sender, Text text) {
+    if (!text.getTextLines().isEmpty()) {
       Players.sendMessage(sender, formatMessage(text));
     }
   }
