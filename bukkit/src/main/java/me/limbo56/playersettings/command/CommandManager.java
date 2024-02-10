@@ -14,11 +14,11 @@ import org.jetbrains.annotations.NotNull;
 public class CommandManager {
   private final PlayerSettings plugin;
   private final PluginConfiguration pluginConfiguration;
-  private final SubCommand defaultCommand;
+  private SubCommand defaultCommand;
   private final Map<String, SubCommand> subCommands = new HashMap<>();
 
   public CommandManager(PlayerSettings plugin) {
-    this(plugin, new DefaultSubCommand(plugin));
+    this(plugin, null);
   }
 
   public CommandManager(PlayerSettings plugin, SubCommand defaultCommand) {
@@ -38,6 +38,9 @@ public class CommandManager {
     registerSubCommand(new ReloadSubCommand(plugin));
     registerSubCommand(new SetSubCommand(plugin));
     registerSubCommand(new GetSubCommand(plugin));
+    if (defaultCommand == null) {
+      defaultCommand = new DefaultSubCommand(plugin);
+    }
   }
 
   private void registerSubCommand(SubCommand subCommand) {
