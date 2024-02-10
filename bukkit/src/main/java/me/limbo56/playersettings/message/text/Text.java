@@ -109,18 +109,6 @@ public class Text {
     }
 
     /**
-     * Adds a modifier that replaces placeholders with specified values.
-     *
-     * @param placeholder The placeholder string to replace.
-     * @param value The value to replace the placeholder with.
-     * @return This builder instance for method chaining.
-     */
-    public Builder replacePlaceholder(String placeholder, String value) {
-      modifiers.add(ReplaceModifier.of(placeholder, value));
-      return this;
-    }
-
-    /**
      * Adds multiple modifiers to the text.
      *
      * @param modifierSet The set of modifier functions to apply.
