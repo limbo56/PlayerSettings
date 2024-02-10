@@ -1,4 +1,4 @@
-package me.limbo56.playersettings.user;
+package me.limbo56.playersettings.setting;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -8,17 +8,16 @@ import me.limbo56.playersettings.PlayerSettings;
 import me.limbo56.playersettings.api.Setting;
 import me.limbo56.playersettings.api.SettingWatcher;
 import me.limbo56.playersettings.api.event.SettingUpdateEvent;
-import me.limbo56.playersettings.setting.SettingsManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-public class UserSettingsWatcher implements SettingWatcher {
+public class CachedSettingWatcher implements SettingWatcher {
   private final SettingsManager settingsManager;
   private final UUID uuid;
   private final Map<String, Integer> settingMap;
 
-  public UserSettingsWatcher(UUID owner) {
+  public CachedSettingWatcher(UUID owner) {
     this.settingsManager = PlayerSettings.getInstance().getSettingsManager();
     this.uuid = owner;
     this.settingMap = new HashMap<>();
@@ -32,7 +31,7 @@ public class UserSettingsWatcher implements SettingWatcher {
 
   @Override
   public void setValue(@NotNull String settingName, int value, boolean silent) {
-    Integer previousValue = Optional.ofNullable(settingMap.put(settingName, value)).orElse(0);
+    int previousValue = Optional.ofNullable(settingMap.put(settingName, value)).orElse(0);
     if (!silent) {
       Setting setting = settingsManager.getSetting(settingName);
       Player player = Bukkit.getPlayer(getOwner());

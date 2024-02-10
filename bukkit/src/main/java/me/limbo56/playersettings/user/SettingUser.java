@@ -5,6 +5,7 @@ import me.limbo56.playersettings.PlayerSettings;
 import me.limbo56.playersettings.api.Setting;
 import me.limbo56.playersettings.api.SettingCallback;
 import me.limbo56.playersettings.api.SettingWatcher;
+import me.limbo56.playersettings.setting.CachedSettingWatcher;
 import me.limbo56.playersettings.setting.SettingsManager;
 import me.limbo56.playersettings.util.Permissions;
 import org.bukkit.Bukkit;
@@ -18,7 +19,7 @@ public class SettingUser {
   private boolean flying;
 
   public SettingUser(UUID uuid) {
-    this(uuid, new UserSettingsWatcher(uuid));
+    this(uuid, new CachedSettingWatcher(uuid));
   }
 
   public SettingUser(UUID uuid, SettingWatcher settingWatcher) {

@@ -17,7 +17,7 @@ import me.limbo56.playersettings.PlayerSettings;
 import me.limbo56.playersettings.api.Setting;
 import me.limbo56.playersettings.api.SettingWatcher;
 import me.limbo56.playersettings.database.SettingsDatabase;
-import me.limbo56.playersettings.user.UserSettingsWatcher;
+import me.limbo56.playersettings.setting.CachedSettingWatcher;
 import org.bson.Document;
 import org.bson.UuidRepresentation;
 import org.bson.conversions.Bson;
@@ -64,7 +64,7 @@ public class MongoSettingsDatabase implements SettingsDatabase<MongoDatabaseConf
 
     for (Document settingDocument : settingsCollection.find(filter)) {
       UUID owner = settingDocument.get("owner", UUID.class);
-      SettingWatcher watcher = watcherMap.getOrDefault(owner, new UserSettingsWatcher(owner));
+      SettingWatcher watcher = watcherMap.getOrDefault(owner, new CachedSettingWatcher(owner));
 
       String settingName = settingDocument.getString("settingName");
       Integer value = settingDocument.getInteger("value");
