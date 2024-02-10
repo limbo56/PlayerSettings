@@ -88,9 +88,11 @@ commands:
   # * By default, the command will execute the '/settings open' command
   #
   # Available Options:
-  # * help - Send the settings help message
   # * open - Opens the settings menu
+  # * help - Send the settings help message
   default: "open"
+  open:
+    enabled: true
   help:
     enabled: true
   reload:

@@ -52,15 +52,15 @@ public class SubCommandExecutor implements org.bukkit.command.CommandExecutor, T
     }
 
     Player player = (Player) sender;
-    Optional<SubCommand> defaultCommand = commandManager.getDefaultCommand();
+    Optional<SubCommand> optionalDefaultSubCommand = commandManager.getDefaultSubCommand();
     if (args.length < 1) {
-      defaultCommand.ifPresent(fallback -> fallback.execute(player, args));
+      optionalDefaultSubCommand.ifPresent(defaultCommand -> defaultCommand.execute(player, args));
       return false;
     }
 
     Optional<SubCommand> optionalSubCommand = commandManager.getSubCommand(args[0]);
     if (!optionalSubCommand.isPresent()) {
-      Stream.of(commandManager.getSubCommand("help"), defaultCommand)
+      Stream.of(commandManager.getSubCommand("help"), optionalDefaultSubCommand)
           .filter(Optional::isPresent)
           .map(Optional::get)
           .findFirst()

@@ -13,12 +13,18 @@ import org.jetbrains.annotations.NotNull;
 /** Class that manages all commands for the plugin. */
 public class CommandManager {
   private final PlayerSettings plugin;
-  private final Map<String, SubCommand> subCommands = new HashMap<>();
   private final PluginConfiguration pluginConfiguration;
+  private final SubCommand defaultCommand;
+  private final Map<String, SubCommand> subCommands = new HashMap<>();
 
   public CommandManager(PlayerSettings plugin) {
+    this(plugin, new DefaultSubCommand(plugin));
+  }
+
+  public CommandManager(PlayerSettings plugin, SubCommand defaultCommand) {
     this.plugin = plugin;
     this.pluginConfiguration = plugin.getConfiguration();
+    this.defaultCommand = defaultCommand;
   }
 
   public void registerDefaultCommands() {
@@ -27,7 +33,7 @@ public class CommandManager {
     pluginCommand.setExecutor(executor);
     pluginCommand.setTabCompleter(executor);
 
-    registerSubCommand(new OpenSubCommand(plugin), true);
+    registerSubCommand(new OpenSubCommand(plugin));
     registerSubCommand(new HelpSubCommand(plugin));
     registerSubCommand(new ReloadSubCommand(plugin));
     registerSubCommand(new SetSubCommand(plugin));
@@ -35,13 +41,9 @@ public class CommandManager {
   }
 
   private void registerSubCommand(SubCommand subCommand) {
-    registerSubCommand(subCommand, false);
-  }
-
-  private void registerSubCommand(SubCommand command, boolean force) {
-    String commandName = command.getName();
-    if (force || pluginConfiguration.isCommandEnabled(commandName)) {
-      subCommands.put(commandName, command);
+    String commandName = subCommand.getName();
+    if (pluginConfiguration.isCommandEnabled(commandName)) {
+      subCommands.put(commandName, subCommand);
     }
   }
 
@@ -54,13 +56,14 @@ public class CommandManager {
     registerDefaultCommands();
   }
 
-  public Optional<SubCommand> getDefaultCommand() {
+  public Optional<SubCommand> getDefaultSubCommand() {
     String defaultCommandName = pluginConfiguration.getDefaultCommand().toLowerCase();
-    if ("open".equals(defaultCommandName) || "help".equals(defaultCommandName)) {
-      return getSubCommand(defaultCommandName);
-    } else {
-      return getSubCommand("open");
+    if (subCommands.containsKey(defaultCommandName)) {
+      if ("open".equals(defaultCommandName) || "help".equals(defaultCommandName)) {
+        return getSubCommand(defaultCommandName);
+      }
     }
+    return Optional.of(defaultCommand);
   }
 
   public Optional<SubCommand> getSubCommand(String name) {

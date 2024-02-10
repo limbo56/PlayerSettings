@@ -15,7 +15,7 @@ public abstract class SubCommand {
   private final int arguments;
   private final String permission;
 
-  protected SubCommand(
+  public SubCommand(
       PlayerSettings plugin,
       String name,
       String description,
