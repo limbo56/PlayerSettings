@@ -78,7 +78,9 @@ public class FlySettingListener implements Listener {
       return;
     }
 
-    player.setAllowFlight(true);
+    if (user.hasSettingEnabled(flySettingName)) {
+      new TaskChain().sync(map -> player.setAllowFlight(true)).runSyncLater(plugin, 0L);
+    }
   }
 
   @EventHandler(priority = EventPriority.LOWEST)
