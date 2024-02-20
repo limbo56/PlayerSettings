@@ -9,9 +9,16 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <name>PlayerSettings</name>
+    <name>PlayerSettings Bukkit</name>
     <artifactId>playersettings-bukkit</artifactId>
     <version>${revision}</version>
+
+    <repositories>
+        <repository>
+            <id>AlessioDP</id>
+            <url>https://repo.alessiodp.com/releases/</url>
+        </repository>
+    </repositories>
 
     <build>
         <finalName>PlayerSettings-${revision}</finalName>
@@ -117,12 +124,6 @@
         </plugins>
     </build>
 
-    <repositories>
-        <repository>
-            <id>AlessioDP</id>
-            <url>https://repo.alessiodp.com/releases/</url>
-        </repository>
-    </repositories>
 
     <dependencies>
         <!-- PlayerSettings API -->

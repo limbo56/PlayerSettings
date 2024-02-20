@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <name>PlayerSettingsAPI</name>
+    <name>PlayerSettings API</name>
     <artifactId>playersettings-api</artifactId>
     <version>${revision}</version>
 
