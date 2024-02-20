@@ -29,13 +29,16 @@ general:
   debug: false
   # This property toggles the plugin usage metrics
   # * Disabling this option does not affect plugin functionality
-  # * Collected data is anonymous, providing server-related information.
+  # * Collected data is anonymous, providing server-related information
   metrics: true
-  # This property controls the update message sent to server operators upon joining
+  # Control the update message sent to server operators upon joining
   update-alert: true
-  # Controls whether a warning message is displayed when a security/authentication plugin is causing issues
-  # * Setting this to false will disable the warning message
+  # Display a warning message when a security/authentication plugin is causing issues
+  # * Set to false to disable the warning message
   offline-warning: true
+  # Time delay (in milliseconds) before saving player settings to the database
+  # This delay helps prevent excessive database requests during rapid settings updates
+  settings-save-delay: 500
   # List of worlds where the plugin will be enabled
   #
   # * Use '*' to enable the plugin in all worlds
@@ -46,7 +49,7 @@ general:
   # * By default, the "Citizens" plugin adds the "NPC" metadata tag to all of its entities
   npc-metadata:
     - "NPC"
-  # A map of aliases to use when displaying the value of a setting
+  # Map of aliases to use when displaying the value of a setting
   #
   # * Values can be mapped to an alias or a list of aliases
   # * The first alias in the list will be used to display the setting value

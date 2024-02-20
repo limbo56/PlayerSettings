@@ -5,12 +5,14 @@ import java.util.UUID;
 import me.limbo56.playersettings.PlayerSettings;
 import me.limbo56.playersettings.api.Setting;
 import me.limbo56.playersettings.api.SettingWatcher;
+import me.limbo56.playersettings.api.event.SettingUpdateEvent;
 import me.limbo56.playersettings.configuration.PluginConfiguration;
 import me.limbo56.playersettings.setting.SettingsManager;
 import me.limbo56.playersettings.user.UserManager;
 import me.limbo56.playersettings.util.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -77,6 +79,11 @@ public class PlayerListener implements Listener {
     }
 
     new TaskChain().sync(new RespawnReapplyEffect(player.getUniqueId())).runSyncLater(plugin, 0);
+  }
+
+  @EventHandler(priority = EventPriority.MONITOR)
+  public void onSettingUpdate(SettingUpdateEvent event) {
+    userManager.getSaveUserDebounced().call(event.getPlayer().getUniqueId());
   }
 
   private class RespawnReapplyEffect implements TaskChain.Task {
