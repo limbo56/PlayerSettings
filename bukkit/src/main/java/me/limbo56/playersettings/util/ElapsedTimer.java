@@ -3,16 +3,16 @@ package me.limbo56.playersettings.util;
 import java.time.Duration;
 import java.time.Instant;
 
-public class Timer {
+public class ElapsedTimer {
   private final Instant startTime;
   private Instant stopTime;
 
-  private Timer() {
+  private ElapsedTimer() {
     this.startTime = Instant.now();
   }
 
-  public static Timer start() {
-    return new Timer();
+  public static ElapsedTimer start() {
+    return new ElapsedTimer();
   }
 
   public void stop() {

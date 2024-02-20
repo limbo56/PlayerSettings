@@ -47,7 +47,7 @@ public class PluginLogger {
         .sendMessage("[" + PLUGIN.getName() + "] " + String.join("", messages));
   }
 
-  public static void logElapsedMillis(String message, Timer timer) {
+  public static void logElapsedMillis(String message, ElapsedTimer timer) {
     long millisDuration = timer.getElapsedDuration().toMillis();
     info(message + " (took " + millisDuration + "ms)");
   }

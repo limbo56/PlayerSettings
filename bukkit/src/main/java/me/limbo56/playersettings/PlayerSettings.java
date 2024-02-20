@@ -11,8 +11,8 @@ import me.limbo56.playersettings.menu.SettingsMenuManager;
 import me.limbo56.playersettings.message.Messenger;
 import me.limbo56.playersettings.setting.SettingsManager;
 import me.limbo56.playersettings.user.UserManager;
+import me.limbo56.playersettings.util.ElapsedTimer;
 import me.limbo56.playersettings.util.PluginLogger;
-import me.limbo56.playersettings.util.Timer;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class PlayerSettings extends JavaPlugin {
@@ -37,7 +37,7 @@ public class PlayerSettings extends JavaPlugin {
 
   @Override
   public void onEnable() {
-    Timer timer = Timer.start();
+    ElapsedTimer timer = ElapsedTimer.start();
 
     // Load essential components
     INSTANCE = this;
