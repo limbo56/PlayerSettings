@@ -80,6 +80,7 @@ public class UserManager implements SettingsWatchlist {
   public void unloadAll() {
     if (saveUserDebounced != null) {
       saveUserDebounced.terminate();
+      saveUserDebounced = null;
     }
     userMap.clear();
   }
@@ -110,7 +111,7 @@ public class UserManager implements SettingsWatchlist {
   public Debouncer<UUID> getSaveUserDebounced() {
     if (this.saveUserDebounced == null) {
       this.saveUserDebounced =
-          new Debouncer<>(this::saveUser, pluginConfiguration.getSettingSaveDelay());
+          new Debouncer<>(this::saveUser, pluginConfiguration.getSettingsSaveDelay());
     }
     return this.saveUserDebounced;
   }

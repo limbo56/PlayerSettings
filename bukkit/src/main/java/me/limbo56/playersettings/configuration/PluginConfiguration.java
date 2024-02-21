@@ -50,8 +50,8 @@ public class PluginConfiguration extends BaseConfiguration {
     return configuration.getBoolean("general.update-alert", true);
   }
 
-  public long getSettingSaveDelay() {
-    return configuration.getLong("general.setting-save-delay", 500);
+  public long getSettingsSaveDelay() {
+    return configuration.getLong("general.settings-save-delay", 500);
   }
 
   public List<String> getNPCMetadata() {
