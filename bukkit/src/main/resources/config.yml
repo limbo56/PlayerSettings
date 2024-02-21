@@ -27,17 +27,18 @@
 # General Configuration Section
 general:
   debug: false
-  # This property toggles the plugin usage metrics
+  # Toggles the collection of plugin usage metrics
+  #
   # * Disabling this option does not affect plugin functionality
   # * Collected data is anonymous, providing server-related information
   metrics: true
-  # Control the update message sent to server operators upon joining
+  # Toggles the update message to server operators upon joining
   update-alert: true
-  # Display a warning message when a security/authentication plugin is causing issues
-  # * Set to false to disable the warning message
+  # Toggles the warning message logged when a security/authentication plugin is causing issues
   offline-warning: true
   # Time delay (in milliseconds) before saving player settings to the database
-  # This delay helps prevent excessive database requests during rapid settings updates
+  #
+  # * This delay helps prevent excessive database requests during rapid settings updates
   settings-save-delay: 500
   # List of worlds where the plugin will be enabled
   #
@@ -71,11 +72,12 @@ general:
 menu:
   name: "&6&lSettings"
   size: 54
-  # Enable or disable the toggle button below settings
+  # Enable displaying of the toggle button below settings
   toggle-button: true
-  # This section defines sounds played when a player interacts with a setting
+  # Sounds played when a player interacts with a setting
   #
   # Format: [Sound], [Volume], [Pitch]
+  #
   # Examples:
   # - ENTITY_PLAYER_BURP, 2.5f, 0.5
   # - ENTITY_PLAYER_BURP, 0.5, 1f
@@ -86,13 +88,13 @@ menu:
 
 # Commands configuration section
 commands:
-  # The default command that '/settings' will perform.
+  # Default command that '/settings' will perform
   #
   # * By default, the command will execute the '/settings open' command
   #
   # Available Options:
-  # * open - Opens the settings menu
-  # * help - Send the settings help message
+  # - open : Opens the settings menu
+  # - help : Send the settings help message
   default: "open"
   open:
     enabled: true
