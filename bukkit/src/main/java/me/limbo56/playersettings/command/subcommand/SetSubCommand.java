@@ -12,10 +12,13 @@ import me.limbo56.playersettings.setting.InternalSetting;
 import me.limbo56.playersettings.setting.SettingsManager;
 import me.limbo56.playersettings.user.SettingUser;
 import me.limbo56.playersettings.user.UserManager;
+import me.limbo56.playersettings.util.Colors;
 import me.limbo56.playersettings.util.PluginLogger;
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.util.StringUtil;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 public class SetSubCommand extends SubCommand {
@@ -69,11 +72,12 @@ public class SetSubCommand extends SubCommand {
     if (args.length > 2 && settingsManager.isRegistered(args[1])) {
       InternalSetting setting = settingsManager.getSetting(args[1]);
       Collection<Integer> settingValues = setting.getAllowedValues(sender);
+      Stream<String> aliases =
+          setting.getAliases(settingValues).stream()
+              .map(s -> ChatColor.stripColor(Colors.translateColorCodes(s)));
       Collection<String> availableValues =
-          Stream.concat(
-                  settingValues.stream().map(String::valueOf),
-                  setting.getAliases(settingValues).stream())
-              .collect(Collectors.toList());
+          Stream.concat(aliases, settingValues.stream().map(String::valueOf))
+              .collect(Collectors.toSet());
       StringUtil.copyPartialMatches(args[2], availableValues, completions);
     }
     Collections.sort(completions);
@@ -98,10 +102,16 @@ public class SetSubCommand extends SubCommand {
 
   private Integer parseValue(InternalSetting setting, String value) {
     try {
-      int settingValue =
-          setting.getValueAliases().get(value).stream()
-              .findFirst()
-              .orElseGet(() -> Integer.parseInt(value));
+      Optional<Integer> optionalValue = Optional.empty();
+      for (Map.Entry<String, Collection<Integer>> entry :
+          setting.getValueAliases().asMap().entrySet()) {
+        String alias = ChatColor.stripColor(Colors.translateColorCodes(entry.getKey()));
+        if (alias.equals(value)) {
+          optionalValue = entry.getValue().stream().findFirst();
+        }
+      }
+
+      int settingValue = optionalValue.orElseGet(() -> Integer.parseInt(value));
       PluginLogger.debug(
           "Parsing value '"
               + value
@@ -117,6 +127,7 @@ public class SetSubCommand extends SubCommand {
     }
   }
 
+  @Contract("_, _, null -> true")
   private boolean isInvalidValue(Player player, InternalSetting setting, Integer newValue) {
     if (newValue == null) {
       messenger.sendMessage(

@@ -12,11 +12,13 @@ import me.limbo56.playersettings.message.text.ReplaceModifier;
 import me.limbo56.playersettings.message.text.Text;
 import me.limbo56.playersettings.setting.InternalSetting;
 import me.limbo56.playersettings.util.Adventure;
+import me.limbo56.playersettings.util.Colors;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.TextReplacementConfig;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 public class MessageProvider {
@@ -29,10 +31,12 @@ public class MessageProvider {
 
   public Text getInvalidSettingLevelMessage(Player player, InternalSetting setting) {
     Collection<Integer> settingValues = setting.getAllowedValues(player);
+    Stream<String> aliases =
+        setting.getAliases(settingValues).stream()
+            .map(s -> ChatColor.stripColor(Colors.translateColorCodes(s)));
     String acceptedValues =
-        Stream.concat(
-                settingValues.stream().map(String::valueOf),
-                setting.getAliases(settingValues).stream())
+        Stream.concat(aliases, settingValues.stream().map(String::valueOf))
+            .distinct()
             .collect(Collectors.joining(", "));
     return Text.create(
         messagesConfiguration.getMessage("commands.setting-invalid-level"),
