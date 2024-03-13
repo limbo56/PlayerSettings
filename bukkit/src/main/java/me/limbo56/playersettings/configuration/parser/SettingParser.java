@@ -27,6 +27,7 @@ public class SettingParser implements ConfigurationSectionParser<Setting> {
         .defaultValue(section.getInt("default", 0))
         .maxValue(section.getInt("max", 1))
         .triggers(section.getStringList("triggers").toArray(new String[0]))
+        .disablePermission(section.getString("disable-permission"))
         .item(SETTING_ITEM_PARSER.parse(itemSection))
         .valueAliases(
             VALUE_ALIASES_PARSER.parse(section.getConfigurationSection("overrides.value-aliases")))

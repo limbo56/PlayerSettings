@@ -7,6 +7,7 @@ import me.limbo56.playersettings.api.Setting;
 import me.limbo56.playersettings.api.SettingCallback;
 import org.bukkit.event.Listener;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class ForwardingSetting implements Setting {
   protected Setting setting;
@@ -43,6 +44,11 @@ public class ForwardingSetting implements Setting {
   @Override
   public String[] getTriggers() {
     return setting.getTriggers();
+  }
+
+  @Override
+  public @Nullable String getDisablePermission() {
+    return setting.getDisablePermission();
   }
 
   @Override

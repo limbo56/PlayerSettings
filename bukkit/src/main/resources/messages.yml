@@ -8,6 +8,7 @@ prefix: "&f&l(&6Settings&f&l) &f"
 
 settings:
   no-access: "&cYou don't have permissions to change this setting"
+  no-disable-access: "&cYou don't have permissions to disable this setting"
   # %setting% - The name of the setting the user tried to change
   # %max% - The maximum value this user can change the level of this setting to
   low-access-level: "&cPermission denied. You're limited to setting '%setting%&c' to a maximum of &e%max%&c."

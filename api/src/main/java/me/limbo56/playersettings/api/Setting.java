@@ -10,6 +10,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.immutables.value.Value;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Represents a configurable setting that can be used within the plugin.
@@ -111,6 +112,14 @@ public interface Setting extends ConfigurationSerializable {
   }
 
   /**
+   * Retrieves the permission string required to disable this setting
+   *
+   * @return The permission required to disable this setting
+   */
+  @Nullable
+  String getDisablePermission();
+
+  /**
    * Retrieves the list of callbacks executed when the setting is changed.
    *
    * @return The list of setting callbacks.
@@ -144,6 +153,9 @@ public interface Setting extends ConfigurationSerializable {
     mappedObject.put("default", getDefaultValue());
     mappedObject.put("max", getMaxValue());
     mappedObject.put("triggers", getTriggers());
+    if (getDisablePermission() != null) {
+      mappedObject.put("disable-permission", getDisablePermission());
+    }
     return mappedObject;
   }
 }

@@ -13,7 +13,6 @@ import me.limbo56.playersettings.message.text.ReplaceModifier;
 import me.limbo56.playersettings.setting.InternalSetting;
 import me.limbo56.playersettings.setting.SettingsManager;
 import me.limbo56.playersettings.util.Permissions;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -39,7 +38,7 @@ public class UserSettingsModifier {
   }
 
   public void setValue(@NotNull String settingName, int value, boolean silent) {
-    Player player = Bukkit.getPlayer(user.getUniqueId());
+    Player player = user.getPlayer();
     SettingWatcher settingWatcher = user.getSettingWatcher();
     if (!hasSettingPermissions(settingName)) {
       return;
@@ -48,6 +47,12 @@ public class UserSettingsModifier {
     InternalSetting setting = settingsManager.getSetting(settingName);
     int currentValue = settingWatcher.getValue(settingName);
     if (isSettingUnchanged(player, setting, currentValue, value)) {
+      return;
+    }
+
+    String disablePermission = setting.getDisablePermission();
+    if (value <= 0 && disablePermission != null && !player.hasPermission(disablePermission)) {
+      messenger.sendMessage(player, messagesConfiguration.getMessage("settings.no-disable-access"));
       return;
     }
 
