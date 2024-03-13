@@ -41,7 +41,7 @@ public class SettingsConfiguration extends BaseConfiguration {
   }
 
   public boolean isForceFlightOnJoinEnabled() {
-    return configuration.getBoolean(Settings.fly().getName() + ".force-on-join", true);
+    return configuration.getBoolean(Settings.fly().getName() + ".force-on-join", false);
   }
 
   public boolean isSettingConfigured(String settingName) {
