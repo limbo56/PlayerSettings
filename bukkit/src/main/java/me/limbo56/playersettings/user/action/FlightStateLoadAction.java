@@ -10,9 +10,9 @@ import me.limbo56.playersettings.database.DataManager;
 import me.limbo56.playersettings.setting.Settings;
 import me.limbo56.playersettings.setting.SettingsManager;
 import me.limbo56.playersettings.user.SettingUser;
+import me.limbo56.playersettings.util.Permissions;
 import me.limbo56.playersettings.util.PluginLogger;
 import me.limbo56.playersettings.util.TaskChain;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -48,7 +48,7 @@ public class FlightStateLoadAction implements UserAction {
     }
 
     // Load saved flight state if enabled in the configuration
-    PluginLogger.debug(ChatColor.WHITE + "Loading flight state of '" + player.getUniqueId() + "'");
+    PluginLogger.debug("Loading flight state of '" + player.getUniqueId() + "'");
     Setting setting = settingsManager.getSetting(flySettingName);
     new TaskChain()
         .loadAsync(STATE_KEY, () -> getFlightState(player, setting))
@@ -58,22 +58,25 @@ public class FlightStateLoadAction implements UserAction {
 
   @NotNull
   private TaskChain.Task createLoadTask(SettingUser user) {
+    Setting flySetting = Settings.fly();
     return data -> {
       Player player = user.getPlayer();
-      if (!player.isOnline()) {
+      if (!player.isOnline() || Permissions.getSettingPermissionLevel(player, flySetting) < 1) {
         return;
       }
 
-      if (settingsConfiguration.isSaveFlightStateEnabled()
-          && settingsConfiguration.isForceFlightOnJoinEnabled()) {
+      if (settingsConfiguration.isSaveFlightStateEnabled()) {
         boolean hasFlightEnabled = (boolean) data.get(STATE_KEY);
-        PluginLogger.debug("Has flight enabled: " + hasFlightEnabled);
+        PluginLogger.debug("Is flying: " + hasFlightEnabled);
         if (hasFlightEnabled) {
           player.setAllowFlight(true);
         }
         player.setFlying(hasFlightEnabled);
         user.setFlying(hasFlightEnabled);
       } else if (settingsConfiguration.isForceFlightOnJoinEnabled()) {
+        if (!user.hasSettingEnabled(flySetting.getName())) {
+          user.changeSetting(flySetting.getName(), 1);
+        }
         player.setAllowFlight(true);
         player.setFlying(true);
         user.setFlying(true);

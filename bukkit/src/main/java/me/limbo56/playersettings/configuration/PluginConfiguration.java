@@ -54,6 +54,10 @@ public class PluginConfiguration extends BaseConfiguration {
     return configuration.getLong("general.settings-save-delay", 500);
   }
 
+  public long getFlightStateSaveDelay() {
+    return configuration.getLong("general.flight-state-save-delay", 600);
+  }
+
   public List<String> getNPCMetadata() {
     return configuration.getStringList("general.npc-metadata");
   }

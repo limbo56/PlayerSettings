@@ -6,10 +6,10 @@ import java.util.function.Consumer;
 import org.jetbrains.annotations.NotNull;
 
 public class Debouncer<T> {
-  private final ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
-  private final Map<T, ScheduledFuture<?>> delayedTasks = new ConcurrentHashMap<>();
-  private final Consumer<T> callback;
-  private final long intervalMillis;
+  protected final ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
+  protected final Map<T, ScheduledFuture<?>> delayedTasks = new ConcurrentHashMap<>();
+  protected final Consumer<T> callback;
+  protected final long intervalMillis;
 
   public Debouncer(Consumer<T> callback, long intervalMillis) {
     this.callback = callback;
@@ -21,7 +21,7 @@ public class Debouncer<T> {
   }
 
   @NotNull
-  private ScheduledFuture<?> createDelayedTask(T k, ScheduledFuture<?> task) {
+  protected ScheduledFuture<?> createDelayedTask(T k, ScheduledFuture<?> task) {
     if (task != null) {
       task.cancel(false); // Cancel any existing task for this key
     }

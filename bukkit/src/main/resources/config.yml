@@ -40,6 +40,8 @@ general:
   #
   # * This delay helps prevent excessive database requests during rapid settings updates
   settings-save-delay: 500
+  # Time delay (in milliseconds) before saving the flight state of a player to the database
+  flight-state-save-delay: 600
   # List of worlds where the plugin will be enabled
   #
   # * Use '*' to enable the plugin in all worlds

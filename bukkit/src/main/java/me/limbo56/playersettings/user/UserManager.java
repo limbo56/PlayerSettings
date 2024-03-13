@@ -4,13 +4,18 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import me.limbo56.playersettings.PlayerSettings;
+import me.limbo56.playersettings.api.Setting;
 import me.limbo56.playersettings.api.SettingWatcher;
 import me.limbo56.playersettings.api.registry.SettingsWatchlist;
 import me.limbo56.playersettings.configuration.PluginConfiguration;
 import me.limbo56.playersettings.database.DataManager;
+import me.limbo56.playersettings.setting.Settings;
+import me.limbo56.playersettings.setting.SettingsManager;
+import me.limbo56.playersettings.user.action.FlightStateLoadAction;
 import me.limbo56.playersettings.user.task.UnloadUserTask;
 import me.limbo56.playersettings.user.task.UserLoadTask;
 import me.limbo56.playersettings.util.Debouncer;
+import me.limbo56.playersettings.util.MemoDebouncer;
 import me.limbo56.playersettings.util.PluginLogger;
 import me.limbo56.playersettings.util.TaskChain;
 import org.bukkit.Bukkit;
@@ -19,13 +24,16 @@ import org.bukkit.entity.Player;
 public class UserManager implements SettingsWatchlist {
   private final PlayerSettings plugin;
   private final DataManager dataManager;
+  private final SettingsManager settingsManager;
   private final PluginConfiguration pluginConfiguration;
   private final Map<UUID, SettingUser> userMap = new ConcurrentHashMap<>();
   private Debouncer<UUID> saveUserDebounced;
+  private Debouncer<UUID> saveFlightStateDebounced;
 
   public UserManager(PlayerSettings plugin) {
     this.plugin = plugin;
     this.dataManager = plugin.getDataManager();
+    this.settingsManager = plugin.getSettingsManager();
     this.pluginConfiguration = plugin.getConfiguration();
   }
 
@@ -82,6 +90,10 @@ public class UserManager implements SettingsWatchlist {
       saveUserDebounced.terminate();
       saveUserDebounced = null;
     }
+    if (saveFlightStateDebounced != null) {
+      saveFlightStateDebounced.terminate();
+      saveFlightStateDebounced = null;
+    }
     userMap.clear();
   }
 
@@ -114,5 +126,29 @@ public class UserManager implements SettingsWatchlist {
           new Debouncer<>(this::saveUser, pluginConfiguration.getSettingsSaveDelay());
     }
     return this.saveUserDebounced;
+  }
+
+  public Debouncer<UUID> getSaveFlightStateDebounced() {
+    if (this.saveFlightStateDebounced == null) {
+      this.saveFlightStateDebounced =
+          new MemoDebouncer<>(this::getFlightState, this::saveFlightState, pluginConfiguration.getFlightStateSaveDelay());
+    }
+    return this.saveFlightStateDebounced;
+  }
+
+  private int getFlightState(UUID uuid) {
+    return getUser(uuid).isFlying() ? 1 : 0;
+  }
+
+  private void saveFlightState(UUID uuid) {
+    try {
+      Setting setting = settingsManager.getSetting(Settings.fly().getName());
+      String value = String.valueOf(getFlightState(uuid));
+      PluginLogger.debug("Saving flight state '" + value + "' of player '" + uuid + "'");
+      dataManager.putExtra(uuid, setting, FlightStateLoadAction.STATE_KEY, value);
+    } catch (Exception e) {
+      PluginLogger.severe(
+          "An exception occurred while loading flight state of player '" + uuid + "'", e);
+    }
   }
 }

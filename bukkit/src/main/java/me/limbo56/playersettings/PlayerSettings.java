@@ -22,8 +22,8 @@ public class PlayerSettings extends JavaPlugin {
   private final HookManager hookManager = new HookManager(this);
   private final ConfigurationManager configurationManager = new ConfigurationManager(this);
   private final DataManager dataManager = new DataManager(this);
-  private final UserManager userManager = new UserManager(this);
   private final SettingsManager settingsManager = new SettingsManager(this);
+  private final UserManager userManager = new UserManager(this);
   private final SettingsMenuManager settingsMenuManager = new SettingsMenuManager(this);
   private final CommandManager commandManager = new CommandManager(this);
   private final ListenerManager listenerManager = new ListenerManager(this);

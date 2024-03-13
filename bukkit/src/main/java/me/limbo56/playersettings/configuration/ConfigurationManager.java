@@ -10,7 +10,7 @@ public class ConfigurationManager {
   private final LoadingCache<Class<? extends BaseConfiguration>, BaseConfiguration> configurations;
 
   public ConfigurationManager(PlayerSettings plugin) {
-    configurations = CacheBuilder.newBuilder().build(new ConfigurationLoader(plugin));
+    this.configurations = CacheBuilder.newBuilder().build(new ConfigurationLoader(plugin));
   }
 
   public void loadConfigurations() {
