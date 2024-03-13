@@ -7,6 +7,8 @@ import net.md_5.bungee.api.ChatColor;
 public class Colors {
   private static final Pattern HEX_COLOR = Pattern.compile("&x#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})");
 
+  private Colors() {}
+
   public static String translateColorCodes(String input) {
     String textToTranslate =
         Version.getServerVersion().isOlderThan("1.16") ? input : translateHexColors(input);

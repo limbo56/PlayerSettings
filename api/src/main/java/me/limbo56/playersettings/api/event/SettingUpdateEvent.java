@@ -1,25 +1,25 @@
 package me.limbo56.playersettings.api.event;
 
-import me.limbo56.playersettings.api.setting.Setting;
+import me.limbo56.playersettings.api.Setting;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * An {@link Event} that is fired whenever a {@link Setting}'s value is changed by a {@link Player}
+ * An event fired whenever a {@link Setting}'s value is changed by a {@link Player}.
  *
- * <p>The event provides information related to the setting, owner, and value. The code below is an
- * example that uses the event to send the player a message that says the setting changed and its
- * new value:
+ * <p>This event provides information related to the setting, player, and the old and new values of
+ * the setting. Below is an example demonstrating how to handle this event:
  *
  * <pre>{@code
  * @EventHandler
  * public void onSettingUpdate(SettingUpdateEvent event) {
- *   Player player = event.getPlayer();
- *   String settingName = event.getSetting().getName();
- *   boolean value = event.getValue();
- *   player.sendMessage(settingName + " - " + value);
+ *     Player player = event.getPlayer();
+ *     Setting setting = event.getSetting();
+ *     int newValue = event.getNewValue();
+ *     int previousValue = event.getPreviousValue();
+ *     player.sendMessage("Setting " + setting.getName() + " changed from " + previousValue + " to " + newValue);
  * }
  * }</pre>
  */
@@ -37,38 +37,48 @@ public class SettingUpdateEvent extends Event {
     this.previousValue = previousValue;
   }
 
-  public static HandlerList getHandlerList() {
-    return HANDLERS;
-  }
-
   /**
-   * Gets the new value of the setting that was changed during this event
+   * Retrieves the new value of the setting that was changed during this event.
    *
-   * @return new value of the setting
+   * @return The new value of the setting.
    */
   public int getNewValue() {
     return this.newValue;
   }
 
   /**
-   * Gets the previous value that this setting had before it was changed
+   * Retrieves the previous value of the setting before it was changed.
    *
-   * @return previous value of the setting
+   * @return The previous value of the setting.
    */
   public int getPreviousValue() {
     return this.previousValue;
   }
 
+  /**
+   * Retrieves the player who triggered the setting update event.
+   *
+   * @return The {@link Player} who triggered the event.
+   */
   public Player getPlayer() {
     return player;
   }
 
+  /**
+   * Retrieves the setting that was updated.
+   *
+   * @return The {@link Setting} that was updated.
+   */
   public Setting getSetting() {
     return setting;
   }
 
   @Override
   public @NotNull HandlerList getHandlers() {
+    return HANDLERS;
+  }
+
+  public static HandlerList getHandlerList() {
     return HANDLERS;
   }
 }

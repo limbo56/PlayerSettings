@@ -21,6 +21,9 @@
 #   | - respawn: Triggers when a player respawns
 #   triggers: ["join", "respawn"]
 #
+#   | The permission required to disable this setting
+#   disable-permission: "settings.example.disable"
+#
 #   | Toggleable settings:
 #   | A list of commands that will be executed when the setting is enabled and disabled
 #   |

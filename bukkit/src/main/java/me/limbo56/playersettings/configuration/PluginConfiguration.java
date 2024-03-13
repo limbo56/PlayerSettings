@@ -1,57 +1,92 @@
 package me.limbo56.playersettings.configuration;
 
-import com.google.common.collect.ListMultimap;
+import com.google.common.collect.ImmutableListMultimap;
 import java.util.List;
-import me.limbo56.playersettings.api.setting.Setting;
+import java.util.Optional;
+import me.limbo56.playersettings.PlayerSettings;
+import me.limbo56.playersettings.configuration.parser.Parsers;
+import me.limbo56.playersettings.database.SettingsDatabase;
+import me.limbo56.playersettings.setting.Settings;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class PluginConfiguration extends BaseConfiguration {
+  public PluginConfiguration(PlayerSettings plugin) {
+    super(plugin);
+  }
+
   @Override
   @NotNull
   String getFileName() {
     return "config.yml";
   }
 
-  public boolean hasMetricsEnabled() {
-    return getFile().getBoolean("general.metrics");
-  }
-
-  public boolean hasDebugEnabled() {
-    return getFile().getBoolean("general.debug");
-  }
-
-  public boolean hasOfflineWarningEnabled() {
-    return getFile().getBoolean("general.offline-warning", true);
-  }
-
-  public boolean hasUpdateAlertsEnabled() {
-    return getFile().getBoolean("general.update-alert");
-  }
-
   public boolean isAllowedWorld(String name) {
-    List<String> worldList = getFile().getStringList("general.worlds");
+    List<String> worldList = configuration.getStringList("general.worlds");
     return worldList.contains(name) || worldList.contains("*");
   }
 
   public boolean isToggleButtonEnabled() {
-    return getFile().getBoolean("menu.toggle-button");
+    return configuration.getBoolean("menu.toggle-button", true);
+  }
+
+  public boolean isCommandEnabled(String command) {
+    return configuration.getBoolean("commands." + command + ".enabled", true);
+  }
+
+  public boolean hasMetricsEnabled() {
+    return configuration.getBoolean("general.metrics", true);
+  }
+
+  public boolean hasDebugEnabled() {
+    return configuration.getBoolean("general.debug", false);
+  }
+
+  public boolean hasOfflineWarningEnabled() {
+    return configuration.getBoolean("general.offline-warning", true);
+  }
+
+  public boolean hasUpdateAlertsEnabled() {
+    return configuration.getBoolean("general.update-alert", true);
+  }
+
+  public long getSettingsSaveDelay() {
+    return configuration.getLong("general.settings-save-delay", 500);
+  }
+
+  public long getFlightStateSaveDelay() {
+    return configuration.getLong("general.flight-state-save-delay", 600);
+  }
+
+  public List<String> getNPCMetadata() {
+    return configuration.getStringList("general.npc-metadata");
   }
 
   public String getToggleOnSound() {
-    return getFile().getString("menu.sounds.setting-toggle-on");
-  }
-
-  @Nullable
-  public ListMultimap<String, Integer> getValueAliases() {
-    ConfigurationSection generalSection = getFile().getConfigurationSection("general");
-    if (generalSection == null || generalSection.getConfigurationSection("value-aliases") == null)
-      return null;
-    return Setting.deserializeValueAliases(generalSection);
+    return configuration.getString("menu.sounds.setting-toggle-on");
   }
 
   public String getToggleOffSound() {
-    return getFile().getString("menu.sounds.setting-toggle-off");
+    return configuration.getString("menu.sounds.setting-toggle-off");
+  }
+
+  public ImmutableListMultimap<String, Integer> getDefaultValueAliases() {
+    return Optional.ofNullable(
+            Parsers.VALUE_ALIASES_PARSER.parse(
+                configuration.getConfigurationSection("general.value-aliases")))
+        .orElse(Settings.Constants.DEFAULT_VALUE_ALIASES);
+  }
+
+  public String getDefaultCommand() {
+    return configuration.getString("commands.default", "OPEN");
+  }
+
+  public SettingsDatabase<?> getSettingsDatabase() {
+    ConfigurationSection storageSection = configuration.getConfigurationSection("storage");
+    if (storageSection == null) {
+      throw new NullPointerException(
+          "Empty or missing properties in the 'storage' section inside 'config.yml'");
+    }
+    return Parsers.SETTING_DATABASE_PARSER.parse(storageSection);
   }
 }
