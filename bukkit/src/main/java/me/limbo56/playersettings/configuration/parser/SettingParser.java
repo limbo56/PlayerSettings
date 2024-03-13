@@ -28,7 +28,8 @@ public class SettingParser implements ConfigurationSectionParser<Setting> {
         .maxValue(section.getInt("max", 1))
         .triggers(section.getStringList("triggers").toArray(new String[0]))
         .item(SETTING_ITEM_PARSER.parse(itemSection))
-        .valueAliases(VALUE_ALIASES_PARSER.parse(section.getConfigurationSection("overrides")))
+        .valueAliases(
+            VALUE_ALIASES_PARSER.parse(section.getConfigurationSection("overrides.value-aliases")))
         .callbacks(callbacks)
         .build();
   }

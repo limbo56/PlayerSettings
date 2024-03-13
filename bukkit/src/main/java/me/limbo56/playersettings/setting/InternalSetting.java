@@ -62,8 +62,7 @@ public class InternalSetting extends ForwardingSetting {
     this.setting =
         ImmutableSetting.copyOf(Parsers.SETTING_PARSER.parse(configuration))
             .withCallbacks(setting.getCallbacks())
-            .withListeners(setting.getListeners())
-            .withValueAliases(setting.getValueAliases());
+            .withListeners(setting.getListeners());
   }
 
   public static InternalSetting from(Setting setting, boolean custom) {
