@@ -83,7 +83,10 @@ public class PlayerListener implements Listener {
 
   @EventHandler(priority = EventPriority.MONITOR)
   public void onSettingUpdate(SettingUpdateEvent event) {
-    userManager.getSaveUserDebounced().call(event.getPlayer().getUniqueId());
+    boolean isUserLoaded = userManager.isUserLoaded(event.getPlayer().getUniqueId());
+    if (isUserLoaded) {
+      userManager.getSaveUserDebounced().call(event.getPlayer().getUniqueId());
+    }
   }
 
   private class RespawnReapplyEffect implements TaskChain.Task {
