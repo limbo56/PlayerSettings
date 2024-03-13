@@ -1,41 +1,53 @@
 package me.limbo56.playersettings.user;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
-import java.util.function.Consumer;
+import java.util.*;
 import me.limbo56.playersettings.PlayerSettings;
-import me.limbo56.playersettings.PlayerSettingsProvider;
-import me.limbo56.playersettings.api.setting.Setting;
-import me.limbo56.playersettings.api.setting.SettingCallback;
-import me.limbo56.playersettings.api.setting.SettingWatcher;
-import me.limbo56.playersettings.listeners.FlySettingListener;
+import me.limbo56.playersettings.api.Setting;
+import me.limbo56.playersettings.api.SettingCallback;
+import me.limbo56.playersettings.api.SettingWatcher;
+import me.limbo56.playersettings.setting.CachedSettingWatcher;
+import me.limbo56.playersettings.setting.SettingsManager;
 import me.limbo56.playersettings.util.Permissions;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 public class SettingUser {
-  private static final List<Consumer<SettingUser>> LOAD_CALLBACKS =
-      Collections.singletonList(new FlySettingListener.FlightStateLoader());
-  private static final PlayerSettings PLUGIN = PlayerSettingsProvider.getPlugin();
+  private final SettingsManager settingsManager;
   private final UUID uuid;
   private final SettingWatcher settingWatcher;
+  private final UserSettingsModifier settingModifier;
   private boolean loading;
   private boolean flying;
 
   public SettingUser(UUID uuid) {
-    this(uuid, new UserSettingsWatcher(uuid));
+    this(uuid, new CachedSettingWatcher(uuid));
   }
 
   public SettingUser(UUID uuid, SettingWatcher settingWatcher) {
+    this.settingsManager = PlayerSettings.getInstance().getSettingsManager();
     this.uuid = uuid;
-    this.loading = true;
     this.settingWatcher = settingWatcher;
+    this.settingModifier = new UserSettingsModifier(this);
+    this.loading = true;
+  }
+
+  public void changeSetting(String settingName, int value) {
+    changeSetting(settingName, value, false);
+  }
+
+  public void changeSetting(String settingName, int value, boolean silent) {
+    Player player = getPlayer();
+    if (player != null && player.isOnline()) {
+      settingModifier.setValue(settingName, value, silent);
+    }
   }
 
   public void clearSettingEffects() {
-    for (Setting setting : PLUGIN.getSettingsManager().getSettings()) {
-      clearSettingEffects(setting);
+    for (String settingName : settingWatcher.getWatched()) {
+      Setting setting = settingsManager.getSetting(settingName);
+      if (setting != null) {
+        clearSettingEffects(setting);
+      }
     }
   }
 
@@ -45,24 +57,12 @@ public class SettingUser {
     }
   }
 
-  public boolean hasSettingEnabled(String settingName) {
-    return settingWatcher.getValue(settingName) > 0;
-  }
-
-  public boolean hasSettingPermissions(String settingName) {
-    Setting setting = PLUGIN.getSettingsManager().getSetting(settingName);
-    return Permissions.getSettingPermissionLevel(this.getPlayer(), setting) > 0;
-  }
-
   public boolean isLoading() {
     return loading;
   }
 
   public void setLoading(boolean loading) {
     this.loading = loading;
-    if (!loading) {
-      LOAD_CALLBACKS.forEach(loadCallback -> loadCallback.accept(this));
-    }
   }
 
   public boolean isFlying() {
@@ -71,6 +71,15 @@ public class SettingUser {
 
   public void setFlying(boolean flying) {
     this.flying = flying;
+  }
+
+  public boolean hasSettingEnabled(String settingName) {
+    return settingWatcher.getValue(settingName) > 0;
+  }
+
+  public boolean hasSettingPermissions(String settingName) {
+    Setting setting = settingsManager.getSetting(settingName);
+    return Permissions.getSettingPermissionLevel(this.getPlayer(), setting) > 0;
   }
 
   public UUID getUniqueId() {
@@ -83,5 +92,15 @@ public class SettingUser {
 
   public SettingWatcher getSettingWatcher() {
     return settingWatcher;
+  }
+
+  public Collection<String> getAllowedSettings() {
+    List<String> allowedSettings = new ArrayList<>();
+    for (String settingName : settingsManager.getSettingNames()) {
+      if (hasSettingPermissions(settingName)) {
+        allowedSettings.add(settingName);
+      }
+    }
+    return allowedSettings;
   }
 }

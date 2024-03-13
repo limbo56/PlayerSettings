@@ -1,71 +1,55 @@
 package me.limbo56.playersettings.api;
 
 import com.cryptomorin.xseries.XItemStack;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.inventory.ItemStack;
 import org.immutables.value.Value;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * A {@link ConfigurationSerializable} that contains the display properties of an item which will be
- * displayed in a paginated menu.
+ * Represents an item displayed in a paginated menu. This interface provides methods to retrieve
+ * properties of the item.
  */
 @Value.Immutable
 public interface MenuItem extends ConfigurationSerializable {
-  static MenuItem deserialize(Map<String, Object> menuItem) {
-    int page = (int) menuItem.getOrDefault("page", 1);
-    int slot = (int) menuItem.getOrDefault("slot", 0);
-    return ImmutableMenuItem.builder()
-        .itemStack(XItemStack.deserialize(menuItem))
-        .page(page)
-        .slot(slot)
-        .build();
-  }
-
-  static MenuItem deserialize(ConfigurationSection configurationSection) {
-    Map<String, Object> menuItem = new HashMap<>();
-    for (String key : configurationSection.getKeys(true)) {
-      if (menuItem.put(key, configurationSection.get(key)) != null) {
-        throw new IllegalStateException(
-            "Duplicate key " + key + " in " + configurationSection.getName());
-      }
-    }
-    return deserialize(menuItem);
-  }
-
   /**
-   * Gets the {@link ItemStack} defined that will be used to display the setting
+   * Retrieves the {@link ItemStack} used to display this menu item.
    *
-   * @return {@link ItemStack} that displays the setting
+   * @return The {@link ItemStack} used to display the item.
    */
   @Value.Parameter
   ItemStack getItemStack();
 
   /**
-   * Gets the inventory page number where the setting's {@link ItemStack} is rendered
+   * Retrieves the page number where this item is rendered in the menu inventory.
    *
-   * @return inventory page number
+   * @return The page number of the menu inventory.
    */
   @Value.Parameter
   int getPage();
 
   /**
-   * Gets the inventory slot number where the setting's {@link ItemStack} is rendered
+   * Retrieves the slot number where this item is rendered in the menu inventory.
    *
-   * @return inventory slot number
+   * @return The slot number of the menu inventory.
    */
   @Value.Parameter
   int getSlot();
 
+  /**
+   * Serializes the menu item into a map for storage or transmission. The serialized map contains
+   * the page number, slot number, and item stack details.
+   *
+   * @return A map representing the serialized state of the menu item.
+   */
   @Override
   default @NotNull Map<String, Object> serialize() {
-    Map<String, Object> mappedMenuItem = new LinkedHashMap<>(XItemStack.serialize(getItemStack()));
-    mappedMenuItem.put("slot", getSlot());
+    Map<String, Object> mappedMenuItem = new LinkedHashMap<>();
     mappedMenuItem.put("page", getPage());
+    mappedMenuItem.put("slot", getSlot());
+    mappedMenuItem.putAll(XItemStack.serialize(getItemStack()));
     return mappedMenuItem;
   }
 }

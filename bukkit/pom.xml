@@ -9,9 +9,16 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <name>PlayerSettings</name>
+    <name>PlayerSettings Bukkit</name>
     <artifactId>playersettings-bukkit</artifactId>
     <version>${revision}</version>
+
+    <repositories>
+        <repository>
+            <id>AlessioDP</id>
+            <url>https://repo.alessiodp.com/releases/</url>
+        </repository>
+    </repositories>
 
     <build>
         <finalName>PlayerSettings-${revision}</finalName>
@@ -37,7 +44,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>3.3.0</version>
+                <version>3.5.0</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
@@ -92,6 +99,10 @@
                                     <pattern>org.jetbrains.annotations</pattern>
                                     <shadedPattern>me.limbo56.playersettings.lib.annotations</shadedPattern>
                                 </relocation>
+                                <relocation>
+                                    <pattern>org.intellij.lang.annotations</pattern>
+                                    <shadedPattern>me.limbo56.playersettings.lib.annotations</shadedPattern>
+                                </relocation>
                             </relocations>
                             <filters>
                                 <filter>
@@ -113,15 +124,9 @@
         </plugins>
     </build>
 
-    <repositories>
-        <repository>
-            <id>AlessioDP</id>
-            <url>https://repo.alessiodp.com/releases/</url>
-        </repository>
-    </repositories>
 
     <dependencies>
-        <!-- PlayerSettingsApi Api -->
+        <!-- PlayerSettings API -->
         <dependency>
             <groupId>me.limbo56.playersettings</groupId>
             <artifactId>playersettings-api</artifactId>

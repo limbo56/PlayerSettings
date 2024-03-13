@@ -1,35 +1,27 @@
 package me.limbo56.playersettings.configuration;
 
 import com.google.common.cache.CacheLoader;
+import java.lang.reflect.InvocationTargetException;
 import me.limbo56.playersettings.PlayerSettings;
-import me.limbo56.playersettings.PlayerSettingsProvider;
-import me.limbo56.playersettings.util.Configurations;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.File;
-import java.io.InputStream;
+public class ConfigurationLoader
+    extends CacheLoader<Class<? extends BaseConfiguration>, BaseConfiguration> {
+  private final PlayerSettings plugin;
 
-public class ConfigurationLoader extends CacheLoader<String, YamlConfiguration> {
-  private static final PlayerSettings PLUGIN = PlayerSettingsProvider.getPlugin();
+  public ConfigurationLoader(PlayerSettings plugin) {
+    this.plugin = plugin;
+  }
 
   @Override
-  public @NotNull YamlConfiguration load(@NotNull String fileName) {
-    // Create plugin data folder
-    if (!PLUGIN.getDataFolder().exists()) {
-      PLUGIN.getDataFolder().mkdirs();
+  public @NotNull BaseConfiguration load(@NotNull Class<? extends BaseConfiguration> clazz) {
+    try {
+      return clazz.getConstructor(PlayerSettings.class).newInstance(plugin);
+    } catch (InstantiationException
+        | IllegalAccessException
+        | InvocationTargetException
+        | NoSuchMethodException e) {
+      throw new RuntimeException(e);
     }
-
-    // Load template if configuration file doesn't exist
-    File configurationFile = Configurations.getPluginFile(fileName);
-    if (!configurationFile.exists()) {
-      InputStream templateResource = PLUGIN.getResource(fileName);
-      if (templateResource != null) {
-        PLUGIN.saveResource(fileName, false);
-      }
-    }
-
-    // Load configuration file
-    return YamlConfiguration.loadConfiguration(configurationFile);
   }
 }

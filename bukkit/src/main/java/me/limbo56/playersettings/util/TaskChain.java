@@ -7,57 +7,55 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-import me.limbo56.playersettings.PlayerSettings;
-import me.limbo56.playersettings.PlayerSettingsProvider;
 import org.bukkit.Bukkit;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
 public class TaskChain {
-  private static final PlayerSettings PLUGIN = PlayerSettingsProvider.getPlugin();
   private final Map<String, Supplier<Object>> loaderMap = new ConcurrentHashMap<>();
-  private final Queue<Consumer<Map<String, Object>>> asyncCallbacks = new ConcurrentLinkedQueue<>();
-  private final Queue<Consumer<Map<String, Object>>> syncCallbacks = new ConcurrentLinkedQueue<>();
+  private final Queue<Task> asyncTasks = new ConcurrentLinkedQueue<>();
+  private final Queue<Task> syncTasks = new ConcurrentLinkedQueue<>();
 
   public TaskChain loadAsync(String key, Supplier<Object> objectSupplier) {
     loaderMap.put(key, objectSupplier);
     return this;
   }
 
-  public TaskChain async(Consumer<Map<String, Object>> dataConsumer) {
-    asyncCallbacks.add(dataConsumer);
+  public TaskChain async(Task task) {
+    asyncTasks.add(task);
     return this;
   }
 
-  public TaskChain sync(Consumer<Map<String, Object>> dataConsumer) {
-    syncCallbacks.add(dataConsumer);
+  public TaskChain sync(Task task) {
+    syncTasks.add(task);
     return this;
   }
 
-  public void runAsync() {
-    Bukkit.getScheduler().runTaskAsynchronously(PLUGIN, this::runAsyncChain);
+  public void runAsync(JavaPlugin plugin) {
+    Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> runAsyncChain(plugin));
   }
 
-  private void runAsyncChain() {
+  private void runAsyncChain(JavaPlugin plugin) {
     Map<String, Object> data = loadData();
-    for (Consumer<Map<String, Object>> asyncCallback : asyncCallbacks) {
-      asyncCallback.accept(data);
+    for (Task asyncConsumer : asyncTasks) {
+      asyncConsumer.accept(data);
     }
     Bukkit.getScheduler()
-        .runTask(PLUGIN, () -> syncCallbacks.forEach(dataConsumer -> dataConsumer.accept(data)));
+        .runTask(plugin, () -> syncTasks.forEach(callback -> callback.accept(data)));
   }
 
-  public void runSync() {
-    Bukkit.getScheduler().runTask(PLUGIN, this::runSyncChain);
+  public void runSync(JavaPlugin plugin) {
+    Bukkit.getScheduler().runTask(plugin, this::runSyncChain);
   }
 
-  public void runSyncLater(long delay) {
-    Bukkit.getScheduler().runTaskLater(PLUGIN, this::runSyncChain, delay);
+  public void runSyncLater(JavaPlugin plugin, long delay) {
+    Bukkit.getScheduler().runTaskLater(plugin, this::runSyncChain, delay);
   }
 
   private void runSyncChain() {
     Map<String, Object> data = loadData();
-    asyncCallbacks.forEach(dataConsumer -> dataConsumer.accept(data));
-    syncCallbacks.forEach(dataConsumer -> dataConsumer.accept(data));
+    asyncTasks.forEach(callback -> callback.accept(data));
+    syncTasks.forEach(callback -> callback.accept(data));
   }
 
   @NotNull
@@ -70,4 +68,12 @@ public class TaskChain {
     }
     return dataMap;
   }
+
+  /**
+   * Represents a task in a {@link TaskChain}.
+   *
+   * <p>A task is an extension of a {@link Consumer} that accepts a data map shared across the chain
+   * of tasks.
+   */
+  public interface Task extends Consumer<Map<String, Object>> {}
 }

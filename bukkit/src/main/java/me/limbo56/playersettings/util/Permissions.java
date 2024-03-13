@@ -2,11 +2,14 @@ package me.limbo56.playersettings.util;
 
 import java.util.ArrayList;
 import java.util.List;
-import me.limbo56.playersettings.api.setting.Setting;
+import java.util.Optional;
+import me.limbo56.playersettings.api.Setting;
 import org.bukkit.command.CommandSender;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 
 public class Permissions {
+  private Permissions() {}
+
   public static int getSettingPermissionLevel(CommandSender sender, Setting setting) {
     String permission = "playersettings." + setting.getName().toLowerCase();
     return getPermissionLevel(sender, permission, setting.getDefaultValue());
@@ -22,8 +25,8 @@ public class Permissions {
       List<Integer> levels = getPermissionLevels(sender, permission);
       return getMaxPermissionLevel(levels, defaultLevel);
     } catch (NumberFormatException exception) {
-      PluginLogger.warning("Invalid permission '" + permission + "' for " + sender.getName());
-      exception.printStackTrace();
+      PluginLogger.severe(
+          "Invalid permission '" + permission + "' for " + sender.getName(), exception);
       return defaultLevel;
     }
   }
@@ -50,14 +53,12 @@ public class Permissions {
   }
 
   private static int getMaxPermissionLevel(List<Integer> levels, int defaultLevel) {
-    boolean seen = false;
     Integer best = null;
     for (Integer level : levels) {
-      if (!seen || level.compareTo(best) > 0) {
-        seen = true;
+      if (best == null || level.compareTo(best) > 0) {
         best = level;
       }
     }
-    return seen ? best : defaultLevel;
+    return Optional.ofNullable(best).orElse(defaultLevel);
   }
 }

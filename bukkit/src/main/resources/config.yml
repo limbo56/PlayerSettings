@@ -27,15 +27,21 @@
 # General Configuration Section
 general:
   debug: false
-  # This property toggles the plugin usage metrics
+  # Toggles the collection of plugin usage metrics
+  #
   # * Disabling this option does not affect plugin functionality
-  # * Collected data is anonymous, providing server-related information.
+  # * Collected data is anonymous, providing server-related information
   metrics: true
-  # This property controls the update message sent to server operators upon joining
+  # Toggles the update message to server operators upon joining
   update-alert: true
-  # Controls whether a warning message is displayed when a security/authentication plugin is causing issues
-  # * Setting this to false will disable the warning message
+  # Toggles the warning message logged when a security/authentication plugin is causing issues
   offline-warning: true
+  # Time delay (in milliseconds) before saving player settings to the database
+  #
+  # * This delay helps prevent excessive database requests during rapid settings updates
+  settings-save-delay: 500
+  # Time delay (in milliseconds) before saving the flight state of a player to the database
+  flight-state-save-delay: 600
   # List of worlds where the plugin will be enabled
   #
   # * Use '*' to enable the plugin in all worlds
@@ -46,7 +52,7 @@ general:
   # * By default, the "Citizens" plugin adds the "NPC" metadata tag to all of its entities
   npc-metadata:
     - "NPC"
-  # A map of aliases to use when displaying the value of a setting
+  # Map of aliases to use when displaying the value of a setting
   #
   # * Values can be mapped to an alias or a list of aliases
   # * The first alias in the list will be used to display the setting value
@@ -68,11 +74,12 @@ general:
 menu:
   name: "&6&lSettings"
   size: 54
-  # Enable or disable the toggle button below settings
+  # Enable displaying of the toggle button below settings
   toggle-button: true
-  # This section defines sounds played when a player interacts with a setting
+  # Sounds played when a player interacts with a setting
   #
   # Format: [Sound], [Volume], [Pitch]
+  #
   # Examples:
   # - ENTITY_PLAYER_BURP, 2.5f, 0.5
   # - ENTITY_PLAYER_BURP, 0.5, 1f
@@ -80,6 +87,29 @@ menu:
   sounds:
     setting-toggle-on: "BLOCK_NOTE_BLOCK_HARP, 1, 1"
     setting-toggle-off: "BLOCK_NOTE_BLOCK_HARP, 1, -99"
+
+# Commands configuration section
+commands:
+  # Default command that '/settings' will perform
+  #
+  # * By default, the command will execute the '/settings open' command
+  #
+  # Available Options:
+  # - open : Opens the settings menu
+  # - help : Send the settings help message
+  default: "open"
+  # The command executed when enabling a setting through the chat
+  chat-enable: "playersettings:settings"
+  open:
+    enabled: true
+  help:
+    enabled: true
+  reload:
+    enabled: true
+  set:
+    enabled: true
+  get:
+    enabled: true
 
 # Data Storage Configuration Section
 storage:
@@ -129,12 +159,12 @@ storage:
     # * We strongly recommend setting this value to at least 30 seconds shorter than any database
     #   or infrastructure imposed connection time limit
     max-lifetime: 1800000 # 30 minutes
-    # Frequency of keepalive attempts to prevent connection timeouts
+    # Frequency of keep alive attempts to prevent connection timeouts
     #
     # * This value must be less than the 'max-lifetime' value
-    # * Setting the value to zero will disable the keepalive functionality
-    keepalive-time: 0
-    # Maximum time to wait for a connection from the pool before timing out
+    # * Setting the value to zero will disable the keep alive functionality
+    keep-alive-time: 0
+    # Maximum time to wait for a connection from the pool before timing out in milliseconds
     connection-timeout: 5000 # 5 seconds
   # Connection Properties
   #

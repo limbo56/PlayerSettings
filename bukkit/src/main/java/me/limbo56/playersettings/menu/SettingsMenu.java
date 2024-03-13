@@ -1,39 +1,63 @@
 package me.limbo56.playersettings.menu;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 import me.limbo56.playersettings.PlayerSettings;
-import me.limbo56.playersettings.PlayerSettingsProvider;
-import me.limbo56.playersettings.menu.holder.MenuHolder;
-import me.limbo56.playersettings.menu.renderers.*;
-import org.bukkit.entity.Player;
+import me.limbo56.playersettings.menu.item.SettingsMenuItem;
+import me.limbo56.playersettings.user.SettingUser;
+import org.bukkit.Bukkit;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryHolder;
+import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
-public final class SettingsMenu {
-  private static final PlayerSettings PLUGIN = PlayerSettingsProvider.getPlugin();
+public class SettingsMenu implements InventoryHolder {
+  private final UUID owner;
+  private final String title;
+  private final int size;
+  private final Map<Integer, SettingsMenuItem> menuItemMap = new HashMap<>();
+  private final Inventory inventory;
 
-  public static void open(Player player, int page) {
-    MenuHolder menuHolder = PLUGIN.getSettingsMenuManager().getMenuHolder(player);
-    menuHolder.getInventory().clear();
-
-    for (Renderers renderer : Renderers.values()) {
-      renderer.render(menuHolder, page);
-    }
-
-    player.openInventory(menuHolder.getInventory());
+  public SettingsMenu(UUID owner, String title, int size) {
+    this.owner = owner;
+    this.title = title;
+    this.size = size;
+    this.inventory = Bukkit.createInventory(this, size, title);
   }
 
-  private enum Renderers {
-    SETTINGS(new SettingsRenderer()),
-    PAGINATION(new PaginationRenderer()),
-    DISMISS_BUTTON(new DismissRenderer()),
-    CUSTOM_ITEMS(new CustomItemsRenderer());
+  public void renderItem(SettingsMenuItem menuItem) {
+    ItemStack itemStack = menuItem.getItemStack();
+    int slot = menuItem.getSlot();
+    inventory.setItem(slot, itemStack);
+    menuItemMap.put(slot, menuItem);
+  }
 
-    final MenuItemRenderer renderer;
-
-    Renderers(MenuItemRenderer renderer) {
-      this.renderer = renderer;
+  public SettingsMenuItem getMenuItem(int slot) {
+    for (SettingsMenuItem menuItem : menuItemMap.values()) {
+      if (menuItem.getSlot() == slot) {
+        return menuItem;
+      }
     }
+    return null;
+  }
 
-    public void render(MenuHolder holder, int page) {
-      this.renderer.render(holder, page);
-    }
+  @NotNull
+  public String getTitle() {
+    return title;
+  }
+
+  public int getSize() {
+    return size;
+  }
+
+  public SettingUser getOwner() {
+    return PlayerSettings.getInstance().getUserManager().getUser(owner);
+  }
+
+  @Override
+  @NotNull
+  public Inventory getInventory() {
+    return this.inventory;
   }
 }

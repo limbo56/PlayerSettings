@@ -3,30 +3,52 @@ package me.limbo56.playersettings.menu;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.LoadingCache;
 import java.util.UUID;
-import me.limbo56.playersettings.menu.holder.MenuHolder;
-import me.limbo56.playersettings.menu.holder.MenuHolderLoader;
+import me.limbo56.playersettings.PlayerSettings;
+import me.limbo56.playersettings.menu.renderer.*;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
+import org.bukkit.inventory.Inventory;
 
 public class SettingsMenuManager {
-  private final LoadingCache<UUID, MenuHolder> menuHolderCache =
-      CacheBuilder.newBuilder().build(new MenuHolderLoader());
+  private final LoadingCache<UUID, SettingsMenu> settingsMenuCache;
+
+  public SettingsMenuManager(PlayerSettings plugin) {
+    this.settingsMenuCache = CacheBuilder.newBuilder().build(new SettingsMenuLoader(plugin));
+  }
+
+  public void open(Player player, int page) {
+    SettingsMenu settingsMenu = settingsMenuCache.getUnchecked(player.getUniqueId());
+    Inventory inventory = settingsMenu.getInventory();
+    inventory.clear();
+
+    for (Renderers renderer : Renderers.values()) {
+      renderer.render(settingsMenu, page);
+    }
+
+    player.openInventory(inventory);
+  }
 
   public void unload(UUID uuid) {
-    menuHolderCache.invalidate(uuid);
+    settingsMenuCache.invalidate(uuid);
   }
 
   public void unloadAll() {
-    menuHolderCache.invalidateAll();
+    settingsMenuCache.invalidateAll();
   }
 
-  @NotNull
-  public MenuHolder getMenuHolder(Player player) {
-    return getMenuHolder(player.getUniqueId());
-  }
+  private enum Renderers {
+    SETTINGS(new SettingsRenderer()),
+    PAGINATION(new PaginationRenderer()),
+    DISMISS_BUTTON(new DismissRenderer()),
+    CUSTOM_ITEMS(new CustomItemsRenderer());
 
-  @NotNull
-  public MenuHolder getMenuHolder(UUID uuid) {
-    return menuHolderCache.getUnchecked(uuid);
+    final MenuItemRenderer renderer;
+
+    Renderers(MenuItemRenderer renderer) {
+      this.renderer = renderer;
+    }
+
+    public void render(SettingsMenu holder, int page) {
+      this.renderer.render(holder, page);
+    }
   }
 }
