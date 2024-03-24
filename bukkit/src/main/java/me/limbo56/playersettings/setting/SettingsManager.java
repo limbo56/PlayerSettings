@@ -27,7 +27,9 @@ public class SettingsManager implements SettingsContainer {
     // Register default settings
     Settings.register();
     for (Setting setting : Settings.getDefaultSettings()) {
-      if (settingsConfiguration.isSettingEnabled(setting.getName())) {
+      boolean isEnabled = settingsConfiguration.isSettingEnabled(setting.getName());
+      boolean isNotConfigured = !settingsConfiguration.isSettingConfigured(setting.getName());
+      if (isEnabled || isNotConfigured) {
         register(setting);
       }
     }
