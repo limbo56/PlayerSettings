@@ -134,7 +134,8 @@ public class UserSettingsModifier {
     Objects.requireNonNull(
             XSound.parse(toggleSound),
             "Invalid sound '" + toggleSound + "' for setting '" + setting.getName() + "'")
-        .forPlayer(player)
+        .soundPlayer()
+        .forPlayers(player)
         .play();
   }
 

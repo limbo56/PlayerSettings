@@ -1,10 +1,12 @@
 package me.limbo56.playersettings.util;
 
-import com.cryptomorin.xseries.SkullUtils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
+
+import com.cryptomorin.xseries.profiles.builder.XSkull;
+import com.cryptomorin.xseries.profiles.objects.Profileable;
 import me.limbo56.playersettings.message.text.Text;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -115,7 +117,7 @@ public class Item {
           itemMeta.setLore(this.lore);
         }
         if (this.textures != null) {
-          SkullUtils.applySkin(itemMeta, this.textures);
+          XSkull.of(itemMeta).profile(Profileable.detect(this.textures)).apply();
         }
         if (this.modelData != null) {
           itemMeta.setCustomModelData(this.modelData);
