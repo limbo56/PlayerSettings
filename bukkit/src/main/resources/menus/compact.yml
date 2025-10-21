@@ -1,0 +1,142 @@
+# Default Categorized Menu Layout
+# This is the default menu that opens when using /settings
+#
+# Menu Type:
+# - SIMPLE: Traditional single-page menu with all settings
+# - CATEGORIZED: Multi-category menu with category navigation in top row
+type: "CATEGORIZED"
+
+# Menu Configuration
+menu:
+  name: "&6&lSettings"
+  size: 54
+  # Enable displaying of the toggle button below settings
+  toggle-button: true
+
+# Category Configuration (only for CATEGORIZED type)
+# Categories are displayed in the top row (slots 0-8)
+# Each category can have its own settings and custom items
+categories:
+  # Category 1: Gameplay Settings
+  gameplay:
+    # Display properties for the category button
+    name: "&a&lGameplay"
+    material: "DIAMOND_SWORD"
+    slot: 1
+    glow: false
+    lore:
+      - "&7Configure gameplay-related"
+      - "&7settings and preferences"
+      - ""
+      - "&eClick to view"
+
+    # Settings to display in this category
+    # Settings are referenced by their name from settings.yml
+    settings:
+      - "fly"
+      - "speed"
+      - "godmode"
+
+    # Custom items specific to this category (optional)
+    custom-items:
+      info-item:
+        name: "&e&lGameplay Info"
+        material: "BOOK"
+        slot: 49
+        amount: 1
+        lore:
+          - "&7These settings affect your"
+          - "&7gameplay experience"
+
+  # Category 2: Social Settings
+  social:
+    name: "&b&lSocial"
+    material: "PLAYER_HEAD"
+    slot: 3
+    skull: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDAxYWZlOTczYzU0ODJmZGM3MWU2YWExMDY5ODgzM2M3OWM0MzdmMjEzMDhlYTlhMWEwOTU3NDZlYzI3NGEwZiJ9fX0="
+    lore:
+      - "&7Configure social and"
+      - "&7interaction settings"
+      - ""
+      - "&eClick to view"
+
+    settings:
+      - "chat"
+      - "messages"
+      - "party-requests"
+
+  # Category 3: Visual Settings
+  visual:
+    name: "&d&lVisual"
+    material: "ENDER_EYE"
+    slot: 5
+    lore:
+      - "&7Configure visual effects"
+      - "&7and display settings"
+      - ""
+      - "&eClick to view"
+
+    settings:
+      - "particles"
+      - "scoreboard"
+      - "actionbar"
+
+  # Category 4: Privacy Settings
+  privacy:
+    name: "&c&lPrivacy"
+    material: "IRON_DOOR"
+    slot: 7
+    lore:
+      - "&7Configure privacy and"
+      - "&7security settings"
+      - ""
+      - "&eClick to view"
+
+    settings:
+      - "stacker"
+      - "teleport-requests"
+      - "trade-requests"
+
+# Separator items (for CATEGORIZED type)
+# These are displayed in row 2 (slots 9-17) to separate categories from settings
+separator:
+  enabled: true
+  material: "GRAY_STAINED_GLASS_PANE"
+  name: " "
+
+# Navigation items
+navigation:
+  # Close/Dismiss button
+  close:
+    enabled: true
+    name: "&c&lClose"
+    material: "BARRIER"
+    slot: 49
+    lore:
+      - "&7Close this menu"
+
+  # Previous page button (for pagination if needed)
+  previous-page:
+    enabled: true
+    name: "&e&l← Previous Page"
+    material: "ARROW"
+    slot: 45
+    lore:
+      - "&7Go to previous page"
+
+  # Next page button (for pagination if needed)
+  next-page:
+    enabled: true
+    name: "&e&lNext Page →"
+    material: "ARROW"
+    slot: 53
+    lore:
+      - "&7Go to next page"
+
+# Sounds played when interacting with the menu
+sounds:
+  category-switch: "BLOCK_NOTE_BLOCK_PLING, 1, 1.5"
+  setting-toggle-on: "BLOCK_NOTE_BLOCK_HARP, 1, 1"
+  setting-toggle-off: "BLOCK_NOTE_BLOCK_HARP, 1, -99"
+  menu-close: "ENTITY_ITEM_PICKUP, 1, 1"
+

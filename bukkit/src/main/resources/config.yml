@@ -88,6 +88,15 @@ general:
 
 # Menu Configuration Section
 menu:
+  # The default menu layout file to use
+  # Files are located in the 'menus' folder in the plugin directory
+  #
+  # Available layouts (or create your own):
+  # - default : Traditional single-page menu with all settings
+  # - compact : Compact categorized menu with 6 categories
+  layout: "default"
+  # Legacy configuration (kept for backwards compatibility)
+  # These are overridden by menu layout files
   name: "&6&lSettings"
   size: 54
   # Enable displaying of the toggle button below settings
@@ -125,6 +134,8 @@ commands:
   set:
     enabled: true
   get:
+    enabled: true
+  menu:
     enabled: true
 
 # Data Storage Configuration Section

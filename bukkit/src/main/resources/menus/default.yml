@@ -1,0 +1,49 @@
+# Simple Menu Layout (Traditional Style)
+# This is a traditional single-page menu with all settings displayed
+type: "SIMPLE"
+
+# Menu Configuration
+menu:
+  name: "&6&lSettings"
+  size: 54
+  # Enable displaying of the toggle button below settings
+  toggle-button: true
+
+# All settings will be displayed according to their slot configuration in items.yml
+# No categories, just a simple list of all settings
+
+# Navigation items
+navigation:
+  # Close/Dismiss button
+  close:
+    enabled: true
+    name: "&c&lClose"
+    material: "BARRIER"
+    slot: 49
+    lore:
+      - "&7Close this menu"
+
+  # Previous page button
+  previous-page:
+    enabled: true
+    name: "&e&l← Previous Page"
+    material: "ARROW"
+    slot: 45
+    lore:
+      - "&7Go to previous page"
+
+  # Next page button
+  next-page:
+    enabled: true
+    name: "&e&lNext Page →"
+    material: "ARROW"
+    slot: 53
+    lore:
+      - "&7Go to next page"
+
+# Sounds played when interacting with the menu
+sounds:
+  setting-toggle-on: "BLOCK_NOTE_BLOCK_HARP, 1, 1"
+  setting-toggle-off: "BLOCK_NOTE_BLOCK_HARP, 1, -99"
+  menu-close: "ENTITY_ITEM_PICKUP, 1, 1"
+
