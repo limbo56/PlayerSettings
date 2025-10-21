@@ -27,6 +27,22 @@
 # General Configuration Section
 general:
   debug: false
+  # Language/Locale for plugin messages
+  #
+  # Available locales:
+  # - en_US (English - United States)
+  # - es_ES (Spanish - Spain)
+  # - fr_FR (French - France)
+  # - de_DE (German - Germany)
+  # - pt_BR (Portuguese - Brazil)
+  # - it_IT (Italian - Italy)
+  # - ja_JP (Japanese - Japan)
+  # - zh_CN (Chinese - China)
+  # - ru_RU (Russian - Russia)
+  # - nl_NL (Dutch - Netherlands)
+  # - pl_PL (Polish - Poland)
+  # - ko_KR (Korean - South Korea)
+  locale: "en_US"
   # Toggles the collection of plugin usage metrics
   #
   # * Disabling this option does not affect plugin functionality

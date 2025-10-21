@@ -1,0 +1,45 @@
+# 한국어 (대한민국)
+# 빈 따옴표는 메시지를 비활성화합니다.
+# 예시:
+# - prefix: ""
+# - setting-changed: ""
+
+# 모든 플러그인 메시지에 추가되는 접두사.
+prefix: "&f&l(&6설정&f&l) &f"
+
+settings:
+  no-access: "&c이 설정을 변경할 권한이 없습니다"
+  no-disable-access: "&c이 설정을 비활성화할 권한이 없습니다"
+  # %setting% - 사용자가 변경하려고 시도한 설정의 이름
+  # %max% - 이 사용자가 이 설정의 레벨을 변경할 수 있는 최대값
+  low-access-level: "&c권한이 거부되었습니다. '%setting%&c'을(를) 최대 &e%max%&c(으)로 설정하는 것으로 제한됩니다."
+  no-settings-data: "&c계정에 대한 설정 데이터를 찾을 수 없습니다"
+  wait-loading: "&c변경하기 전에 설정이 로드될 때까지 기다려 주세요"
+  # 참고: 이 메시지는 '/settings set' 명령이 활성화되어 있어야 합니다
+  # %setting% - 비활성화된 설정의 이름
+  # %enableAction% - 설정을 활성화하기 위한 클릭 가능한 텍스트
+  self-disabled: "&c'%setting%&c' 설정이 비활성화되어 있습니다! %enableAction%"
+  enable-action: "&e(클릭하여 활성화)"
+  # %setting% - 비활성화된 설정의 이름
+  enable-action-tooltip:
+    - "&6%setting%"
+    - "&7클릭하여 &a활성화"
+
+commands:
+  help-header: "&e------- &6설정 도움말 &e---------"
+  help-command-format: "&f/settings %command% &8: &7%description%"
+  no-access: "&c이 명령을 실행할 권한이 없습니다"
+  # %setting% - 사용자가 변경하려고 시도한 설정의 이름
+  setting-not-found: "&c알 수 없는 설정 '&6%setting%&c'!"
+  # %values% - 플레이어가 권한을 가진 설정에 대한 허용된 값 목록
+  setting-invalid-level: "&c잘못된 설정 레벨입니다! 허용되는 레벨: &e%values%"
+  # %setting% - 변경된 설정의 이름
+  # %value% - 설정이 설정된 값
+  setting-changed: "설정 '&6%setting%&f'이(가) &e%value%(으)로 설정되었습니다"
+  setting-show: "&6%setting% &f- &e%value%"
+  setting-unchanged: "&c설정 '&6%setting%&c'은(는) 이미 &e%value%(으)로 설정되어 있습니다"
+
+stacker:
+  target-disabled: "&c해당 플레이어는 '&6스태커&c' 설정을 비활성화했습니다!"
+  target-invalid-entity: "&c해당 엔티티를 쌓을 수 없습니다!"
+

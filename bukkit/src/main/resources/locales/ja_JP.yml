@@ -1,0 +1,45 @@
+# 日本語 (日本)
+# 空の引用符はメッセージを無効にします。
+# 例:
+# - prefix: ""
+# - setting-changed: ""
+
+# すべてのプラグインメッセージに追加されるプレフィックス。
+prefix: "&f&l(&6設定&f&l) &f"
+
+settings:
+  no-access: "&cこの設定を変更する権限がありません"
+  no-disable-access: "&cこの設定を無効にする権限がありません"
+  # %setting% - ユーザーが変更しようとした設定の名前
+  # %max% - このユーザーがこの設定のレベルを変更できる最大値
+  low-access-level: "&c権限が拒否されました。'%setting%&c'を最大&e%max%&cに設定することに制限されています。"
+  no-settings-data: "&cアカウントの設定データが見つかりませんでした"
+  wait-loading: "&c変更を行う前に、設定が読み込まれるまでお待ちください"
+  # 注意: このメッセージは'/settings set'コマンドが有効である必要があります
+  # %setting% - 無効になっている設定の名前
+  # %enableAction% - 設定を有効にするためのクリック可能なテキスト
+  self-disabled: "&c'%setting%&c'設定が無効になっています！%enableAction%"
+  enable-action: "&e(クリックして有効化)"
+  # %setting% - 無効になっている設定の名前
+  enable-action-tooltip:
+    - "&6%setting%"
+    - "&7クリックして&a有効化"
+
+commands:
+  help-header: "&e------- &6設定ヘルプ &e---------"
+  help-command-format: "&f/settings %command% &8: &7%description%"
+  no-access: "&cこのコマンドを実行する権限がありません"
+  # %setting% - ユーザーが変更しようとした設定の名前
+  setting-not-found: "&c不明な設定'&6%setting%&c'！"
+  # %values% - プレイヤーが権限を持っている設定の受け入れ可能な値のリスト
+  setting-invalid-level: "&c無効な設定レベル！受け入れ可能なレベルは: &e%values%"
+  # %setting% - 変更された設定の名前
+  # %value% - 設定が設定された値
+  setting-changed: "設定'&6%setting%&f'が&e%value%に設定されました"
+  setting-show: "&6%setting% &f- &e%value%"
+  setting-unchanged: "&c設定'&6%setting%&c'はすでに&e%value%に設定されています"
+
+stacker:
+  target-disabled: "&cそのプレイヤーは'&6スタッカー&c'設定を無効にしています！"
+  target-invalid-entity: "&cそのエンティティをスタックできません！"
+

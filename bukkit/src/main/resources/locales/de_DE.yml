@@ -1,0 +1,45 @@
+# Deutsch (Deutschland)
+# Leere Anführungszeichen deaktivieren die Nachricht.
+# Beispiel:
+# - prefix: ""
+# - setting-changed: ""
+
+# Präfix, das jeder Plugin-Nachricht vorangestellt wird.
+prefix: "&f&l(&6Einstellungen&f&l) &f"
+
+settings:
+  no-access: "&cDu hast keine Berechtigung, diese Einstellung zu ändern"
+  no-disable-access: "&cDu hast keine Berechtigung, diese Einstellung zu deaktivieren"
+  # %setting% - Der Name der Einstellung, die der Benutzer zu ändern versucht hat
+  # %max% - Der maximale Wert, auf den dieser Benutzer diese Einstellung setzen kann
+  low-access-level: "&cBerechtigung verweigert. Du bist darauf beschränkt, '%setting%&c' auf maximal &e%max%&c zu setzen."
+  no-settings-data: "&cKeine Einstellungsdaten für dein Konto gefunden"
+  wait-loading: "&cBitte warte, bis deine Einstellungen geladen sind, bevor du Änderungen vornimmst"
+  # HINWEIS: Diese Nachricht erfordert, dass der Befehl '/settings set' aktiviert ist
+  # %setting% - Der Name der Einstellung, die deaktiviert ist
+  # %enableAction% - Der anklickbare Text zum Aktivieren der Einstellung
+  self-disabled: "&cDu hast die Einstellung '%setting%&c' deaktiviert! %enableAction%"
+  enable-action: "&e(Klicken zum Aktivieren)"
+  # %setting% - Der Name der Einstellung, die deaktiviert ist
+  enable-action-tooltip:
+    - "&6%setting%"
+    - "&7Klicken zum &aAktivieren"
+
+commands:
+  help-header: "&e------- &6Einstellungen Hilfe &e---------"
+  help-command-format: "&f/settings %command% &8: &7%description%"
+  no-access: "&cDu hast keine Berechtigung, diesen Befehl auszuführen"
+  # %setting% - Der Name der Einstellung, die der Benutzer zu ändern versucht hat
+  setting-not-found: "&cUnbekannte Einstellung '&6%setting%&c'!"
+  # %values% - Die Liste der akzeptierten Werte für die Einstellung, für die der Spieler Berechtigungen hat
+  setting-invalid-level: "&cUngültiger Einstellungslevel! Die akzeptierten Level sind: &e%values%"
+  # %setting% - Der Name der Einstellung, die geändert wurde
+  # %value% - Der Wert, auf den die Einstellung gesetzt wurde
+  setting-changed: "Einstellung '&6%setting%&f' wurde auf &e%value% gesetzt"
+  setting-show: "&6%setting% &f- &e%value%"
+  setting-unchanged: "&cEinstellung '&6%setting%&c' ist bereits auf &e%value% gesetzt"
+
+stacker:
+  target-disabled: "&cDieser Spieler hat die '&6Stapler&c' Einstellung deaktiviert!"
+  target-invalid-entity: "&cDu kannst diese Entität nicht stapeln!"
+

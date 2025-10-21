@@ -1,0 +1,45 @@
+# Italiano (Italia)
+# Le virgolette vuote disabilitano il messaggio.
+# Esempio:
+# - prefix: ""
+# - setting-changed: ""
+
+# Prefisso aggiunto ad ogni messaggio del plugin.
+prefix: "&f&l(&6Impostazioni&f&l) &f"
+
+settings:
+  no-access: "&cNon hai i permessi per modificare questa impostazione"
+  no-disable-access: "&cNon hai i permessi per disabilitare questa impostazione"
+  # %setting% - Il nome dell'impostazione che l'utente ha tentato di modificare
+  # %max% - Il valore massimo a cui questo utente può impostare questa impostazione
+  low-access-level: "&cPermesso negato. Sei limitato a impostare '%setting%&c' ad un massimo di &e%max%&c."
+  no-settings-data: "&cNessun dato di impostazioni trovato per il tuo account"
+  wait-loading: "&cAttendi il caricamento delle tue impostazioni prima di apportare modifiche"
+  # NOTA: Questo messaggio richiede che il comando '/settings set' sia abilitato
+  # %setting% - Il nome dell'impostazione che è disabilitata
+  # %enableAction% - Il testo cliccabile per abilitare l'impostazione
+  self-disabled: "&cHai l'impostazione '%setting%&c' disabilitata! %enableAction%"
+  enable-action: "&e(Clicca per abilitare)"
+  # %setting% - Il nome dell'impostazione che è disabilitata
+  enable-action-tooltip:
+    - "&6%setting%"
+    - "&7Clicca per &aabilitare"
+
+commands:
+  help-header: "&e------- &6Aiuto Impostazioni &e---------"
+  help-command-format: "&f/settings %command% &8: &7%description%"
+  no-access: "&cNon hai i permessi per eseguire questo comando"
+  # %setting% - Il nome dell'impostazione che l'utente ha tentato di modificare
+  setting-not-found: "&cImpostazione sconosciuta '&6%setting%&c'!"
+  # %values% - L'elenco dei valori accettati per l'impostazione per cui il giocatore ha i permessi
+  setting-invalid-level: "&cLivello di impostazione non valido! I livelli accettati sono: &e%values%"
+  # %setting% - Il nome dell'impostazione che è stata modificata
+  # %value% - Il valore a cui è stata impostata
+  setting-changed: "Impostazione '&6%setting%&f' è stata impostata a &e%value%"
+  setting-show: "&6%setting% &f- &e%value%"
+  setting-unchanged: "&cImpostazione '&6%setting%&c' è già impostata a &e%value%"
+
+stacker:
+  target-disabled: "&cQuel giocatore ha l'impostazione '&6Impilatore&c' disabilitata!"
+  target-invalid-entity: "&cNon puoi impilare quell'entità!"
+

@@ -1,0 +1,45 @@
+# Nederlands (Nederland)
+# Lege aanhalingstekens schakelen het bericht uit.
+# Voorbeeld:
+# - prefix: ""
+# - setting-changed: ""
+
+# Voorvoegsel toegevoegd aan elk plugin-bericht.
+prefix: "&f&l(&6Instellingen&f&l) &f"
+
+settings:
+  no-access: "&cJe hebt geen toestemming om deze instelling te wijzigen"
+  no-disable-access: "&cJe hebt geen toestemming om deze instelling uit te schakelen"
+  # %setting% - De naam van de instelling die de gebruiker probeerde te wijzigen
+  # %max% - De maximale waarde waartoe deze gebruiker het niveau van deze instelling kan wijzigen
+  low-access-level: "&cToestemming geweigerd. Je bent beperkt tot het instellen van '%setting%&c' op maximaal &e%max%&c."
+  no-settings-data: "&cGeen instellingsgegevens gevonden voor je account"
+  wait-loading: "&cWacht tot je instellingen zijn geladen voordat je wijzigingen aanbrengt"
+  # OPMERKING: Dit bericht vereist dat het '/settings set' commando is ingeschakeld
+  # %setting% - De naam van de instelling die is uitgeschakeld
+  # %enableAction% - De klikbare tekst om de instelling in te schakelen
+  self-disabled: "&cJe hebt de '%setting%&c' instelling uitgeschakeld! %enableAction%"
+  enable-action: "&e(Klik om in te schakelen)"
+  # %setting% - De naam van de instelling die is uitgeschakeld
+  enable-action-tooltip:
+    - "&6%setting%"
+    - "&7Klik om te &ainschakelen"
+
+commands:
+  help-header: "&e------- &6Instellingen Hulp &e---------"
+  help-command-format: "&f/settings %command% &8: &7%description%"
+  no-access: "&cJe hebt geen toestemming om dit commando uit te voeren"
+  # %setting% - De naam van de instelling die de gebruiker probeerde te wijzigen
+  setting-not-found: "&cOnbekende instelling '&6%setting%&c'!"
+  # %values% - De lijst met geaccepteerde waarden voor de instelling waarvoor de speler toestemming heeft
+  setting-invalid-level: "&cOngeldig instellingsniveau! De geaccepteerde niveaus zijn: &e%values%"
+  # %setting% - De naam van de instelling die is gewijzigd
+  # %value% - De waarde waarnaar de instelling is ingesteld
+  setting-changed: "Instelling '&6%setting%&f' is ingesteld op &e%value%"
+  setting-show: "&6%setting% &f- &e%value%"
+  setting-unchanged: "&cInstelling '&6%setting%&c' is al ingesteld op &e%value%"
+
+stacker:
+  target-disabled: "&cDie speler heeft de '&6Stacker&c' instelling uitgeschakeld!"
+  target-invalid-entity: "&cJe kunt die entiteit niet stapelen!"
+

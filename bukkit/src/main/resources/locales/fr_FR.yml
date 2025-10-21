@@ -1,0 +1,45 @@
+# Français (France)
+# Les guillemets vides désactivent le message.
+# Exemple:
+# - prefix: ""
+# - setting-changed: ""
+
+# Préfixe ajouté à chaque message du plugin.
+prefix: "&f&l(&6Réglages&f&l) &f"
+
+settings:
+  no-access: "&cVous n'avez pas la permission de modifier ce réglage"
+  no-disable-access: "&cVous n'avez pas la permission de désactiver ce réglage"
+  # %setting% - Le nom du réglage que l'utilisateur a essayé de modifier
+  # %max% - La valeur maximale que cet utilisateur peut définir pour ce réglage
+  low-access-level: "&cPermission refusée. Vous êtes limité à définir '%setting%&c' à un maximum de &e%max%&c."
+  no-settings-data: "&cAucune donnée de réglages trouvée pour votre compte"
+  wait-loading: "&cVeuillez patienter jusqu'à ce que vos réglages se chargent avant de faire des modifications"
+  # NOTE: Ce message nécessite que la commande '/settings set' soit activée
+  # %setting% - Le nom du réglage qui est désactivé
+  # %enableAction% - Le texte cliquable pour activer le réglage
+  self-disabled: "&cVous avez le réglage '%setting%&c' désactivé! %enableAction%"
+  enable-action: "&e(Cliquez pour activer)"
+  # %setting% - Le nom du réglage qui est désactivé
+  enable-action-tooltip:
+    - "&6%setting%"
+    - "&7Cliquez pour &aactiver"
+
+commands:
+  help-header: "&e------- &6Aide des Réglages &e---------"
+  help-command-format: "&f/settings %command% &8: &7%description%"
+  no-access: "&cVous n'avez pas la permission d'exécuter cette commande"
+  # %setting% - Le nom du réglage que l'utilisateur a essayé de modifier
+  setting-not-found: "&cRéglage inconnu '&6%setting%&c'!"
+  # %values% - La liste des valeurs acceptées pour le réglage que le joueur a les permissions
+  setting-invalid-level: "&cNiveau de réglage invalide! Les niveaux acceptés sont: &e%values%"
+  # %setting% - Le nom du réglage qui a été modifié
+  # %value% - La valeur à laquelle le réglage a été défini
+  setting-changed: "Le réglage '&6%setting%&f' a été défini à &e%value%"
+  setting-show: "&6%setting% &f- &e%value%"
+  setting-unchanged: "&cLe réglage '&6%setting%&c' est déjà défini à &e%value%"
+
+stacker:
+  target-disabled: "&cCe joueur a le réglage '&6Empileur&c' désactivé!"
+  target-invalid-entity: "&cVous ne pouvez pas empiler cette entité!"
+

@@ -1,0 +1,45 @@
+# Español (España)
+# Las comillas vacías desactivan el mensaje.
+# Ejemplo:
+# - prefix: ""
+# - setting-changed: ""
+
+# Prefijo añadido a cada mensaje del plugin.
+prefix: "&f&l(&6Ajustes&f&l) &f"
+
+settings:
+  no-access: "&cNo tienes permisos para cambiar este ajuste"
+  no-disable-access: "&cNo tienes permisos para desactivar este ajuste"
+  # %setting% - El nombre del ajuste que el usuario intentó cambiar
+  # %max% - El valor máximo al que este usuario puede cambiar el nivel de este ajuste
+  low-access-level: "&cPermiso denegado. Estás limitado a establecer '%setting%&c' a un máximo de &e%max%&c."
+  no-settings-data: "&cNo se encontraron datos de ajustes para tu cuenta"
+  wait-loading: "&cPor favor espera a que se carguen tus ajustes antes de hacer cambios"
+  # NOTA: Este mensaje requiere que el comando '/settings set' esté habilitado
+  # %setting% - El nombre del ajuste que está desactivado
+  # %enableAction% - El texto clickeable para habilitar el ajuste
+  self-disabled: "&c¡Tienes el ajuste '%setting%&c' desactivado! %enableAction%"
+  enable-action: "&e(Clic para habilitar)"
+  # %setting% - El nombre del ajuste que está desactivado
+  enable-action-tooltip:
+    - "&6%setting%"
+    - "&7Clic para &ahabilitar"
+
+commands:
+  help-header: "&e------- &6Ayuda de Ajustes &e---------"
+  help-command-format: "&f/settings %command% &8: &7%description%"
+  no-access: "&cNo tienes permisos para ejecutar este comando"
+  # %setting% - El nombre del ajuste que el usuario intentó cambiar
+  setting-not-found: "&c¡Ajuste desconocido '&6%setting%&c'!"
+  # %values% - La lista de valores aceptados para el ajuste que el jugador tiene permisos
+  setting-invalid-level: "&c¡Nivel de ajuste inválido! Los niveles aceptados son: &e%values%"
+  # %setting% - El nombre del ajuste que fue cambiado
+  # %value% - El valor al que se cambió el ajuste
+  setting-changed: "El ajuste '&6%setting%&f' ha sido establecido a &e%value%"
+  setting-show: "&6%setting% &f- &e%value%"
+  setting-unchanged: "&cEl ajuste '&6%setting%&c' ya está establecido en &e%value%"
+
+stacker:
+  target-disabled: "&c¡Ese jugador tiene el ajuste '&6Apilador&c' desactivado!"
+  target-invalid-entity: "&c¡No puedes apilar esa entidad!"
+

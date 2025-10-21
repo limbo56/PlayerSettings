@@ -1,0 +1,45 @@
+# 简体中文 (中国)
+# 空引号会禁用消息。
+# 示例:
+# - prefix: ""
+# - setting-changed: ""
+
+# 附加到每个插件消息的前缀。
+prefix: "&f&l(&6设置&f&l) &f"
+
+settings:
+  no-access: "&c你没有权限更改此设置"
+  no-disable-access: "&c你没有权限禁用此设置"
+  # %setting% - 用户尝试更改的设置名称
+  # %max% - 此用户可以将此设置的级别更改为的最大值
+  low-access-level: "&c权限被拒绝。你被限制为将'%setting%&c'设置为最大&e%max%&c。"
+  no-settings-data: "&c未找到你的账户的设置数据"
+  wait-loading: "&c在进行任何更改之前，请等待你的设置加载"
+  # 注意: 此消息需要启用'/settings set'命令
+  # %setting% - 被禁用的设置名称
+  # %enableAction% - 用于启用设置的可点击文本
+  self-disabled: "&c你已禁用'%setting%&c'设置！%enableAction%"
+  enable-action: "&e(点击启用)"
+  # %setting% - 被禁用的设置名称
+  enable-action-tooltip:
+    - "&6%setting%"
+    - "&7点击&a启用"
+
+commands:
+  help-header: "&e------- &6设置帮助 &e---------"
+  help-command-format: "&f/settings %command% &8: &7%description%"
+  no-access: "&c你没有权限执行此命令"
+  # %setting% - 用户尝试更改的设置名称
+  setting-not-found: "&c未知设置'&6%setting%&c'！"
+  # %values% - 玩家有权限的设置的可接受值列表
+  setting-invalid-level: "&c无效的设置级别！可接受的级别是: &e%values%"
+  # %setting% - 已更改的设置名称
+  # %value% - 设置被设置为的值
+  setting-changed: "设置'&6%setting%&f'已设置为&e%value%"
+  setting-show: "&6%setting% &f- &e%value%"
+  setting-unchanged: "&c设置'&6%setting%&c'已经设置为&e%value%"
+
+stacker:
+  target-disabled: "&c该玩家已禁用'&6堆叠器&c'设置！"
+  target-invalid-entity: "&c你不能堆叠该实体！"
+

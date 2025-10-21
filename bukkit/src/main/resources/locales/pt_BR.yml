@@ -1,0 +1,44 @@
+# Português (Brasil)
+# Aspas vazias desativam a mensagem.
+# Exemplo:
+# - prefix: ""
+# - setting-changed: ""
+
+# Prefixo adicionado a cada mensagem do plugin.
+prefix: "&f&l(&6Ajustes&f&l) &f"
+
+settings:
+  no-access: "&cVocê não tem permissão para alterar este ajuste"
+  no-disable-access: "&cVocê não tem permissão para desativar este ajuste"
+  # %setting% - O nome do ajuste que o usuário tentou alterar
+  # %max% - O valor máximo que este usuário pode definir para este ajuste
+  low-access-level: "&cPermissão negada. Você está limitado a definir '%setting%&c' para um máximo de &e%max%&c."
+  no-settings-data: "&cNenhum dado de ajustes encontrado para sua conta"
+  wait-loading: "&cPor favor, aguarde até que seus ajustes carreguem antes de fazer alterações"
+  # NOTA: Esta mensagem requer que o comando '/settings set' esteja ativado
+  # %setting% - O nome do ajuste que está desativado
+  # %enableAction% - O texto clicável para ativar o ajuste
+  self-disabled: "&cVocê tem o ajuste '%setting%&c' desativado! %enableAction%"
+  enable-action: "&e(Clique para ativar)"
+  # %setting% - O nome do ajuste que está desativado
+  enable-action-tooltip:
+    - "&6%setting%"
+    - "&7Clique para &aativar"
+
+commands:
+  help-header: "&e------- &6Ajuda de Ajustes &e---------"
+  help-command-format: "&f/settings %command% &8: &7%description%"
+  no-access: "&cVocê não tem permissão para executar este comando"
+  # %setting% - O nome do ajuste que o usuário tentou alterar
+  setting-not-found: "&cAjuste desconhecido '&6%setting%&c'!"
+  # %values% - A lista de valores aceitos para o ajuste que o jogador tem permissões
+  setting-invalid-level: "&cNível de ajuste inválido! Os níveis aceitos são: &e%values%"
+  # %setting% - O nome do ajuste que foi alterado
+  # %value% - O valor para o qual o ajuste foi definido
+  setting-changed: "Ajuste '&6%setting%&f' foi definido para &e%value%"
+  setting-show: "&6%setting% &f- &e%value%"
+  setting-unchanged: "&cAjuste '&6%setting%&c' já está definido como &e%value%"
+
+stacker:
+  target-disabled: "&cEsse jogador tem o ajuste '&6Empilhador&c' desativado!"
+  target-invalid-entity: "&cVocê não pode empilhar essa entidade!"

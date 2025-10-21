@@ -50,6 +50,10 @@ public class PluginConfiguration extends BaseConfiguration {
     return configuration.getBoolean("general.update-alert", true);
   }
 
+  public String getLocale() {
+    return configuration.getString("general.locale", "en_US");
+  }
+
   public long getSettingsSaveDelay() {
     return configuration.getLong("general.settings-save-delay", 500);
   }

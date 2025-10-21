@@ -1,0 +1,45 @@
+# Polski (Polska)
+# Puste cudzysłowy wyłączają wiadomość.
+# Przykład:
+# - prefix: ""
+# - setting-changed: ""
+
+# Prefiks dodawany do każdej wiadomości wtyczki.
+prefix: "&f&l(&6Ustawienia&f&l) &f"
+
+settings:
+  no-access: "&cNie masz uprawnień do zmiany tego ustawienia"
+  no-disable-access: "&cNie masz uprawnień do wyłączenia tego ustawienia"
+  # %setting% - Nazwa ustawienia, które użytkownik próbował zmienić
+  # %max% - Maksymalna wartość, do której ten użytkownik może zmienić poziom tego ustawienia
+  low-access-level: "&cDostęp zabroniony. Jesteś ograniczony do ustawienia '%setting%&c' na maksymalnie &e%max%&c."
+  no-settings-data: "&cNie znaleziono danych ustawień dla twojego konta"
+  wait-loading: "&cPoczekaj, aż twoje ustawienia się załadują, zanim dokonasz zmian"
+  # UWAGA: Ta wiadomość wymaga włączenia polecenia '/settings set'
+  # %setting% - Nazwa ustawienia, które jest wyłączone
+  # %enableAction% - Klikalny tekst do włączenia ustawienia
+  self-disabled: "&cMasz wyłączone ustawienie '%setting%&c'! %enableAction%"
+  enable-action: "&e(Kliknij, aby włączyć)"
+  # %setting% - Nazwa ustawienia, które jest wyłączone
+  enable-action-tooltip:
+    - "&6%setting%"
+    - "&7Kliknij, aby &awłączyć"
+
+commands:
+  help-header: "&e------- &6Pomoc Ustawień &e---------"
+  help-command-format: "&f/settings %command% &8: &7%description%"
+  no-access: "&cNie masz uprawnień do wykonania tego polecenia"
+  # %setting% - Nazwa ustawienia, które użytkownik próbował zmienić
+  setting-not-found: "&cNieznane ustawienie '&6%setting%&c'!"
+  # %values% - Lista akceptowanych wartości dla ustawienia, do których gracz ma uprawnienia
+  setting-invalid-level: "&cNieprawidłowy poziom ustawienia! Akceptowane poziomy to: &e%values%"
+  # %setting% - Nazwa ustawienia, które zostało zmienione
+  # %value% - Wartość, na którą ustawiono ustawienie
+  setting-changed: "Ustawienie '&6%setting%&f' zostało ustawione na &e%value%"
+  setting-show: "&6%setting% &f- &e%value%"
+  setting-unchanged: "&cUstawienie '&6%setting%&c' jest już ustawione na &e%value%"
+
+stacker:
+  target-disabled: "&cTen gracz ma wyłączone ustawienie '&6Stacker&c'!"
+  target-invalid-entity: "&cNie możesz ułożyć tej jednostki!"
+
